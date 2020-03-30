@@ -1,0 +1,361 @@
+<script>
+
+var wb = {
+  //
+  // Get Balance
+  //
+  // Accepts a Cell object and returns a WB object
+  //
+  getBalance:function(dis){
+    let pax = {
+      declared:[],
+      standard:[]
+    }
+    //
+    // Get Bookings
+    //
+    let bookings = dis.data("json") // bookings
+    //
+    // Get Plane
+    //
+    let row = theBoard.getRow(dis)
+    let col = theBoard.getCol(dis)
+    let planeCell = $("#ac"+col)
+    //
+    let PCF = planeCell.data("PCF") // Plane Crew Fuel
+    if (!PCF){
+      // ["GA8", Array(2), 150]
+      // [ ["Standard", "Pilot", "", "", 83] , null ]
+      PCF = ["GA8", [["Standard", "Pilot", "", "", 83],null], 150]
+    }
+    //
+    let plane = planes.getPlane(PCF[0]) // Get the plane object
+    //
+    let all_weights = true
+    //
+    // Build declared array
+    //
+    // Each Booking in the cell
+    //
+    let cell = bookings
+    for (let b in cell){
+      let booking = JSON.parse(JSON.stringify(cell[b])) // operate on a copy
+      if (booking && booking.orderNumber){
+        let paxArry = cell[b].pax
+        for(let p in paxArry){
+          // push standard weights
+          pax.standard.push([paxArry[p].standardWeight, paxArry[p]])
+          // push declared weights
+          if (paxArry[p].weight.length>0){
+            pax.declared.push([paxArry[p].weight, paxArry[p]])
+          } else {
+            all_weights = false
+          }
+        }
+      }
+    }
+    //
+    // Convert LBS to KG (and strip KG/LBS) and add declared_bonus
+    //
+    for (let a in pax.declared){
+      pax.declared[a][0] = wb.getKilos(pax.declared[a][0]) + gya.standard.declared_bonus
+    }
+    //
+    // Standard or Declared?
+    //
+    if (all_weights){
+      _pax_list = pax.declared
+    } else {
+      _pax_list = pax.standard
+    }
+    
+    // (Reverse)Sort the array (maybe allow it to calculate without sorting later)
+    _pax_list.sort(arrays.reverseSortFunction)
+    //
+   
+    //
+    // Put pilot and copilot in seats (standard or declared)
+    //
+    let _pilotW = PCF[1][0][4] + gya.standard.declared_bonus
+    if (!all_weights){
+      _pilotW = gya.standard.adult
+    }
+    let POB = [[_pilotW,PCF[1][0][0]]]
+        
+    let _cPilotW
+    if (!!PCF[1][1]){
+        _cPilotW = PCF[1][1][4] + gya.standard.declared_bonus
+      if (!all_weights){
+        _cPilotW = gya.standard.adult
+      }
+      POB.push([_cPilotW,PCF[1][1][0]])
+    }
+    //
+    // Put Pax in seats
+    //
+    let tPaxW = 0
+    for (let a in _pax_list){
+      POB.push(_pax_list[a]) // [0,1] 0=weight 1=paxObject
+      tPaxW+=parseInt(_pax_list[a][0])
+    }
+    //
+    // load everything into the plane
+    //
+    plane.load(PCF,POB)
+    let WB = plane.getWB() // calculate the results (returns an object)
+    //WB.plane = plane
+    
+    WB.tPaxW = tPaxW
+    WB.numPax = _pax_list.length
+    WB.all_weights = all_weights
+    WB.lastSeatRange = this.getLastSeatRange(PCF,POB)
+    return(WB)
+  },
+  // Given a plane and load, return min/max weight range for the last seat
+  getLastSeatRange: function (PCF,POB){
+    let ret
+    let plane = planes.getPlane(PCF[0])
+    let numPOB = POB.length
+    let numSeats = plane.arms.seats.length
+    
+    if(numPOB==numSeats-1){
+      let lastSeat = POB.length
+      let range = []
+      for(let i=0;i<=130;i++){
+        POB[lastSeat] = [i,""]
+        plane.load(PCF,POB)
+        let WB = plane.getWB()
+        let _cg = WB.getCG()
+        let _AUW = WB.getWeight()        
+        if (_cg>0 && _AUW>0){
+          range[0] = i
+          range[1] = _cg
+          range[2] = _AUW
+        } else {break}
+      }
+      POB.pop() // remove last seat
+      return range
+    }
+    
+    return ""
+  },
+  getKilos: function(string){
+    let factor = 1
+    if ((string.toUpperCase().indexOf("LBS")>0)||(string.toUpperCase().indexOf("LB")>0)||(string.toUpperCase().indexOf("POUND")>0)){
+      factor = 2.20462
+    }
+    let ret = parseInt(string) / factor
+    ret = Math.round(ret)
+    return ret
+  }
+}
+
+var pilots={
+  //First","Last","Mobile","Email","Declared Weight
+  matrix:[
+      ["StandardPilot","StandardPilot","04-442-2207","staff@glenorchyair.co.nz",83],
+      ["James","Stokes","021-416-637","a-v-8-a@hotmail.com",125],
+      ["William","Clark","021-325-400","ivan.konev@gmail.com",83],
+      ["Jim","Rooney","020-4010-1926","it@glenorchyair.co.nz",84],
+      ["Liam","Anderson","027-546-8102","",75],
+      ["Jackson","Burdon","022-186-0133","",88],
+      ["Luke","Petre","027-502-3388","petreluke@gmail.com",77],
+      ["Dan","Whitmore","021-0265-2609","",76],
+      ["Dom","Eller","021-314-730","",78],
+      ["Reuben","Horsley","021-182-4156","Reubenhorsley@gmail.com",115]
+    ],
+    getPilot:function(name){
+      for (let a in this.matrix){
+        if (this.matrix[a][0]==name){
+          return this.matrix[a]
+        }
+      }
+    },
+}
+
+
+
+
+class Airplane {
+    constructor(data) {
+    // data.REG data.Weight,data.ARM,data.Moment,data.Type,data.RegColor]
+    //
+    // Could probably dynamically build type by processing data.Type... would need more defaults like seats and arms passed in.
+    //
+        this.reg = data.REG
+        this.wam = [data.Weight,data.ARM,data.Moment]
+        this.regColor = data.RegColor
+        this.maxWeight = 0
+        this.fuel = 0
+        this.arms = {}
+        this.arms.seats = []
+        //this.arms.fuel ***********
+        this.seatWeights = []
+        this.seats = [] // [[]]
+        this.WAM = []
+        this.Burn = data.Burn
+    }
+    // -----------------------------------
+    // Get Weight and Balance
+    // -----------------------------------
+    getWB() {
+      this.WAM =[] // Clear old values
+      let ZFW = 0
+      let totalMoment = 0
+      
+      this.WAM.push(this.wam)
+      //
+      // Add seatweights to WAM
+      //
+      for (let a in this.seats){
+        let weight = this.seats[a][0]
+        let arm = this.arms.seats[a]
+        let moment = weight*arm
+        let row = [weight,arm,moment]
+        this.WAM.push(row)
+        totalMoment += moment
+        ZFW += weight
+      }
+      // Fuel      
+      let fuelWeight = this.fuel * .72
+      let fuelRow =  [fuelWeight,this.arms.fuel,(fuelWeight*this.arms.fuel)]
+      this.WAM.push(fuelRow)
+      
+      // ------------------------------------------------------------------- ***********************
+      // Bags
+      // -------------------------------------------------------------------
+      // add bag weight to ZFW
+      
+      let tW = 0
+      let tM = 0
+      for(let r in this.WAM){
+        tW+=this.WAM[r][0]
+        tM+=this.WAM[r][2]
+      }
+      
+      // Seems pretty redundant... just pass the object? ********************************
+      // Object to hold the results
+      // can add things like ZFW and such later. Could even pass functions as part of the object to calculate them.
+      //
+      let ret = {}
+      ret.type = this.type
+      ret.reg = this.reg
+      ret.regColor = this.regColor
+      ret.wam = this.WAM
+      ret.seats = this.seats // POB
+      ret.tW = tW
+      ret.tM = tM
+      ret.cg = tM/tW
+      ret.maxCG = this.maxCG
+      ret.maxWeight = this.maxWeight
+      ret.fuel = this.fuel
+      ret.ZFW = this.ZFW
+      ret.fuelWeight = this.fuelWeight
+      ret.MCTOW = this.maxWeight
+      ret.TOW = tW
+      ret.maxCG = this.maxCG
+      ret.Burn = this.Burn
+      ret.getCG = function(){
+        // rounded cg could go either way... calculate "over cg" before or after the rounding ************************************
+        let cg = Math.round(ret.cg*100)/100
+        if (cg>this.maxCG[1]){
+          cg = -cg
+        }
+        return cg
+      }
+      ret.getWeight = function(){
+        let w = Math.round(ret.tW)
+        if (w>ret.maxWeight){
+          w = -w
+        }
+        return w
+      }
+      return ret
+    }
+    // -----------------------------------
+    // Load the plane
+    // -----------------------------------
+    load(PCF,POB){ // POB[0,1] 0=weight 1=paxObject ... includes crew
+      this.fuel = PCF[2]
+      this.seats = POB
+      this.seatWeights = []
+      // Probably build WAM instead of a seats array? ****************************************************************************************************
+      // Or maybe build it off the POB array
+      for (let a in POB){
+        this.seatWeights.push(POB[a][0])
+      }
+    }
+}
+
+class GA8 extends Airplane {
+    constructor(data) {
+      super(data)
+
+      this.type = "GA8"
+      this.maxWeight = 1905 // ** Takeoff / Landing weights could be supported **
+      this.maxCG = [,1.626] // fore/aft
+      
+      this.seats = []
+      this.baggageShelf = []
+      this.pod = []
+      this.arms = {}
+      this.arms.seats = [
+        0.965, // Row 1
+        0.965,
+        1.772, // Row 2
+        1.772,
+        2.523, // Row 3
+        2.523,
+        3.247, // Row 4
+        3.247
+      ]
+      this.arms.fuel = 1.715  // Fuel
+      this.arms.bags = 3.763, // Baggage Shelf
+      this.arms.luggage = 4.623, // Aft Luggage Bin
+
+      this.moments = []
+
+//      this.WAM = [
+//        [,,],
+//        [,0.965,],
+//        [,0.965,],
+//        [,1.772,],
+//        [,1.772,],
+//        [,2.523,],
+//        [,2.523,0],
+//        [,3.247,0],
+//        [,3.247,0],
+//        [,3.763,0],
+//        [,4.623,0]
+//      ]
+    }
+}
+
+class C206 extends Airplane {
+    constructor(data) {
+      super(data)
+
+      this.type = "C206"
+      this.maxWeight = 1719 // ** Takeoff / Landing weights could be supported **
+      this.maxCG = [,125.984] // fore/aft
+      
+      this.seats = []
+      this.baggageShelf = []
+      this.pod = []
+      this.arms = {}
+      this.arms.seats = [
+        93.98, // Row 1
+        93.98,
+        177.8, // Row 2
+        177.8,
+        254, // Row 3
+        254
+      ]
+      this.arms.fuel = 118.11  // Fuel
+//      this.arms.bags = 3.763, // Baggage Shelf
+//      this.arms.luggage = 4.623, // Aft Luggage Bin
+
+      this.moments = []
+    }
+}
+</script>

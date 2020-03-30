@@ -1,0 +1,26 @@
+
+
+Need to decide what structure to hold the manifest in (Currently the root variable MANIFEST, but that lacks the concept of different days.
+
+The current day is loaded in the PlaneManager (since you can't load a day until the planes exist).
+Perhaps there's a way to do this without it being so buried....
+    //
+    // Load current day
+    //
+
+
+theBoard.getManifest(row) returns a good manifest.
+need to pass this to Display for the popup. Right now, Display goes to test and test parses the JSON and generates a popup... since we've already parsed the JSON, we can just display it.
+We can save a copy of the current row manifest in Display till the popup is closed.
+
+-------------------------------
+Start using the root variable MANIFEST as the data store instead of the DOM tree ("TableCell").each()
+-------------------------------
+
+
+
+
+Change booking type
+Create bookings
+
+Cleanup overuse of display.upate

@@ -1,0 +1,52 @@
+<span style="display: inline-block; vertical-align: top;">
+  <div class="Manifest_Container">
+    <div id="Manifest_Header" class="Header">
+    <span id="ManifestMessages" style="float:left;display: inline-block;"></span>
+    <span style="float:right;display: inline-block;"><button onClick="loadRezdy()" >&#10226;</button></span> Manifest </div><div id="MANIFEST" class="Manifest"></div>
+  </div>
+</span>
+  
+<script>
+var manifest = {
+  //
+  // Get Booking
+  //
+  // Returns a booking if it exists in the manifest.
+  // We'll check the primary booking for now... we can drill down and check each pax booking later ****************
+  //
+  getBooking:function(orderNumber){
+    let ret = false
+      $(".Manifest").each(function() {
+        let json = $(this).data('json')
+          for (let booking in json){
+            if (json[booking].orderNumber){
+              let book = json[booking].orderNumber.split("_")[0]
+              if (book == orderNumber){
+                ret = true
+              }
+            }
+          }
+      })
+    return ret
+  },
+  //
+  // return total number of filled seats
+  //
+  getTotalPax:function(){
+    let seats = 0
+      $(".Manifest").each(function() {
+        let json = $(this).data('json')
+          for (let booking in json){
+            if (json[booking].orderNumber){
+              let book = json[booking].orderNumber.split("_")[0]
+              if (json[booking].seats){
+                seats += json[booking].seats
+              }
+            }
+          }
+      })
+    return seats
+  },
+
+}
+</script>

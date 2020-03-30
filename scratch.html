@@ -1,0 +1,321 @@
+<!--
+
+jQuery.fn.update = function() {
+    return this.each(function(){
+    console.log("called")
+    console.log($(this).prop('id'))
+    })
+}
+//'.TableCell').update()
+$('#ac1').update()
+
+ Style from Loadsheet
+  <style>
+  .v {
+    vertical-align: top;
+  }
+
+  table {
+  border: 1px solid black;
+  border-collapse: collapse;
+  }
+  table.noBorder {
+  border: 0px;
+  }
+  table.FF td {
+  padding: 5px;
+  height:20px;
+  text-align: left;
+  }
+  .myTitle {
+  font-size: large;
+  font-weight: bold;
+  text-align: center;
+  }
+  .reg {
+  font-weight: bold;
+  text-align: center;
+  background-color: <?= _plane.regColor ?> !important;
+  -webkit-print-color-adjust: exact;
+  }
+  .limit {
+  font-size: 8px;
+  text-align: center;
+  }
+  .pax1 {
+  background-color: <?= _paxList[0].bgColor ?> !important;
+  -webkit-print-color-adjust: exact;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  }
+  .pax2 {
+  background-color: <?= _paxList[1].bgColor ?> !important;
+  -webkit-print-color-adjust: exact;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  }
+  .pax3 {
+  background-color: <?= _paxList[2].bgColor ?> !important;
+  -webkit-print-color-adjust: exact;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  }
+  .pax4 {
+  background-color: <?= _paxList[3].bgColor ?> !important;
+  -webkit-print-color-adjust: exact;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  }
+  .pax5 {
+  background-color: <?= _paxList[4].bgColor ?> !important;
+  -webkit-print-color-adjust: exact;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  }
+  .pax6 {
+  background-color: <?= _paxList[5].bgColor ?> !important;
+  -webkit-print-color-adjust: exact;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  }
+  .pax7 {
+  background-color: <?= _paxList[6].bgColor ?> !important;
+  -webkit-print-color-adjust: exact;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  }
+  </style>
+
+
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+function testing() {
+
+
+
+//    // ** Appears to be unused **
+//    getACIMatrix: function(matrix) {
+//        let ret = []
+//        for (a in matrix) {
+//          let aci = matrix[a].ACI
+//          if (ret.length>0){
+//            // Add the two
+//            ret = arrays.colSum(ret,aci)
+//          }else{
+//            ret = aci          
+//          }
+//        }
+//        return (ret)
+//    },
+
+
+
+
+
+
+
+//  // Function to find all cases of a booking on the board.
+//  // Switch to make it polymorphic
+//  getBookings:function(orderNumbers){
+//    switch(typeof orderNumbers){
+//      case "array":
+//        return getBookingArray(orderNumbers)
+//        break
+//      case "string":
+//        return getBookingArray([orderNumbers])
+//        break
+//      default:
+////        console.log(typeof orderNumbers)
+//    }
+//    function getBookingArray(orderNumbers){
+//            let ret = {}
+//          $( ".TableCell" ).each( function( index, element ){
+////            console.log($(this).data("type"))
+//            for (o in orderNumbers){
+//        
+//            }
+//          })
+//          return ret
+//    }
+//  }
+
+//    $(document).mouseup(function(e) {
+//        var container = $("#details");
+//
+//        // if the target of the click isn't the container nor a descendant of the container
+//        if (!container.is(e.target) && container.has(e.target).length === 0) {
+//            container.hide();
+//        }
+//    });
+
+
+
+
+/*
+<a class="trigger_floatDiv">Click here to show the popup</a>
+
+<div class="floatDiv">
+    <span class="helper"></span>
+    <div>
+        <div class="popupCloseButton">X</div>
+        <p>Add any HTML content<br />inside the popup box!</p>
+    </div>
+</div>
+*/
+
+
+
+
+
+
+
+
+  // BookingSprite(manifest) (based on the booking.IN)
+  
+    
+   // Make sure it's a legal drop (can't drop an IN onto an OUT cell)
+    
+    
+    /*
+    Brand the out cells if they're moved.
+    We can assume booking trip times as default.
+    
+    When moving ins, check if there's a matching out. If so, move it too. If not, don't worry about it.
+
+    Things we know.
+    Sprite IN/OUT (by type.. in/out/null)
+    Target IN/OUT (by type.. in/out/null)
+    DropCell type (BookingCell PlaneCell)
+    
+    ins{[]}
+    outs{[][]}
+
+    if a target cell is unbranded, the only time it will be an out is if a booking with no INs is dropped on it (an out)
+    Kayaks will have two outs[] (key'd by cell handler)
+    
+    
+    We need an "Undo"...
+    It can be done later based on "showboard"... showboard will become save state... push each state into an arry and "undo" back to that state.
+    
+    
+    
+    
+    
+    
+    
+    
+    DroppedBookings ... dropped array of booking objects
+   
+   
+     PlaneCell = AutoCalculate
+     1st check IN/OUT cell type
+      Then check MaxPax
+      
+      BookingCell
+      Check IN/OUT cell type vs DropCell type
+   
+    If newBookings are dropped on a PlaneCell, all calculations have to be made.... bookings to be branded with IN and OUT
+    If they're dropped on a BookingCell, they either have branding or not.
+    If not, we calculate and brand them.
+    
+    If they're branded, we change the ins/outs
+    
+    
+    If we move the IN, we move the OUT... if the OUT needs to not move, it can be put back manually.
+    
+    If we drop onto an OUT cell, only the OUTs move.
+    If we drop an IN cell onto an OUT cell, ERROR
+    
+    */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+  console.log("Test")
+data = [{
+    "id": "105",
+    "name": "FIAT",
+    "active": true,
+    "parentId": "1"
+}, {
+    "id": "106",
+    "name": "AUDI",
+    "active": true,
+    "parentId": "1"
+}, {
+    "id": "107",
+    "name": "BMW",
+    "active": true,
+    "parentId": "1"
+}, {
+    "id": "109",
+    "name": "RENAULT",
+    "active": true,
+    "parentId": "1"
+}];
+
+
+data.sort(function (a, b) {
+    return a.name.localeCompare(b.name);
+})
+
+data.sort();
+
+console.log(data);
+}
+*/
+</script>

@@ -1,0 +1,490 @@
+<script >
+
+  function msgbox(text,buttontext,title) {
+    buttontext = buttontext || "OK"
+    title = title || ""
+    $( "<div>" + text + "</div>" ).dialog({
+      dialogClass: "no-close",
+      title: title,
+      position: { my: "left top", at: "left top", of: this },
+      show: {
+      effect: "blind", 
+      duration: 300
+      },
+      buttons: [
+        {
+          text: buttontext,
+          click: function() {
+            window.top.close()           
+            $( this ).dialog( "close" );
+            $( this ).remove();
+          }
+        }
+      ]
+    });
+  }
+  
+function createArry() {
+    createArray(3, 5)
+}
+
+function createArray(d1, d2) {
+
+    var x = new Array(d1);
+
+    for (var i = 0; i < x.length; i++) {
+        x[i] = new Array(d2);
+    }
+    return (x)
+}
+var time = {
+
+    getHour: function(string) {
+    //time: "2019-10-03 15:15:00"
+    var date = new Date(string)
+    var hour = date.getHours()
+    if (hour>12){
+      hour = hour - 12
+    }
+    if (hour>6 && hour<10){
+      hour = "" + 0 + hour
+    }
+    hour = hour  + ":00"
+    return hour
+    },
+    getRow: function(string){
+      let hour = this.getHour(string)
+      hour = hour.replace(/\:\d\d/,"")
+      
+      //console.log("Hour: %o",hour)
+      
+      let checkHour = ""
+      
+        // Array of all TimeCells
+        var all = $(".TimeCell").map(function() {
+          return this.id;
+        }).get();
+        
+        //console.log("TimeCells: %o",all)
+        
+          // Match Time to Timecell
+          for (id in all){
+            let row = $("#" + all[id]).parent().prop('id').match(/\d+/g) // Get Time Row#
+            
+            
+            let cellTime = $("#" + all[id]).text() // Cell Text (08:00)
+            //console.log("CellTimeText: %o",cellTime)
+            
+            let cellHour = $("#" + all[id]).children().children().filter(".hour")
+            if (cellHour.length>0){
+              checkHour = cellHour.text()
+            } else {
+              checkHour = ""
+            }
+            let timeCellID = $("#" + all[id]).prop('id') // RowCol
+            
+            
+            if (checkHour == hour){
+              return row
+            }
+        } 
+      return null
+    }
+
+}
+var utility = {
+    // ========================================== Get Pax ==========================================
+    // Takes JSON booking
+    // Returns pax object
+    //    adult: ret[0],
+    //    child: ret[1],
+    //    infant: ret[2],
+    //    seats: seats,
+    //    code: code,
+    //    ACI: ACI,
+                
+    // -----------------------------------------------------------------------------
+    // Get passenger numbers. If quantities are by product and not pax, return false
+    // -----------------------------------------------------------------------------
+    getPax: function(json) {
+        let byPax = false
+        let ret = new Array(2)
+        if (json.quantities) {
+            // -----------------------------------------------------------------------------
+            // Check for ACI... if not, return false
+            // -----------------------------------------------------------------------------
+            let q = json.quantities
+            if (q){
+              for (let i in q){
+                  if ( q[i].optionLabel.match(/Adult/ig) ){
+                    byPax = true
+                  }
+                  if ( q[i].optionLabel.match(/Child/ig) ){
+                    byPax = true
+                  }
+                  if ( q[i].optionLabel.match(/Infant/ig) ){
+                    byPax = true
+                  }
+                }
+              
+            }
+
+            let A = typeof q[0] !== "undefined" ? parseInt(q[0].value) || 0 : 0
+            let C = typeof q[1] !== "undefined" ? parseInt(q[1].value) || 0 : 0
+            let I = typeof q[2] !== "undefined" ? parseInt(q[2].value) || 0 : 0
+
+            let Adult = parseInt(ret[0]) || 0
+            let Child = parseInt(ret[1]) || 0
+            let Infant = parseInt(ret[2]) || 0
+
+            ret[0] = Adult + A
+            ret[1] = Child + C
+            ret[2] = Infant + I
+
+            let ACI = ret
+
+            let code = ""
+            ret[0] > 0 ? code += ret[0] + "A" : code
+            ret[1] > 0 ? code += ret[1] + "C" : code
+            ret[2] > 0 ? code += ret[2] + "I" : code
+            let seats = ret[0] + ret[1];
+
+            var pax = {
+                adult: ret[0],
+                child: ret[1],
+                infant: ret[2],
+                seats: seats,
+                code: code,
+                ACI: ACI,
+            }
+        }
+        if (byPax){
+          return pax
+        } else {
+          return false
+        }
+    },
+    getACI: function(booking){
+      let ret = booking.pax
+      return ret.length
+    },
+    // Stringify Adult/Child/Infant for display (2A3C1I)
+    ACI: function(array) {
+
+        let ret = ""
+        for (a in array) {
+
+            let A = parseInt(array[a])
+
+            if (A > 0) {
+                a = parseInt(a)
+                switch (a) {
+                    case 0:
+                        ret = ret + array[a] + "A"
+                        break
+                    case 1:
+                        ret = ret + array[a] + "C"
+                        break
+                    case 2:
+                        ret = ret + array[a] + "I"
+                        break
+                }
+            }
+        }
+        return ret
+    },
+    // Takes either a PlaneCell and a booking or a TableCell and a booking
+    // Returns Two cell coordinates, the IN cell and the OUT cell
+    getTarget: function(cell,booking){
+          
+      let offset = gya.getOffset(booking.product)      
+      let row = null
+      let col = null
+      
+      if ( cell.attr("class").search("PlaneCell") >=0 ){
+        row = parseInt( time.getRow(booking.time) )
+        col = parseInt( cell.prop('id').match(/\d+/g) ) // Get PlaneCell id digits (which equal the column)
+      } else {
+        //console.log("Parent Row: %o",cell.parent().prop('id'))
+        row = parseInt( cell.parent().prop('id').match(/\d+/g) ) // Get Cell Parent id digits (which equal the column)
+        col = parseInt( cell.prop('id').slice(-1) )
+      }
+        let IN = [row,col]
+        let outRow = row+offset
+        let OUT = [outRow,col]
+        let isout = false
+        if ( booking.product && booking.product.toUpperCase().includes("CCF") ){ isout = true }
+        if ( booking.product && booking.product.toUpperCase().includes("OUTS") ){ isout = true }
+        if ( cell.data("type") && cell.data("type").toUpperCase().includes("OUTS") ){ isout = true }
+        
+        if (isout){
+          OUT = [row,col]
+          IN = []
+        }
+        return ([IN,OUT,offset])
+    },
+    pushKey:function(obj,key,val){
+      let newVal = JSON.parse(JSON.stringify(val))
+      if (key){
+        if (typeof obj[key] != 'undefined'){     
+          obj[key].push(newVal)
+        }
+        else {
+          obj[key] = [newVal]
+        }
+      }
+    },
+    getTimes: function(bookings,target){
+      let col = target.prop('id').match(/\d+/g)//get only digits
+      let match = false
+      let returnTripTarget = ""
+        //
+        // Each Booking
+        //
+        for (b in bookings){
+          let booking = bookings[b]
+          let t = time.getHour(booking.time)
+          //
+          // Array of all TimeCells
+          //
+          var all = $(".TimeCell").map(function() {
+            return this.id;
+          }).get();
+          //
+          // Each Timecell
+          //
+          for (id in all){
+            let row = $("#" + all[id]).parent().prop('id').match(/\d+/g) // Get Time Row#
+  
+            let cellTime = $("#" + all[id]).text()
+            let timeCellID = $("#" + all[id]).prop('id')
+            
+            let timeCell = $("#" + row + col)
+            let offset = gya.getOffset(booking.product)
+            let outRow = parseInt(row) + parseInt(offset)// pull from data
+            returnTripTarget = $("#" + outRow + col)
+            
+            if (cellTime == t){
+              target = timeCell
+              match = true
+              break
+            }
+          }
+        }
+        if (!match){
+        // Invalid Drop (reject or it will plot on the Plane Cell)
+        return null
+        }
+        return [target,returnTripTarget]
+    },
+    close:function(){
+    //google.script.run()
+    google.script.host.close()
+    },
+    error:function(message,object){
+      object = object || ""
+      message = "<BR>" + message
+      $('<div class="error">Error: '+message+'</div>').insertAfter('#Error').delay(3000).fadeOut(function() {$(this).remove()})
+    },
+    alert:function(message,targetObject){
+      targetObject = targetObject || '#Alert'
+      $('<div class="alert">'+message+'</div>').insertAfter(targetObject).delay(3000).fadeOut(function() {$(this).remove()})
+    },
+  // Get a list of products in a list of bookings
+  // Eventually maybe even list the # of pax per product **********
+  getProducts:function(bookings){
+    let ret = {}
+    for (b in bookings){
+      let B = bookings[b]
+      let product = B.product
+      if (!ret[product]){ // can probably just assign this regardless of if it exists.
+        ret[product]=product
+      }
+    } 
+    return ret    
+  },
+
+  printDiv: function (_this) 
+  {
+    let printMe = getElementChildrenAndStyles($("#TheBoard"))
+    if(_this){
+      printMe = getElementChildrenAndStyles(_this)
+    }
+    let style = "<style> .inMarker{float:right; display: block;} .outMarker{float:right;display: block;} </style>"
+    // -webkit-print-color-adjust to keep colors for the printing version
+    let keepColors = '<style>body {-webkit-print-color-adjust: exact !important; }</style>'
+    let newWin=window.open('','Print-Window')
+    newWin.document.open()
+    newWin.document.write('<html><head>' + keepColors + ' ' + style + '</head><body onload="window.print()">'+printMe+'</body></html>')
+    newWin.document.close()
+    setTimeout(function(){newWin.close();},10)
+  },
+  printPickup: function(){
+    //utility.printDiv($("#PickupList"))
+    $('#PickupList').focus()
+      window.print()
+  },
+}
+
+
+
+var arrays = {
+  average:function(ary) {
+    var sum = 0;
+    for( var i = 0; i < ary.length; i++ ){
+      sum += parseInt( ary[i], 10 ); //don't forget to add the base
+    }    
+    var avg = sum/ary.length;
+    return (
+      avg
+    );
+  },
+  sum:function(ary,maxCol) {
+    var col = ary.length
+    if (typeof maxCol !== 'undefined'){
+      col = maxCol
+    }
+    var sum = 0;
+    for( var i = 0; i < col; i++ ){
+      sum += parseInt( ary[i], 10 ); //don't forget to add the base
+    }
+    return (
+      sum
+    );
+  },
+  colSum:function(a,b){
+  let matrix = [a,b]
+  var colSum = matrix.reduce((a, b) => a.map((x, i) => x + b[i]));
+  return colSum  
+  },
+  sumArray:function(arry){
+    return arry.reduce((a, b) => a + b, 0)
+  },
+  sortFunction:function(a, b) {
+    if (a[0] === b[0]) {
+        return 0;
+    }
+    else {
+        return (a[0] < b[0]) ? -1 : 1;
+    }
+  },
+  reverseSortFunction:function(a, b) {
+    if (a[0] === b[0]) {
+        return 0;
+    }
+    else {
+        return (a[0] > b[0]) ? -1 : 1;
+    }
+  }
+}
+
+    
+//==================================================================================================
+// Colors
+//==================================================================================================
+var colors = {
+
+    getByRow: function(arg) {
+      if (!!arg){
+        arg = arg.slice(0, -1)
+        let ret = this.colorList[arg][0] || this.colorList[0][0]
+        return ret
+      }
+      return "#E59866" // (outs highlight colour)
+    },
+    get: function(arg) {
+      let tp = typeof arg
+      
+      
+      let num
+      typeof arg === 'undefined' ? num = 0 : 
+      typeof arg === 'object' ? num = 1:
+      typeof arg === 'string' ? num = this.getColorNum(arg):
+      num = 0
+    
+    if(num>=this.colorList.length){
+      num = 0
+    }
+    
+      let ret = {}
+      ret.in = this.colorList[num][0]
+      ret.out = this.colorList[num][1]
+      ret.highlight = this.colorList[num][2] // Basic In/Out highlight (Just the in highlight)
+      ret.h1 = this.colorList[num][2] // In highlight
+      ret.h2 = this.colorList[num][3] // Out highlight
+      return ret    
+    },
+    getByBooking: function(booking){
+      //booking.time: "2019-11-13 08:00:00"
+      //getHour ... 08:00
+      let t = time.getHour(booking.time)
+      let num = 0
+      switch (t){
+        case "08:00":
+        num = 0
+        break
+        case "09:00":
+        num = 1
+        break
+        case "10:00":
+        num = 2
+        break      
+        case "11:00":
+        num = 3
+        break
+        case "12:00":
+        num = 4
+        break
+        case "1:00":
+        num = 5
+        break
+        case "2:00":
+        num = 6
+        break
+        case "3:00":
+        num = 7
+        break
+        case "4:00":
+        num = 8
+        break
+      }
+      return this.colorList[num][1]
+    },
+    getColorNum: function(arg){
+    
+    /*
+    ***********************************************************************************************************
+    
+    We can brand by tripCell (JSON) (dropped cell coordinates) and check if it's an in (need to not brand outs with it)
+    
+    Then colour the Text by IN cell
+    So 8am kayak, 11am FCF out and 1pm Kayak outs all get the same text colour
+    
+    */
+      for(b in MANIFEST){
+        if (MANIFEST[b]&&MANIFEST[b].orderNumber){
+          if (MANIFEST[b].orderNumber == arg){
+            return b
+          }
+        }
+      }
+      return 0
+    },
+    // In-Strong / In-Pastel  / HighlightIn / HighlightOut
+    colorList: [
+      ["#3D52F4","#9fa9f9",'yellow','yellow'],
+      ["#C39BD3","#dfcae8",'yellow','yellow'],
+      ["#4CB963","#b6e2bf",'yellow','yellow'],
+      ["#A9CCE3","#d8e8f3",'yellow','yellow'],
+      ["#CF5C36","#f0cdc1",'yellow','yellow'],
+      ["#F9E79F","#fcf3cf",'yellow','yellow'],
+      ["#EF5D60","#f8b9ba",'yellow','yellow'],
+      ["#EDBB99","#f7e2d4",'yellow','yellow'],
+      ["#EDBB99","#f7e2d4",'yellow','yellow'],
+      ["#EDBB99","#f7e2d4",'yellow','yellow'],
+      ["#EDBB99","#f7e2d4",'yellow','yellow'],
+    ]
+    
+    
+}
+    </script>

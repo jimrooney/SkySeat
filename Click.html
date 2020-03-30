@@ -1,0 +1,53 @@
+<script>
+// ===================================================================================
+// Any onClick (onMouseUp)
+// ===================================================================================
+$(document).mouseup(function(e) {
+  // Close the Details Popup if clicked elsewhere
+//  var container = $("#details");
+  // if the target of the click isn't the container nor a descendant of the container
+//  if (!container.is(e.target) && container.has(e.target).length === 0) {
+//    container.hide();
+//  }
+});
+// ===================================================================================
+// TableCell onClick
+// ===================================================================================
+$(document).ready(function() {
+
+    $(".TableCell").click(function() {
+        let bookings = $(this).data("json")
+        if(bookings){
+          bookingManager.getDetails($(this))
+        }
+    })
+    // ===================================================================================
+    // Pickup List
+    // ===================================================================================
+    $('#pickupDetailsClose').click(function(){
+        $('#PickupList').hide()        
+    })
+    $(".PickupAllCell").click(function(){
+      console.log("PickupAll")
+      let o = theBoard.getManifest()
+      console.log("Manifest: %o",o)
+      theBoard.showManifest(o)
+    })
+    $(".PickupCell").click(function() {
+        let o = theBoard.getManifest($(this).prop('id'))
+        console.log("Row Manifest: %o",o)
+        theBoard.showManifest(o)
+        theBoard.updatePickups()
+    })
+});
+// ===================================================================================
+// PlaneCell onClick
+// ===================================================================================
+$(document).ready(function() {
+
+    $(".PlaneCell").click(function() {
+          planeManager.planePopup($(this))
+    })
+    
+});
+</script>
