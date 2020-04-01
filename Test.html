@@ -1,4 +1,39 @@
 <script>
+
+function test(){
+  for (let b in MANIFEST){
+    if (!!MANIFEST[b].orderNumber && MANIFEST[b].orderNumber == "RE9LFK1-1"){
+      bookings.bookings.push(MANIFEST[b])
+    }
+  }
+  bookings.getBookings("12/12")
+  
+}
+
+//rezdy.loadTripCodes()
+
+
+//function fakefunction(){
+//  for (let b in MANIFEST){
+//    if (!!MANIFEST[b].orderNumber && MANIFEST[b].orderNumber == "RE9LFK1-1"){
+//      bookings.bookings.push(MANIFEST[b])
+//    }
+//  }
+//  for (let b in bookings.bookings){
+//    bookings.bookings[b].orderNumber = "HI"
+//  }
+//  
+//  let bk = bookings.getBooking("HI")
+//  console.log("Booking: %o", bk)
+//}
+
+
+
+
+
+
+
+
 class Names {
   constructor (names) {
     this.names = names;
@@ -17,9 +52,7 @@ function showDay(num){
 function saveBoard(){
   theBoard.save()
 }
-function test(){
-  rezdy.loadTripCodes()
-}
+
 function test3(_row){
 
         console.log("showpickups")

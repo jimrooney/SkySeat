@@ -29,6 +29,7 @@ var rezdy = {
       requestedDate = requestedDate
     } else {
       requestedDate = dates.getNZ( $("#datepicker").datepicker('getDate') )
+      console.log("No date passed in, using: %o",requestedDate)
     }
     $(".Manifest_Container .Manifest").css("background-color","#ccc")
     google.script.run.withSuccessHandler( this.onRezdyLoad )
@@ -41,22 +42,6 @@ var rezdy = {
     $(".Manifest_Container .Manifest").css("background-color","#68a167")
     // Remove all old booking objects (need to clear the board and theBoard array as well) ********************************
     $('.BookingSprite').remove()
-    
-
-
-// ****************************************************************************************************
-// need to decide what structure to use for the MANIFEST object ***************************************
-// ****************************************************************************************************
-
-
-
-
-
-
-
-
-
-
 
     let data = JSON.parse(json)
     console.log( "Date Loaded: %o",requestedDate )
@@ -88,12 +73,20 @@ var rezdy = {
     console.log("remote test: %o",obj)
   },
   loadTripCodes: function(){
-      google.script.run.withSuccessHandler(this.onTripCodeLoad).loadTripCodes()
+      google.script.run.withSuccessHandler(rezdy.onTripCodeLoad).loadTripCodes()
   },
   // ========================================== Parse Rezdy Data ==========================================
   parseData: function (data) {
 
+
+// ************************************************************************************************************************                
+// To Array or not to Array, that is the question 
+// ************************************************************************************************************************                
+
     let bookings = []
+    
+    
+    
     for (a in data.bookings) {
         // Check status before continuing
         if (data.bookings[a].status == "CONFIRMED" && data.bookings[a].orderNumber) {
@@ -238,10 +231,45 @@ var rezdy = {
                 
                 booking.pax = pax
                 
+                
+                
+// ************************************************************************************************************************                
+                
+                
+                
+                
+                
+                
+                
+                // Key/Record/Note if something is an "out" of sorts (overnight cruises, etc) and maybe note the out time?
+                
+                
                 // ******************************************************************************************************************************************************
                 // This might be able to be replaced by looking at the "EndTime" from the booking... but likely still needs to account for the flight duration **********
                 booking.offset = gya.getOffset(booking.product) // Get the time (in hours) before the return departure
+                
+                
+                
+                
+                // To Array or not to Array, that is the question *****************************************************
                 bookings.push(booking)
+                
+                
+// ************************************************************************************************************************                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
             }
         }
     }

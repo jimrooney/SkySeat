@@ -1,0 +1,26 @@
+<script>
+/*
+The bookings object holds all the bookings loaded in from rezdy (or other booking service)
+We keep them in a master array, bookings, and have accessors to manipulate them in place.
+
+This object can handle all of the error checking (like null checking)
+*/
+var bookings = {
+  bookings:[],
+  getBooking: function(orderNumber){
+    if (!!orderNumber){
+      for (let a in this.bookings){
+        if (this.bookings[a].orderNumber == orderNumber){
+          return this.bookings[a]
+        }
+      }
+    }
+    return null
+  },
+  getBookings: function(date){
+    if (!!date && date.match(/\d\d.\d\d.*/ig)){
+      // Build array of matching bookings here ****************************
+    }
+  },
+}
+</script>
