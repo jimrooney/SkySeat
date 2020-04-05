@@ -37,61 +37,7 @@ function createArray(d1, d2) {
     }
     return (x)
 }
-var time = {
 
-    getHour: function(string) {
-    //time: "2019-10-03 15:15:00"
-    var date = new Date(string)
-    var hour = date.getHours()
-    if (hour>12){
-      hour = hour - 12
-    }
-    if (hour>6 && hour<10){
-      hour = "" + 0 + hour
-    }
-    hour = hour  + ":00"
-    return hour
-    },
-    getRow: function(string){
-      let hour = this.getHour(string)
-      hour = hour.replace(/\:\d\d/,"")
-      
-      //console.log("Hour: %o",hour)
-      
-      let checkHour = ""
-      
-        // Array of all TimeCells
-        var all = $(".TimeCell").map(function() {
-          return this.id;
-        }).get();
-        
-        //console.log("TimeCells: %o",all)
-        
-          // Match Time to Timecell
-          for (id in all){
-            let row = $("#" + all[id]).parent().prop('id').match(/\d+/g) // Get Time Row#
-            
-            
-            let cellTime = $("#" + all[id]).text() // Cell Text (08:00)
-            //console.log("CellTimeText: %o",cellTime)
-            
-            let cellHour = $("#" + all[id]).children().children().filter(".hour")
-            if (cellHour.length>0){
-              checkHour = cellHour.text()
-            } else {
-              checkHour = ""
-            }
-            let timeCellID = $("#" + all[id]).prop('id') // RowCol
-            
-            
-            if (checkHour == hour){
-              return row
-            }
-        } 
-      return null
-    }
-
-}
 var utility = {
     // ========================================== Get Pax ==========================================
     // Takes JSON booking

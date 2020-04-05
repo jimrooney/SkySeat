@@ -1,10 +1,20 @@
+-------------------------------
+Start using the root variable MANIFEST as the data store instead of the DOM tree ("TableCell").each()
+-------------------------------
 
+
+
+
+
+
+
+
+
+Add the concept of a return trip (or non return)... will need to go into TripCodes
 
 // ************************************************************************************************************************                
 All bookings now load into a root bookings object with functions to access them.
 We'll make a function to extract all bookings for a day
-
-
 // ************************************************************************************************************************                
 
 The current day is loaded in the PlaneManager (since you can't load a day until the planes exist).
@@ -18,9 +28,7 @@ theBoard.getManifest(row) returns a good manifest.
 need to pass this to Display for the popup. Right now, Display goes to test and test parses the JSON and generates a popup... since we've already parsed the JSON, we can just display it.
 We can save a copy of the current row manifest in Display till the popup is closed.
 
--------------------------------
-Start using the root variable MANIFEST as the data store instead of the DOM tree ("TableCell").each()
--------------------------------
+
 
 
 

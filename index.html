@@ -3,6 +3,7 @@
   <head>
   <?!= include('jQuery'); ?>
   <?!= include('Dates'); ?>
+  <?!= include('Time'); ?>
   <?!= include('Utility_JS'); ?>
   <?!= include('CSS'); ?>
   <?!= include('Bookings'); ?>
@@ -57,7 +58,7 @@
   /*
   These functions are first called in planemanager ->
   
-      rezdy.loadRezdy()
+      rezdy.load()
     theBoard.load()
     */
   </script>
@@ -119,7 +120,7 @@
   <div>
     <button class="Dark" onClick="test()" >Test</button>
     <button class="Dark" onClick="theBoard.highlightFerryLegs()" >Ferry Legs</button>
-    <button class="Dark" onClick="loadRezdy()" >Load Rezdy</button>
+    <button class="Dark" onClick="rezdy.load()" >Load Rezdy</button>
     <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(-1,false)" ><</button>
     <button class="Dark" onClick="theBoard.load()" >Load Saved Board</button>
     <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(1,false)" >></button>

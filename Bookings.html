@@ -18,9 +18,19 @@ var bookings = {
     return null
   },
   getBookings: function(date){
+    let b = []
+    //
+    // If a date was passed in
+    //
     if (!!date && date.match(/\d\d.\d\d.*/ig)){
-      // Build array of matching bookings here ****************************
+      
+      for (let a in this.bookings){
+        if (this.bookings[a].orderNumber == orderNumber){
+          return this.bookings[a]
+        }
+      }
     }
+    return b
   },
 }
 </script>

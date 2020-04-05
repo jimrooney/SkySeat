@@ -1,16 +1,7 @@
 <script>
-// ************************
-// https://developers.google.com/apps-script/guides/html/communication
-// ************************
-// withUserObject(this)
-// google.script.run.withSuccessHandler(this.onTripCodeLoad).withUserObject(this).loadTripCodes()
-
-//
-// rezdy Object to hold functions to communicate with remote servers (Google)
-//
-
-
-
+// -------------------------------------------------------------------------------
+// This is an object to hold functions to communicate with remote servers (Google)
+// -------------------------------------------------------------------------------
 /*
 
 **************************************************
@@ -18,10 +9,14 @@ These two functions are in work (moving them into the rezdy object)... so refere
 
 loadRezdy
 onRezdyLoad
+**************************************************
 
 */
 var rezdy = {
   // --------------------------------- Load Rezdy ----------------------------------------------
+  load:function(requestedDate){ // Legacy support... loadRezdy can probably be replaced by this function ****************
+    this.loadRezdy(requestedDate)
+  },
   loadRezdy:function(requestedDate){
     console.log("rezdy.loadRezdy( %o )",requestedDate)
     
@@ -34,7 +29,7 @@ var rezdy = {
     $(".Manifest_Container .Manifest").css("background-color","#ccc")
     google.script.run.withSuccessHandler( this.onRezdyLoad )
     .withUserObject( requestedDate )
-    .loadRezdy( requestedDate );
+    .loadRezdy( requestedDate )
   },
   onRezdyLoad:function(json,requestedDate) {
     console.log( "On Rezdy Load" )
@@ -77,16 +72,13 @@ var rezdy = {
   },
   // ========================================== Parse Rezdy Data ==========================================
   parseData: function (data) {
-
-
-// ************************************************************************************************************************                
-// To Array or not to Array, that is the question 
-// ************************************************************************************************************************                
-
+    //
+    // An array to store the bookings
+    //
     let bookings = []
-    
-    
-    
+    //
+    // Translate Rezdy objects into our booking object structure
+    //
     for (a in data.bookings) {
         // Check status before continuing
         if (data.bookings[a].status == "CONFIRMED" && data.bookings[a].orderNumber) {
@@ -97,6 +89,7 @@ var rezdy = {
             for (let i in rezdyBookings) {
                 let rezdyBooking = rezdyBookings[i]
                 let booking = {}
+                booking.flight = {}
                 //
                 // Pull some parent values down into the booking so we don't lose them
                 //
@@ -113,8 +106,7 @@ var rezdy = {
                 //
                 // Translate Rezdy Booking to our idea of a booking
                 //
-                //booking.product = gya.getProductCode(rezdyBooking)
-                booking.productCode = gya.getCode(rezdyBooking.productCode) // row from TripCodes spreadsheet
+                booking.productCode = gya.getCode(rezdyBooking.productCode) // row from TripCodes spreadsheet                
                 booking.product = booking.productCode[2] || "" // Blank in case missing code in spreadsheet
                 
                 
@@ -127,10 +119,19 @@ var rezdy = {
                   booking.seats = 0
                 }
                 booking.ACI = utility.getPax(rezdyBooking).ACI
+                
+                booking.flight.ACI = booking.ACI
+                booking.flight.seats = booking.seats
 
                 booking.extras = rezdyBooking.extras
+                
                 booking.time = rezdyBooking.startTimeLocal
                 booking.endTime = rezdyBooking.endTimeLocal
+                
+                booking.flight.date = dates.getNZ(booking.time)
+                booking.flight.ETD = time.getTime(booking.time)
+
+
                 booking.sourceChannel = rezdyBooking.sourceChannel
                 booking.pickupLocation = rezdyBooking.pickupLocation
                 booking.internalNotes = data.bookings[a].internalNotes
