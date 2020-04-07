@@ -6,12 +6,12 @@ We keep them in a master array, bookings, and have accessors to manipulate them 
 This object can handle all of the error checking (like null checking)
 */
 var bookings = {
-  bookings:[],
+  list:[],
   getBooking: function(orderNumber){
     if (!!orderNumber){
-      for (let a in this.bookings){
-        if (this.bookings[a].orderNumber == orderNumber){
-          return this.bookings[a]
+      for (let a in this.list){
+        if (this.list[a].orderNumber == orderNumber){
+          return this.list[a]
         }
       }
     }
@@ -24,9 +24,9 @@ var bookings = {
     //
     if (!!date && date.match(/\d\d.\d\d.*/ig)){
       
-      for (let a in this.bookings){
-        if (this.bookings[a].orderNumber == orderNumber){
-          return this.bookings[a]
+      for (let a in this.list){
+        if (this.list[a].orderNumber == orderNumber){
+          return this.list[a]
         }
       }
     }
