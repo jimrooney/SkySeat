@@ -5,7 +5,16 @@ Start using the root variable MANIFEST as the data store instead of the DOM tree
 
 
 
+The loading of a manifest range should also contain a container object to hold the reply.
+We'll need some way to load in multiple days.
+Having a singular manifest of booking objects might not be ideal.
 
+Each actie day will need containment bounds... if it's not active, it can be dropped.
+Otherwise the memory needs will grow and grow as days are requested and added to the loaded manifest list.
+
+Perhaps load them into a key'd list, key'd by date... then when a displayed manifest is no longer displayed, it's data is destroyed.
+Or associate eacy displayed manifest with a data container... when the displayed manifest is destroyed or changed, so is the data container.
+Possibly a good use for an object structure.
 
 
 
