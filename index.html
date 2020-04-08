@@ -4,6 +4,7 @@
   <?!= include('jQuery'); ?>
   <?!= include('Dates'); ?>
   <?!= include('Time'); ?>
+  <?!= include('Events'); ?>
   <?!= include('Utility_JS'); ?>
   <?!= include('CSS'); ?>
   <?!= include('Bookings'); ?>
@@ -21,7 +22,7 @@
   </head>
   <body>
   <div id="HoverBar" style="position: fixed; top: 0; left:0; width:100%;text-align: center; background:#737373;color:white">
-  [[ 2.2 ]] []
+  [[ 2.3 ]] []
   </div>
   <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
   <div id="PickupList" class="pickupDetails">
@@ -36,7 +37,6 @@
   
   <script>
  
-  var MANIFEST // holds the parsed Rezdy data
   var TheBoardManifest // used for displaying manifest data (Don't think we're actually using this yet)
   var style = "compact" //("compact","verbose") // global style (for BookingSprite at the moment) 
   
@@ -58,7 +58,7 @@
   /*
   These functions are first called in planemanager ->
   
-      rezdy.load()
+      Rezdy.load()
     theBoard.load()
     */
   </script>
@@ -92,7 +92,7 @@
     
     <button class="Dark" onClick="showDay()" >Scratch</button>
     <button class="Dark" onClick="theBoard.print()" >Print Board</button>
-    <button class="Dark" onClick="planeManager.loadHours()" >Load Hours</button>
+    <button class="Dark" onClick="PlaneManager.loadHours()" >Load Hours</button>
     <button class="Dark" onClick="showHidePerPax()" >PerPax</button> <!-- Should be in display **************** -->
     
 <!--    <span class="MobileBreak"></span> --> <BR>
@@ -120,7 +120,7 @@
   <div>
     <button class="Dark" onClick="test()" >Test</button>
     <button class="Dark" onClick="theBoard.highlightFerryLegs()" >Ferry Legs</button>
-    <button class="Dark" onClick="rezdy.load()" >Load Rezdy</button>
+    <button class="Dark" onClick="Rezdy.load()" >Load Rezdy</button>
     <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(-1,false)" ><</button>
     <button class="Dark" onClick="theBoard.load()" >Load Saved Board</button>
     <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(1,false)" >></button>

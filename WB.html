@@ -29,7 +29,7 @@ var wb = {
       PCF = ["GA8", [["Standard", "Pilot", "", "", 83],null], 150]
     }
     //
-    let plane = planes.getPlane(PCF[0]) // Get the plane object
+    let plane = PlaneManager.planes.getPlane(PCF[0]) // Get the plane object
     //
     let all_weights = true
     //
@@ -114,7 +114,7 @@ var wb = {
   // Given a plane and load, return min/max weight range for the last seat
   getLastSeatRange: function (PCF,POB){
     let ret
-    let plane = planes.getPlane(PCF[0])
+    let plane = PlaneManager.planes.getPlane(PCF[0])
     let numPOB = POB.length
     let numSeats = plane.arms.seats.length
     

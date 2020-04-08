@@ -1,0 +1,18 @@
+<script>
+/*
+    Will need to go back to Init.html and change all the other drop event handlers (and other event handlers too I guess)
+
+
+
+*/
+var Events = {
+    drop: function(event, ui){
+        // $(this) : The cell dropped onto
+        // ui : The dropped sprite
+        let dropped = ui.draggable
+
+
+        console.log("Drop Event ( %o , %o )", event, dropped)
+    },
+}
+</script>

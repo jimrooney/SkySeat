@@ -1,60 +1,40 @@
 <script>
+/*
 
-//
-// onLoad() hours from spreadsheet
-//
-  function onPlaneDataLoad(data){
-    let planes = {}
-    for (let a in data[0]){
-      planes[data[0][a]] = data[0][a]
-    }
-    //
-    //console.log("data %o",data)
-    //
-    for (let row in data){
-      for(let col in data[row]){
-        if (data[row][col]){
-          planes[data[0][col]] = data[row][col]
-        }
-      }
-    }
-    $(".PlaneCell").each(function(){
-      $('> #hours', this).remove()
-      let PCF = $(this).data('PCF')
-      let id = PCF[0]
-      
-      let hours = planes[id]
-      
-      let span = "<div id='hours' style='font-size:small;'>[hrs: <B>" + hours + "</B>]</div>"
-      $(this).prepend(span)
-    })
-    
-    console.log("planes %o",planes)
-    
-  }
-  
-  
+This still needs work... 
 
+PlaneManager.planes references can be changed to this.
+
+*/
+//
+// Close details (put in Display?) ****************************************
+//
 $(function () {
     $('#planeDetailsClose').click(function(){
         $('.planeDetails').hide()
     })
 })
-var pilotManager={
+
+
+var PilotManager={
   loadPilots:function(data){
     if (data){
       pilots.matrix = data
     }
   },
 }
+
+// Don't think this is used.....
+// *****************************************************************
 var planeData={
 //  "JRR": [1084.7,1.3392,1452.653,"#d66956"],
 //  "ORC": [1067.92,1.3096,1398.61,"#568bd6"],
 //  "LOR": [1066.9,1.36203,1453.151,"#56d687"],
 //  "ZEA": [1098.6,1.3397,1471.79442,"#f2eb61"],
-  
-  // "JTK"
+// "JTK"
 }
+// *****************************************************************
+
 
 //REG	Weight	ARM	Moment	MAUW	MaxCG	Type	Burn	TAS
 //JTK				1719		C206	80	145
@@ -78,14 +58,53 @@ var planes = {
     return null
   }
 }
-var planeManager={
+var PlaneManager={
+  planes:{
+    reg:[],
+    getPlane: function(registration){
+      for (let r in this.reg){
+        if (this.reg[r].reg == registration){
+          return this.reg[r]
+        }
+      }
+      return null
+    }
+  },
   //
   // Load in plane hours from spreadsheet
   //
   loadHours:function(){
-    google.script.run.withSuccessHandler(onPlaneDataLoad)
+    google.script.run.withSuccessHandler(this.onPlaneDataLoad)
     .loadPlaneData();  
   },
+  onPlaneDataLoad: function(data){
+      let planes = {}
+      for (let a in data[0]){
+        planes[data[0][a]] = data[0][a]
+      }
+      //
+      console.log("data %o",data)
+      //
+      for (let row in data){
+        for(let col in data[row]){
+          if (data[row][col]){
+            planes[data[0][col]] = data[row][col]
+          }
+        }
+      }
+      $(".PlaneCell").each(function(){
+        $('> #hours', this).remove()
+        let PCF = $(this).data('PCF')
+        let id = PCF[0]
+        
+        let hours = planes[id]
+        
+        let span = "<div id='hours' style='font-size:small;'>[hrs: <B>" + hours + "</B>]</div>"
+        $(this).prepend(span)
+      })
+      console.log("planes %o",planes)
+    },
+
   loadPlanes:function(data){
     //
     // Parse loaded two dimensional array into planes object
@@ -100,30 +119,30 @@ var planeManager={
       // Skipping JTK for now *****************************************************
       //
       if (parsed.REG!="REG" && parsed.REG!="JTK"){
-        planes.reg.push(new GA8(parsed))
+        PlaneManager.planes.reg.push(new GA8(parsed))
         
         let num = count +1
         let planeCell = $( "#ac" + num)
         // Standard Load
         $( "#ac" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
-        planeManager.updateCell(planeCell) // this.updateCell? *********
+        PlaneManager.updateCell(planeCell) // this.updateCell? *********
         count++
       }
       if (parsed.REG!="REG" && parsed.REG=="JTK"){
-        planes.reg.push(new C206(parsed))
+        PlaneManager.planes.reg.push(new C206(parsed))
         
         let num = count +1
         let planeCell = $( "#ac" + num)
         // Standard Load
         $( "#ac" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
-        planeManager.updateCell(planeCell) // this.updateCell? *********
+        PlaneManager.updateCell(planeCell) // this.updateCell? *********
         count++
       }
     }
     //
     // Load current day
     //
-    rezdy.load()
+    Rezdy.load()
     theBoard.load()
   },
   planePopup:function(_this){
@@ -156,8 +175,8 @@ var planeManager={
     box.empty() // clear the old contents
     box.append(_drop)
     $("#PlaneDrop").click(function() {
-      for (let p in planes.reg){
-          let selected = planes.reg[p].reg
+      for (let p in PlaneManager.planes.reg){
+          let selected = PlaneManager.planes.reg[p].reg
           
           let menu_row = "<div class='changePlane' id='" + selected + "'>" + selected + "</div>"
           box.append(menu_row)
@@ -166,7 +185,7 @@ var planeManager={
                 let PCF = _this.data('PCF')
                 PCF[0] = selected
                 
-                planeManager.updateCell(_this)
+                PlaneManager.updateCell(_this) // this.updateCell ? *******************
                 box.empty()
           })
         }
@@ -190,7 +209,7 @@ var planeManager={
                 let PCF = _this.data('PCF')
                 PCF[1][0] = selected_pilot
                 
-                planeManager.updateCell(_this)
+                PlaneManager.updateCell(_this)
                 box.empty()
           })
         }
@@ -216,7 +235,7 @@ var planeManager={
                   delete PCF[1][1]
                 }
                 
-                planeManager.updateCell(_this)
+                PlaneManager.updateCell(_this)
                 box.empty()
           })
         }
@@ -240,7 +259,7 @@ var planeManager={
             
                 _this.data('PCF')[2] = selected
                 
-                planeManager.updateCell(_this)
+                PlaneManager.updateCell(_this)
                 box.empty()
           })
         }

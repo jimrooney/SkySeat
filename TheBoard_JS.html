@@ -40,7 +40,7 @@ var theBoard = {
     },
     saveLocal:function(TimeStamp){
       let d = new Date(TimeStamp)
-      let date = dates.getNZ(d)
+      let date = Dates.getNZ(d)
       utility.alert(date)
       theBoard.timeStamp.value = TimeStamp
     },
@@ -541,7 +541,7 @@ var theBoard = {
     console.log("Pickup: %o", pickup.data("data"))
     
     
-    // Get the TableCell copy of the booking (Eventually this can just live in the root MANIFEST object*********************)
+    // Get the TableCell copy of the booking (Eventually this can just live in the manifest object*********************)
     $(".TableCell").each(function(index,val) {
       let _this = $(val).data('json')
       
@@ -646,7 +646,7 @@ var theBoard = {
         }
       }
     }
-    let date = dates.getNZ($("#datepicker").datepicker('getDate'))
+    let date = Dates.getNZ($("#datepicker").datepicker('getDate'))
     //
     // Split data up so as not to overload Google's 50K cell limit ***************** 
     //
@@ -667,7 +667,7 @@ var theBoard = {
     
     let dd = $("#datepicker").datepicker('getDate')
     dd=dd.addDays(num)
-    let newDate = dates.getNZ(dd)
+    let newDate = Dates.getNZ(dd)
     //
     // Load Board
     //
@@ -675,7 +675,7 @@ var theBoard = {
     //
     // Reload Manifest
     //
-    if(rzdy){rezdy.load(newDate)}
+    if(rzdy){Rezdy.load(newDate)}
     //
     // Update Picker
     //
@@ -688,7 +688,7 @@ var theBoard = {
     if (!!d){
       d
     } else {
-      d = dates.getNZ($("#datepicker").datepicker('getDate'))
+      d = Dates.getNZ($("#datepicker").datepicker('getDate'))
     }
     display.clearBoard()
     $("#SaveButton").css({"background": "green",})

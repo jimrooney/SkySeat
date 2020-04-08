@@ -115,8 +115,8 @@ function handleDropEvent(event, ui) {
       if (isTableCell && !isOUT){
         let ID = $(this).attr('id')
         let inKey = ID
-        let row = parseInt( ID.slice(0, -1) )
-        let col = parseInt( ID.slice(-1) )
+        let row = theBoard.getRow($(this))
+        let col = theBoard.getCol($(this))
         //
         // 1st, what is the old cell?       
         // if it's an in, where are the out cells for those bookings?

@@ -237,11 +237,11 @@ function _outEvent(event,ui){
     //
     // Load Planes
     //
-    google.script.run.withSuccessHandler(planeManager.loadPlanes).loadPlanes()
+    google.script.run.withSuccessHandler(PlaneManager.loadPlanes).loadPlanes()
     //
     // Load Pilots
     //
-    google.script.run.withSuccessHandler(pilotManager.loadPilots).loadPilots()
+    google.script.run.withSuccessHandler(PilotManager.loadPilots).loadPilots()
     //
     // [[ Load Current Day ]]
     // Moved into PlaneManager (fixes a loading error where the day tries to plot before the planes exist)
@@ -277,6 +277,7 @@ function init() {
 
     $('.TableCell').droppable({
         accept: ".BookingSprite, .TableCell",
+        //drop: Events.drop,
         drop: handleDropEvent,
         delay: 100,
         })

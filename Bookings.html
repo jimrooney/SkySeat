@@ -5,8 +5,11 @@ We keep them in a master array, bookings, and have accessors to manipulate them 
 
 This object can handle all of the error checking (like null checking)
 */
-var bookings = {
+var Bookings = {
   list:[],
+  add: function(list){
+    this.list = $.merge(list,this.list)
+  },
   getBooking: function(orderNumber){
     if (!!orderNumber){
       for (let a in this.list){

@@ -12,18 +12,15 @@ onRezdyLoad
 **************************************************
 
 */
-var rezdy = {
+var Rezdy = {
   // --------------------------------- Load Rezdy ----------------------------------------------
-  load:function(requestedDate){ // Legacy support... loadRezdy can probably be replaced by this function ****************
-    this.loadRezdy(requestedDate)
-  },
-  loadRezdy:function(requestedDate){
-    console.log("rezdy.loadRezdy( %o )",requestedDate)
+  load:function(requestedDate){
+    console.log("Rezdy.load( %o )",requestedDate)
     
     if (!!requestedDate){
       requestedDate = requestedDate
     } else {
-      requestedDate = dates.getNZ( $("#datepicker").datepicker('getDate') )
+      requestedDate = Dates.getNZ( $("#datepicker").datepicker('getDate') )
       console.log("No date passed in, using: %o",requestedDate)
     }
     $(".Manifest_Container .Manifest").css("background-color","#ccc")
@@ -44,20 +41,51 @@ var rezdy = {
     // -----------------------
     // Parse Rezdy Data
     //------------------------
-    MANIFEST = rezdy.parseData(data) // --------------=========== Can't be called with "this".. this is the window object here ==============----------------
+    let bookings = Rezdy.parseData(data) // --------------=========== Can't be called with "this".. this is the window object here ==============----------------
+   
+   
+   
+    // bookings is now an object, it can't be sorted.
     //
     // Sort bookings by trip time
     //
-    MANIFEST.sort(function(a, b) {
-      return a.time.localeCompare(b.time) // localCompare is a Javascript function
-    })
-    console.log("Manifest: %o",MANIFEST)
+    // bookings.sort(function(a, b) {
+    //   return a.time.localeCompare(b.time) // localCompare is a Javascript function
+    // })
+   
+   
+   
+   
+   
+   
+   
+    console.log("Parsed Bookings: %o",bookings)
     $( "#MANIFEST" ).empty() // clear the old manifest list
     // ---------------------
     // Show Manifest
     // ---------------------
-    display.showManifest(MANIFEST,style) // style is a global variable ("compact","verbose")
+
+    Bookings.add(bookings)
+    console.log("Bookings.list: %o", Bookings.list)
+    // Should pass requestedDate along as well (probably change the whole structure around it too)
+    Manifest.bookings = bookings
     
+    
+    
+    
+    
+    // Show Manifest won't work till Bookings works again.
+    // if this call below to showManifest is uncommented, it'll crash once it's called.
+    // display.showManifest(bookings,style) // style is a global variable ("compact","verbose")
+    
+
+
+
+
+
+
+
+
   },
   onTripCodeLoad: function(data){
     console.log("OnTripCodeLoad: %o",data)
@@ -68,14 +96,14 @@ var rezdy = {
     console.log("remote test: %o",obj)
   },
   loadTripCodes: function(){
-      google.script.run.withSuccessHandler(rezdy.onTripCodeLoad).loadTripCodes()
+      google.script.run.withSuccessHandler(Rezdy.onTripCodeLoad).loadTripCodes()
   },
   // ========================================== Parse Rezdy Data ==========================================
   parseData: function (data) {
     //
     // An array to store the bookings
     //
-    let bookings = []
+    let bookings = {}
     //
     // Translate Rezdy objects into our booking object structure
     //
@@ -128,7 +156,7 @@ var rezdy = {
                 booking.time = rezdyBooking.startTimeLocal
                 booking.endTime = rezdyBooking.endTimeLocal
                 
-                booking.flight.date = dates.getNZ(booking.time)
+                booking.flight.date = Dates.getNZ(booking.time)
                 booking.flight.ETD = time.getTime(booking.time)
 
 
@@ -253,7 +281,7 @@ var rezdy = {
                 
                 
                 // To Array or not to Array, that is the question *****************************************************
-                bookings.push(booking)
+                bookings[booking.orderNumber] = booking
                 
                 
 // ************************************************************************************************************************                

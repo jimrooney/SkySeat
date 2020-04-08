@@ -407,9 +407,10 @@ var colors = {
     So 8am kayak, 11am FCF out and 1pm Kayak outs all get the same text colour
     
     */
-      for(b in MANIFEST){
-        if (MANIFEST[b]&&MANIFEST[b].orderNumber){
-          if (MANIFEST[b].orderNumber == arg){
+      let bookings = Manifest.bookings
+      for(b in bookings){
+        if (bookings[b]&&bookings[b].orderNumber){
+          if (bookings[b].orderNumber == arg){
             return b
           }
         }

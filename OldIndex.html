@@ -53,7 +53,7 @@
     if (!!requestedDate){
       requestedDate = requestedDate
     } else {
-      requestedDate = dates.getNZ($("#datepicker").datepicker('getDate'))
+      requestedDate = Dates.getNZ($("#datepicker").datepicker('getDate'))
     }
     $(".Manifest_Container .Manifest").css("background-color","#ccc")
     google.script.run.withSuccessHandler(onRezdyLoad)
@@ -110,7 +110,7 @@
     
     <button class="Dark" onClick="showDay()" >Scratch</button>
     <button class="Dark" onClick="theBoard.print()" >Print Board</button>
-    <button class="Dark" onClick="planeManager.loadHours()" >Load Hours</button>
+    <button class="Dark" onClick="PlaneManager.loadHours()" >Load Hours</button>
     <button class="Dark" onClick="showHidePerPax()" >PerPax</button> <!-- Should be in display **************** -->
     
 <!--    <span class="MobileBreak"></span> --> <BR>
