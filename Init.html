@@ -105,28 +105,6 @@ let mouse={
     return ret
   }
 }
-let loadsheetData = {
-  WB:null,
-  _json:null,
-  _this:null,
-  setOver:function(x,y)
-  {
-    mouse.setOver(x,y)
-  },
-  isClick:function(x,y,_this){
-    if(mouse.isClick(x,y)){
-      this.WB = _this.parent().WB
-      this._this = _this.parent()._this
-      this._json = _this.parent()._json
-      utility.alert("Print")
-    }
-  },
-  clear:function(){
-    this.WB = null
-    this._json = null
-    this._this = null
-  }
-}
 function _overEvent(event, ui){
   if (isMobile){
     mouse.setOver(event.pageX,event.pageY)
