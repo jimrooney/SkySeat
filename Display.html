@@ -1,41 +1,41 @@
 <script>
-//==================================================================================================
-// Display
-//==================================================================================================
-var display = {
-  lastCell:"",
+  //==================================================================================================
+  // Display
+  //==================================================================================================
+  var display = {
+    lastCell: "",
     //
     //
     //
-  removeHighlight:function(bookings){
-    $( ".TableCell, .BookingSprite" ).each( function( index, element ){
+    removeHighlight: function (bookings) {
+      $(".TableCell, .BookingSprite").each(function (index, element) {
         $(this).css({
-                        border: '',
-                })
-    })
-  },
-  highlightBookings:function(bookings){
-    $( ".TableCell, .BookingSprite" ).each( function( index, element ){
-    // display. should be this. ***********************************************************
-        display.highlight($(this),bookings)
-    })
-  },
-  highlight:function(bookingDiv,bookings){
-  let border = "3px dashed red"
-  
-    if (typeof bookingDiv.data("json")!='undefined'){
-      let DivBookings = bookingDiv.data("json")
-          
+          border: "",
+        })
+      })
+    },
+    highlightBookings: function (bookings) {
+      $(".TableCell, .BookingSprite").each(function (index, element) {
+        // display. should be this. ***********************************************************
+        display.highlight($(this), bookings)
+      })
+    },
+    highlight: function (bookingDiv, bookings) {
+      let border = "3px dashed red"
+
+      if (typeof bookingDiv.data("json") != "undefined") {
+        let DivBookings = bookingDiv.data("json")
+
         // Mark the div if a booking matches
-        for (b in DivBookings){
+        for (b in DivBookings) {
           let booking = DivBookings[b]
-            if (!!booking && booking.orderNumber){
-              for(i in bookings){
+          if (!!booking && booking.orderNumber) {
+            for (i in bookings) {
               let B = bookings[i]
-              if (B&&B.orderNumber){
-              if(B.orderNumber==booking.orderNumber){
+              if (B && B.orderNumber) {
+                if (B.orderNumber == booking.orderNumber) {
                   bookingDiv.css({
-                          border: border,
+                    border: border,
                   })
                   return
                 }
@@ -43,15 +43,15 @@ var display = {
             }
           }
         }
-     }
-  },
-    showPickups: function(_row){
+      }
+    },
+    showPickups: function (_row) {
       test(_row)
     },
     // ---------------------------------------------------------
     // Show Manifest
     // ---------------------------------------------------------
-    showManifest: function(bookings,style){
+    showManifest: function (bookings, style) {
       // -------------------------------------------------------------------------------------
       // Add List of Booking Divs to the page
       // -------------------------------------------------------------------------------------
@@ -60,42 +60,41 @@ var display = {
       Need to handle data getting dropped which is nested an addition <div> down (since you can now either move the cointainer or the BookingSprite)
     
       */
-      for (let a in bookings){
-        if (bookings[a].orderNumber){
+      for (let a in bookings) {
+        if (bookings[a].orderNumber) {
           let booking = bookings[a]
-          
+
           let booking_date = Dates.getNZ(booking.time)
-          let manifest_date = Dates.getNZ($("#datepicker").datepicker('getDate'))
-          
-          
-          
-          if(booking_date == manifest_date){
+          let manifest_date = Dates.getNZ(
+            $("#datepicker").datepicker("getDate")
+          )
+
+          if (booking_date == manifest_date) {
             let jsonBooking = [booking]
-            let bookingDiv = display.getBookingDiv(booking,style)
-            $( "#MANIFEST" ).append(
-              bookingDiv
-            )
+            let bookingDiv = display.getBookingDiv(booking, style)
+            $("#MANIFEST").append(bookingDiv)
             if (a % 4 == 0) {
-              $( "#MANIFEST" ).append(
-                "<span><P></span>"
-              )
+              $("#MANIFEST").append("<span><P></span>")
             }
-            $( "#" + booking.orderNumber).data('json',jsonBooking)
-            .click( function(){
-              let json = $(this).data('json')
-              let masterkey = json[0].orderNumber.split("-")[0]
-              let html = "<A href='https://app.rezdy.com/orders/edit/"+masterkey+"' target='_blank'>"+json[0].orderNumber+"</a>"
-                utility.alert(html,"#ManifestMessages")
-              }
-            )
-            .mouseover( function(){
-                display.highlightBookings( $(this).data('json') )
-              }
-            )
-            .mouseleave( function(){
-               display.update()
-              }
-            )
+            $("#" + booking.orderNumber)
+              .data("json", jsonBooking)
+              .click(function () {
+                let json = $(this).data("json")
+                let masterkey = json[0].orderNumber.split("-")[0]
+                let html =
+                  "<A href='https://app.rezdy.com/orders/edit/" +
+                  masterkey +
+                  "' target='_blank'>" +
+                  json[0].orderNumber +
+                  "</a>"
+                utility.alert(html, "#ManifestMessages")
+              })
+              .mouseover(function () {
+                display.highlightBookings($(this).data("json"))
+              })
+              .mouseleave(function () {
+                display.update()
+              })
           }
           let totalPax = Manifest.getTotalPax()
           $("#ManifestMessages").html(Manifest.getTotalPax() + " pax ")
@@ -105,169 +104,191 @@ var display = {
       this.update()
       theBoard.clean()
     },
-    highlightBookings:function(bookings){
-      $( ".TableCell, .BookingSprite" ).each( function( index, element ){
-          display.highlight($(this),bookings)
+    highlightBookings: function (bookings) {
+      $(".TableCell, .BookingSprite").each(function (index, element) {
+        display.highlight($(this), bookings)
       })
     },
     // -------------------------------------------------------------------------------------
     // Replot a saved board
-    // -------------------------------------------------------------------------------------    
-    showBoard: function (data){
+    // -------------------------------------------------------------------------------------
+    showBoard: function (data) {
       // data is a key'd list of cell json (key'd by cell id)
-      for (let b in data){
+      for (let b in data) {
         console.log(data[b])
       }
     },
     //
     // Booking Div (Booking Sprite)
     //
-    getBookingDiv:function(booking,style){
-    
-      let vis = (style == "compact") ? false:true
-      let container = ''
+    getBookingDiv: function (booking, style) {
+      let vis = style == "compact" ? false : true
+      let container = ""
       let ret = ""
-            if (vis){
-              ret = "<span class='manifestBooking'> "
-            }else{
-              ret = "<span class='tooltip'>"
-            }
-            //
-            if(booking.orderNumber){
-              let masterkey = booking.orderNumber.split("-")[0]
-              ret = ret +
-              // "2FCF" coded sprite
-              '<span style="float:left"><div class="BookingSprite Manifest" id="'+ booking.orderNumber +'"'+'> '+
-              '<span style="font-weight:bold;background-color:'+ colors.getByBooking( booking ) +'">' + booking.seats + ' ' + booking.product + '</span>' + 
-              '</div></span>'
-              // verbose section
-               ret += '<span class="tooltiptext">'
-               ret += "<A href='https://app.rezdy.com/orders/edit/" + masterkey + "' target='_blank' style='color: lightgrey;'>" + booking.orderNumber + "</a><br>"
-               
-                for (let p in booking.pax){
-                  let firstName = booking.pax[p].firstName || ""
-                  let lastName = booking.pax[p].lastName || ""
-                  let weight = booking.pax[p].weight || "" 
-                  //
-                  // Display LBS as KG
-                  //
-                  let inKG = weight
-                  if (!!inKG && inKG.match(/lb/ig) ) {
-                    let w = inKG.toLowerCase().split("lb")[0]
-                    inKG = Math.round(parseInt(w) / 2.2)
-                    inKG = " [ " + inKG + " kg] "
-                  }
-                  if (!!inKG && inKG.match(/pound/ig) ) {
-                    let w = inKG.toLowerCase().split("pound")[0]
-                    inKG = Math.round(parseInt(w) / 2.2)
-                    inKG = " [ " + inKG + " kg] "
-                  }
-                  
-                  if (vis){
-                   ret += '<div class="BookingSprite Manifest Individual" id="'+ booking.orderNumber + '"> '+ 
-                    "<span style='font-size: x-small' >" +
-                    time.getHour(booking.time) +
-                    "</span> " + 
-                    '(' + utility.ACI(booking.ACI) + ') ' + '(' + inKG + ')' + '</div><br>'
-                  }
-                  else{
-                    ret += firstName  + lastName + " ( " + inKG + " ) " +'<br>'                
-                  }
-                }
-                if (booking.pickupLocation){
-                  if (booking.pickupLocation.locationName){
-                    ret += "<br><span>" + booking.pickupLocation.locationName + "</span>"
-                  }
-                }
-                ret = ret + "<P><span>" + booking.internalNotes + "</span>"
-                ret = ret + "</span>"
-            }
-        container = container + ret + '</span>'
-        return container
+      if (vis) {
+        ret = "<span class='manifestBooking'> "
+      } else {
+        ret = "<span class='tooltip'>"
+      }
+      //
+      if (booking.orderNumber) {
+        let masterkey = booking.orderNumber.split("-")[0]
+        ret =
+          ret +
+          // "2FCF" coded sprite
+          '<span style="float:left"><div class="BookingSprite Manifest" id="' +
+          booking.orderNumber +
+          '"' +
+          "> " +
+          '<span style="font-weight:bold;background-color:' +
+          colors.getByBooking(booking) +
+          '">' +
+          booking.seats +
+          " " +
+          booking.product +
+          "</span>" +
+          "</div></span>"
+        // verbose section
+        ret += '<span class="tooltiptext">'
+        ret +=
+          "<A href='https://app.rezdy.com/orders/edit/" +
+          masterkey +
+          "' target='_blank' style='color: lightgrey;'>" +
+          booking.orderNumber +
+          "</a><br>"
+
+        for (let p in booking.pax) {
+          let firstName = booking.pax[p].firstName || ""
+          let lastName = booking.pax[p].lastName || ""
+          let weight = booking.pax[p].weight || ""
+          //
+          // Display LBS as KG
+          //
+          let inKG = weight
+          if (!!inKG && inKG.match(/lb/gi)) {
+            let w = inKG.toLowerCase().split("lb")[0]
+            inKG = Math.round(parseInt(w) / 2.2)
+            inKG = " [ " + inKG + " kg] "
+          }
+          if (!!inKG && inKG.match(/pound/gi)) {
+            let w = inKG.toLowerCase().split("pound")[0]
+            inKG = Math.round(parseInt(w) / 2.2)
+            inKG = " [ " + inKG + " kg] "
+          }
+
+          if (vis) {
+            ret +=
+              '<div class="BookingSprite Manifest Individual" id="' +
+              booking.orderNumber +
+              '"> ' +
+              "<span style='font-size: x-small' >" +
+              time.getHour(booking.time) +
+              "</span> " +
+              "(" +
+              utility.ACI(booking.ACI) +
+              ") " +
+              "(" +
+              inKG +
+              ")" +
+              "</div><br>"
+          } else {
+            ret += firstName + lastName + " ( " + inKG + " ) " + "<br>"
+          }
+        }
+        if (booking.pickupLocation) {
+          if (booking.pickupLocation.locationName) {
+            ret +=
+              "<br><span>" + booking.pickupLocation.locationName + "</span>"
+          }
+        }
+        ret = ret + "<P><span>" + booking.internalNotes + "</span>"
+        ret = ret + "</span>"
+      }
+      container = container + ret + "</span>"
+      return container
     },
-    getPlane: function(cell){
-      let plane={}
+    getPlane: function (cell) {
+      let plane = {}
       plane.color = "white"
       let id = cell.prop("id")
       let col = id.slice(-1)
-      let REG = $("#ac"+col).text()
-      switch(REG){
+      let REG = $("#ac" + col).text()
+      switch (REG) {
         case "JRR":
-        //plane.color = "#FFF1EB"
-        break
+          //plane.color = "#FFF1EB"
+          break
         case "ORC":
-        //plane.color = "#F8FAFF"
-        break
+          //plane.color = "#F8FAFF"
+          break
         case "LOR":
-        //plane.color = "#EEFFEB"
-        break
+          //plane.color = "#EEFFEB"
+          break
         case "ZEA":
-        //plane.color = "#FFFFEB"
-        break
+          //plane.color = "#FFFFEB"
+          break
         case "JTK":
-        //plane.color = "#EBEBEB"
-        break
+          //plane.color = "#EBEBEB"
+          break
       }
       return plane
     },
-    clearCell: function(cell){
-        cell.removeData('json')
-        cell.removeData('type')
-        cell.text("")
-        cell.css("background","")
-        cell.css('background-image',"")
-        cell.css("background-color","")
+    clearCell: function (cell) {
+      cell.removeData("json")
+      cell.removeData("type")
+      cell.text("")
+      cell.css("background", "")
+      cell.css("background-image", "")
+      cell.css("background-color", "")
     },
     // Clear highlighting
-    clearHighlight:function(cell) {
-      cell.data('highlighted',false)
+    clearHighlight: function (cell) {
+      cell.data("highlighted", false)
       cell.css("border", "")
     },
-    cleanCell: function(cell){
-          let ret = []
-          let _bookings
-          let jsn = cell.data('json')
-          //
-          // Ignore cells that don't have any JSON
-          //
-          // Check each booking against the manifest
-          //
-          if (jsn){
-            _bookings = JSON.parse(JSON.stringify(jsn))
-            let bookings = []
-            for (let b in _bookings){
-              if (_bookings[b].orderNumber)
-              {
-                if (Manifest.getBooking(_bookings[b].orderNumber)){
-                  bookings.push(_bookings[b].orderNumber)
-                } else {
-                  delete _bookings[b]
-                }
-              }
-            }
-            //
-            // If there's nothing left, clear the cell. Otherwise set the JSON equal to whatever bookings are left.
-            //
-            if (bookings.length<1){
-              this.clearCell(cell)
+    cleanCell: function (cell) {
+      let ret = []
+      let _bookings
+      let jsn = cell.data("json")
+      //
+      // Ignore cells that don't have any JSON
+      //
+      // Check each booking against the manifest
+      //
+      if (jsn) {
+        _bookings = JSON.parse(JSON.stringify(jsn))
+        let bookings = []
+        for (let b in _bookings) {
+          if (_bookings[b].orderNumber) {
+            if (Manifest.getBooking(_bookings[b].orderNumber)) {
+              bookings.push(_bookings[b].orderNumber)
             } else {
-              cell.data('json',_bookings)
+              delete _bookings[b]
             }
           }
+        }
+        //
+        // If there's nothing left, clear the cell. Otherwise set the JSON equal to whatever bookings are left.
+        //
+        if (bookings.length < 1) {
+          this.clearCell(cell)
+        } else {
+          cell.data("json", _bookings)
+        }
+      }
     },
-    clearCell: function(cell){
-      cell.removeData('json')
+    clearCell: function (cell) {
+      cell.removeData("json")
       cell.removeData("type")
-      cell.css("background","")
-      cell.css('background-image',"")
-      cell.css("background-color","")
+      cell.css("background", "")
+      cell.css("background-image", "")
+      cell.css("background-color", "")
       cell.text("")
     },
-    update: function() {
+    update: function () {
       //
       // Hide any Dev divs
       //
-      if(isDevMode){
+      if (isDevMode) {
         $(".Dev").show()
       } else {
         $(".Dev").hide()
@@ -275,24 +296,35 @@ var display = {
       //
       // Each PlaneCell
       //
-      $(".PlaneCell").each(function(){
-        let PCF = $(this).data('PCF')
+      $(".PlaneCell").each(function () {
+        let PCF = $(this).data("PCF")
         $(this).empty() // Just remove everything for now *****************
-        if (PCF){
-          let _content = "<span id='content'>" + PCF[0] + "<br>" + PCF[1][0][0] + "<br>" + PCF[2] + "L" + "</span>"
-          $(this).append( _content )
-          if(PCF[1][1]){
-            _content = "<br><span style='font-size:small;'>" + PCF[1][1][0] + "</span><br>"
-            $(this).append( _content )
+        if (PCF) {
+          let _content =
+            "<span id='content'>" +
+            PCF[0] +
+            "<br>" +
+            PCF[1][0][0] +
+            "<br>" +
+            PCF[2] +
+            "L" +
+            "</span>"
+          $(this).append(_content)
+          if (PCF[1][1]) {
+            _content =
+              "<br><span style='font-size:small;'>" +
+              PCF[1][1][0] +
+              "</span><br>"
+            $(this).append(_content)
           }
           let _plane = PlaneManager.planes.getPlane(PCF[0])
-          if (_plane){
-          let c = _plane.regColor
-          let bkg = "linear-gradient(180deg, " + c + " -20%, #fff 50%)"
-          $(this).css('background-image', bkg)
-                    
-         // $(this).css("opacity", 0.75)
-        }
+          if (_plane) {
+            let c = _plane.regColor
+            let bkg = "linear-gradient(180deg, " + c + " -20%, #fff 50%)"
+            $(this).css("background-image", bkg)
+
+            // $(this).css("opacity", 0.75)
+          }
         }
       })
       // ------------------------------------------------------------------------------
@@ -304,38 +336,41 @@ var display = {
       let plottedBookings = theBoard.getPlottedBookings()
       //
       //
-      $(".Manifest").each(function() {
-        let json = $(this).data('json')
-        for (let b in plottedBookings){
-          for (let j in json){
-            if (json[j].orderNumber && json[j].orderNumber == plottedBookings[b]){
+      $(".Manifest").each(function () {
+        let json = $(this).data("json")
+        for (let b in plottedBookings) {
+          for (let j in json) {
+            if (
+              json[j].orderNumber &&
+              json[j].orderNumber == plottedBookings[b]
+            ) {
               $(this).css("background", "#292e4a")
             }
           }
         }
       })
+      //
+      // Blank out all unmarked cells (not tagged IN or OUT)
+      //
+      $(".TableCell").each(function () {
         //
-        // Blank out all unmarked cells (not tagged IN or OUT)
+        // Blank Cell if no json
         //
-        $(".TableCell").each(function() {
-          //
-          // Blank Cell if no json
-          //
-          let jsn = $(this).data('json')
-          let _bookings = false
-          let numInfants = 0
-          //
-          if (jsn && !jQuery.isEmptyObject(jsn)){
-            _bookings = JSON.parse(JSON.stringify(jsn))
-          } else {
-            $(this).removeData("type")
-            $(this).css("background","")
-            $(this).css('background-image',"")
-            let plane = display.getPlane($(this))
-            $(this).css("background-color",plane.color)
-            $(this).css("background-color","")
-            $(this).text("")
-          }
+        let jsn = $(this).data("json")
+        let _bookings = false
+        let numInfants = 0
+        //
+        if (jsn && !jQuery.isEmptyObject(jsn)) {
+          _bookings = JSON.parse(JSON.stringify(jsn))
+        } else {
+          $(this).removeData("type")
+          $(this).css("background", "")
+          $(this).css("background-image", "")
+          let plane = display.getPlane($(this))
+          $(this).css("background-color", plane.color)
+          $(this).css("background-color", "")
+          $(this).text("")
+        }
         let hasData = false
         //
         // Combine matching booking orderNumbers
@@ -347,49 +382,48 @@ var display = {
         //
         // First pass over _bookings, combine matching products...
         //
-        for (let bk in _bookings){
+        for (let bk in _bookings) {
           //
           // Each Booking
           //
-          if (_bookings[bk]&&_bookings[bk].orderNumber){
+          if (_bookings[bk] && _bookings[bk].orderNumber) {
             //
             // Has Infants?
             //
-            if (_bookings[bk].ACI && _bookings[bk].ACI.length>2){
+            if (_bookings[bk].ACI && _bookings[bk].ACI.length > 2) {
               numInfants += _bookings[bk].ACI[2]
             }
             //
             // Combine pax (back into master key)
-            //         
-            let orderNumber = _bookings[bk].orderNumber.split('_')[0]
             //
-            if (newObj[orderNumber]){
+            let orderNumber = _bookings[bk].orderNumber.split("_")[0]
+            //
+            if (newObj[orderNumber]) {
               let obj1 = newObj[orderNumber]
               let obj2 = _bookings[bk]
               let paxObjList = {}
               // transform pax list into pax hashtable
-              for (let px1 in obj1.pax){
-                if (obj1.pax[px1].key){
+              for (let px1 in obj1.pax) {
+                if (obj1.pax[px1].key) {
                   let key1 = obj1.pax[px1].key
-                  if (!paxObjList[key1]){
+                  if (!paxObjList[key1]) {
                     paxObjList[key1] = obj1.pax[px1]
                   }
                 }
               }
-              for (let px in obj2.pax){
-                if (obj2.pax[px].key){
+              for (let px in obj2.pax) {
+                if (obj2.pax[px].key) {
                   let key = obj2.pax[px].key
-                  if (!paxObjList[key]){
+                  if (!paxObjList[key]) {
                     paxObjList[key] = obj2.pax[px]
                   }
                 }
               }
               obj1.pax = []
-              for (let p in paxObjList){
+              for (let p in paxObjList) {
                 obj1.pax.push(paxObjList[p])
               }
               newObj[orderNumber] = obj1
-              
             } else {
               newObj[orderNumber] = _bookings[bk]
             }
@@ -399,12 +433,12 @@ var display = {
         // convert hashtable back to array and overwrite _bookings array with it.
         //
         let newArray = []
-        for (let b in newObj){
+        for (let b in newObj) {
           newArray.push(newObj[b])
         }
-        _bookings=newArray
-        for (bk in _bookings){
-          if(_bookings[bk]&&_bookings[bk].orderNumber){
+        _bookings = newArray
+        for (bk in _bookings) {
+          if (_bookings[bk] && _bookings[bk].orderNumber) {
             hasData = true
           }
         }
@@ -416,9 +450,9 @@ var display = {
         //
         // Build the Table Cells...
         //
-        $(this).data('json',_bookings)
-        if (hasData){
-          $(this).data('highlighted',false)
+        $(this).data("json", _bookings)
+        if (hasData) {
+          $(this).data("highlighted", false)
           $(this).css("border", "")
           //
           // ------------------------------------------------------------------------------------------------------------------------------------------
@@ -432,12 +466,19 @@ var display = {
           let WB = wb.getBalance($(this))
           let _cg = WB.getCG()
           let _w = WB.getWeight()
-          if (_cg<0||_w<0||isNaN(_cg)||isNaN(_w)){
+          if (_cg < 0 || _w < 0 || isNaN(_cg) || isNaN(_w)) {
             outOfBalance = true
           }
-          for (let b in _bookings){
-            if (_bookings[b].pickupLocation && _bookings[b].pickupLocation.locationName){
-              if (_bookings[b].pickupLocation.locationName.match(/Glenorchy Airstrip/ig)){
+          for (let b in _bookings) {
+            if (
+              _bookings[b].pickupLocation &&
+              _bookings[b].pickupLocation.locationName
+            ) {
+              if (
+                _bookings[b].pickupLocation.locationName.match(
+                  /Glenorchy Airstrip/gi
+                )
+              ) {
                 isGY = true
               }
             }
@@ -446,89 +487,108 @@ var display = {
           // update the text
           //
           let seats = gya.getSeats(_bookings)
-            if (seats){
-              let row = parseInt($(this).parent().prop('id'))
-              
-                let type = $(this).data("type") || false
-                let direction = ""
-                
-                let c = colors.getByRow( _bookings[bk].IN )  // colors.get( _bookings[bk].orderNumber ) // returns a color object based on the booking.
-                let clrs = {
-                  bkin: "#E5E7E9",
-                  bkout: "#CCD1D1"
-                }
-                
-                let inOut = type
-                //
-                // Glenorchy Leg
-                //
-                if (isGY){
-                  inOut = "<B>GY</B>"
-                  c = "yellow"
-                  c = "yellow"
-                }
-                
-                if (outOfBalance){
-                  clrs.bkin = "red"
-                  clrs.bkout = "red"
-                }
-                let bkg = ""
-                //let products = utility.getProducts( _bookings )
-                
-                //
-                // Pax Product Block
-                //
-                let products = {}
-                for (b in _bookings){
-                  let B = _bookings[b]
-                  let product = B.product
-                  let numPax = B.pax.length
-                  if (!products[product]){
-                    products[product] = numPax
-                  } else {
-                    products[product] = products[product] + numPax
-                  }
-                }
-                //
-                //
-                //
-                let productString = ""
-                for ( p in products ){
-                  productString = productString + "<div><span style='font-size: x-small' class='PaxPerProduct'>" + products[p] + "</span> " + p + '</div>'
-                }
-                //
-                // IN
-                //
-                if (type=="in"){
-                    $(this).addClass('inCell')
-                    bkg = "linear-gradient(-110deg, " + c + " 20%, " + clrs.bkin + " 20%)"
-                    $(this).css('background-image', bkg)
-                    direction = "<span class='inMarker'><div>" + inOut + "</div><div>&#8595;</div></span> " // IN
-                  } else 
-                //
-                // OUT
-                //
-                if (type == "out"){
-                
-                  $(this).addClass('outCell')
-                  bkg = "linear-gradient(110deg, " + clrs.bkout + " 80%, " + c + " 80%)" // out colors
-                  $(this).css('background-image',bkg)
-                  direction = "<span class='outMarker'><div>&#8593;</div><div>" + inOut + "</div></span> " // OUT
-                }
-                seats = '<span style="font-weight:bold; float: left; display: block;padding-right:5px;padding-left:2px"> ' + seats + '</span>'
-                productString = '<span style="float: left;display: block;">' + productString + '</span>'
+          if (seats) {
+            let row = parseInt($(this).parent().prop("id"))
 
-                let htmlString =  direction  + seats + productString
-                $(this).html(htmlString)
+            let type = $(this).data("type") || false
+            let direction = ""
 
-                if (numInfants>0){
-                  let infantIcon = "<span class='circleIcon'>Inf</span>"
-                  $(this).prepend(infantIcon)
-                }
+            let c = colors.getByRow(_bookings[bk].IN) // colors.get( _bookings[bk].orderNumber ) // returns a color object based on the booking.
+            let clrs = {
+              bkin: "#E5E7E9",
+              bkout: "#CCD1D1",
+            }
+
+            let inOut = type
+            //
+            // Glenorchy Leg
+            //
+            if (isGY) {
+              inOut = "<B>GY</B>"
+              c = "yellow"
+              c = "yellow"
+            }
+
+            if (outOfBalance) {
+              clrs.bkin = "red"
+              clrs.bkout = "red"
+            }
+            let bkg = ""
+            //let products = utility.getProducts( _bookings )
+
+            //
+            // Pax Product Block
+            //
+            let products = {}
+            for (b in _bookings) {
+              let B = _bookings[b]
+              let product = B.product
+              let numPax = B.pax.length
+              if (!products[product]) {
+                products[product] = numPax
+              } else {
+                products[product] = products[product] + numPax
+              }
+            }
+            //
+            //
+            //
+            let productString = ""
+            for (p in products) {
+              productString =
+                productString +
+                "<div><span style='font-size: x-small' class='PaxPerProduct'>" +
+                products[p] +
+                "</span> " +
+                p +
+                "</div>"
+            }
+            //
+            // IN
+            //
+            if (type == "in") {
+              $(this).addClass("inCell")
+              bkg =
+                "linear-gradient(-110deg, " + c + " 20%, " + clrs.bkin + " 20%)"
+              $(this).css("background-image", bkg)
+              direction =
+                "<span class='inMarker'><div>" +
+                inOut +
+                "</div><div>&#8595;</div></span> " // IN
+            }
+            //
+            // OUT
+            //
+            else if (type == "out") {
+              $(this).addClass("outCell")
+              bkg =
+                "linear-gradient(110deg, " + clrs.bkout + " 80%, " + c + " 80%)" // out colors
+              $(this).css("background-image", bkg)
+              direction =
+                "<span class='outMarker'><div>&#8593;</div><div>" +
+                inOut +
+                "</div></span> " // OUT
+            }
+            seats =
+              '<span style="font-weight:bold; float: left; display: block;padding-right:5px;padding-left:2px"> ' +
+              seats +
+              "</span>"
+            productString =
+              '<span style="float: left;display: block;">' +
+              productString +
+              "</span>"
+
+            let htmlString = direction + seats + productString
+            $(this).html(htmlString)
+
+            if (numInfants > 0) {
+              let infantIcon = "<span class='circleIcon'>Inf</span>"
+              $(this).prepend(infantIcon)
             }
           }
+        }
       })
-      $(".BookingSprite").each(function() {
+      $(".BookingSprite").each(function () {
         $(this).css("border", "")
       })
       //
@@ -540,40 +600,41 @@ var display = {
       //
       theBoard.showPickups()
     },
-    bookingsToHTML: function(bookings){
+    bookingsToHTML: function (bookings) {
       let ret = ""
       let booking = bookings[0] // there's only ever one booking
       ret += booking.pax.length
       ret += booking.product
       return ret
     },
-    clearBoard: function(){
-    
-      $(".TableCell").each(function() {
+    clearBoard: function () {
+      $(".TableCell").each(function () {
         let element = $(this)
         element.css("background-color", "white")
-        element.removeData('json')
-        element.removeData('type')
+        element.removeData("json")
+        element.removeData("type")
         element.text("")
       })
-      $('.BookingSprite').draggable('enable').css("background-color", "lightblue")
+      $(".BookingSprite")
+        .draggable("enable")
+        .css("background-color", "lightblue")
       display.update()
     },
     // ---------------
     // Remove _bookings
     // ---------------
-    removeBooking: function (key,source){
+    removeBooking: function (key, source) {
       // Each TableCell: remove matching keys
       // Remove from source
-      $(".TableCell").each(function(index) {
+      $(".TableCell").each(function (index) {
         //
         // Each TableCell
         //
-        let list = $(this).data('json')
+        let list = $(this).data("json")
         //
         // list is an array of booking objects
         //
-        if(list){
+        if (list) {
           //
           // Use a copy
           //
@@ -581,33 +642,36 @@ var display = {
           //
           // Each Booking Object
           //
-          for (let i in tableBookingList){
+          for (let i in tableBookingList) {
             //
             let booking = tableBookingList[i]
             //
             // Each Pax in the table
             //
-            for (let p in booking.pax){
-              if (booking.pax[p].key == key){
-                if (source.data('type')=='out'&& $(this).data("type")!='out'){
+            for (let p in booking.pax) {
+              if (booking.pax[p].key == key) {
+                if (
+                  source.data("type") == "out" &&
+                  $(this).data("type") != "out"
+                ) {
                   break
                 }
-                booking.pax.splice(p,1)
+                booking.pax.splice(p, 1)
               }
             }
             //
             // If no pax are left, remove the booking from the cell
             //
-            if (booking.pax.length<1){
-              tableBookingList.splice(i,1)
+            if (booking.pax.length < 1) {
+              tableBookingList.splice(i, 1)
             }
           }
-          if (tableBookingList.length<1){
-            $(this).removeData('json')
-            $(this).removeData('type')
+          if (tableBookingList.length < 1) {
+            $(this).removeData("json")
+            $(this).removeData("type")
             $(this).text(null)
           } else {
-            $(this).data('json',tableBookingList)
+            $(this).data("json", tableBookingList)
           }
         }
       })
@@ -616,60 +680,59 @@ var display = {
     // Change to remove bookings one by one *********************************************
     // Will need same removeData code for when the last booking is removed.
     //
-    removeBookings: function(bookings,sourceCell){
+    removeBookings: function (bookings, sourceCell) {
       //
       // Each booking (list of pax)
       //
-      for (b in bookings){  
-        if (!!bookings[b]&&bookings[b].orderNumber){
+      for (b in bookings) {
+        if (!!bookings[b] && bookings[b].orderNumber) {
           let key = bookings[b].orderNumber || null
-          if (key){
+          if (key) {
             //
             // Each Table Cells
             //
-            $(".TableCell").each(function(index) {
+            $(".TableCell").each(function (index) {
               //
               // Each booking in the TableCell's json array
               //
-                let list = $(this).data('json')
-                let type = $(this).data('type')
-                // skip if no JSON
-                if(list){
+              let list = $(this).data("json")
+              let type = $(this).data("type")
+              // skip if no JSON
+              if (list) {
+                //
+                // Remove Null
+                //
+                list = list.filter(function (el) {
+                  return el != null
+                })
+                //
+                // operate on a copy
+                //
+                let tableBookingList = JSON.parse(JSON.stringify(list))
+                //
+                // Compare each TableCell booking with each one passed in
+                //
+                tableBookingList.forEach(function (value, i) {
                   //
-                  // Remove Null
+                  // Skip Blanks
                   //
-                  list = list.filter(function (el) {
-                    return el != null;
-                  });
-                  //
-                  // operate on a copy
-                  //
-                  let tableBookingList = JSON.parse(JSON.stringify(list))
-                    //
-                    // Compare each TableCell booking with each one passed in
-                    //
-                    tableBookingList.forEach(function (value, i) {
-                      //
-                      // Skip Blanks
-                      //
-                      if (!!value && !!value.orderNumber){
-                        if (key == value.orderNumber){
-                          tableBookingList.splice(i,1)
-                        }
-                      }
-  
-                    })
-                    $(this).data('json',tableBookingList)
-  
-                if(jQuery.isEmptyObject(tableBookingList)){
+                  if (!!value && !!value.orderNumber) {
+                    if (key == value.orderNumber) {
+                      tableBookingList.splice(i, 1)
+                    }
+                  }
+                })
+                $(this).data("json", tableBookingList)
+
+                if (jQuery.isEmptyObject(tableBookingList)) {
                   display.clearCell($(this))
                 }
-                }
-            });
+              }
+            })
           }
         }
       }
       display.update()
     },
-}
+  }
 </script>

@@ -109,6 +109,7 @@ var PlaneManager={
     //
     // Parse loaded two dimensional array into planes object
     //
+    console.log("Planemanager.loadPlanes(): %o",data)
     let count = 0
     for (let row in data){
       let parsed = {}
@@ -122,9 +123,9 @@ var PlaneManager={
         PlaneManager.planes.reg.push(new GA8(parsed))
         
         let num = count +1
-        let planeCell = $( "#ac" + num)
+        let planeCell = $( "#ac_" + num)
         // Standard Load
-        $( "#ac" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
+        $( "#ac_" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
         PlaneManager.updateCell(planeCell) // this.updateCell? *********
         count++
       }
@@ -132,9 +133,9 @@ var PlaneManager={
         PlaneManager.planes.reg.push(new C206(parsed))
         
         let num = count +1
-        let planeCell = $( "#ac" + num)
+        let planeCell = $( "#ac_" + num)
         // Standard Load
-        $( "#ac" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
+        $( "#ac_" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
         PlaneManager.updateCell(planeCell) // this.updateCell? *********
         count++
       }
