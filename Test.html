@@ -1,189 +1,203 @@
 <script>
+  function test() {
+    // console.log("getManifest: %o",Bookings.getManifest("06/03/2020"))
 
-function test(){
-  console.log("getManifest: %o",Bookings.getManifest("06/03/2020"))
-}
+    $(".PlaneCell").each(function () {
 
-// Rezdy.loadTripCodes()
-
-
-// function fakefunction(){
-//  for (let b in MANIFEST){
-//    if (!!MANIFEST[b].orderNumber && MANIFEST[b].orderNumber == "RE9LFK1-1"){
-//      bookings.bookings.push(MANIFEST[b])
-//    }
-//  }
-//  for (let b in bookings.bookings){
-//    bookings.bookings[b].orderNumber = "HI"
-//  }
-//  
-//  let bk = Bookings.getBooking("HI")
-//  console.log("Booking: %o", bk)
-//}
-
-
-
-
-
-
-
-
-class Names {
-  constructor (names) {
-    this.names = names;
+      console.log("PlaneCell: %0",$(this))
+    })
   }
-  contains(names) {
-    return names.every((name) => this.names.indexOf(name) !== -1);
+
+  // Rezdy.loadTripCodes()
+
+  // function fakefunction(){
+  //  for (let b in MANIFEST){
+  //    if (!!MANIFEST[b].orderNumber && MANIFEST[b].orderNumber == "RE9LFK1-1"){
+  //      bookings.bookings.push(MANIFEST[b])
+  //    }
+  //  }
+  //  for (let b in bookings.bookings){
+  //    bookings.bookings[b].orderNumber = "HI"
+  //  }
+  //
+  //  let bk = Bookings.getBooking("HI")
+  //  console.log("Booking: %o", bk)
+  //}
+
+  class Names {
+    constructor(names) {
+      this.names = names
+    }
+    contains(names) {
+      return names.every((name) => this.names.indexOf(name) !== -1)
+    }
   }
-}
-function showDay(num){
-  let id = $("#Day2")
-  if (num){
-    id=$("#Day"+num)
+  function showDay(num) {
+    let id = $("#Day2")
+    if (num) {
+      id = $("#Day" + num)
+    }
+    id.toggle()
   }
-  id.toggle()  
-}
-function saveBoard(){
-  theBoard.save()
-}
+  function saveBoard() {
+    theBoard.save()
+  }
 
-function test3(_row){
+  function test3(_row) {
+    console.log("showpickups")
 
-        console.log("showpickups")
+    let pickupList = $("#PickupList")
+    let row = _row.prop("id")
 
-        let pickupList = $("#PickupList")
-        let row = _row.prop('id')
-        
-        let totalPickup = 0
-        let totalPax = 0
-        $("#PickupContents").remove()
-        pickupList.append("<div id='PickupContents'></div>")
-        //$("#PickupContents").append("<div id='TripManifest' class='TripManifest'></div")
-        $("#PickupContents").append("<div id='PickupManifest' class='PickupManifest'></div>")
-        
-        $("."+row).each(function(){
-          let JSON = $(this).data('json')
-          if ( !jQuery.isEmptyObject(JSON) ){
-            for(let b in JSON){
-              let seats = JSON[b].seats
-              let pickup = true
-              let pickupLocation = ""
-              if (JSON[b].pickupLocation){
-                if (JSON[b].pickupLocation.locationName){
-                  pickupLocation = JSON[b].pickupLocation.locationName
-                  if(pickupLocation.match(/self drive/ig)){
-                    pickup = false
-                  }
-                  if(pickupLocation.match(/Glenorchy Airstrip/ig)){
-                    pickup = false
-                  }
-                }
+    let totalPickup = 0
+    let totalPax = 0
+    $("#PickupContents").remove()
+    pickupList.append("<div id='PickupContents'></div>")
+    //$("#PickupContents").append("<div id='TripManifest' class='TripManifest'></div")
+    $("#PickupContents").append(
+      "<div id='PickupManifest' class='PickupManifest'></div>"
+    )
+
+    $("." + row).each(function () {
+      let JSON = $(this).data("json")
+      if (!jQuery.isEmptyObject(JSON)) {
+        for (let b in JSON) {
+          let seats = JSON[b].seats
+          let pickup = true
+          let pickupLocation = ""
+          if (JSON[b].pickupLocation) {
+            if (JSON[b].pickupLocation.locationName) {
+              pickupLocation = JSON[b].pickupLocation.locationName
+              if (pickupLocation.match(/self drive/gi)) {
+                pickup = false
               }
-              let _seats = JSON[b].pax.length
-              totalPax += _seats
-              if(pickup){
-                if (!pickupLocation){
-                  pickupLocation = "Unspecified"
-                }
-                if (JSON[b].product && JSON[b].product.match(/out/ig)){
-                  pickupLocation = "Outs"
-                }
-                $("#PickupManifest").append("<B>" + _seats + "</B> " + pickupLocation + "<br>")
-                totalPickup += _seats
+              if (pickupLocation.match(/Glenorchy Airstrip/gi)) {
+                pickup = false
               }
-            }
-            //
-            // Trip Manifest
-            //
-            let PlaneDetails = $("#TripManifest")
-            let _plane
-            
-            PlaneDetails.append("<div></div>")
-            //
-            // Each Booking
-            //
-            for (let b in JSON){
-              let _booking = JSON[b]
-              let _seats = JSON[b].pax.length
-              
-              if (b==0 && JSON[b].IN){
-                let col = theBoard.getColumn(JSON[b].IN)
-                if(col){
-                  _plane = $("#ac"+col)
-                }
-                let _reg = ''
-                if (_plane.data('PCF')){
-                  _reg = _plane.data('PCF')[0]
-                }
-                PlaneDetails.append(" " + _reg + " ")
-               }
-               
-               PlaneDetails.append(_seats)
-               PlaneDetails.append(" " + _booking.product + " ")
-
-            
-              let extras = "<span style='font-size:small'>"
-              if (_booking.extras.length>0){
-                for (let e in _booking.extras){
-                if (_booking.extras[e].name){
-                // **************************** Could be turned into an array and pushed *****************************
-                    let _quantity = _booking.extras[e].quantity
-                    let _ex = _booking.extras[e].name.split("(")[0]
-                    extras += "<span style='font-size:x-small'>(" + _quantity + ")</span>" + _ex + " "
-                  }
-                }
-              }
-              extras = extras + "</span>"
-
-              PlaneDetails.append(" " + extras + " ")
             }
           }
-        })
-        if (totalPickup>0){
-        
-          $("#PickupManifest").prepend("Pickup Manifest.<BR>Total Pax: " + totalPickup + "<P>" )
-          $("#TripManifest").prepend("Flight Manifest.<BR>Total Pax: " + totalPax + "<P>")
-          
-          $("#PickupContents").prepend("<br>")
-          //$("#PickupContents").prepend("<B>" + $(this).html() + "</B><br>") // ** What's $(this).html() ?
-          $("#PickupContents").append("<span style='float:right; width: 100%; display: block; position: absolute; top: 0;' onClick='utility.printPickup()' >Print</span>")
-           
+          let _seats = JSON[b].pax.length
+          totalPax += _seats
+          if (pickup) {
+            if (!pickupLocation) {
+              pickupLocation = "Unspecified"
+            }
+            if (JSON[b].product && JSON[b].product.match(/out/gi)) {
+              pickupLocation = "Outs"
+            }
+            $("#PickupManifest").append(
+              "<B>" + _seats + "</B> " + pickupLocation + "<br>"
+            )
+            totalPickup += _seats
+          }
         }
-        else {
-          $("#PickupContents").prepend("<B>No Pickups/Dropoffs Required for this time<P>")
+        //
+        // Trip Manifest
+        //
+        let PlaneDetails = $("#TripManifest")
+        let _plane
+
+        PlaneDetails.append("<div></div>")
+        //
+        // Each Booking
+        //
+        for (let b in JSON) {
+          let _booking = JSON[b]
+          let _seats = JSON[b].pax.length
+
+          if (b == 0 && JSON[b].IN) {
+            let col = theBoard.getColumn(JSON[b].IN)
+            if (col) {
+              _plane = $("#ac" + col)
+            }
+            let _reg = ""
+            if (_plane.data("PCF")) {
+              _reg = _plane.data("PCF")[0]
+            }
+            PlaneDetails.append(" " + _reg + " ")
+          }
+
+          PlaneDetails.append(_seats)
+          PlaneDetails.append(" " + _booking.product + " ")
+
+          let extras = "<span style='font-size:small'>"
+          if (_booking.extras.length > 0) {
+            for (let e in _booking.extras) {
+              if (_booking.extras[e].name) {
+                // **************************** Could be turned into an array and pushed *****************************
+                let _quantity = _booking.extras[e].quantity
+                let _ex = _booking.extras[e].name.split("(")[0]
+                extras +=
+                  "<span style='font-size:x-small'>(" +
+                  _quantity +
+                  ")</span>" +
+                  _ex +
+                  " "
+              }
+            }
+          }
+          extras = extras + "</span>"
+
+          PlaneDetails.append(" " + extras + " ")
         }
-        pickupList.show()
-}
+      }
+    })
+    if (totalPickup > 0) {
+      $("#PickupManifest").prepend(
+        "Pickup Manifest.<BR>Total Pax: " + totalPickup + "<P>"
+      )
+      $("#TripManifest").prepend(
+        "Flight Manifest.<BR>Total Pax: " + totalPax + "<P>"
+      )
 
+      $("#PickupContents").prepend("<br>")
+      //$("#PickupContents").prepend("<B>" + $(this).html() + "</B><br>") // ** What's $(this).html() ?
+      $("#PickupContents").append(
+        "<span style='float:right; width: 100%; display: block; position: absolute; top: 0;' onClick='utility.printPickup()' >Print</span>"
+      )
+    } else {
+      $("#PickupContents").prepend(
+        "<B>No Pickups/Dropoffs Required for this time<P>"
+      )
+    }
+    pickupList.show()
+  }
 
+  function test2(arg) {
+    //  theBoard.highlightFerryLegs()
+    //utility.printDiv($("#TheBoard"))
 
-function test2(arg) {
-//  theBoard.highlightFerryLegs()
-  //utility.printDiv($("#TheBoard"))
-  
     let printMe = getElementChildrenAndStyles($("#TheBoard"))
-    let style = "<style> .inMarker{float:right; display: block;} .outMarker{float:right;display: block;} </style>"
+    let style =
+      "<style> .inMarker{float:right; display: block;} .outMarker{float:right;display: block;} </style>"
     // -webkit-print-color-adjust to keep colors for the printing version
-    let keepColors = '<style>body {-webkit-print-color-adjust: exact !important; }</style>'
-    let newWin=window.open('','Print-Window')
+    let keepColors =
+      "<style>body {-webkit-print-color-adjust: exact !important; }</style>"
+    let newWin = window.open("", "Print-Window")
     newWin.document.open()
-    newWin.document.write('<html><head>' + keepColors + ' ' + style + '</head><body onload="window.print()">'+printMe+'</body></html>')
+    newWin.document.write(
+      "<html><head>" +
+        keepColors +
+        " " +
+        style +
+        '</head><body onload="window.print()">' +
+        printMe +
+        "</body></html>"
+    )
     newWin.document.close()
-    setTimeout(function(){newWin.close();},10)
+    setTimeout(function () {
+      newWin.close()
+    }, 10)
+  }
+  function showHidePerPax() {
+    $(".PaxPerProduct").toggle()
+  }
 
+  function getElementChildrenAndStyles(selector) {
+    var html = $(selector).html()
+    let style = $(selector)[0].outerHTML
+    console.log("PrintMe")
 
-}
-function showHidePerPax(){
-  $(".PaxPerProduct").toggle()
-}
-
-
-
-function getElementChildrenAndStyles(selector) {
-  var html = $(selector).html()
-  let style = $(selector)[0].outerHTML
-  console.log("PrintMe")
-
-  return "<style>\n" + style + "\n</style>\n\n" + html;
-}
+    return "<style>\n" + style + "\n</style>\n\n" + html
+  }
 </script>
