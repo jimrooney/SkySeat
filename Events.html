@@ -10,22 +10,15 @@
       console.log("Drop Event: %o", event)
       console.log("Drop UI: %o", ui)
       // $(this) : The cell dropped onto
-      // ui : The dropped sprite
+      // ui.draggable : The dropped sprite
       let dropped = ui.draggable
-      let targetCell = $(this.element)
-
-
-
-      let targetCellBookings = targetCell.data("json")
-      console.log("Bookings: %o",targetCellBookings)
-
-      let targetID = $(this).prop("id")
-
-      let droppedID = dropped.prop("id")
 
       console.log("this ID: %o", $(this).prop("id"))
       console.log("Dropped ID: %o", dropped.prop("id"))
-      console.log("TargetCell ID: %o",targetCell.prop("id"))
+      console.log("Dropped json: %o", dropped.data("json"))
+
+      //ui.draggable.empty()// clears manifest icon
+      $(this).addClass("ui-state-highlight")
     },
   }
 </script>

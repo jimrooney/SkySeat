@@ -1,45 +1,44 @@
 <script>
-  $(document).ready( function(){
-  //
-  // Prototype in custom functions
-  //
-  // We're adding functions to $(this)
-  //
-  jQuery.fn.update = function() {
-    return this.each(function(){
-      //
-      // Update function if it's a TableCell:
-      //
-      if($(this).hasClass("TableCell")){
+  $(document).ready(function () {
+    //
+    // Prototype in custom functions
+    //
+    // We're adding functions to $(this)
+    //
+    jQuery.fn.update = function () {
+      return this.each(function () {
+        //
+        // Update function if it's a TableCell:
+        //
+        if ($(this).hasClass("TableCell")) {
           //
           // Check cell bookings agains manifest. Clean if missing.
           //
           display.cleanCell($(this))
           display.update()
-      }
-    })
-  }
-  
-  
-  /*
+        }
+      })
+    }
+
+    /*
     Some default settings
     Can probably be consolidated later
     
     Could have some sort of "is winter" check
   */
-  $(".HalfHourSchedule").hide()
-  //$(".HourSchedule").hide()
-  
-  // ------------------------------------------------------------------------------------
-  // Clear the console
-  // ------------------------------------------------------------------------------------
-  console.clear()
-})
+    $(".HalfHourSchedule").hide()
+    //$(".HourSchedule").hide()
 
-var isLive = false
-var isMobile = false // ( set to true for testing) 
+    // ------------------------------------------------------------------------------------
+    // Clear the console
+    // ------------------------------------------------------------------------------------
+    console.clear()
+  })
+
+  var isLive = false
+  var isMobile = false // ( set to true for testing)
   //
-  // isMobile 
+  // isMobile
   //
   if (/Mobi|Android/i.test(navigator.userAgent)) {
     isMobile = true
@@ -50,135 +49,129 @@ var isMobile = false // ( set to true for testing)
   if (/glenorchyair\.co\.nz/i.test(window.location.href)) {
     isLive = true
   }
-  
+
   //*******************************************************************************************************************************
   // Testing:
   //  isMobile = true
   //*******************************************************************************************************************************
-//
-// setDevMode is called when launching via a Spreadsheet
-// This lets us turn things on and off like "Close" buttons (which don't work in browsers)
-//
-var isDevMode = false
-function setDevMode(data) {
-  isDevMode = data.text
-}
+  //
+  // setDevMode is called when launching via a Spreadsheet
+  // This lets us turn things on and off like "Close" buttons (which don't work in browsers)
+  //
+  var isDevMode = false
+  function setDevMode(data) {
+    isDevMode = data.text
+  }
 
-// ------------------------------------Mouse--------------------------------------------------------
-//
-// Setup "mouse" for use with mobile
-//
-/*
+  // ------------------------------------Mouse--------------------------------------------------------
+  //
+  // Setup "mouse" for use with mobile
+  //
+  /*
   Mobile (Android Chrome) can't do both drag and click on the same element (Touch Punch plugin), 
   so we capture the mouse In/Out events and compare them. If they're similar, it's a click.
   This is a mobile only thing so we check isMobile for true
 */
-// ---------------------------------------------------------------------------------------------
-let mouse={
-  over:{
-    x:0,
-    y:0
+  // ---------------------------------------------------------------------------------------------
+  let mouse = {
+    over: {
+      x: 0,
+      y: 0,
     },
-  out:{
-    x:0,
-    y:0
-  },
-  clear:function(){
-    this.over.x = 0
-    this.over.y = 0
-  },
-  setOver:function(x,y)
-  {
-    this.over.x = x
-    this.over.y = y
-  },
-  isClick:function(x,y){
-    let ret = false
-    let difX = x - this.over.x
-    let difY = y - this.over.y
-    difX = Math.abs(difX)
-    difX = Math.abs(difX)
-    if (difX<20 && difY<20){
-      ret = true
+    out: {
+      x: 0,
+      y: 0,
+    },
+    clear: function () {
+      this.over.x = 0
+      this.over.y = 0
+    },
+    setOver: function (x, y) {
+      this.over.x = x
+      this.over.y = y
+    },
+    isClick: function (x, y) {
+      let ret = false
+      let difX = x - this.over.x
+      let difY = y - this.over.y
+      difX = Math.abs(difX)
+      difX = Math.abs(difX)
+      if (difX < 20 && difY < 20) {
+        ret = true
+      }
+      this.clear()
+      return ret
+    },
+  }
+  function _overEvent(event, ui) {
+    if (isMobile) {
+      mouse.setOver(event.pageX, event.pageY)
     }
-    this.clear()
-    return ret
   }
-}
-function _overEvent(event, ui){
-  if (isMobile){
-    mouse.setOver(event.pageX,event.pageY)
-  }
-}
-function _outEvent(event,ui){
-  if (isMobile){
-    let click = mouse.isClick(event.pageX,event.pageY)
-    if (click){
-    
-      if($(this).hasClass( "TableCell" )){
-        let bookings = $(this).data("json")
-        if(bookings){
-          bookingManager.getDetails($(this))
+  function _outEvent(event, ui) {
+    if (isMobile) {
+      let click = mouse.isClick(event.pageX, event.pageY)
+      if (click) {
+        if ($(this).hasClass("TableCell")) {
+          let bookings = $(this).data("json")
+          if (bookings) {
+            bookingManager.getDetails($(this))
+          }
+        }
+        if ($(this).hasClass("popupCloseButton")) {
+          $("#details").hide()
+        }
+        if ($(this).hasClass("popupCloseButtonSmall")) {
+          console.log("Pickup Close")
+          $("#PickupList").hide()
+        }
+        if ($(this).hasClass("Print")) {
+          printLoadsheet()
+          $("#details").hide()
+        }
+        if ($(this).is("a, a *")) {
+          window.open($(this).attr("href"), "_blank")
         }
       }
-      if($(this).hasClass( "popupCloseButton" )){
-        $("#details").hide()
-      }
-      if($(this).hasClass( "popupCloseButtonSmall" )){
-        console.log("Pickup Close")
-        $("#PickupList").hide()
-      }
-      if($(this).hasClass( "Print" )){
-        printLoadsheet()
-        $("#details").hide()
-      }
-      if($(this).is('a, a *')){
-        window.open($(this).attr('href'),'_blank')
-      }      
     }
   }
-} 
-// ----------------------------------End Mouse----------------------------------------------------------
-
+  // ----------------------------------End Mouse----------------------------------------------------------
 </script>
 <script>
   // --------------------------------- OnLoad --------------------------------------------------
   // $(function() { ... }); is shorthand for document.ready
   // Setup popups
-  $(
-    function () {
-    
-    $(".TimeCell").each(function(index){
+  $(function () {
+    $(".TimeCell").each(function (index) {
       let c = colors.colorList[index][1]
       let bkg = "linear-gradient(90deg, " + c + " 0% ,#fff 50%)"
-      $(this).css('background-image', bkg)
-    })  
-    
-    $(".MobileBreak").each(function(){
-      if (isMobile){
+      $(this).css("background-image", bkg)
+    })
+
+    $(".MobileBreak").each(function () {
+      if (isMobile) {
         $(this).html("<BR>")
       }
     })
-        $("#divPopupMessage").dialog({
-            autoOpen: false,
-            title: "Inbox",
-            draggable: true,
-            resizable: true
-        });
-            $('#messagediv').click(function () {
-            $("#divPopupMessage").text($('#messagediv').text());
-            $("#divPopupMessage").dialog("open");
-        });
-      }
-  );
+    $("#divPopupMessage").dialog({
+      autoOpen: false,
+      title: "Inbox",
+      draggable: true,
+      resizable: true,
+    })
+    $("#messagediv").click(function () {
+      $("#divPopupMessage").text($("#messagediv").text())
+      $("#divPopupMessage").dialog("open")
+    })
+  })
   //
   //  --------------------------------- OnLoad --------------------------------------------------
   //
-  $(document).ready( function(){
+  $(document).ready(function () {
     //
     // DevMode (launched from Spreadsheet)
     //
-    if(isDevMode){
+    if (isDevMode) {
       $(".Dev").show()
     } else {
       $(".Dev").hide()
@@ -186,24 +179,26 @@ function _outEvent(event,ui){
     //
     // Mobile
     //
-    if(isMobile){
-      $(".Nav").css("font-size","xx-large")
+    if (isMobile) {
+      $(".Nav").css("font-size", "xx-large")
     }
     // For Mobile Click
-    $('.TableCell, .Print, .popupCloseButton, .MobileButton').mouseenter( _overEvent ).mouseleave( _outEvent )
+    $(".TableCell, .Print, .popupCloseButton, .MobileButton")
+      .mouseenter(_overEvent)
+      .mouseleave(_outEvent)
     //
     // DatePicker
     //
     $("#datepicker").datepicker({
-        dateFormat: 'dd/mm/yy' ,
-        firstDay: 1,
-        onSelect: function(dateText) {
-            console.log("Date Selected")
-            theBoard.next(0,true)
-            $(this).blur()
-        }
-     })
-    $("#datepicker").datepicker('setDate', 'today')
+      dateFormat: "dd/mm/yy",
+      firstDay: 1,
+      onSelect: function (dateText) {
+        console.log("Date Selected")
+        theBoard.next(0, true)
+        $(this).blur()
+      },
+    })
+    $("#datepicker").datepicker("setDate", "today")
     //
     // hide Day 2 div by default
     //
@@ -224,53 +219,52 @@ function _outEvent(event,ui){
     // [[ Load Current Day ]]
     // Moved into PlaneManager (fixes a loading error where the day tries to plot before the planes exist)
     //
-    
-    theBoard.timeStamp.loadRemote() 
-   })
-   //-------------------------------------------------------------------------------------------
-  
-function init() {
+
+    theBoard.timeStamp.loadRemote()
+  })
+  //-------------------------------------------------------------------------------------------
+
+  function init() {
     $("#details,.Manifest_Container").draggable({
-    //$("#details,.Manifest_Container, .pickupDetails").draggable({
+      //$("#details,.Manifest_Container, .pickupDetails").draggable({
       revert: false,
     })
     $("").draggable({
       revert: false,
     })
-    $('.BookingSprite').draggable({
-        //revert: true,
-        //helper: 'clone',
-        cursorAt: { left: 5,top:5 },
-        revert: "invalid",
-        helper: function() {
-          //debugger;
-          return $("<div class='popupCloseButton'></div>")//.append($(this).prop('id'));
-        }
-    });
-
-    $('.TableCell').draggable({
-        revert: true,
-        helper: 'clone',
-    });
-
-    $('.TableCell').droppable({
-        accept: ".BookingSprite, .TableCell",
-        drop: Events.drop,
-        delay: 100,
-        })
-    $('.PlaneCell').droppable({
-        accept: ".BookingSprite",
-        drop: handleDropEvent,
-        over: handleOverEvent,
-        out: handleOutEvent,
+    $(".BookingSprite").draggable({
+      //revert: true,
+      //helper: 'clone',
+      cursorAt: { left: 5, top: 5 },
+      revert: "invalid",
+      helper: function () {
+        //debugger;
+        return $("<div class='popupCloseButton'></div>") //.append($(this).prop('id'));
+      },
     })
-    $('.Trash').droppable({
+
+    $(".TableCell").draggable({
+      revert: true,
+      helper: "clone",
+    })
+
+    $(".TableCell").droppable({
+      accept: ".BookingSprite, .TableCell",
+      drop: Events.drop,
+      delay: 100,
+    })
+    $(".PlaneCell").droppable({
+      accept: ".BookingSprite",
+      drop: handleDropEvent,
+      over: handleOverEvent,
+      out: handleOutEvent,
+    })
+    $(".Trash").droppable({
       accept: ".BookingSprite, .TableCell",
       drop: handleTrashDrop,
-    })   
-    $(".productCode").click(function() {
-        utility.alert("Click")
     })
-}
-
+    $(".productCode").click(function () {
+      utility.alert("Click")
+    })
+  }
 </script>
