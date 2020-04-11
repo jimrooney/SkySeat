@@ -14,12 +14,18 @@
       let dropped = ui.draggable
       let targetCell = $(this.element)
 
-    console.log("This Element: %o", targetCell)
+
 
       let targetCellBookings = targetCell.data("json")
+      console.log("Bookings: %o",targetCellBookings)
 
       let targetID = $(this).prop("id")
+
       let droppedID = dropped.prop("id")
+
+      console.log("this ID: %o", $(this).prop("id"))
+      console.log("Dropped ID: %o", dropped.prop("id"))
+      console.log("TargetCell ID: %o",targetCell.prop("id"))
     },
   }
 </script>
