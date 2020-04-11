@@ -1,18 +1,25 @@
 <script>
-/*
+  /*
     Will need to go back to Init.html and change all the other drop event handlers (and other event handlers too I guess)
 
-
+    Maybe make Events.drop polymorphic?
 
 */
-var Events = {
-    drop: function(event, ui){
-        // $(this) : The cell dropped onto
-        // ui : The dropped sprite
-        let dropped = ui.draggable
+  var Events = {
+    drop: function (event, ui) {
+      console.log("Drop Event: %o", event)
+      console.log("Drop UI: %o", ui)
+      // $(this) : The cell dropped onto
+      // ui : The dropped sprite
+      let dropped = ui.draggable
+      let targetCell = $(this.element)
 
+    console.log("This Element: %o", targetCell)
 
-        console.log("Drop Event ( %o , %o )", event, dropped)
+      let targetCellBookings = targetCell.data("json")
+
+      let targetID = $(this).prop("id")
+      let droppedID = dropped.prop("id")
     },
-}
+  }
 </script>

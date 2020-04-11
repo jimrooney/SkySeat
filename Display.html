@@ -61,7 +61,8 @@
     
       */
       for (let a in bookings) {
-        if (bookings[a].orderNumber) {
+        console.log("Bookings[a] %o", bookings[a])
+        if (!!bookings[a] && bookings[a].orderNumber) {
           let booking = bookings[a]
 
           let booking_date = Dates.getNZ(booking.time)

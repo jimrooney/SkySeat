@@ -255,8 +255,7 @@ function init() {
 
     $('.TableCell').droppable({
         accept: ".BookingSprite, .TableCell",
-        //drop: Events.drop,
-        drop: handleDropEvent,
+        drop: Events.drop,
         delay: 100,
         })
     $('.PlaneCell').droppable({

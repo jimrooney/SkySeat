@@ -110,6 +110,12 @@ var PlaneManager={
     // Parse loaded two dimensional array into planes object
     //
     console.log("Planemanager.loadPlanes(): %o",data)
+    console.log("This: %o", this) // Eventually we can remove this log call, it's just handy right now to have the window object on display *******************
+    //
+    // Because this gets called from a Success Handler (Google), "this" is the Window Object, so we'll make our own "_this"
+    //
+    let _this = PlaneManager
+    //
     let count = 0
     for (let row in data){
       let parsed = {}
@@ -120,23 +126,23 @@ var PlaneManager={
       // Skipping JTK for now *****************************************************
       //
       if (parsed.REG!="REG" && parsed.REG!="JTK"){
-        PlaneManager.planes.reg.push(new GA8(parsed))
+        _this.planes.reg.push(new GA8(parsed))
         
         let num = count +1
         let planeCell = $( "#ac_" + num)
         // Standard Load
         $( "#ac_" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
-        PlaneManager.updateCell(planeCell) // this.updateCell? *********
+        _this.updateCell(planeCell) // this.updateCell? *********
         count++
       }
       if (parsed.REG!="REG" && parsed.REG=="JTK"){
-        PlaneManager.planes.reg.push(new C206(parsed))
+        _this.planes.reg.push(new C206(parsed))
         
         let num = count +1
         let planeCell = $( "#ac_" + num)
         // Standard Load
         $( "#ac_" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
-        PlaneManager.updateCell(planeCell) // this.updateCell? *********
+        _this.updateCell(planeCell) // this.updateCell? *********
         count++
       }
     }
