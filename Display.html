@@ -71,7 +71,7 @@
           let booking_date = Dates.getNZ(booking.time)
 
             let jsonBooking = [booking]
-            let bookingDiv = this.getBookingDiv(booking)
+            let bookingDiv = this.getManifestBookingDiv(booking)
             $("#MANIFEST").append(bookingDiv)
             if (a % 4 == 0) { // 4 per row
               $("#MANIFEST").append("<span><P></span>")
@@ -121,23 +121,12 @@
     //
     // Booking Div (Booking Sprite)
     //
-    getBookingDiv: function (booking, style) {
+    getManifestBookingDiv: function (booking, style) {
 
-      // rebuilding getBookingDiv
-      // **************************************************************************************************
-      let dv = "<div>" + booking.orderNumber + "</div>"
-      return dv
-
-      // ***************************************************************************************************
       let vis = style == "compact" ? false : true
+      vis = false
       let container = ""
-      let ret = ""
-      if (vis) {
-        ret = "<span class='manifestBooking'> "
-      } else {
-        ret = "<span class='tooltip'>"
-      }
-      //
+      let ret = "<span class='tooltip'>"
       if (booking.orderNumber) {
         let masterkey = booking.orderNumber.split("-")[0]
         ret =

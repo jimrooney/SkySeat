@@ -1,195 +1,195 @@
 <style>
-.PickupManifest {
-  background: grey;
-  display: inline-block;
-  float:left; 
-  display: block;
-  text-align:left;
-  padding: 5px 15px 5px 15px;
-}
-.pickupDetails {
-  display:none;
-  background:rgba(71,88,115,1);
-  color: black;
-  text-align: center;
-  padding: 5px 15px 5px 15px;
-  border-radius: 6px;
-  position: absolute;
-  top: 20px;
-  left: 5px;
-  z-index: 5;
-  width: 1000px;
-}
-.PickupSprite { 
-  list-style-type: none; 
-  margin: 0; float: left; 
-  margin-right: 10px;
-  background: #eee; 
-  padding: 5px; 
-  width: 300px;
-}
-#sortable1, #sortable2, #sortable3 { 
-  list-style-type: none; 
-  margin: 0; float: left; 
-  margin-right: 10px; 
-  background: #eee; 
-  padding: 5px; 
-  width: 300px;
-}
-#sortable1 li, #sortable2 li, #sortable3 li { 
-  margin: 5px; 
-  padding: 5px;
-  width: 280px; 
-}
-.PaxPerProduct {
-  display:none;
-}
-.TableCell {
-  position: relative;
-}
-.TripManifest {
-  background: lightgrey;
-  display: inline-block;
-  float:right; 
-  display: block;
-  text-align:left;
-  padding: 5px 15px 5px 15px;
-}
+  .PickupManifest {
+    background: grey;
+    display: inline-block;
+    float: left;
+    display: block;
+    text-align: left;
+    padding: 5px 15px 5px 15px;
+  }
+  .pickupDetails {
+    display: none;
+    background: rgba(71, 88, 115, 1);
+    color: black;
+    text-align: center;
+    padding: 5px 15px 5px 15px;
+    border-radius: 6px;
+    position: absolute;
+    top: 20px;
+    left: 5px;
+    z-index: 5;
+    width: 1000px;
+  }
+  .PickupSprite {
+    list-style-type: none;
+    margin: 0;
+    float: left;
+    margin-right: 10px;
+    background: #eee;
+    padding: 5px;
+    width: 300px;
+  }
+  #sortable1,
+  #sortable2,
+  #sortable3 {
+    list-style-type: none;
+    margin: 0;
+    float: left;
+    margin-right: 10px;
+    background: #eee;
+    padding: 5px;
+    width: 300px;
+  }
+  #sortable1 li,
+  #sortable2 li,
+  #sortable3 li {
+    margin: 5px;
+    padding: 5px;
+    width: 280px;
+  }
+  .PaxPerProduct {
+    display: none;
+  }
+  .TableCell {
+    position: relative;
+  }
+  .TripManifest {
+    background: lightgrey;
+    display: inline-block;
+    float: right;
+    display: block;
+    text-align: left;
+    padding: 5px 15px 5px 15px;
+  }
 
-.noBorder {
-  border-collapse:collapse;
-  border-color:rgb(136,136,136);
-  border-width:1px;
-}
-.A4 {
-    height:1000px;
- //   background:rgba(71,88,115,1);
-    text-align: center;  /* align the inline(-block) elements horizontally */
-    font: 0/0 a;         /* remove the gap between inline(-block) elements */
-}
+  .noBorder {
+    border-collapse: collapse;
+    border-color: rgb(136, 136, 136);
+    border-width: 1px;
+  }
+  .A4 {
+    height: 1000px;
+    //   background:rgba(71,88,115,1);
+    text-align: center; /* align the inline(-block) elements horizontally */
+    font: 0/0 a; /* remove the gap between inline(-block) elements */
+  }
 
-.A4:before {      /* create a full-height inline block pseudo-element */
-    content: ' ';
+  .A4:before {
+    /* create a full-height inline block pseudo-element */
+    content: " ";
     display: inline-block;
     vertical-align: middle; /* vertical alignment of the inline element */
     height: 100%;
-}
+  }
 
-.vcontainer {
+  .vcontainer {
     display: inline-block;
-    vertical-align: middle;          /* vertical alignment of the inline element */
-    font: 16px/1 Arial, sans-serif;  /* reset the font property */
-}
+    vertical-align: middle; /* vertical alignment of the inline element */
+    font: 16px/1 Arial, sans-serif; /* reset the font property */
+  }
 
-.ui-datepicker {
+  .ui-datepicker {
     /*background: transparent;*/
     background: white;
-}
-.ui-popupCloseButton, .ui-droppable {
+  }
+  .ui-popupCloseButton,
+  .ui-droppable {
     -ms-touch-action: none;
     touch-action: none;
-}
-.ToPrint{
-  display:none;
-  position: absolute;
-  background: white;
-  color: black;
-  -webkit-print-color-adjust: exact;
-  z-index: 100;
-}
-.PlaneCell{
-  text-align: center;
-  font-weight: bold;
-  color: #363636;
-}
-.Nav, .Trash{
-  text-align: center;
-  font-weight: bold;
-  font-size: x-large;
-  background: #12183b;
-  color: lightgrey;
-}
-.Trash{
-  padding: 80px 80px 80px 80px;
-  display: inline-block;
-  font-size: xxx-large;
-}
-.Dark{
-  background: #d2d3d9;
-  color: #6b6b6b;
-}
+  }
+  .ToPrint {
+    display: none;
+    position: absolute;
+    background: white;
+    color: black;
+    -webkit-print-color-adjust: exact;
+    z-index: 100;
+  }
+  .PlaneCell {
+    text-align: center;
+    font-weight: bold;
+    color: #363636;
+  }
+  .Nav,
+  .Trash {
+    text-align: center;
+    font-weight: bold;
+    font-size: x-large;
+    background: #12183b;
+    color: lightgrey;
+  }
+  .Trash {
+    padding: 80px 80px 80px 80px;
+    display: inline-block;
+    font-size: xxx-large;
+  }
+  .Dark {
+    background: #d2d3d9;
+    color: #6b6b6b;
+  }
 
-.cellDetailLeft{
+  .inCell {
+    -webkit-print-color-adjust: exact;
+    //background-image: linear-gradient(-110deg, #3498db 20%, #9b59b6 20%);
+  }
+  .outCell {
+    -webkit-print-color-adjust: exact;
+    //background-image: linear-gradient(-110deg, #3498db 20%, #9b59b6 20%);
+  }
+  .inMarker {
+    float: right;
+    display: block;
+  }
+  .outMarker {
+    float: right;
+    display: block;
+  }
+  .detailsDiv {
+    display: none;
+    width: auto;
+    background: rgba(71, 88, 115, 1);
+    color: #fff;
+    text-align: center;
+    padding: 5px 15px 5px 15px;
+    border-radius: 6px;
 
-}
-.cellDetailCenter{
+    position: absolute;
+    top: 60px;
+    left: 480px;
+    z-index: 5;
+  }
 
-}
-.cellDetailRight{
+  .planeDetails {
+    display: none;
+    width: auto;
+    background: rgba(71, 88, 115, 1);
+    color: #fff;
+    text-align: center;
+    padding: 5px 15px 5px 15px;
+    border-radius: 6px;
 
-}
-.inCell{
-  -webkit-print-color-adjust: exact;
-  //background-image: linear-gradient(-110deg, #3498db 20%, #9b59b6 20%);
-}
-.outCell{
-  -webkit-print-color-adjust: exact;
-  //background-image: linear-gradient(-110deg, #3498db 20%, #9b59b6 20%);
-}
-.inMarker{
-  float:right; 
-  display: block;
-}
-.outMarker{
-  float:right; 
-  display: block;
-}
-.detailsDiv {
-  display:none;
-  width: auto;
-  background:rgba(71,88,115,1);
-  color: #fff;
-  text-align: center;
-  padding: 5px 15px 5px 15px;
-  border-radius: 6px;
- 
-  position: absolute;
-  top: 60px;
-  left: 480px;
-  z-index: 5;
-}
-
-.planeDetails {
-  display:none;
-  width: auto;
-  background:rgba(71,88,115,1);
-  color: #fff;
-  text-align: center;
-  padding: 5px 15px 5px 15px;
-  border-radius: 6px;
- 
-  position: absolute;
-  top: 60px;
-  left: 280px;
-  z-index: 1;
-}
-.floatDiv {
-    background:rgba(0,0,0,.4);
-    cursor:pointer;
-    display:none;
-    height:100%;
-    position:fixed;
-    text-align:center;
-    top:0;
-    width:100%;
-    z-index:10000;
-}
-.floatDiv .helper{
-    display:inline-block;
-    height:100%;
-    vertical-align:middle;
-}
-.floatDiv > div {
+    position: absolute;
+    top: 60px;
+    left: 280px;
+    z-index: 1;
+  }
+  .floatDiv {
+    background: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    display: none;
+    height: 100%;
+    position: fixed;
+    text-align: center;
+    top: 0;
+    width: 100%;
+    z-index: 10000;
+  }
+  .floatDiv .helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
+  .floatDiv > div {
     background-color: #fff;
     box-shadow: 10px 10px 60px #555;
     display: inline-block;
@@ -201,8 +201,8 @@
     position: relative;
     border-radius: 8px;
     padding: 15px 5%;
-}
-.popupCloseButton {
+  }
+  .popupCloseButton {
     color: #ccc;
     background-color: #fff;
     border: 3px solid #999;
@@ -220,8 +220,8 @@
     height: 30px;
     text-align: center;
     z-index: 1;
-}
-.popupCloseButtonSmall {
+  }
+  .popupCloseButtonSmall {
     color: #ccc;
     background-color: #fff;
     border: 3px solid #999;
@@ -239,8 +239,8 @@
     height: 15px;
     text-align: center;
     z-index: 1;
-}
-.circleIcon {
+  }
+  .circleIcon {
     color: #ccc;
     background-color: #fff;
     border: 2px solid #999;
@@ -255,129 +255,129 @@
     height: 10px;
     text-align: center;
     z-index: 1;
-}
-.exteriorButton {
-  position:relative;
-  left: 10;
-}
-.popupCloseButton:hover {
+  }
+  .exteriorButton {
+    position: relative;
+    left: 10;
+  }
+  .popupCloseButton:hover {
     background-color: #ccc;
-}
-.trigger_floatDiv {
+  }
+  .trigger_floatDiv {
     cursor: pointer;
     font-size: 20px;
     margin: 20px;
     display: inline-block;
     font-weight: bold;
-}
-.error {
-  width: 120px;
-  background-color: red;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  position: absolute;
-  z-index: 1;
-}
-.alert {
-  width: 120px;
-  background-color: grey;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  position: absolute;
-  left:30px;
-  top:50px;
-  z-index: 1;
-}
-/* Tooltip container */
-.tooltip {
-  position: relative;
-  display: inline-block;
-}
-/* Tooltip text */
-.tooltip .tooltiptext {
-  visibility: hidden;
-  min-width: 220px;
-  max-width: 350px;
-  background-color: #94949e;
-  color: black;
-  text-align: center;
-  padding: 5px 5px 5px 5px;
-  border-radius: 6px;
-  position: absolute;
-  z-index: 1;
-}
-.tooltip .tooltiptext {
-  visibility: hidden;
-  bottom: -250px;
-  left: -500%;
-}
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}
-/* arrow */
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 100%;
-  margin-top: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent black transparent transparent;
-  color: red;
-}
-.test{
-  background: red;
-}
-.manifestBooking {
-  box-sizing: border-box;
-}
-.Manifest_Container{
-  margin-top: 60px;
-  vertical-align: top;
-  width:auto;
-  min-width:50px;
-  max-width:500px;
-  padding:10px;
-  display: inline-block;
-}
-.Manifest_Container .Header{
-  background-color:#1e6330;
-  color:#c8fad5;
-  text-align: center;
-  font-weight: bold;
-}
-.Manifest_Container .Manifest{
-  background-color:#ccc;
-}
-.BookingSprite.Manifest{
-  background-color:lightgrey;
-}
-.BookingSprite {
-  box-sizing: border-box;
-  border-radius: 6px;
-  padding: 10px 10px;
-  background-color:lightgrey;
-  display: inline-block;
-  vertical-align: middle;
-  margin: 3px;
-  border-width: 3px;
-  border-style: solid;
-  border-color: transparent black black transparent;
-}
-.PaxSprite {
-  border-radius: 6px;
-  padding: 5px 3px;
-  background-color:#1f1f1f;
-  display: inline-block;
-  vertical-align: middle;
-}
-.productCode {
-  z-index: 1;
-}
+  }
+  .error {
+    width: 120px;
+    background-color: red;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+  }
+  .alert {
+    width: 120px;
+    background-color: grey;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    left: 30px;
+    top: 50px;
+    z-index: 1;
+  }
+  /* Tooltip container */
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  /* Tooltip text */
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    min-width: 220px;
+    max-width: 350px;
+    background-color: #94949e;
+    color: black;
+    text-align: center;
+    padding: 5px 5px 5px 5px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+  }
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    bottom: -250px;
+    left: -500%;
+  }
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+  /* arrow */
+  .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent black transparent transparent;
+    color: red;
+  }
+  .test {
+    background: red;
+  }
+  .manifestBooking {
+    box-sizing: border-box;
+  }
+  .Manifest_Container {
+    margin-top: 60px;
+    vertical-align: top;
+    width: auto;
+    min-width: 50px;
+    max-width: 500px;
+    padding: 10px;
+    display: inline-block;
+  }
+  .Manifest_Container .Header {
+    background-color: #1e6330;
+    color: #c8fad5;
+    text-align: center;
+    font-weight: bold;
+  }
+  .Manifest_Container .Manifest {
+    background-color: #ccc;
+  }
+  .BookingSprite.Manifest {
+    background-color: lightgrey;
+  }
+  .BookingSprite {
+    box-sizing: border-box;
+    border-radius: 6px;
+    padding: 10px 10px;
+    background-color: lightgrey;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 3px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: transparent black black transparent;
+  }
+  .PaxSprite {
+    border-radius: 6px;
+    padding: 5px 3px;
+    background-color: #1f1f1f;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .productCode {
+    z-index: 1;
+  }
 </style>

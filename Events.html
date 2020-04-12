@@ -7,8 +7,10 @@
 */
   var Events = {
     drop: function (event, ui) {
-      console.log("Drop Event: %o", event)
-      console.log("Drop UI: %o", ui)
+      let root = $(this).closest(".root")
+      console.log("Root Table: %o",root.prop("id"))
+      //console.log("Event.target: %o", event.target) // The cell that fired the event (dropped onto in this case)
+      //console.log("Drop UI: %o", ui)
       // $(this) : The cell dropped onto
       // ui.draggable : The dropped sprite
       let dropped = ui.draggable
