@@ -129,9 +129,9 @@ var PlaneManager={
         _this.planes.reg.push(new GA8(parsed))
         
         let num = count +1
-        let planeCell = $( "#ac_" + num)
+        let planeCell = $( "#0_" + num)
         // Standard Load
-        $( "#ac_" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
+        $( "#0_" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
         _this.updateCell(planeCell) // this.updateCell? *********
         count++
       }
@@ -139,9 +139,9 @@ var PlaneManager={
         _this.planes.reg.push(new C206(parsed))
         
         let num = count +1
-        let planeCell = $( "#ac_" + num)
+        let planeCell = $( "#0_" + num)
         // Standard Load
-        $( "#ac_" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
+        $( "#0_" + num).data('PCF',[parsed.REG,[pilots.matrix[0],null],150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
         _this.updateCell(planeCell) // this.updateCell? *********
         count++
       }
