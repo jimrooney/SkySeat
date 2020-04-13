@@ -16,10 +16,21 @@
         $row.append($col)
       }
       $table.append($row)
-      
     }
     function makeTable() {
       var table = $("#root")
+
+        let myRow = []
+      for (let i = 0; i < 5; i++) {
+        let TD = $("<td />", {
+          class: "TableCell Row_1 Col_"+i,
+          id: "1_"+i,
+          text:i,
+        })
+        myRow.push(TD)
+      }
+      let test = "test"
+      let myId = "mytext"
 
       var tdId = "-"
       var tdTitle = $("<input />", {
@@ -27,7 +38,7 @@
         type: "text",
         html: "HTML",
         text: "HI",
-        id: "mytext",
+        id: myId,
       })
       var tdCheckBox = $("<input />", {
         class: "form-control",
@@ -36,21 +47,25 @@
       })
       var tdAction = $("<button />", {
         class: "btn btn-danger",
-        html: "Usuń",
+        html: test,
         id: "mybutton",
         onclick: doOutput(),
       })
-      newRow(table, [tdCheckBox, tdId, tdTitle, tdAction])
+//      newRow(table, [tdCheckBox, tdId, tdTitle, tdAction])
+      newRow(table, myRow)
     }
-    function doOutput(){
-        console.log($("#mytext").html())
-        console.log($("#mytext").text())
-        console.log($("#mybutton").html())
+    function doOutput() {
+      console.log($("#mytext").html())
+      console.log($("#mytext").text())
+      console.log($("#mybutton").html())
     }
     jQuery(document).ready(function () {})
   </script>
-  <button type="button" onclick="makeTable()">Button</button><P>
-    <button type="button" onclick="doOutput()">Out</button>
+  <button type="button" onclick="makeTable()">Button</button>
+</p>
+
+<p>
+  <button type="button" onclick="doOutput()">Out</button>
 </p>
 
 <table class="root" id="TheBoard">
