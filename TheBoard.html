@@ -3,69 +3,71 @@
 </table>
 <p>
   <script>
-    // let row = 11
-    // let column = 6
-    // for (let i = 0; i<=row;i++){
-    //     $("root").append("<tr")
-    // }
+    var TheBoard = {
+      newRow: function ($table, cols) {
+        $row = $("<tr/>")
+        for (i = 0; i < cols.length; i++) {
+          $col = $("<td/>").append(cols[i])
+          $row.append($col)
+        }
+        $table.append($row)
+      },
+      makeTable: function () {
+        let target = $("#root")
+        let table = []
+        let addRow = []
+        let numCols = 5
+        let numRows = 11
+        // Header Row
+        let headerRow = []
+        headerRow.push($('<td class="PickupAllCell" id="PH">&#9951;</td>'))
+        headerRow.push($('<td class="Label Row_0 Col_0" id="0_0">Time</td>'))
 
-    function newRow($table, cols) {
-      $row = $("<tr/>")
-      for (i = 0; i < cols.length; i++) {
-        $col = $("<td/>").append(cols[i])
-        $row.append($col)
-      }
-      $table.append($row)
-    }
-    function makeTable() {
-      var table = $("#root")
+        for (let i = 0; i < numCols; i++) {
+          let col = $("<td />", {
+            class: "PlaneCell Row_0 Col_" + i,
+            id: "0" + "" + i,
+          })
+          headerRow.push(col)
+        }
+        this.newRow(target, headerRow)
 
+        // After the header row, we'll loop over the row maker function
+        let thisRow = 1 // this will change to the current loop itteration when we start looping *****
+        let thisHour = time.getHourByRow(thisRow,2) 
         let myRow = []
-      for (let i = 0; i < 5; i++) {
-        let TD = $("<td />", {
-          class: "TableCell Row_1 Col_"+i,
-          id: "1_"+i,
-          text:i,
-        })
-        myRow.push(TD)
-      }
-      let test = "test"
-      let myId = "mytext"
+        myRow.push($('<td class="PickupCell" id="Row_' + thisRow + '"><span style="color: white;">00</span></td>'))
+        
+        let timeTD = '<td class="TimeCell Row_' + thisRow + ' Col_0" id="' + thisRow + '_0">'+
+        '<span class="HourSchedule"><span class="hour">' + thisHour + '</span>:<span class="minute">00</span></span>' +
+        '<div class="HalfHourSchedule">(' + thisHour + ':30)</div></td>'
 
-      var tdId = "-"
-      var tdTitle = $("<input />", {
-        class: "form-control formInput",
-        type: "text",
-        html: "HTML",
-        text: "HI",
-        id: myId,
-      })
-      var tdCheckBox = $("<input />", {
-        class: "form-control",
-        type: "checkbox",
-        name: "check",
-      })
-      var tdAction = $("<button />", {
-        class: "btn btn-danger",
-        html: test,
-        id: "mybutton",
-        onclick: doOutput(),
-      })
-//      newRow(table, [tdCheckBox, tdId, tdTitle, tdAction])
-      newRow(table, myRow)
+        myRow.push($(timeTD))
+
+        for (let i = 0; i < 5; i++) {
+          let TD = $("<td />", {
+            class: "TableCell Row_1 Col_" + i,
+            id: "1_" + i,
+            text: i,
+          })
+          myRow.push(TD)
+        }
+        this.newRow(target, myRow)
+      },
     }
-    function doOutput() {
+    function showOutput() {
       console.log($("#mytext").html())
       console.log($("#mytext").text())
       console.log($("#mybutton").html())
+      init()
     }
     jQuery(document).ready(function () {})
   </script>
-  <button type="button" onclick="makeTable()">Button</button>
+  <button type="button" onclick="TheBoard.makeTable()">makeTable</button>
 </p>
 
 <p>
-  <button type="button" onclick="doOutput()">Out</button>
+  <button type="button" onclick="showOutput()">Test</button>
 </p>
 
 <table class="root" id="TheBoard">

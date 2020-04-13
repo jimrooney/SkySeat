@@ -1,69 +1,84 @@
 <script>
-var time = {
+  var time = {
     //
     // We can make getTime pseudo-polymorphic by examining what's passed in and replying accordingly.
     // So if we pass in a in12hr boolean, we give it back in AM/PM
     //
-    getTime: function(string,in12hr){
+    getTime: function (string, in12hr) {
       let date = new Date(string)
       let hours = date.getHours()
       let minutes = date.getMinutes()
-      if ( minutes == 0 ){
+      if (minutes == 0) {
         minutes = "00"
-        }
+      }
       return hours + ":" + minutes
     },
-    getHour: function(string) {
-    //time: "2019-10-03 15:15:00"
-    var date = new Date(string)
-    var hour = date.getHours()
-    if (hour>12){
-      hour = hour - 12
-    }
-    if (hour>6 && hour<10){
-      hour = "" + 0 + hour
-    }
-    hour = hour  + ":00"
-    return hour
+    getHour: function (string) {
+      //time: "2019-10-03 15:15:00"
+      var date = new Date(string)
+      var hour = date.getHours()
+      if (hour > 12) {
+        hour = hour - 12
+      }
+      if (hour > 6 && hour < 10) {
+        hour = "" + 0 + hour
+      }
+      hour = hour + ":00"
+      return hour
     },
-    getRow: function(string){
+    getHourByRow: function (row,numDigits) {
+      let hour = row + 7 // Assumes row 0 is a header row and the day starts at 8am
+      if (hour > 12) {
+        hour = hour - 12
+      }
+      if (!!numDigits && numDigits>1 && hour<10){
+        hour = "0" + "" + hour
+      }
+      return hour
+    },
+    getRow: function (string) {
       let hour = this.getHour(string)
-      hour = hour.replace(/\:\d\d/,"")
-      
-      //console.log("Hour: %o",hour)
-      
-      let checkHour = ""
-      
-        // Array of all TimeCells
-        var all = $(".TimeCell").map(function() {
-          return this.id;
-        }).get();
-        
-        //console.log("TimeCells: %o",all)
-        
-          // Match Time to Timecell
-          for (id in all){
-            let row = $("#" + all[id]).parent().prop('id').match(/\d+/g) // Get Time Row#
-            
-            
-            let cellTime = $("#" + all[id]).text() // Cell Text (08:00)
-            //console.log("CellTimeText: %o",cellTime)
-            
-            let cellHour = $("#" + all[id]).children().children().filter(".hour")
-            if (cellHour.length>0){
-              checkHour = cellHour.text()
-            } else {
-              checkHour = ""
-            }
-            let timeCellID = $("#" + all[id]).prop('id') // RowCol
-            
-            
-            if (checkHour == hour){
-              return row
-            }
-        } 
-      return null
-    }
+      hour = hour.replace(/\:\d\d/, "")
 
-}
+      //console.log("Hour: %o",hour)
+
+      let checkHour = ""
+
+      // Array of all TimeCells
+      var all = $(".TimeCell")
+        .map(function () {
+          return this.id
+        })
+        .get()
+
+      //console.log("TimeCells: %o",all)
+
+      // Match Time to Timecell
+      for (id in all) {
+        let row = $("#" + all[id])
+          .parent()
+          .prop("id")
+          .match(/\d+/g) // Get Time Row#
+
+        let cellTime = $("#" + all[id]).text() // Cell Text (08:00)
+        //console.log("CellTimeText: %o",cellTime)
+
+        let cellHour = $("#" + all[id])
+          .children()
+          .children()
+          .filter(".hour")
+        if (cellHour.length > 0) {
+          checkHour = cellHour.text()
+        } else {
+          checkHour = ""
+        }
+        let timeCellID = $("#" + all[id]).prop("id") // RowCol
+
+        if (checkHour == hour) {
+          return row
+        }
+      }
+      return null
+    },
+  }
 </script>
