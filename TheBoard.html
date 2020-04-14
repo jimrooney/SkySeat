@@ -17,7 +17,7 @@
         let table = []
         let addRow = []
         let numCols = 5
-        let numRows = 11
+        let numRows = 12
         // Header Row
         let headerRow = []
         headerRow.push($('<td class="PickupAllCell" id="PH">&#9951;</td>'))
@@ -32,27 +32,44 @@
         }
         this.newRow(target, headerRow)
 
-        // After the header row, we'll loop over the row maker function
-        let thisRow = 1 // this will change to the current loop itteration when we start looping *****
-        let thisHour = time.getHourByRow(thisRow,2) 
-        let myRow = []
-        myRow.push($('<td class="PickupCell" id="Row_' + thisRow + '"><span style="color: white;">00</span></td>'))
-        
-        let timeTD = '<td class="TimeCell Row_' + thisRow + ' Col_0" id="' + thisRow + '_0">'+
-        '<span class="HourSchedule"><span class="hour">' + thisHour + '</span>:<span class="minute">00</span></span>' +
-        '<div class="HalfHourSchedule">(' + thisHour + ':30)</div></td>'
+        for (let r = 0; r < numRows; r++) {
+          // After the header row, we'll loop over the row maker function
+          let thisRow = r
+          let thisHour = time.getHourByRow(thisRow, 2)
+          let myRow = []
+          myRow.push(
+            $(
+              '<td class="PickupCell" id="Row_' +
+                thisRow +
+                '"><span style="color: white;">00</span></td>'
+            )
+          )
 
-        myRow.push($(timeTD))
+          let timeTD =
+            '<td class="TimeCell Row_' +
+            thisRow +
+            ' Col_0" id="' +
+            thisRow +
+            '_0">' +
+            '<span class="HourSchedule"><span class="hour">' +
+            thisHour +
+            '</span>:<span class="minute">00</span></span>' +
+            '<div class="HalfHourSchedule">(' +
+            thisHour +
+            ":30)</div></td>"
 
-        for (let i = 0; i < 5; i++) {
-          let TD = $("<td />", {
-            class: "TableCell Row_1 Col_" + i,
-            id: "1_" + i,
-            text: i,
-          })
-          myRow.push(TD)
+          myRow.push($(timeTD))
+
+          for (let c = 0; c < numCols; c++) {
+            let TD = $("<td />", {
+              class: "TableCell Row_" + r + " Col_" + c,
+              id: r + "_" + c,
+              text: r + "_" + c,
+            })
+            myRow.push(TD)
+          }
+          this.newRow(target, myRow)
         }
-        this.newRow(target, myRow)
       },
     }
     function showOutput() {
