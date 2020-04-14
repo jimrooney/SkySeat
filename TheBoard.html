@@ -18,25 +18,34 @@
         let addRow = []
         let numCols = 5
         let numRows = 12
+        // ----------------------
         // Header Row
+        // ----------------------
         let headerRow = []
         headerRow.push($('<td class="PickupAllCell" id="PH">&#9951;</td>'))
         headerRow.push($('<td class="Label Row_0 Col_0" id="0_0">Time</td>'))
-
-        for (let i = 0; i < numCols; i++) {
+        //
+        for (let i = 1; i <= numCols; i++) {
+          let id = "0" + "_" + i
           let col = $("<td />", {
             class: "PlaneCell Row_0 Col_" + i,
-            id: "0" + "" + i,
+            id: id,
+            text: id,
           })
           headerRow.push(col)
         }
         this.newRow(target, headerRow)
-
-        for (let r = 0; r < numRows; r++) {
+        //
+        // Plotting Board
+        //
+        for (let r = 1; r <= numRows; r++) {
           // After the header row, we'll loop over the row maker function
           let thisRow = r
           let thisHour = time.getHourByRow(thisRow, 2)
           let myRow = []
+          //
+          // Pickup Column
+          //
           myRow.push(
             $(
               '<td class="PickupCell" id="Row_' +
@@ -44,7 +53,9 @@
                 '"><span style="color: white;">00</span></td>'
             )
           )
-
+          //
+          // Time column
+          //
           let timeTD =
             '<td class="TimeCell Row_' +
             thisRow +
@@ -57,10 +68,11 @@
             '<div class="HalfHourSchedule">(' +
             thisHour +
             ":30)</div></td>"
-
           myRow.push($(timeTD))
-
-          for (let c = 0; c < numCols; c++) {
+          //
+          // TableCells
+          //
+          for (let c = 1; c <= numCols; c++) {
             let TD = $("<td />", {
               class: "TableCell Row_" + r + " Col_" + c,
               id: r + "_" + c,
