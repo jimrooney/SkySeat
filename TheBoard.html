@@ -1,9 +1,13 @@
-<table id="root">
-  TABLE
-</table>
+<div id="root" class="Board"></div>
 <p>
   <script>
     var TheBoard = {
+      next: function(){
+        this.test()
+      },
+      test: function(){
+        console.log("Table: %o" , $("#root .datepicker").prop("id"))
+      },
       newRow: function ($table, cols) {
         $row = $("<tr/>")
         for (i = 0; i < cols.length; i++) {
@@ -13,11 +17,14 @@
         $table.append($row)
       },
       makeTable: function () {
-        let target = $("#root")
-        let table = []
+        let anchor = "root"
         let addRow = []
         let numCols = 5
         let numRows = 12
+
+        let table = $("#" + anchor).append("<table class='BoardTable' id='MYTable' />")
+
+        table.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
         // ----------------------
         // Header Row
         // ----------------------
@@ -34,7 +41,7 @@
           })
           headerRow.push(col)
         }
-        this.newRow(target, headerRow)
+        this.newRow(table, headerRow)
         //
         // Plotting Board
         //
@@ -46,13 +53,7 @@
           //
           // Pickup Column
           //
-          myRow.push(
-            $(
-              '<td class="PickupCell" id="Row_' +
-                thisRow +
-                '"><span style="color: white;">00</span></td>'
-            )
-          )
+          myRow.push($('<td class="PickupCell" id="Row_' + thisRow + '"><span style="color: white;">00</span></td>'))
           //
           // Time column
           //
@@ -80,15 +81,25 @@
             })
             myRow.push(TD)
           }
-          this.newRow(target, myRow)
+          this.newRow(table, myRow)
         }
+        //
+        // Initialize this board
+        //
+        //
+        // DatePicker
+        //
+        $("#" + anchor + " .datepicker").datepicker({
+          dateFormat: "dd/mm/yy",
+          firstDay: 1,
+          onSelect: function (dateText) {
+            console.log("Date Selected")
+            TheBoard.next(0, true)
+            $(this).blur() // Removes focus
+          },
+        })
+        $("#" + anchor + " .datepicker").datepicker("setDate", "today")
       },
-    }
-    function showOutput() {
-      console.log($("#mytext").html())
-      console.log($("#mytext").text())
-      console.log($("#mybutton").html())
-      init()
     }
     jQuery(document).ready(function () {})
   </script>
@@ -96,7 +107,7 @@
 </p>
 
 <p>
-  <button type="button" onclick="showOutput()">Test</button>
+  <button type="button" onclick="TheBoard.test()">Test</button>
 </p>
 
 <table class="root" id="TheBoard">
@@ -131,9 +142,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_1 Col_0" id="1_0">
-        <span class="HourSchedule"
-          ><span class="hour">08</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">08</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(8:30)</div>
       </td>
       <td class="TableCell Row_1 Col_1" id="1_1"></td>
@@ -147,9 +156,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_2 Col_0" id="2_0">
-        <span class="HourSchedule"
-          ><span class="hour">09</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">09</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(9:30)</div>
       </td>
       <td class="TableCell Row_2 Col_1" id="2_1"></td>
@@ -163,9 +170,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_3 Col_0" id="3_0">
-        <span class="HourSchedule"
-          ><span class="hour">10</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">10</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(10:30)</div>
       </td>
       <td class="TableCell Row_3 Col_1" id="3_1"></td>
@@ -179,9 +184,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_4 Col_0" id="4_0">
-        <span class="HourSchedule"
-          ><span class="hour">11</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">11</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(11:30)</div>
       </td>
       <td class="TableCell Row_4 Col_1" id="4_1"></td>
@@ -195,9 +198,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_5 Col_0" id="5_0">
-        <span class="HourSchedule"
-          ><span class="hour">12</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">12</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(12:30)</div>
       </td>
       <td class="TableCell Row_5 Col_1" id="5_1"></td>
@@ -211,9 +212,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_6 Col_0" id="6_0">
-        <span class="HourSchedule"
-          ><span class="hour">01</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">01</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(1:30)</div>
       </td>
       <td class="TableCell Row_6 Col_1" id="6_1"></td>
@@ -227,9 +226,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_7 Col_0" id="7_0">
-        <span class="HourSchedule"
-          ><span class="hour">2</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">2</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(2:30)</div>
       </td>
       <td class="TableCell Row_7 Col_1" id="7_1"></td>
@@ -243,9 +240,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_8 Col_0" id="8_0">
-        <span class="HourSchedule"
-          ><span class="hour">3</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">3</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(3:30)</div>
       </td>
       <td class="TableCell Row_8 Col_1" id="8_1"></td>
@@ -259,9 +254,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_9 Col_0" id="9_0">
-        <span class="HourSchedule"
-          ><span class="hour">4</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">4</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(4:30)</div>
       </td>
       <td class="TableCell Row_9 Col_1" id="9_1"></td>
@@ -275,9 +268,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_10 Col_0" id="10_0">
-        <span class="HourSchedule"
-          ><span class="hour">5</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">5</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(5:30)</div>
       </td>
       <td class="TableCell Row_10 Col_1" id="10_1"></td>
@@ -291,9 +282,7 @@
         <span style="color: white;">00</span>
       </td>
       <td class="TimeCell Row_11 Col_0" id="11_0">
-        <span class="HourSchedule"
-          ><span class="hour">6</span>:<span class="minute">00</span></span
-        >
+        <span class="HourSchedule"><span class="hour">6</span>:<span class="minute">00</span></span>
         <div class="HalfHourSchedule">(6:30)</div>
       </td>
       <td class="TableCell Row_11 Col_1" id="11_1"></td>
