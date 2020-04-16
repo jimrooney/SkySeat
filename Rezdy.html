@@ -14,13 +14,20 @@ onRezdyLoad
 */
   var Rezdy = {
     // --------------------------------- Load Rezdy ----------------------------------------------
+    /*
+
+    We're just checking to see if a date was passed in, and if not, check the date picker.
+    Since we're going to have multiple date pickers, we'll want to do something like pass in the "board" object and just interragate it's datepicker.
+    Then we can update that board with the return data.
+
+    */
     load: function (requestedDate) {
       console.log("Rezdy.load( %o )", requestedDate)
 
       if (!!requestedDate) {
         requestedDate = requestedDate
       } else {
-        requestedDate = Dates.getNZ($("#datepicker").datepicker("getDate"))
+        requestedDate = Dates.getNZ($("#root .datepicker").datepicker("getDate"))
         console.log("No date passed in, using: %o", requestedDate)
       }
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")

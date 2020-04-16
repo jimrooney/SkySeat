@@ -1,0 +1,25 @@
+<script>
+    class Board{
+        constructor($root){
+            this.date = ""
+            this.data = {}
+            this.root = $root
+
+        }
+              //
+      // Autogen boards
+      //
+      newRow ($table, cols) {
+        $row = $("<tr/>")
+        for (i = 0; i < cols.length; i++) {
+          $col = $("<td/>").append(cols[i])
+          $row.append($col)
+        }
+        $table.append($row)
+      }
+        writeBoard(){
+            let table = this.root.append("<table class='BoardTable' id='MYTable' />")
+            table.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
+        }
+    }
+</script>

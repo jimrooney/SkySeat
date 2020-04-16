@@ -219,11 +219,13 @@
     // [[ Load Current Day ]]
     // Moved into PlaneManager (fixes a loading error where the day tries to plot before the planes exist)
     //
-
     theBoard.timeStamp.loadRemote()
   })
   //-------------------------------------------------------------------------------------------
 
+// ---------------------------
+// Init makes things draggable
+// ---------------------------
   function init() {
     $("#details,.Manifest_Container").draggable({
       //$("#details,.Manifest_Container, .pickupDetails").draggable({

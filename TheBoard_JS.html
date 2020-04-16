@@ -697,7 +697,7 @@ var theBoard = {
     google.script.run.withSuccessHandler(this.show).loadBoard(d)
   },
   show: function(arg){
-  
+  console.log("theBoard.show(%o)",arg)
   if(!arg){console.log("No Data")}
   //
   if(arg){

@@ -11,11 +11,16 @@ This object can handle all of the error checking (like null checking)
       this.list = $.merge(list, this.list)
     },
     getManifest: function (date) {
+      console.log("Bookings.getManifest(%o)",date)
       let manifest = {}
       if (!!date && date.match(/\d\d.\d\d.*/gi)) {
+        // Checkvalve... date is sane
       } else {
         console.log("Booking.getManifest() error... bad date: %o", date)
+        // ***************************************************************
         // if no date, maybe assume the date from the "today" date picker?
+        // for now, we'll just return
+        return
       }
       for (let a in this.list) {
         if (!!this.list[a] && this.list[a].flight) {

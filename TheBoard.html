@@ -2,12 +2,49 @@
 <p>
   <script>
     var TheBoard = {
-      next: function(){
+      next: function () {
         this.test()
       },
-      test: function(){
-        console.log("Table: %o" , $("#root .datepicker").prop("id"))
+      test: function () {
+        console.log("Table: %o", $("#root .datepicker").prop("id"))
+        this.load()
       },
+// ***********************************************************************************************
+// this is where the board should maybe become an object / class
+// ***********************************************************************************************
+/*
+      If boards were classes, then "load()" could mean "load this board"
+
+      for now, we can build it referencing the current board, but for multiple boards, it'll need to change
+      Either a class, so we can call "this", or maybe pass in the jQuery handler?
+*/
+      // Loads data from the spreadsheet (not rezdy)
+      load: function (d) {
+        if (!!d) {
+          d
+        } else {
+          d = Dates.getNZ($("#root .datepicker").datepicker("getDate"))
+        }
+        display.clearBoard()
+        $("#SaveButton").css({ background: "green" })
+        setTimeout(function () {
+          $("#SaveButton").css({ background: "blue" })
+        }, 2000)
+        // This will change *****************************************************************
+        // currenly we have to reference the old theBoard rather than "this" (TheBoard)
+        console.log("loadBoard(%o)",d)
+        google.script.run.withSuccessHandler(theBoard.show).loadBoard(d)
+//        google.script.run.withSuccessHandler(this.show).loadBoard(d)
+//
+// *******************************************
+// Load Rezdy with every date change (for now)
+// *******************************************
+        Rezdy.load()
+      },
+
+      //
+      // Autogen boards
+      //
       newRow: function ($table, cols) {
         $row = $("<tr/>")
         for (i = 0; i < cols.length; i++) {
@@ -110,7 +147,7 @@
   <button type="button" onclick="TheBoard.test()">Test</button>
 </p>
 
-<table class="root" id="TheBoard">
+<table>
   <tbody>
     <div><input class="Nav" type="text" size="8" id="datepicker" /></div>
     <tr id="0">

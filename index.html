@@ -17,6 +17,7 @@
   <?!= include('Click'); ?>
   <?!= include('PlaneManager'); ?>
   <?!= include('Rezdy'); ?>
+  <?!= include('Board'); ?>
   
   <base target="_top">
   </head>
@@ -30,13 +31,13 @@
   </div>
   
   
-  
-  
-  
-  
-  
+  <div id="AutoBoard"></div>
+
   <script>
- 
+    var testBoard = new Board($("#AutoBoard"))
+    testBoard.writeBoard()
+    
+
   var TheBoardManifest // used for displaying manifest data (Don't think we're actually using this yet)
   var style = "compact" //("compact","verbose") // global style (for BookingSprite at the moment) 
   
