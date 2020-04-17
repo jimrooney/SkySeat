@@ -97,8 +97,8 @@
                 display.update()
               })
           
-          let totalPax = Manifest.getTotalPax()
-          $("#ManifestMessages").html(Manifest.getTotalPax() + " pax ")
+          // let totalPax = Manifest.getTotalPax()
+          // $("#ManifestMessages").html(Manifest.getTotalPax() + " pax ")
         }
       }
       init() // Calls the MakeDraggable code again
@@ -254,15 +254,15 @@
       if (jsn) {
         _bookings = JSON.parse(JSON.stringify(jsn))
         let bookings = []
-        for (let b in _bookings) {
-          if (_bookings[b].orderNumber) {
-            if (Manifest.getBooking(_bookings[b].orderNumber)) {
-              bookings.push(_bookings[b].orderNumber)
-            } else {
-              delete _bookings[b]
-            }
-          }
-        }
+        // for (let b in _bookings) {
+        //   if (_bookings[b].orderNumber) {
+        //     if (Manifest.getBooking(_bookings[b].orderNumber)) {
+        //       bookings.push(_bookings[b].orderNumber)
+        //     } else {
+        //       delete _bookings[b]
+        //     }
+        //   }
+        // }
         //
         // If there's nothing left, clear the cell. Otherwise set the JSON equal to whatever bookings are left.
         //

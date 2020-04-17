@@ -6,6 +6,7 @@
       this.root = $root
       this.numCols = 5
       this.numRows = 12
+      this.manifest = new Manifest()
     }
     //
     // Autogen boards
@@ -27,6 +28,10 @@
       // This sets the picker to NZ format (dd/mm/yyy) and to today's date
       Dates.initPicker($("#" + this.root.prop("id") + " .datepicker"))
 
+      //
+      // Manifest div
+      //
+      this.root.append(this.manifest.HTML) // need to float or otherwise position it *********
       // ----------------------
       // The Board Table
       // ----------------------
