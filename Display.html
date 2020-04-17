@@ -290,40 +290,6 @@
       } else {
         $(".Dev").hide()
       }
-      //
-      // Each PlaneCell
-      //
-      $(".PlaneCell").each(function () {
-        let PCF = $(this).data("PCF")
-        $(this).empty() // Just remove everything for now *****************
-        if (PCF) {
-          let _content =
-            "<span id='content'>" +
-            PCF[0] +
-            "<br>" +
-            PCF[1][0][0] +
-            "<br>" +
-            PCF[2] +
-            "L" +
-            "</span>"
-          $(this).append(_content)
-          if (PCF[1][1]) {
-            _content =
-              "<br><span style='font-size:small;'>" +
-              PCF[1][1][0] +
-              "</span><br>"
-            $(this).append(_content)
-          }
-          let _plane = PlaneManager.planes.getPlane(PCF[0])
-          if (_plane) {
-            let c = _plane.regColor
-            let bkg = "linear-gradient(180deg, " + c + " -20%, #fff 50%)"
-            $(this).css("background-image", bkg)
-
-            // $(this).css("opacity", 0.75)
-          }
-        }
-      })
       // ------------------------------------------------------------------------------
       // Colour the manifest
       // ------------------------------------------------------------------------------
