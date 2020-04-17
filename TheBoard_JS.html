@@ -662,11 +662,11 @@ var theBoard = {
     if(!JSON){return}
     let data = JSON.parse(JSON)
   },
-  next: function(n,rzdy){
+  next: function($picker,n,rzdy){
     let num = 1
     if (n || n == 0){ num = n}
     
-    let dd = $("#datepicker").datepicker('getDate')
+    let dd = $picker.datepicker('getDate')
     dd=dd.addDays(num)
     let newDate = Dates.getNZ(dd)
     //
@@ -680,7 +680,7 @@ var theBoard = {
     //
     // Update Picker
     //
-    $("#datepicker").datepicker('setDate', dd)
+    $picker.datepicker('setDate', dd)
   },
   previous: function(){
     this.next(-1)
@@ -689,7 +689,7 @@ var theBoard = {
     if (!!d){
       d
     } else {
-      d = Dates.getNZ($("#datepicker").datepicker('getDate'))
+      return
     }
     display.clearBoard()
     $("#SaveButton").css({"background": "green",})

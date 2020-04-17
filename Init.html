@@ -1,5 +1,7 @@
 <script>
   $(document).ready(function () {
+    // ***************************************************************
+    // This should all be able to be removed since the boards are objects now and the updates can be called against them
     //
     // Prototype in custom functions
     //
@@ -35,8 +37,13 @@
     //console.clear()
   })
 
+    // ------------------------------------------------------------------------------------
+    // Global variables (most can/should be moved into a root object instead)
+    // ------------------------------------------------------------------------------------
   var isLive = false
   var isMobile = false // ( set to true for testing)
+  // ******************** This can move **************************
+  var style = "compact" //("compact","verbose") // global style (for BookingSprite at the moment)
   //
   // isMobile
   //
@@ -153,6 +160,7 @@
         $(this).html("<BR>")
       }
     })
+
     $("#divPopupMessage").dialog({
       autoOpen: false,
       title: "Inbox",
@@ -183,24 +191,9 @@
       $(".Nav").css("font-size", "xx-large")
     }
     // For Mobile Click
-    $(".TableCell, .Print, .popupCloseButton, .MobileButton")
-      .mouseenter(_overEvent)
-      .mouseleave(_outEvent)
+    $(".TableCell, .Print, .popupCloseButton, .MobileButton").mouseenter(_overEvent).mouseleave(_outEvent)
     //
-    // DatePicker
-    //
-    $("#datepicker").datepicker({
-      dateFormat: "dd/mm/yy",
-      firstDay: 1,
-      onSelect: function (dateText) {
-        console.log("Date Selected")
-        theBoard.next(0, true)
-        $(this).blur()
-      },
-    })
-    $("#datepicker").datepicker("setDate", "today")
-    //
-    // hide Day 2 div by default
+    // hide Day 2 div by default ******************************* day 2's about to become a much different thing ****************
     //
     showDay()
     //
@@ -219,13 +212,16 @@
     // [[ Load Current Day ]]
     // Moved into PlaneManager (fixes a loading error where the day tries to plot before the planes exist)
     //
+    // ******************************************
+    // Timestamping will become a syncing thing
+    // ******************************************
     theBoard.timeStamp.loadRemote()
   })
   //-------------------------------------------------------------------------------------------
 
-// ---------------------------
-// Init makes things draggable
-// ---------------------------
+  // ---------------------------
+  // Init makes things draggable
+  // ---------------------------
   function init() {
     $("#details,.Manifest_Container").draggable({
       //$("#details,.Manifest_Container, .pickupDetails").draggable({

@@ -20,8 +20,17 @@
     }
     writeBoard() {
       console.log("Write Board")
+      //
+      // DatePicker
+      //
+      this.root.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
+      // This sets the picker to NZ format (dd/mm/yyy) and to today's date
+      Dates.initPicker($("#" + this.root.prop("id") + " .datepicker"))
+
+      // ----------------------
+      // The Board Table
+      // ----------------------
       let table = this.root.append("<table class='BoardTable' id='MYTable' />")
-      table.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
       // ----------------------
       // Header Row
       // ----------------------
@@ -81,19 +90,6 @@
         }
         this.newRow(table, myRow)
       }
-      //
-      // DatePicker
-      //
-      $("#" + this.root.prop("id") + " .datepicker").datepicker({
-        dateFormat: "dd/mm/yy",
-        firstDay: 1,
-        onSelect: function (dateText) {
-          console.log("Date Selected")
-          TheBoard.next(0, true)
-          $(this).blur() // Removes focus
-        },
-      })
-      $("#" + this.root.prop("id") + " .datepicker").datepicker("setDate", "today")
     }
   }
 </script>

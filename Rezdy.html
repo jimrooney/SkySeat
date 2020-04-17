@@ -27,8 +27,9 @@ onRezdyLoad
       if (!!requestedDate) {
         requestedDate = requestedDate
       } else {
-        requestedDate = Dates.getNZ($("#root .datepicker").datepicker("getDate"))
-        console.log("No date passed in, using: %o", requestedDate)
+        // requestedDate = Dates.getNZ($("#root .datepicker").datepicker("getDate"))
+        console.log("No date passed in")
+        return
       }
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
       google.script.run
