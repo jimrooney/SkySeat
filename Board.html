@@ -1,25 +1,99 @@
 <script>
-    class Board{
-        constructor($root){
-            this.date = ""
-            this.data = {}
-            this.root = $root
-
-        }
-              //
-      // Autogen boards
-      //
-      newRow ($table, cols) {
-        $row = $("<tr/>")
-        for (i = 0; i < cols.length; i++) {
-          $col = $("<td/>").append(cols[i])
-          $row.append($col)
-        }
-        $table.append($row)
-      }
-        writeBoard(){
-            let table = this.root.append("<table class='BoardTable' id='MYTable' />")
-            table.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
-        }
+  class Board {
+    constructor($root) {
+      this.date = ""
+      this.data = {}
+      this.root = $root
+      this.numCols = 5
+      this.numRows = 12
     }
+    //
+    // Autogen boards
+    //
+    newRow($table, cols) {
+      let $row = $("<tr/>")
+      for (let i = 0; i < cols.length; i++) {
+        let $col = $("<td/>").append(cols[i])
+        $row.append($col)
+      }
+      $table.append($row)
+    }
+    writeBoard() {
+      console.log("Write Board")
+      let table = this.root.append("<table class='BoardTable' id='MYTable' />")
+      table.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
+      // ----------------------
+      // Header Row
+      // ----------------------
+      let headerRow = []
+      headerRow.push($('<td class="PickupAllCell" id="PH">&#9951;</td>'))
+      headerRow.push($('<td class="Label Row_0 Col_0" id="0_0">Time</td>'))
+      //
+      console.log("numCols: %o", this.numCols)
+      for (let i = 1; i <= this.numCols; i++) {
+        let id = "0" + "_" + i
+        let col = $("<td />", {
+          class: "PlaneCell Row_0 Col_" + i,
+          id: id,
+          text: id,
+        })
+        headerRow.push(col)
+      }
+      this.newRow(table, headerRow)
+      //
+      // Plotting Board
+      //
+      for (let r = 1; r <= this.numRows; r++) {
+        // After the header row, we'll loop over the row maker function
+        let thisRow = r
+        let thisHour = time.getHourByRow(thisRow, 2)
+        let myRow = []
+        //
+        // Pickup Column
+        //
+        myRow.push($('<td class="PickupCell" id="Row_' + thisRow + '"><span style="color: white;">00</span></td>'))
+        //
+        // Time column
+        //
+        let timeTD =
+          '<td class="TimeCell Row_' +
+          thisRow +
+          ' Col_0" id="' +
+          thisRow +
+          '_0">' +
+          '<span class="HourSchedule"><span class="hour">' +
+          thisHour +
+          '</span>:<span class="minute">00</span></span>' +
+          '<div class="HalfHourSchedule">(' +
+          thisHour +
+          ":30)</div></td>"
+        myRow.push($(timeTD))
+        //
+        // TableCells
+        //
+        for (let c = 1; c <= this.numCols; c++) {
+          let TD = $("<td />", {
+            class: "TableCell Row_" + r + " Col_" + c,
+            id: r + "_" + c,
+            text: r + "_" + c,
+          })
+          myRow.push(TD)
+        }
+        this.newRow(table, myRow)
+      }
+      //
+      // DatePicker
+      //
+      $("#" + this.root.prop("id") + " .datepicker").datepicker({
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        onSelect: function (dateText) {
+          console.log("Date Selected")
+          TheBoard.next(0, true)
+          $(this).blur() // Removes focus
+        },
+      })
+      $("#" + this.root.prop("id") + " .datepicker").datepicker("setDate", "today")
+    }
+  }
 </script>

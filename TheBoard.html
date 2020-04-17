@@ -46,9 +46,9 @@
       // Autogen boards
       //
       newRow: function ($table, cols) {
-        $row = $("<tr/>")
+        let $row = $("<tr/>")
         for (i = 0; i < cols.length; i++) {
-          $col = $("<td/>").append(cols[i])
+          let $col = $("<td/>").append(cols[i])
           $row.append($col)
         }
         $table.append($row)
@@ -138,7 +138,6 @@
         $("#" + anchor + " .datepicker").datepicker("setDate", "today")
       },
     }
-    jQuery(document).ready(function () {})
   </script>
   <button type="button" onclick="TheBoard.makeTable()">makeTable</button>
 </p>

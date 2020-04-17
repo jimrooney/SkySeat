@@ -1,155 +1,139 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <?!= include('jQuery'); ?>
-  <?!= include('Dates'); ?>
-  <?!= include('Time'); ?>
-  <?!= include('Events'); ?>
-  <?!= include('Utility_JS'); ?>
-  <?!= include('CSS'); ?>
-  <?!= include('Bookings'); ?>
-  <?!= include('GYA'); ?>
-  <?!= include('Test'); ?>
-  <?!= include('Init'); ?>
-  <?!= include('Display'); ?>
-  <?!= include('TheBoard_JS'); ?>
-  <?!= include('WB'); ?>
-  <?!= include('Click'); ?>
-  <?!= include('PlaneManager'); ?>
-  <?!= include('Rezdy'); ?>
-  <?!= include('Board'); ?>
-  
-  <base target="_top">
+    <?!= include('jQuery'); ?>
+    <?!= include('Dates'); ?>
+    <?!= include('Time'); ?>
+    <?!= include('Events'); ?>
+    <?!= include('Utility_JS'); ?>
+    <?!= include('CSS'); ?>
+    <?!= include('Bookings'); ?>
+    <?!= include('GYA'); ?>
+    <?!= include('Test'); ?>
+    <?!= include('Init'); ?>
+    <?!= include('Display'); ?>
+    <?!= include('TheBoard_JS'); ?>
+    <?!= include('WB'); ?>
+    <?!= include('Click'); ?>
+    <?!= include('PlaneManager'); ?>
+    <?!= include('Rezdy'); ?>
+    <?!= include('Board'); ?>
+
+    <base target="_top" />
   </head>
   <body>
-  <div id="HoverBar" style="position: fixed; top: 0; left:0; width:100%;text-align: center; background:#737373;color:white">
-  [[ 2.3 ]] []
-  </div>
-  <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
-  <div id="PickupList" class="pickupDetails">
-    <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
-  </div>
-  
-  
-  <div id="AutoBoard"></div>
+    <div
+      id="HoverBar"
+      style="position: fixed; top: 0; left: 0; width: 100%; text-align: center; background: #737373; color: white;"
+    >
+      [[ 2.3 ]] [1]
+    </div>
+    <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
+    <div id="PickupList" class="pickupDetails">
+      <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
+    </div>
 
-  <script>
-    var testBoard = new Board($("#AutoBoard"))
-    testBoard.writeBoard()
-    
+    <div id="AutoBoard"></div>
 
-  var TheBoardManifest // used for displaying manifest data (Don't think we're actually using this yet)
-  var style = "compact" //("compact","verbose") // global style (for BookingSprite at the moment) 
-  
-  // --------------------------------- OnLoad --------------------------------------------------
-  // (Moved to INIT)
-  
-  // --------------------------------- Load TripCodes ----------------------------------------------
-  function loadTripCodes(){
-    google.script.run.withSuccessHandler(onTripCodeLoad)
-    .loadTripCodes();
-  }
-  function onTripCodeLoad(data){
-    gya.trips = data
-  }
-  
-  
-  
-  
-  /*
+    <script>
+      $(document).ready(function () {
+        var testBoard = new Board($("#AutoBoard"))
+        console.log("Write")
+        testBoard.writeBoard()
+      })
+
+      var TheBoardManifest // used for displaying manifest data (Don't think we're actually using this yet)
+      var style = "compact" //("compact","verbose") // global style (for BookingSprite at the moment)
+
+      // --------------------------------- OnLoad --------------------------------------------------
+      // (Moved to INIT)
+
+      // --------------------------------- Load TripCodes ----------------------------------------------
+      function loadTripCodes() {
+        google.script.run.withSuccessHandler(onTripCodeLoad).loadTripCodes()
+      }
+      function onTripCodeLoad(data) {
+        gya.trips = data
+      }
+
+      /*
   These functions are first called in planemanager ->
   
       Rezdy.load()
     theBoard.load()
     */
-  </script>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-<div id="TheBoard" style="float:left; margin:10px">
-  <div>
-    <button class="Nav Dev" onClick="utility.close()" >Close</button>
-    <button class="Nav" id="SaveButton" onClick="saveBoard()" >Save</button>
-    <button class="Nav" onClick="theBoard.timeStamp.checkRemote()">Check</button>
-    <button class="Nav" onClick="theBoard.load()" >&#10226;</button>
-    
-    
-    
-    <button class="Dark" onClick="showDay()" >Scratch</button>
-    <button class="Dark" onClick="theBoard.print()" >Print Board</button>
-    <button class="Dark" onClick="PlaneManager.loadHours()" >Load Hours</button>
-    <button class="Dark" onClick="showHidePerPax()" >PerPax</button> <!-- Should be in display **************** -->
-    
-<!--    <span class="MobileBreak"></span> --> <BR>
-    
-    <?!= include('Details'); ?>
-    <div id="planeDetails" class="planeDetails">
-      
-      <span id="pd_Plane" class="PCF"></span>
-      <span id="pd_Pilot" class="PCF"></span>
-      <span id="pd_CoPilot" class="PCF"></span>
-      <span id="pd_Fuel" class="PCF"></span>
-      <span id="planeDetailsClose" class="popupCloseButton exteriorButton">X</span>
-      
-    </div>
-    <br>
-    <div id="Alert"></div>
-    <div id="Error"></div>
-  </div>
-  <span style="display: inline-block;"><?!= include('TheBoard'); ?></span>
-</div>
-<div style="float:left; margin:10px">
+    </script>
 
-  <!--  Putting all the extra buttons in Day2 cuz we hide Day2 by default -->
-  <span id="Day2" style="display: inline-block;">
-  <div>
-    <button class="Dark" onClick="test()" >Test</button>
-    <button class="Dark" onClick="theBoard.highlightFerryLegs()" >Ferry Legs</button>
-    <button class="Dark" onClick="Rezdy.load()" >Load Rezdy</button>
-    <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(-1,false)" ><</button>
-    <button class="Dark" onClick="theBoard.load()" >Load Saved Board</button>
-    <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(1,false)" >></button>
-    
-    <a href="https://sites.google.com/a/glenorchyair.co.nz/staff/tracking/logreports">Flight Data</a> 
-    <a href="https://sites.google.com/a/glenorchyair.co.nz/staff/opera/roster">Roster</a>
-    </div>
-    <?!= include('TheBoardDay2'); ?>
-  </span>
-</div>
+    <div id="TheBoard" style="float: left; margin: 10px;">
+      <div>
+        <button class="Nav Dev" onClick="utility.close()">Close</button>
+        <button class="Nav" id="SaveButton" onClick="saveBoard()">Save</button>
+        <button class="Nav" onClick="theBoard.timeStamp.checkRemote()">Check</button>
+        <button class="Nav" onClick="theBoard.load()">&#10226;</button>
 
-<?!= include('Manifest'); ?>
-<P>
-<div><button onClick="display.clearBoard()" >Clear Board</button>
-<button onClick="theBoard.load()" >&#10226;</button><BR>
-<div class="Trash">&#9851;</div>
-</div>
-  
-  
-  <!-- Popups -->
-  
-  <div id="messagediv"></div>
-  <div id="divPopupMessage"></div>
-  <p>
-  
-  <!-- jQuery  -->
-  <div id="dialog-message"></div>
+        <button class="Dark" onClick="showDay()">Scratch</button>
+        <button class="Dark" onClick="theBoard.print()">Print Board</button>
+        <button class="Dark" onClick="PlaneManager.loadHours()">Load Hours</button>
+        <button class="Dark" onClick="showHidePerPax()">PerPax</button>
+        <!-- Should be in display **************** -->
+
+        <!--    <span class="MobileBreak"></span> -->
+        <br />
+
+        <?!= include('Details'); ?>
+        <div id="planeDetails" class="planeDetails">
+          <span id="pd_Plane" class="PCF"></span>
+          <span id="pd_Pilot" class="PCF"></span>
+          <span id="pd_CoPilot" class="PCF"></span>
+          <span id="pd_Fuel" class="PCF"></span>
+          <span id="planeDetailsClose" class="popupCloseButton exteriorButton">X</span>
+        </div>
+        <br />
+        <div id="Alert"></div>
+        <div id="Error"></div>
+      </div>
+      <span style="display: inline-block;"><?!= include('TheBoard'); ?></span>
+    </div>
+    <div style="float: left; margin: 10px;">
+      <!--  Putting all the extra buttons in Day2 cuz we hide Day2 by default -->
+      <span id="Day2" style="display: inline-block;">
+        <div>
+          <button class="Dark" onClick="test()">Test</button>
+          <button class="Dark" onClick="theBoard.highlightFerryLegs()">Ferry Legs</button>
+          <button class="Dark" onClick="Rezdy.load()">Load Rezdy</button>
+          <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(-1,false)"><</button>
+          <button class="Dark" onClick="theBoard.load()">Load Saved Board</button>
+          <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(1,false)">></button>
+
+          <a href="https://sites.google.com/a/glenorchyair.co.nz/staff/tracking/logreports">Flight Data</a>
+          <a href="https://sites.google.com/a/glenorchyair.co.nz/staff/opera/roster">Roster</a>
+        </div>
+        <?!= include('TheBoardDay2'); ?>
+      </span>
+    </div>
+
+    <?!= include('Manifest'); ?>
+    <p></p>
+    <div>
+      <button onClick="display.clearBoard()">Clear Board</button> <button onClick="theBoard.load()">&#10226;</button
+      ><br />
+      <div class="Trash">&#9851;</div>
+    </div>
+
+    <!-- Popups -->
+
+    <div id="messagediv"></div>
+    <div id="divPopupMessage"></div>
+    <p>
+      <!-- jQuery  -->
+    </p>
+
+    <div id="dialog-message"></div>
     <!-- jQuery  -->
-    
+
     <?!= include('Draggable'); ?>
     <?!= include('Drop'); ?>
-    
-<a name="bottom"></a>
+
+    <a name="bottom"></a>
   </body>
 </html>
-
