@@ -1,20 +1,34 @@
 <script>
   class Manifest {
-    constructor(parent) {
-      this.parent = parent
-      this.HTML = `<span style="display: inline-block; vertical-align: top;">
+    constructor($parent) {
+      let _this = this
+      this.$parent = $parent
+      this.parent // placeholder for JS parent object
+      let _span = $parent.append(`<span style="display: inline-block; vertical-align: top;">
         <div class="Manifest_Container">
           <div class="Header">
           <span style="float:left;display: inline-block;"></span>
-          <span style="float:right;display: inline-block;"><button onClick="this.load()" >&#10226;</button></span> Manifest </div><div class="Manifest"></div>
+          <span style="float:right;display: inline-block;"><button>&#10226;</button></span> Manifest </div><div class="Manifest"></div>
         </div>
-      </span>`
+      </span>`)
+
+      _span.find("button").off("click")
+      _span.find("button").click(function () {
+        test("HI")
+        _this.load()
+        //Other code etc.
+      })
+
+      console.log("HERE: %o", _span.find("Button").text())
     }
     /* ****************************************** Need to build this **********************************
     call the Google Rezdy loading script here, passing this object so the results can be returned into it
     */
     load(date) {
-      console.log("Parent: %o",this.parent.numCols)
+      console.log("Parent: %o", this.parent.numCols)
+      console.log("This %o", this)
+      let ret = $(this).closest(".datepicker")
+      console.log("DatePicker: %o", ret)
     }
     onLoad(data) {}
     // -----------
@@ -134,7 +148,8 @@
         }
         if (booking.pickupLocation) {
           if (booking.pickupLocation.locationName) {
-            ret += "<br><span>" + booking.pickupLocation.locationName + "</span>"
+            ret +=
+              "<br><span>" + booking.pickupLocation.locationName + "</span>"
           }
         }
         ret = ret + "<P><span>" + booking.internalNotes + "</span>"

@@ -6,7 +6,7 @@
       this.root = $root
       this.numCols = 5
       this.numRows = 12
-      this.manifest = new Manifest(this)
+      this.manifest = new Manifest($root)
       this.manifest.parent = this
     }
     //
@@ -32,7 +32,8 @@
       //
       // Manifest div
       //
-      this.root.append(this.manifest.HTML) // need to float or otherwise position it *********
+ //     this.manifest.HTML()
+//      this.root.append() // need to float or otherwise position it *********
       this.manifest.load()
       // ----------------------
       // The Board Table
