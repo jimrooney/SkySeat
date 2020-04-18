@@ -6,7 +6,8 @@
       this.root = $root
       this.numCols = 5
       this.numRows = 12
-      this.manifest = new Manifest()
+      this.manifest = new Manifest(this)
+      this.manifest.parent = this
     }
     //
     // Autogen boards
@@ -32,6 +33,7 @@
       // Manifest div
       //
       this.root.append(this.manifest.HTML) // need to float or otherwise position it *********
+      this.manifest.load()
       // ----------------------
       // The Board Table
       // ----------------------
@@ -43,7 +45,6 @@
       headerRow.push($('<td class="PickupAllCell" id="PH">&#9951;</td>'))
       headerRow.push($('<td class="Label Row_0 Col_0" id="0_0">Time</td>'))
       //
-      console.log("numCols: %o", this.numCols)
       for (let i = 1; i <= this.numCols; i++) {
         let id = "0" + "_" + i
         let col = $("<td />", {
