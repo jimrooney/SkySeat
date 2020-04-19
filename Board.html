@@ -22,18 +22,20 @@
     }
     writeBoard() {
       console.log("Write Board")
-      //
+      // ----------
       // DatePicker
-      //
-      this.root.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
+      // ----------
+      this.root.append(
+        '<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>'
+      )
       // This sets the picker to NZ format (dd/mm/yyy) and to today's date
       Dates.initPicker($("#" + this.root.prop("id") + " .datepicker"))
 
       //
       // Manifest div
       //
- //     this.manifest.HTML()
-//      this.root.append() // need to float or otherwise position it *********
+      //     this.manifest.HTML()
+      //      this.root.append() // need to float or otherwise position it *********
       this.manifest.load()
       // ----------------------
       // The Board Table
@@ -67,7 +69,13 @@
         //
         // Pickup Column
         //
-        myRow.push($('<td class="PickupCell" id="Row_' + thisRow + '"><span style="color: white;">00</span></td>'))
+        myRow.push(
+          $(
+            '<td class="PickupCell" id="Row_' +
+              thisRow +
+              '"><span style="color: white;">00</span></td>'
+          )
+        )
         //
         // Time column
         //

@@ -52,6 +52,7 @@
     // Show Manifest
     // ---------------------------------------------------------
     showManifest: function () {
+
       console.log("showManifest")
       let manifest_date = Dates.getNZ($("#root .datepicker").datepicker("getDate"))
       console.log("Get Date: %o",manifest_date)
@@ -66,6 +67,7 @@
       (since you can now either move the cointainer or the BookingSprite)
     
       */
+
       for (let a in bookings) {
         if (!!bookings[a] && bookings[a].orderNumber) {
           let booking = bookings[a]
@@ -101,6 +103,7 @@
           // $("#ManifestMessages").html(Manifest.getTotalPax() + " pax ")
         }
       }
+
       init() // Calls the MakeDraggable code again
       this.update()
       theBoard.clean()
@@ -282,6 +285,10 @@
       cell.text("")
     },
     update: function () {
+      // ***********************************************************************************************************
+      // This is what's breaking the grid
+      // ***********************************************************************************************************
+      return
       //
       // Hide any Dev divs
       //
@@ -571,6 +578,7 @@
       return ret
     },
     clearBoard: function () {
+      console.log("display.clearBoard()")
       $(".TableCell").each(function () {
         let element = $(this)
         element.css("background-color", "white")
@@ -581,7 +589,7 @@
       $(".BookingSprite")
         .draggable("enable")
         .css("background-color", "lightblue")
-      display.update()
+      //display.update()
     },
     // ---------------
     // Remove _bookings

@@ -691,12 +691,13 @@ var theBoard = {
     } else {
       return
     }
-    display.clearBoard()
+//    display.clearBoard()
     $("#SaveButton").css({"background": "green",})
     setTimeout(function(){ $("#SaveButton").css({"background": "blue",}) }, 2000)
     google.script.run.withSuccessHandler(this.show).loadBoard(d)
   },
   show: function(arg){
+    return
   console.log("theBoard.show(%o)",arg)
   if(!arg){console.log("No Data")}
   //
