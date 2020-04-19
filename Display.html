@@ -53,11 +53,20 @@
     // ---------------------------------------------------------
     showManifest: function () {
 
-      console.log("showManifest")
+      console.log("display.showManifest")
+
+
+
+
+return // *******************************************************************
+
+
+
       let manifest_date = Dates.getNZ($("#root .datepicker").datepicker("getDate"))
       console.log("Get Date: %o",manifest_date)
       let bookings = Bookings.getManifest(manifest_date)
       console.log("Manifest: %o", bookings)
+
       // -------------------------------------------------------------------------------------
       // Add List of Booking Divs to the page
       // -------------------------------------------------------------------------------------
