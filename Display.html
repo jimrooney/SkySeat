@@ -288,7 +288,7 @@
       // ***********************************************************************************************************
       // This is what's breaking the grid
       // ***********************************************************************************************************
-      return
+     
       //
       // Hide any Dev divs
       //
@@ -319,6 +319,7 @@
           }
         }
       })
+   
       //
       // Blank out all unmarked cells (not tagged IN or OUT)
       //
@@ -339,7 +340,7 @@
           let plane = display.getPlane($(this))
           $(this).css("background-color", plane.color)
           $(this).css("background-color", "")
-          $(this).text("")
+          $(this).html("<br></br>")
         }
         let hasData = false
         //

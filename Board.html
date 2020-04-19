@@ -2,12 +2,20 @@
   class Board {
     constructor($root) {
       this.date = ""
-      this.data = {}
-      this.root = $root
       this.numCols = 5
       this.numRows = 12
+
+      this.root = $root
       this.manifest = new Manifest($root)
       this.manifest.parent = this
+
+      // 2 Dimensional array to hold the Board's State. (wrapped in an object to hold meta-data)
+      this.data = {}
+      this.data.state = new Array(this.numRows)
+      for (let i = 0; i < this.data.state.length; i++) {
+        this.data.state[i] = new Array(this.numCols)
+      }
+      //
     }
     //
     // Autogen boards
@@ -25,9 +33,7 @@
       // ----------
       // DatePicker
       // ----------
-      this.root.append(
-        '<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>'
-      )
+      this.root.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
       // This sets the picker to NZ format (dd/mm/yyy) and to today's date
       Dates.initPicker($("#" + this.root.prop("id") + " .datepicker"))
 
@@ -69,13 +75,7 @@
         //
         // Pickup Column
         //
-        myRow.push(
-          $(
-            '<td class="PickupCell" id="Row_' +
-              thisRow +
-              '"><span style="color: white;">00</span></td>'
-          )
-        )
+        myRow.push($('<td class="PickupCell" id="Row_' + thisRow + '"><span style="color: white;">00</span></td>'))
         //
         // Time column
         //
