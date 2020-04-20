@@ -2,16 +2,6 @@
   // -------------------------------------------------------------------------------
   // This is an object to hold functions to communicate with remote servers (Google)
   // -------------------------------------------------------------------------------
-  /*
-
-**************************************************
-These two functions are in work (moving them into the rezdy object)... so references need to be checked
-
-loadRezdy
-onRezdyLoad
-**************************************************
-
-*/
   var Rezdy = {
     // --------------------------------- Load Rezdy ----------------------------------------------
     /*
@@ -21,9 +11,14 @@ onRezdyLoad
     Then we can update that board with the return data.
 
     */
-    load: function (requestedDate) {
-      console.log("Rezdy.load( %o )", requestedDate)
-
+    load: function (obj) {
+      console.log("Rezdy.load( %o )", obj)
+      let requestedDate
+      if(typeof obj == "object"){
+        requestedDate = obj.getDate()
+      } else {
+        requestedDate = obj
+      }
 
       if (!!requestedDate) {
         console.log("DateNZ: %o", Dates.getNZ(requestedDate))
@@ -35,19 +30,18 @@ onRezdyLoad
       }
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
       google.script.run
-        .withSuccessHandler(this.onRezdyLoad)
-        .withUserObject(requestedDate)
+        .withSuccessHandler(this.onLoad)
+        .withUserObject(obj)
         .loadRezdy(requestedDate)
     },
-    onRezdyLoad: function (json, requestedDate) {
-      console.log("On Rezdy Load")
+    onLoad: function (json, obj) {
+      console.log("Rezdy.onLoad( %o )", obj)
       utility.alert("Rezdy Loaded", "#ManifestMessages")
       $(".Manifest_Container .Manifest").css("background-color", "#68a167")
       // Remove all old booking objects (need to clear the board and theBoard array as well) ********************************
       $(".BookingSprite").remove()
 
       let data = JSON.parse(json)
-      console.log("Date Loaded: %o", requestedDate)
       console.log("JSON Loaded: %o", data)
       // -----------------------
       // Parse Rezdy Data

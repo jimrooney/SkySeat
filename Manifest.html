@@ -19,19 +19,18 @@
       _span.find("button").off("click")
       _span.find("button").click(function () {
         // _this instead of this because this is the calling button right now.
-        _this.load(_this.parent.$datepicker.datepicker("getDate"))
+        _this.load()
       })
+      this.getDate = function (){
+        return _this.parent.$datepicker.datepicker("getDate")
+      }
     }
     /* ****************************************** Need to build this **********************************
     call the Google Rezdy loading script here, passing this object so the results can be returned into it
     */
-    load(date) {
-      console.log("Manifest.load(%o)",date)
-
-      let _date = this.parent.$datepicker.datepicker("getDate")
-        console.log("load: %o",_date)
-
-      Rezdy.load(date)
+    load() {
+      console.log("Manifest.load(%o)",Dates.getNZ(this.getDate()))
+      Rezdy.load(this)
     }
     onLoad(data) {}
     // -----------
