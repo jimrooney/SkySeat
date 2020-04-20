@@ -21,7 +21,7 @@
         // _this instead of this because this is the calling button right now.
         _this.load()
       })
-      this.getDate = function (){
+      this.getDate = function () {
         return _this.parent.$datepicker.datepicker("getDate")
       }
     }
@@ -29,7 +29,7 @@
     call the Google Rezdy loading script here, passing this object so the results can be returned into it
     */
     load() {
-      console.log("Manifest.load(%o)",Dates.getNZ(this.getDate()))
+      console.log("Manifest.load(%o)", Dates.getNZ(this.getDate()))
       Rezdy.load(this)
     }
     onLoad(data) {}
@@ -39,6 +39,31 @@
     // Returns a booking if it exists in the manifest.
     // We'll check the primary booking for now... we can drill down and check each pax booking later ****************
     //
+    getBookings(date) {
+      let manifest = {}
+
+      // If a date object is passed in, make it a string
+      if (!!date && typeof date == "object") {
+        date = Dates.getNZ(date)
+      }
+      console.log("[Manifest].getBookings(%o)", date)
+
+      // Do we even want to be able to pass in strings? (if not, the check above changes) *******************
+      if (!!date && date.match(/\d\d.\d\d.*/gi)) {
+        // Checkvalve... date is sane
+      } else {
+        date = _this.getDate() // this or _this? ***************
+        return
+      }
+      for (let a in Bookings.list) {
+        if (!!Bookings.list[a] && Bookings.list[a].flight) {
+          if (Bookings.list[a].flight.date == date) {
+            manifest[Bookings.list[a].orderNumber] = Bookings.list[a]
+          }
+        }
+      }
+      return manifest
+    }
     //
     // Loop over each booking for a match
     //
@@ -150,8 +175,7 @@
         }
         if (booking.pickupLocation) {
           if (booking.pickupLocation.locationName) {
-            ret +=
-              "<br><span>" + booking.pickupLocation.locationName + "</span>"
+            ret += "<br><span>" + booking.pickupLocation.locationName + "</span>"
           }
         }
         ret = ret + "<P><span>" + booking.internalNotes + "</span>"

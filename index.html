@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<script>
+  // This needs to exist before writeboard is called (so it has somewhere to write to)
+  // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
+  var testBoard
+</script>
 <html>
   <head>
     <?!= include('jQuery'); ?>
@@ -32,15 +37,14 @@
     <div id="PickupList" class="pickupDetails">
       <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
     </div>
-    
+
     <div id="AutoBoard"></div>
 
     <script>
       $(document).ready(function () {
-        var testBoard = new Board($("#AutoBoard"))
+        testBoard = new Board($("#AutoBoard"))
         testBoard.writeBoard()
       })
-
 
       // --------------------------------- OnLoad --------------------------------------------------
       // (Moved to INIT)
