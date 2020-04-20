@@ -42,6 +42,17 @@
       d = dd + "/" + mm + "/" + yyyy
       return d
     },
+    getUSA: function (d) {
+      //if (typeof d === 'undefined') {d = new Date()}
+      typeof d === "undefined" ? (d = new Date()) : d.constructor === Date ? d : (d = new Date(d))
+
+      var dd = String(d.getDate()).padStart(2, "0")
+      var mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
+      var yyyy = d.getFullYear()
+
+      d = mm + "/" + dd + "/" + yyyy
+      return d
+    },
     getJustDate: function (d) {
       // Right now, this is just a copy of getNZ() *************************
       // Convert a date object to a String with just dd/mm/yyyy

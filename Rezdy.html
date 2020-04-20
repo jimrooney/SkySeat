@@ -24,10 +24,12 @@ onRezdyLoad
     load: function (requestedDate) {
       console.log("Rezdy.load( %o )", requestedDate)
 
+
       if (!!requestedDate) {
-        requestedDate = requestedDate
+        console.log("DateNZ: %o", Dates.getNZ(requestedDate))
+        requestedDate = Dates.getUSA(requestedDate)
+        console.log("DateUSA: %o", requestedDate)
       } else {
-        // requestedDate = Dates.getNZ($("#root .datepicker").datepicker("getDate"))
         console.log("No date passed in")
         return
       }
