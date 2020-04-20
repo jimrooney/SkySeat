@@ -8,7 +8,10 @@
       this.root = $root
       this.manifest = new Manifest($root)
       this.manifest.parent = this
-
+      $root.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
+      this.$datepicker = $("#" + $root.prop("id") + " .datepicker")
+      Dates.initPicker(this.$datepicker)
+      
       // 2 Dimensional array to hold the Board's State. (wrapped in an object to hold meta-data)
       this.data = {}
       this.data.state = new Array(this.numRows)
@@ -33,16 +36,15 @@
       // ----------
       // DatePicker
       // ----------
-      this.root.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
+     // this.root.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
       // This sets the picker to NZ format (dd/mm/yyy) and to today's date
-      Dates.initPicker($("#" + this.root.prop("id") + " .datepicker"))
 
-      //
-      // Manifest div
-      //
-      //     this.manifest.HTML()
-      //      this.root.append() // need to float or otherwise position it *********
-      this.manifest.load()
+
+      
+      // Autoload rezdy?
+      let date = this.$datepicker.datepicker("getDate")
+      this.manifest.load(date)
+
       // ----------------------
       // The Board Table
       // ----------------------

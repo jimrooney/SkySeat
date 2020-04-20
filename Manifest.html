@@ -3,7 +3,7 @@
     constructor($parent) {
       let _this = this
       this.$parent = $parent
-      this.parent // placeholder for JS parent object
+      //this.parent // placeholder for JS parent object
       let _span = $parent.append(`<span style="display: inline-block; vertical-align: top;">
         <div class="Manifest_Container">
           <div class="Header">
@@ -14,21 +14,25 @@
 
       _span.find("button").off("click")
       _span.find("button").click(function () {
-        test("HI")
-        _this.load()
+        
+        let date = Dates.getNZ(_this.parent.$datepicker.datepicker("getDate"))
+        console.log("Date: %o",date)
+
+        
+        _this.load(date)
         //Other code etc.
       })
-
-      console.log("HERE: %o", _span.find("Button").text())
     }
     /* ****************************************** Need to build this **********************************
     call the Google Rezdy loading script here, passing this object so the results can be returned into it
     */
     load(date) {
-      console.log("Parent: %o", this.parent.numCols)
-      console.log("This %o", this)
-      let ret = $(this).closest(".datepicker")
-      console.log("DatePicker: %o", ret)
+      console.log("Manifest.load(%o)",date)
+
+      let _date = this.parent.$datepicker.datepicker("getDate")
+        console.log("load: %o",_date)
+
+      Rezdy.load()
     }
     onLoad(data) {}
     // -----------
