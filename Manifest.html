@@ -29,12 +29,15 @@
     show(date) {
       console.log("Manifest.show(%o)",date)
       let list = this.getBookings(date)
-      let $div = this.$parent.find("Bookings")
+      let $div = this.$parent.find(".Bookings")
       console.log("list %o",list)
       for (let b in list){
-        console.log("List Booking: %o",list[b])
-        //$div.append()
+        if (!!list[b].orderNumber){
+          console.log("Booking: %o",list[b].orderNumber)
+          $div.append(this.getBookingDiv(list[b],"compact"))
+        }
       }
+      init() // This should change *************** not be root variable, not be such a hatchet **********
     }
     /* ****************************************** Need to build this **********************************
     call the Google Rezdy loading script here, passing this object so the results can be returned into it
