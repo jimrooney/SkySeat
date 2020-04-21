@@ -3,10 +3,15 @@
     constructor($parent) {
       let _this = this
       this.$parent = $parent // Keep a link to the parent jQuery object
+    }
+    getDate() {
+      return this.parent.$datepicker.datepicker("getDate")
+    }
+    write() {
       //
       // Manifest Div
       //
-      let _span = $parent.append(`<span style="display: inline-block; vertical-align: top;">
+      let _span = this.$parent.append(`<span style="display: inline-block; vertical-align: top;">
         <div class="Manifest_Container">
           <div class="Header">
           <span style="float:left;display: inline-block;"></span>
@@ -22,19 +27,16 @@
         // _this instead of this because this is the calling button right now.
         _this.load()
       })
-      this.getDate = function () {
-        return _this.parent.$datepicker.datepicker("getDate")
-      }
     }
     show(date) {
-      console.log("Manifest.show(%o)",date)
+      console.log("Manifest.show(%o)", date)
       let list = this.getBookings(date)
       let $div = this.$parent.find(".Bookings")
-      console.log("list %o",list)
-      for (let b in list){
-        if (!!list[b].orderNumber){
-          console.log("Booking: %o",list[b].orderNumber)
-          $div.append(this.getBookingDiv(list[b],"compact"))
+      console.log("list %o", list)
+      for (let b in list) {
+        if (!!list[b].orderNumber) {
+          console.log("Booking: %o", list[b].orderNumber)
+          $div.append(this.getBookingDiv(list[b], "compact"))
         }
       }
       init() // This should change *************** not be root variable, not be such a hatchet **********
@@ -47,7 +49,7 @@
     }
     onLoad(data) {
       console.log("Manifest onLoad()")
-      console.log("data %o",data)
+      console.log("data %o", data)
       this.show(this.getDate())
     }
     // ------------
@@ -62,7 +64,7 @@
         date = Dates.getNZ(date)
       }
       console.log("[Manifest].getBookings(%o)", date)
-      console.log("This %o",this)
+      console.log("This %o", this)
 
       // Do we even want to be able to pass in strings? (if not, the check above changes) *******************
       if (!!date && date.match(/\d\d.\d\d.*/gi)) {
@@ -72,9 +74,8 @@
         return
       }
 
-console.log("Date %o",date)
-console.log("Bookings.list: %o",Bookings.list)
-
+      console.log("Date %o", date)
+      console.log("Bookings.list: %o", Bookings.list)
 
       for (let a in Bookings.list) {
         if (!!Bookings.list[a] && Bookings.list[a].flight) {
