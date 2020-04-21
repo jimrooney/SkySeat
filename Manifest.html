@@ -12,6 +12,7 @@
           <span style="float:left;display: inline-block;"></span>
           <span style="float:right;display: inline-block;"><button>&#10226;</button></span> Manifest </div><div class="Manifest"></div>
         </div>
+        <div class="Bookings"></div>
       </span>`)
       //
       // Manifest Reload Button
@@ -25,44 +26,61 @@
         return _this.parent.$datepicker.datepicker("getDate")
       }
     }
+    show(date) {
+      console.log("Manifest.show(%o)",date)
+      let list = this.getBookings(date)
+      let $div = this.$parent.find("Bookings")
+      console.log("list %o",list)
+      for (let b in list){
+        console.log("List Booking: %o",list[b])
+        //$div.append()
+      }
+    }
     /* ****************************************** Need to build this **********************************
     call the Google Rezdy loading script here, passing this object so the results can be returned into it
     */
     load() {
-      console.log("Manifest.load(%o)", Dates.getNZ(this.getDate()))
       Rezdy.load(this)
     }
-    onLoad(data) {}
-    // -----------
-    // Get Booking
-    // -----------
-    // Returns a booking if it exists in the manifest.
-    // We'll check the primary booking for now... we can drill down and check each pax booking later ****************
-    //
+    onLoad(data) {
+      console.log("Manifest onLoad()")
+      console.log("data %o",data)
+      this.show(this.getDate())
+    }
+    // ------------
+    // Get Bookings
+    // ------------
+    // Returns an object hash key'd by orderNumber
     getBookings(date) {
-      let manifest = {}
+      let _manifest = {}
 
       // If a date object is passed in, make it a string
       if (!!date && typeof date == "object") {
         date = Dates.getNZ(date)
       }
       console.log("[Manifest].getBookings(%o)", date)
+      console.log("This %o",this)
 
       // Do we even want to be able to pass in strings? (if not, the check above changes) *******************
       if (!!date && date.match(/\d\d.\d\d.*/gi)) {
         // Checkvalve... date is sane
       } else {
-        date = _this.getDate() // this or _this? ***************
+        date = this.getDate() // this or _this? ***************
         return
       }
+
+console.log("Date %o",date)
+console.log("Bookings.list: %o",Bookings.list)
+
+
       for (let a in Bookings.list) {
         if (!!Bookings.list[a] && Bookings.list[a].flight) {
           if (Bookings.list[a].flight.date == date) {
-            manifest[Bookings.list[a].orderNumber] = Bookings.list[a]
+            _manifest[Bookings.list[a].orderNumber] = Bookings.list[a]
           }
         }
       }
-      return manifest
+      return _manifest
     }
     //
     // Loop over each booking for a match

@@ -10,7 +10,7 @@
       this.manifest.parent = this
       $root.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
       this.$datepicker = $("#" + $root.prop("id") + " .datepicker")
-      Dates.initPicker(this.$datepicker)
+      Dates.initPicker(this.$datepicker,this)
       
       // 2 Dimensional array to hold the Board's State. (wrapped in an object to hold meta-data)
       this.data = {}
@@ -19,6 +19,9 @@
         this.data.state[i] = new Array(this.numCols)
       }
       //
+    }
+    load(){
+      this.manifest.load()
     }
     //
     // Autogen boards
@@ -40,7 +43,7 @@
       // This sets the picker to NZ format (dd/mm/yyy) and to today's date
 
 
-      
+      // ******************************************************************************
       // Autoload rezdy?
       //let date = this.$datepicker.datepicker("getDate")
       this.manifest.load()

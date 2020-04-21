@@ -672,7 +672,7 @@ var theBoard = {
     //
     // Load Board
     //
-    this.load(newDate)
+    this.load(newDate,$picker)
     //
     // Reload Manifest
     //
@@ -685,7 +685,7 @@ var theBoard = {
   previous: function(){
     this.next(-1)
   },
-  load: function(d){
+  load: function(d,obj){
     if (!!d){
       d
     } else {
@@ -694,7 +694,10 @@ var theBoard = {
 //    display.clearBoard()
     $("#SaveButton").css({"background": "green",})
     setTimeout(function(){ $("#SaveButton").css({"background": "blue",}) }, 2000)
-    google.script.run.withSuccessHandler(this.show).loadBoard(d)
+    google.script.run
+    .withSuccessHandler(this.show)
+    .withUserObject(obj)
+    .loadBoard(d)
   },
   show: function(arg){
     return

@@ -12,22 +12,24 @@
 
     */
     load: function (obj) {
-      console.log("Rezdy.load( %o )", obj)
+      console.log("Rezdy.load(obj)")
       let requestedDate
       if(typeof obj == "object"){
         requestedDate = obj.getDate()
       } else {
-        requestedDate = obj
+        console.log("Rezdy.load: Wrong object")
+        return
+        //requestedDate = obj
       }
 
+      // This can be cleaned up (duplicates a lot of the above code) *****************
       if (!!requestedDate) {
-        console.log("DateNZ: %o", Dates.getNZ(requestedDate))
-        requestedDate = Dates.getUSA(requestedDate)
-        console.log("DateUSA: %o", requestedDate)
+        requestedDate = Dates.getNZ(requestedDate)
       } else {
         console.log("No date passed in")
         return
       }
+      console.log("Run Google Script loadRezdy(%o)",requestedDate)
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
       google.script.run
         .withSuccessHandler(this.onLoad)
@@ -35,7 +37,7 @@
         .loadRezdy(requestedDate)
     },
     onLoad: function (json, obj) {
-      console.log("Rezdy.onLoad( %o )", obj)
+      console.log("Rezdy.onLoad( obj )")
       utility.alert("Rezdy Loaded", "#ManifestMessages")
       $(".Manifest_Container .Manifest").css("background-color", "#68a167")
       // Remove all old booking objects (need to clear the board and theBoard array as well) ********************************
@@ -57,12 +59,12 @@
       // })
 
       console.log("Parsed Bookings: %o", bookings)
-      $("#MANIFEST").empty() // clear the old manifest list
+      // $("#MANIFEST").empty() // clear the old manifest list ******************
       // ---------------------
       // Show Manifest
       // ---------------------
       Bookings.add(bookings)
-      display.showManifest()
+      obj.onLoad(bookings)
     },
     onTripCodeLoad: function (data) {
       console.log("OnTripCodeLoad: %o", data)

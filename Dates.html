@@ -14,7 +14,7 @@
   //--------------------------------------------
 
   var Dates = {
-    initPicker: function ($picker) {
+    initPicker: function ($picker,_board) {
       //
       // DatePicker
       //
@@ -25,7 +25,7 @@
         firstDay: 1,
         onSelect: function (dateText) {
           console.log("Date Selected")
-          theBoard.next($picker, 0, true)
+          _board.load(this)
           $(this).blur()
         },
       })
