@@ -30,13 +30,57 @@
     }
     show(date) {
       console.log("Manifest.show(%o)", date)
-      let list = this.getBookings(date)
+      let bookings = this.getBookings(date)
       let $div = this.$parent.find(".Bookings")
-      console.log("list %o", list)
-      for (let b in list) {
-        if (!!list[b].orderNumber) {
-          console.log("Booking: %o", list[b].orderNumber)
-          $div.append(this.getBookingDiv(list[b], "compact"))
+      console.log("bookings %o", bookings)
+
+
+      // for (let b in list) {
+      //   if (!!list[b].orderNumber) {
+      //     console.log("Booking: %o", list[b].orderNumber)
+      //     $div.append(this.getBookingDiv(list[b], "compact"))
+      //   }
+      // }
+      // 
+
+
+
+
+        let count = 0
+      for (let a in bookings) {
+        if (!!bookings[a] && bookings[a].orderNumber) {
+          let booking = bookings[a]
+          let booking_date = booking.flight.date
+
+            let jsonBooking = [booking] // ************ won't be necessary ************
+            let bookingDiv = this.getBookingDiv(booking) // This function needs updating ********************
+            $div.append(bookingDiv)
+            if (count % 4 == 0) { // 4 per row
+              $div.append("<span><P></span>")
+            }
+            $("#" + booking.orderNumber)
+              .data("json", jsonBooking)
+              .click(function () {
+                let json = $(this).data("json")
+                let masterkey = json[0].orderNumber.split("-")[0]
+                let html =
+                  "<A href='https://app.rezdy.com/orders/edit/" +
+                  masterkey +
+                  "' target='_blank'>" +
+                  json[0].orderNumber +
+                  "</a>"
+                utility.alert(html, "#ManifestMessages")
+              })
+              // Need to update the highlighting functions / methods (class based)
+              .mouseover(function () {
+                display.highlightBookings($(this).data("json"))
+              })
+              .mouseleave(function () {
+                display.update()
+              })
+          count++
+          // let totalPax = Manifest.getTotalPax()
+          // $("#ManifestMessages").html(Manifest.getTotalPax() + " pax ")
         }
       }
       init() // This should change *************** not be root variable, not be such a hatchet **********
