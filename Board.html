@@ -1,6 +1,7 @@
 <script>
   class Board {
     constructor($root) {
+      $root.data("root",this) // backreference
       this.date = ""
       this.numCols = 5
       this.numRows = 12

@@ -8,7 +8,9 @@
   var Events = {
     drop: function (event, ui) {
       let root = $(this).closest(".root")
+
       console.log("Root Table: %o", root.prop("id"))
+      console.log("Root Object: %o", root.data("root"))
       //console.log("Event.target: %o", event.target) // The cell that fired the event (dropped onto in this case)
       //console.log("Drop UI: %o", ui)
       // $(this) : The cell dropped onto
@@ -18,6 +20,7 @@
       console.log("Drop ID: %o", $(this).prop("id"))
       console.log("Dragged: %o", dragged)
       console.log("Dragged ID: %o", dragged.prop("id"))
+      console.log("Dragged Classname: %o", dragged.attr("class"))
       console.log("Dragged Booking: %o", Bookings.getBooking(dragged.prop("id")))
 
       //ui.draggable.empty()// clears manifest icon
