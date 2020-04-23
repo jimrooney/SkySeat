@@ -1,12 +1,7 @@
 <style>
-    /* DivTable.com */
-    .Table {
-    width: 1000px;
-    bacground-col_or: lightgrey;
-  }
-  .TableRow_ {
-  }
-  .TableHeading {
+  .BoardTable {
+    border-collapse: collapse;
+    background-color: white;
   }
   .TableCell,
   .PopupTableCell,
@@ -34,18 +29,8 @@
     max-width: 100px;
     word-wrap: break-word;
   }
-
-  .TableHeading {
-    font-weight: bold;
-  }
-  .TableFoot {
-    font-weight: bold;
-  }
-  .TableBody {
-  }
   .PickupManifest {
     background: grey;
-    display: inline-block;
     float: left;
     display: block;
     text-align: left;
@@ -96,7 +81,6 @@
   }
   .TripManifest {
     background: lightgrey;
-    display: inline-block;
     float: right;
     display: block;
     text-align: left;
@@ -105,12 +89,12 @@
 
   .noBorder {
     border-collapse: collapse;
-    border-color: rgb(136, 136, 136);
+    border-color: rgb(119, 26, 26);
     border-width: 1px;
   }
   .A4 {
     height: 1000px;
-    //   background:rgba(71,88,115,1);
+    /*   background:rgba(71,88,115,1); */
     text-align: center; /* align the inline(-block) elements horizontally */
     font: 0/0 a; /* remove the gap between inline(-block) elements */
   }
@@ -171,11 +155,11 @@
 
   .inCell {
     -webkit-print-color-adjust: exact;
-    //background-image: linear-gradient(-110deg, #3498db 20%, #9b59b6 20%);
+    /*background-image: linear-gradient(-110deg, #3498db 20%, #9b59b6 20%); */
   }
   .outCell {
     -webkit-print-color-adjust: exact;
-    //background-image: linear-gradient(-110deg, #3498db 20%, #9b59b6 20%);
+    /*background-image: linear-gradient(-110deg, #3498db 20%, #9b59b6 20%);*/
   }
   .inMarker {
     float: right;
@@ -421,7 +405,7 @@
   .productCode {
     z-index: 1;
   }
-  .highlight{
+  .highlight {
     border: 3px solid #ff0000;
     background-color: #1e6330;
   }

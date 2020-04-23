@@ -35,13 +35,11 @@
     writeBoard() {
       console.log("Write Board")
       // ----------
-      // Manifest
-      // ----------
-      this.manifest.write()
-      // ----------
       // DatePicker
       // ----------
-      this.$root.append('<div><input class="Nav datepicker" type="text" size="8" id="MyDatePicker" />DatePicker</div>')
+      this.$root.append(
+        '<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8" id="MyDatePicker"/>DatePicker</div>'
+      )
       this.$datepicker = $("#" + this.$root.prop("id") + " .datepicker")
       Dates.initPicker(this.$datepicker, this)
       // ******************************************************************************
@@ -52,7 +50,10 @@
       // ----------------------
       // The Board Table
       // ----------------------
-      let table = this.$root.append("<table class='BoardTable' id='MYTable' />")
+      this.$root.append(
+        '<div style="float:left; display: inline-block;"><table class="BoardTable" id="MYTable"/></div>'
+      )
+      let table = this.$root.find(".BoardTable")
       // ----------------------
       // Header Row
       // ----------------------
@@ -111,6 +112,10 @@
         }
         this.newRow(table, myRow)
       }
+      // ----------
+      // Manifest
+      // ----------
+      this.manifest.write()
     }
   }
 </script>

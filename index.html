@@ -25,22 +25,23 @@
     <?!= include('PlaneManager'); ?>
     <?!= include('Rezdy'); ?>
     <?!= include('Board'); ?>
-
+    <?!= include('Manifest'); ?>
+    
     <base target="_top" />
   </head>
   <body>
     <div
       id="HoverBar"
-      style="position: fixed; top: 0; left: 0; width: 100%; text-align: center; background: #737373; color: white;"
+      style="float:top; width: 100%; text-align: center; background: #737373; color: white;"
     >
-      [[ 2.3 ]] [1]
+      [[ 2.0 ]] []
     </div>
     <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
     <div id="PickupList" class="pickupDetails">
       <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
     </div>
 
-    <div id="AutoBoard"></div>
+    <div id="AutoBoard" style="display: inline-block;"></div>
 
     <script>
       $(document).ready(function () {
@@ -67,7 +68,8 @@
     */
     </script>
 
-    <div id="TheBoard" style="float: left; margin: 10px;">
+<P>
+    <div id="TheBoard" style="float: none; margin: 10px;">
       <div>
         <button class="Nav Dev" onClick="utility.close()">Close</button>
         <button class="Nav" id="SaveButton" onClick="saveBoard()">Save</button>
@@ -115,7 +117,7 @@
       </span>
     </div>
 
-    <?!= include('Manifest'); ?>
+
     <p></p>
     <div>
       <button onClick="display.clearBoard()">Clear Board</button> <button onClick="theBoard.load()">&#10226;</button
