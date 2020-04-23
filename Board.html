@@ -1,7 +1,7 @@
 <script>
   class Board {
     constructor($root) {
-      $root.data("root",this) // backreference
+      $root.data("root", this) // backreference
       this.date = ""
       this.numCols = 5
       this.numRows = 12
@@ -18,7 +18,21 @@
         this.data.state[i] = new Array(this.numCols)
       }
       //
+      this.data.add = function (obj,data) {
+        // if (!cell.match("_")) {
+        //   return
+        // }
+        console.log("This: %o", this)
+        let row = obj.split("_")[0]
+        let col = obj.split("_")[1]
+        console.log("Row: %o", row)
+        console.log("Col %o", col)
+        console.log("Data: %o", data)
+        // Maybe make this an array and push/pull data from it... *******************
+        this.state[row][col] = data
+      }
     }
+
     load() {
       this.manifest.load()
     }
