@@ -1,12 +1,12 @@
 <script>
   class Board {
     constructor($root) {
-      $root.data("root", this) // backreference
+
+      this.$root = $root // save a reference to the jQuery object
+      //
       this.date = ""
       this.numCols = 5
       this.numRows = 12
-
-      this.$root = $root
 
       this.manifest = new Manifest($root)
       this.manifest.parent = this
@@ -18,13 +18,14 @@
         this.data.state[i] = new Array(this.numCols)
       }
       //
-      this.data.add = function (obj,data) {
-        // if (!cell.match("_")) {
-        //   return
-        // }
-        console.log("This: %o", this)
-        let row = obj.split("_")[0]
-        let col = obj.split("_")[1]
+      this.data.add = function (cell,dragged) {
+        
+        // console.log("This: %o", this) // This board object
+
+        let data = dragged.prop("id")
+        let row = cell.prop("id").split("_")[0]
+        let col = cell.prop("id").split("_")[1]
+
         console.log("Row: %o", row)
         console.log("Col %o", col)
         console.log("Data: %o", data)

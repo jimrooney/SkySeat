@@ -7,17 +7,10 @@
 */
   var Events = {
     drop: function (event, ui) {
-      let $root = $(this).closest(".root")
-      let root = $root.data("root")
-
-      console.log("Root Table: %o", $root.prop("id"))
-      console.log("Root Object: %o", root)
-
-      //console.log("Event.target: %o", event.target) // The cell that fired the event (dropped onto in this case)
-      //console.log("Drop UI: %o", ui)
-      // $(this) : The cell dropped onto
-      // ui.draggable : The dropped sprite
-      let dragged = ui.draggable
+      // $(this) : The cell dropped onto (same as event.target)
+      let $root = $(this).closest(".root") // jQuery root
+      let root = $root.data("root") // JavaScript root
+      let dragged = ui.draggable // ui.draggable : The dropped sprite
 
       console.log("Drop ID: %o", $(this).prop("id"))
       console.log("Dragged: %o", dragged)
@@ -28,8 +21,8 @@
       //ui.draggable.empty()// clears manifest icon
       $(this).addClass("ui-state-highlight")
 
-      root.data.add($(this).prop("id"),dragged.prop("id"))
-      console.log("State: %",root.data.state)
+      root.data.add($(this), dragged)
+      console.log("State: %", root.data.state)
     },
   }
 </script>
