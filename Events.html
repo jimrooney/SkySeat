@@ -18,9 +18,12 @@
       console.log("Dragged Classname: %o", dragged.attr("class"))
       console.log("Dragged Booking: %o", Bookings.getBooking(dragged.prop("id")))
 
+      $(".TableCell").css("background","blue")
       //ui.draggable.empty()// clears manifest icon
       $(this).addClass("ui-state-highlight")
-
+      //
+      // Save State
+      //
       root.data.add($(this), dragged)
       console.log("State: %", root.data.state)
     },
