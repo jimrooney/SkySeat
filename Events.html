@@ -18,14 +18,58 @@
       console.log("Dragged Classname: %o", dragged.attr("class"))
       console.log("Dragged Booking: %o", Bookings.getBooking(dragged.prop("id")))
 
-      $(".TableCell").css("background","blue")
+      //$(".TableCell").css("background", "blue")
       //ui.draggable.empty()// clears manifest icon
-      $(this).addClass("ui-state-highlight")
+      //$(this).addClass("ui-state-highlight")
+      
       //
       // Save State
       //
       root.data.add($(this), dragged)
       console.log("State: %", root.data.state)
+      $(this).update()
     },
   }
+  $(document).ready(function () {
+    //
+    // Prototype in custom functions
+    //
+    // We're adding functions to $(this)
+    //
+    jQuery.fn.update = function () {
+      if ($(this).hasClass("TableCell")) {
+        let $root = $(this).closest(".root") // jQuery root
+        let root = $root.data("root") // JavaScript root
+
+        let data = root.data.get($(this))
+
+        // Temp
+        let inOut = "in"
+        let productString = data
+        let c = "yellow" // colors.getByRow(_bookings[bk].IN)
+        let clrs = {
+              bkin: "#E5E7E9",
+              bkout: "#CCD1D1",
+            }
+
+        //if (type == "in") {
+        $(this).addClass("inCell")
+        let bkg = "linear-gradient(-110deg, " + c + " 20%, " + clrs.bkin + " 20%)"
+        $(this).css("background-image", bkg)
+        let direction = "<span class='inMarker'><div>" + inOut + "</div><div>&#8595;</div></span> " // IN
+        //}
+        // tmp
+        let seats = 5
+        seats =
+          '<span style="font-weight:bold; float: left; display: block;padding-right:5px;padding-left:2px"> ' +
+          seats +
+          "</span>"
+        productString = '<span style="float: left;display: block;">' + productString + "</span>"
+
+        let htmlString = direction + seats + productString
+        $(this).html(htmlString)
+      }
+      return
+    }
+  })
 </script>

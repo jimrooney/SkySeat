@@ -5,3 +5,15 @@
 // ************************
 // withUserObject(this)
 // google.script.run.withSuccessHandler(this.onTripCodeLoad).withUserObject(this).loadTripCodes()
+
+// Prototyping in functions
+jQuery.fn.update = function () {
+    return this.each(function () {
+      //
+      // Run the Update function if it's a TableCell:
+      //
+      if ($(this).hasClass("TableCell")) {
+
+      }
+    })
+  }

@@ -1,8 +1,8 @@
 <script>
   class Board {
     constructor($root) {
-
       this.$root = $root // save a reference to the jQuery object
+      // Access this object through $([Board Selector]).data('root')
       //
       this.date = ""
       this.numCols = 5
@@ -18,8 +18,7 @@
         this.data.state[i] = new Array(this.numCols)
       }
       //
-      this.data.add = function (cell,dragged) {
-        
+      this.data.add = function (cell, dragged) {
         // console.log("This: %o", this) // This board object
 
         let data = dragged.prop("id")
@@ -31,6 +30,11 @@
         console.log("Data: %o", data)
         // Maybe make this an array and push/pull data from it... *******************
         this.state[row][col] = data
+      }
+      this.data.get = function (cell) {
+        let row = cell.prop("id").split("_")[0]
+        let col = cell.prop("id").split("_")[1]
+        return this.state[row][col]
       }
     }
 

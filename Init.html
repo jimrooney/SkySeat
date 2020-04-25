@@ -1,28 +1,6 @@
 <script>
   $(document).ready(function () {
-    // ***************************************************************
-    // This should all be able to be removed since the boards are objects now and the updates can be called against them
-    //
-    // Prototype in custom functions
-    //
-    // We're adding functions to $(this)
-    //
-    jQuery.fn.update = function () {
-      return this.each(function () {
-        //
-        // Update function if it's a TableCell:
-        //
-        if ($(this).hasClass("TableCell")) {
-          //
-          // Check cell bookings agains manifest. Clean if missing.
-          //
-          display.cleanCell($(this))
-          display.update()
-        }
-      })
-    }
-
-    /*
+     /*
     Some default settings
     Can probably be consolidated later
     
@@ -37,9 +15,9 @@
     //console.clear()
   })
 
-    // ------------------------------------------------------------------------------------
-    // Global variables (most can/should be moved into a root object instead)
-    // ------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------
+  // Global variables (most can/should be moved into a root object instead)
+  // ------------------------------------------------------------------------------------
   var isLive = false
   var isMobile = false // ( set to true for testing)
   // ******************** This can move **************************
