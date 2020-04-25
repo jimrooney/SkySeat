@@ -4,7 +4,6 @@
   // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
   var testBoard
   // var Bookings is created when Bookings gets imported
-  
 </script>
 <html>
   <head>
@@ -26,14 +25,11 @@
     <?!= include('Rezdy'); ?>
     <?!= include('Board'); ?>
     <?!= include('Manifest'); ?>
-    
+
     <base target="_top" />
   </head>
   <body>
-    <div
-      id="HoverBar"
-      style="float:top; width: 100%; text-align: center; background: #737373; color: white;"
-    >
+    <div id="HoverBar" style="float: top; width: 100%; text-align: center; background: #737373; color: white;">
       [[ 2.0 ]] []
     </div>
     <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
@@ -48,8 +44,8 @@
         let $this = $("#AutoBoard")
         $this.data("root", new Board($this))
         $this.data("root").writeBoard()
-//        testBoard = new Board($("#AutoBoard"))
-  //      testBoard.writeBoard()
+        //        testBoard = new Board($("#AutoBoard"))
+        //      testBoard.writeBoard()
       })
 
       // --------------------------------- OnLoad --------------------------------------------------
@@ -71,7 +67,7 @@
     */
     </script>
 
-<P>
+    <p></p>
     <div id="TheBoard" style="float: none; margin: 10px;">
       <div>
         <button class="Nav Dev" onClick="utility.close()">Close</button>
@@ -119,7 +115,6 @@
         <?!= include('TheBoardDay2'); ?>
       </span>
     </div>
-
 
     <p></p>
     <div>
