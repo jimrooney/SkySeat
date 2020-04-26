@@ -61,12 +61,7 @@
       let htmlString = direction + seats + orderSpan
       tableCell.html(htmlString)
 
-      $(".TableCell").click(function () {
-        let $root = $(this).closest(".root") // jQuery root
-        let root = $root.data("root") // JavaScript root
-        let bookingData = root.data.get($(this))
-        console.log("TableCell Data: ", bookingData)
-      })
+
     },
   }
 </script>

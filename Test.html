@@ -2,10 +2,12 @@
   function test(args) {
     // console.log("getManifest: %o",Bookings.getManifest("06/03/2020"))
 
-let date = testBoard.manifest.getDate()
-console.log("Date: %o", date)
-let b = testBoard.manifest.getBookings(date)
-console.log("Bookings: %o",b)
+    $(".TableCell").click(function () {
+        let $root = $(this).closest(".root") // jQuery root
+        let root = $root.data("root") // JavaScript root
+        let bookingData = root.data.get($(this))
+        console.log("TableCell Data: ", bookingData)
+      })
 
 // console.log("Test %o",args)
 
