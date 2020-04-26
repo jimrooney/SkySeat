@@ -30,35 +30,10 @@
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
       google.script.run.withSuccessHandler(this.onLoad).withUserObject(Manifest).loadRezdy(requestedDate)
     },
-    onLoad: function (json, Manifest) {
-      console.log("Rezdy.onLoad( Manifest )")
-      utility.alert("Rezdy Loaded", "#ManifestMessages")
-      $(".Manifest_Container .Manifest").css("background-color", "#68a167")
-      // Remove all old booking objects (need to clear the board and theBoard array as well) ********************************
-      $(".BookingSprite").remove()
-
-      let data = JSON.parse(json)
-      console.log("JSON Loaded: %o", data)
-      // -----------------------
-      // Parse Rezdy Data
-      //------------------------
-      let bookings = Rezdy.parseData(data) // --------------=========== Can't be called with "this".. this is the window object here ==============----------------
-
-      // bookings is now an object, it can't be sorted.
-      //
-      // Sort bookings by trip time
-      //
-      // bookings.sort(function(a, b) {
-      //   return a.time.localeCompare(b.time) // localCompare is a Javascript function
-      // })
-
-      console.log("Parsed Bookings: %o", bookings)
-      // ---------------------
-      // Show Manifest
-      // ---------------------
-      Bookings.add(bookings)
-      Manifest.json = data.bookings // We don't need to keep the response code meta-data
-      Manifest.onLoad(bookings)
+    // Passes Google Script XML return back to the Manifest that called the script
+    onLoad: function (XML, Manifest) {
+      console.log("Rezdy.onLoad( XML, Manifest )")
+      Manifest.onLoad(XML)
     },
     onTripCodeLoad: function (data) {
       console.log("OnTripCodeLoad: %o", data)
