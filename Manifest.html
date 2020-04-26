@@ -141,6 +141,11 @@
     // Loop over each booking for a match
     //
     getBooking(orderNumber) {
+      if (!!this.bookings[orderNumber]){
+        console.log("Booking ",orderNumber)
+      }
+      return
+      
       let ret = false
       $("#" + this.root.prop("id") + " .Manifest").each(function () {
         let json = $(this).data("json")

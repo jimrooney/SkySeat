@@ -16,7 +16,6 @@
       console.log("Dragged: %o", dragged)
       console.log("Dragged ID: %o", dragged.prop("id"))
       console.log("Dragged Classname: %o", dragged.attr("class"))
-      console.log("Dragged Booking: %o", Bookings.getBooking(dragged.prop("id")))
 
       //$(".TableCell").css("background", "blue")
       //ui.draggable.empty()// clears manifest icon
@@ -25,19 +24,20 @@
       //
       // Save State
       //
-      root.data.add($(this), dragged)
+      root.data.add($(this), dragged) // This is the magic //
       console.log("State: %", root.data.state)
       Events.update($(this))
     },
-    update: function (obj) {
-      let $root = obj.closest(".root") // jQuery root
-      let root = $root.data("root") // JavaScript root
-
-      let data = root.data.get(obj)
+    update: function (tableCell) {
+      let $root = tableCell.closest(".root") // Board jQuery root
+      let root = $root.data("root") // Board JavaScript root (lives in the jQuery.data("root"))
+      let bookingData = root.data.get(tableCell) // Get the cell's data ([Board].data[row][col])
 
       // Temp
       let inOut = "in"
-      let productString = data
+      // *****************************************************************
+      let orderNumber = bookingData // just one order for now... will be more later, possibly an object... at least an array.
+      // *****************************************************************
       let c = "yellow" // colors.getByRow(_bookings[bk].IN)
       let clrs = {
         bkin: "#E5E7E9",
@@ -45,9 +45,9 @@
       }
 
       //if (type == "in") {
-      obj.addClass("inCell")
+      tableCell.addClass("inCell")
       let bkg = "linear-gradient(-110deg, " + c + " 20%, " + clrs.bkin + " 20%)"
-      obj.css("background-image", bkg)
+      tableCell.css("background-image", bkg)
       let direction = "<span class='inMarker'><div>" + inOut + "</div><div>&#8595;</div></span> " // IN
       //}
       // tmp
@@ -56,10 +56,17 @@
         '<span style="font-weight:bold; float: left; display: block;padding-right:5px;padding-left:2px"> ' +
         seats +
         "</span>"
-      productString = '<span style="float: left;display: block;">' + productString + "</span>"
+      let orderSpan = '<span style="float: left;display: block;">' + orderNumber + "</span>"
 
-      let htmlString = direction + seats + productString
-      obj.html(htmlString)
+      let htmlString = direction + seats + orderSpan
+      tableCell.html(htmlString)
+
+      $(".TableCell").click(function () {
+        let $root = $(this).closest(".root") // jQuery root
+        let root = $root.data("root") // JavaScript root
+        let bookingData = root.data.get($(this))
+        console.log("TableCell Data: ", bookingData)
+      })
     },
   }
 </script>
