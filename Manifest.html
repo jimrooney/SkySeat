@@ -2,6 +2,8 @@
   class Manifest {
     constructor($parent) {
       let _this = this
+      this.json // Placeholder
+      this.$bookings // Placeholder
       this.$parent = $parent // Keep a link to the parent jQuery object
     }
     getDate() {
@@ -20,6 +22,7 @@
         </div>
         <div class="Bookings" style="float:left;display: inline-block;"></div>
       </span>`)
+      this.$bookings = this.$parent.find(".Bookings")
       //
       // Manifest Reload Button
       //
@@ -86,16 +89,18 @@
       }
       init() // This should change *************** not be root variable, not be such a hatchet **********
     }
-    /* ****************************************** Need to build this **********************************
-    call the Google Rezdy loading script here, passing this object so the results can be returned into it
-    */
+  
+    // Call the Google Rezdy loading script, passing this object so the results can be returned into it
     load() {
       Rezdy.load(this)
     }
-    onLoad(data) {
+    onLoad(bookings) {
       console.log("Manifest onLoad()")
-      console.log("data %o", data)
-      this.show(this.getDate())
+      console.log("Manifest.json: %o", this.json)
+      console.log("bookings %o", bookings)
+
+      this.$bookings.empty()
+      this.show(this.getDate()) // ********** won't be necessary to "get date" once it's manifest not global
     }
     // ------------
     // Get Bookings

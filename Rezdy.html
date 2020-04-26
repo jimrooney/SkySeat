@@ -11,33 +11,27 @@
     Then we can update that board with the return data.
 
     */
-    load: function (obj) {
-      console.log("Rezdy.load(obj)")
+    load: function (Manifest) {
+      console.log("Rezdy.load([Manifest])")
       let requestedDate
-      if(typeof obj == "object"){
-        requestedDate = obj.getDate()
+      if (typeof Manifest == "object") {
+        requestedDate = Manifest.getDate()
+        if (!!requestedDate) {
+          requestedDate = Dates.getNZ(requestedDate)
+        } else {
+          console.log("No date passed in")
+          return
+        }
       } else {
         console.log("Rezdy.load: Wrong object")
         return
-        //requestedDate = obj
       }
-
-      // This can be cleaned up (duplicates a lot of the above code) *****************
-      if (!!requestedDate) {
-        requestedDate = Dates.getNZ(requestedDate)
-      } else {
-        console.log("No date passed in")
-        return
-      }
-      console.log("Run Google Script loadRezdy(%o)",requestedDate)
+      console.log("Run Google Script loadRezdy(%o)", requestedDate)
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
-      google.script.run
-        .withSuccessHandler(this.onLoad)
-        .withUserObject(obj)
-        .loadRezdy(requestedDate)
+      google.script.run.withSuccessHandler(this.onLoad).withUserObject(Manifest).loadRezdy(requestedDate)
     },
-    onLoad: function (json, obj) {
-      console.log("Rezdy.onLoad( obj )")
+    onLoad: function (json, Manifest) {
+      console.log("Rezdy.onLoad( Manifest )")
       utility.alert("Rezdy Loaded", "#ManifestMessages")
       $(".Manifest_Container .Manifest").css("background-color", "#68a167")
       // Remove all old booking objects (need to clear the board and theBoard array as well) ********************************
@@ -59,12 +53,12 @@
       // })
 
       console.log("Parsed Bookings: %o", bookings)
-      // $("#MANIFEST").empty() // clear the old manifest list ******************
       // ---------------------
       // Show Manifest
       // ---------------------
       Bookings.add(bookings)
-      obj.onLoad(bookings)
+      Manifest.json = data.bookings // We don't need to keep the response code meta-data
+      Manifest.onLoad(bookings)
     },
     onTripCodeLoad: function (data) {
       console.log("OnTripCodeLoad: %o", data)
@@ -88,10 +82,7 @@
       //
       for (a in data.bookings) {
         // Check status before continuing
-        if (
-          data.bookings[a].status == "CONFIRMED" &&
-          data.bookings[a].orderNumber
-        ) {
+        if (data.bookings[a].status == "CONFIRMED" && data.bookings[a].orderNumber) {
           //
           // -- Skip wrapper data and use "Items" as bookings" --
           //
@@ -99,7 +90,7 @@
           for (let i in rezdyBookings) {
             let rezdyBooking = rezdyBookings[i]
             let booking = {}
-            booking.flight = {}
+            booking.flight = {} // an object for our data
             //
             // Pull some parent values down into the booking so we don't lose them
             //
@@ -112,10 +103,7 @@
             }
             booking.orderNumber = data.bookings[a].orderNumber + multiPass
             booking.resellerAlias = data.bookings[a].resellerAlias
-            booking.bookingName =
-              data.bookings[a].customer.firstName +
-              " " +
-              data.bookings[a].customer.lastName
+            booking.bookingName = data.bookings[a].customer.firstName + " " + data.bookings[a].customer.lastName
             //
             // Translate Rezdy Booking to our idea of a booking
             //
@@ -205,8 +193,7 @@
 
                     switch (px.fields[f].label) {
                       case "First Name":
-                        person.firstName =
-                          px.fields[f].value || booking.bookingName + p
+                        person.firstName = px.fields[f].value || booking.bookingName + p
 
                       case "Last Name":
                         person.lastName = px.fields[f].value || ""
