@@ -13,19 +13,19 @@
     */
     load: function (Manifest) {
       console.log("Rezdy.load([Manifest])")
+      //
+      // Date Check (should be a Manifest object)
+      //
       let requestedDate
       if (typeof Manifest == "object") {
         requestedDate = Manifest.getDate()
-        if (!!requestedDate) {
-          requestedDate = Dates.getNZ(requestedDate)
-        } else {
-          console.log("No date passed in")
-          return
-        }
       } else {
         console.log("Rezdy.load: Wrong object")
         return
       }
+      //
+      // Call the google script and pass it the Manifest
+      //
       console.log("Run Google Script loadRezdy(%o)", requestedDate)
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
       google.script.run.withSuccessHandler(this.onLoad).withUserObject(Manifest).loadRezdy(requestedDate)

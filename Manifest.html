@@ -8,13 +8,14 @@
       this.$parent = $parent // Keep a link to the parent jQuery object
     }
     getDate() {
-      return this.parent.$datepicker.datepicker("getDate")
+      let date = this.parent.$datepicker.datepicker("getDate")
+      date = Dates.getNZ(date)
+      return date
     }
     write() {
       //
       // Manifest Div
       //
-      console.log("Parent: %o", this.$parent)
       let _span = this.$parent
         .append(`<span style="float:left; background: rgba(71, 88, 115, 1); vertical-align: top; display: inline-block;">
         <div class="Manifest_Container">
@@ -36,7 +37,10 @@
     }
     show(date) {
       console.log("Manifest.show(%o)", date)
-      let bookings = this.getBookings(date)
+      if(!date){
+        date = this.getDate()
+      }
+      let bookings = this.bookings
       let $div = this.$parent.find(".Bookings")
       console.log("bookings %o", bookings)
       let count = 0
@@ -88,19 +92,16 @@
       console.log("Manifest onLoad()")
 
       let data = JSON.parse(XML)
-      let bookings = Rezdy.parseData(data)
+      this.bookings = Rezdy.parseData(data) // Hash key'd by booking orderNumber
       let json = data.bookings // We don't need to keep the response code meta-data
 
-      //*****************************************************************************
-      Bookings.add(bookings) // don't really need this list now *********************
-      //*****************************************************************************
-
       console.log("JSON Loaded: %o", data)
-      console.log("Parsed Bookings: %o", bookings)
+      console.log("Parsed Bookings: %o", this.bookings)
       console.log("Manifest.json: %o", json)
 
-      //this.$bookings.empty()
-      this.show(this.getDate()) // ********** won't be necessary to "get date" once it's manifest not global
+      console.log("This %o", this)
+      this.$bookings.empty()
+      this.show()
     }
     // ------------
     // Get Bookings
