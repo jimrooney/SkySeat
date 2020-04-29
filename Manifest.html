@@ -71,11 +71,12 @@
             })
             // Need to update the highlighting functions / methods (class based)
             .mouseover(function () {
-              display.highlightBookings($(this).data("json"))
+              Events.highlight($(this))
             })
             .mouseleave(function () {
-              display.update()
+              Events.lowlight($(this))
             })
+            // .hover(function(){Events.highlight($(this))},function(){Events.lowlight($(this))}) // shorthand for mouseover/leave
           count++
           // let totalPax = Manifest.getTotalPax()
           // $("#ManifestMessages").html(Manifest.getTotalPax() + " pax ")

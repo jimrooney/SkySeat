@@ -363,7 +363,7 @@ function handleDropEvent(event, ui) {
         ui.draggable.data('type',null) // Remove IN/OUT branding
         targetCell.draggable('enable', "helper", "clone")
     }
-    display.update()
+    //display.update()
     if(isPopupSprite){
       bookingManager.getDetails(ui.draggable,sourceID)
     }

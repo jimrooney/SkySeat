@@ -24,9 +24,15 @@
       //
       // Save State
       //
-      root.data.add($(this), dragged) // This is the magic //
+      root.data.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirror the Board)
       console.log("State: %", root.data.state)
       Events.update($(this))
+    },
+    highlight: function(Selector){
+      Selector.addClass("highlight")
+    },
+    lowlight: function(Selector){
+      Selector.removeClass("highlight")
     },
     update: function (tableCell) {
       let $root = tableCell.closest(".root") // Board jQuery root
