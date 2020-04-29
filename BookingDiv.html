@@ -1,0 +1,38 @@
+<script>
+  class BookingDiv {
+    constructor($root) {
+      this.$root = $root // save a reference to the jQuery object
+      // Access this object through $([Board Selector]).data('root')
+    }
+    write(booking) {
+      console.log("Write BookingDiv")
+      let $div = this.$root.append("<div />")
+
+      let $container = "<span class='tooltip' />"
+      let ret
+      $div.append($container)
+      if (!!booking.orderNumber) {
+
+        let masterkey = booking.orderNumber.split("-")[0]
+        ret =
+          ret +
+          // "2FCF" coded sprite
+          '<span style="float:left"><div class="BookingSprite Manifest" id="' +
+          booking.orderNumber +
+          '"' +
+          "> " +
+          '<span style="font-weight:bold;background-color:' +
+          colors.getByBooking(booking) +
+          '">' +
+          booking.seats +
+          " " +
+          booking.product +
+          "</span>" +
+          "</div></span>"
+      }
+
+      $container = $container + ret + "</span>"
+      $div.append($container)
+    }
+  }
+</script>

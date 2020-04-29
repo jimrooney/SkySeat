@@ -37,51 +37,20 @@
     }
     show(date) {
       console.log("Manifest.show(%o)", date)
-      if(!date){
+      if (!date) {
         date = this.getDate()
       }
       let bookings = this.bookings
       let $div = this.$parent.find(".Bookings")
       console.log("bookings %o", bookings)
-      let count = 0
-      for (let a in bookings) {
-        if (!!bookings[a] && bookings[a].orderNumber) {
-          let booking = bookings[a]
-          let booking_date = booking.flight.date
 
-          let jsonBooking = [booking] // ************ won't be necessary ************
-          let bookingDiv = this.getBookingDiv(booking) // This function needs updating ********************
-          $div.append(bookingDiv)
-          if (count % 4 == 0) {
-            // 4 per row
-            $div.append("<span><P></span>")
-          }
-          $("#" + booking.orderNumber)
-            .data("json", jsonBooking)
-            .click(function () {
-              let json = $(this).data("json")
-              let masterkey = json[0].orderNumber.split("-")[0]
-              let html =
-                "<A href='https://app.rezdy.com/orders/edit/" +
-                masterkey +
-                "' target='_blank'>" +
-                json[0].orderNumber +
-                "</a>"
-              utility.alert(html, "#ManifestMessages")
-            })
-            // Need to update the highlighting functions / methods (class based)
-            .mouseover(function () {
-              Events.highlight($(this))
-            })
-            .mouseleave(function () {
-              Events.lowlight($(this))
-            })
-            // .hover(function(){Events.highlight($(this))},function(){Events.lowlight($(this))}) // shorthand for mouseover/leave
-          count++
-          // let totalPax = Manifest.getTotalPax()
-          // $("#ManifestMessages").html(Manifest.getTotalPax() + " pax ")
-        }
+      // Loop over bookings next and print each booking div
+
+      for (let b in bookings) {
+        let div = new BookingDiv($div)
+        div.write(bookings[b])
       }
+
       init() // This should change *************** not be root variable, not be such a hatchet **********
     }
 
@@ -142,11 +111,11 @@
     // Loop over each booking for a match
     //
     getBooking(orderNumber) {
-      if (!!this.bookings[orderNumber]){
-        console.log("Booking ",orderNumber)
+      if (!!this.bookings[orderNumber]) {
+        console.log("Booking ", orderNumber)
       }
       return
-      
+
       let ret = false
       $("#" + this.root.prop("id") + " .Manifest").each(function () {
         let json = $(this).data("json")
