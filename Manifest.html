@@ -22,8 +22,9 @@
           <div class="Header">
           <span style="float:left;display: inline-block;"></span>
           <span style="float:right;display: inline-block;"><button>&#10226;</button></span> Manifest </div><div class="Manifest"></div>
+          <div class="Bookings" style="float:left;display: inline-block;"></div>
         </div>
-        <div class="Bookings" style="float:left;display: inline-block;"></div>
+     
       </span>`)
       this.$bookings = this.$parent.find(".Bookings")
       //
@@ -41,14 +42,14 @@
         date = this.getDate()
       }
       let bookings = this.bookings
-      let $div = this.$parent.find(".Bookings")
+      let $Bookings = this.$parent.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
       console.log("bookings %o", bookings)
-
+      //
       // Loop over bookings next and print each booking div
-
+      //
       for (let b in bookings) {
-        let div = new BookingDiv($div)
-        div.write(bookings[b])
+        let div = new BookingDiv($Bookings) // Pass in the $Bookings div as the root jQuery object
+        div.write(bookings[b]) // BookingDiv's print their own HTML
       }
 
       init() // This should change *************** not be root variable, not be such a hatchet **********
