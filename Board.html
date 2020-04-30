@@ -54,19 +54,6 @@
     }
     writeBoard() {
       console.log("Write Board")
-      // ----------
-      // DatePicker
-      // ----------
-      this.$root.append(
-        '<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8" id="MyDatePicker"/></div>'
-      )
-      this.$datepicker = $("#" + this.$root.prop("id") + " .datepicker")
-      Dates.initPicker(this.$datepicker, this)
-      // ******************************************************************************
-      // Autoload rezdy?
-      //let date = this.$datepicker.datepicker("getDate")
-      this.manifest.load()
-
       // ----------------------
       // The Board Table
       // ----------------------
@@ -136,6 +123,19 @@
       // Manifest
       // ----------
       this.manifest.write()
+      // ----------
+      // DatePicker
+      // ----------
+      this.$root.find(".Manifest_Container").prepend(
+        '<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8" id="MyDatePicker"/></div>'
+      )
+      this.$datepicker = $("#" + this.$root.prop("id") + " .datepicker")
+      Dates.initPicker(this.$datepicker, this)
+      // ******************************************************************************
+      // Autoload rezdy?
+      //let date = this.$datepicker.datepicker("getDate")
+      this.manifest.load()
+
 
       // ----------
       // Set onClick
@@ -144,11 +144,11 @@
         // $("#" + this.$root.prop("id") + ...
         // Targeted at this board's .TableCells only so that further instantiation doesn't double fire the click
         // (This might not be necessary)
-        
+
         //Stop click propagation. (works without this, but could stop problems down the track)
         event.stopPropagation()
         event.stopImmediatePropagation()
-        
+
         let $root = $(this).closest(".root") // jQuery root
         let root = $root.data("root") // JavaScript root
         let bookingData = root.data.get($(this))

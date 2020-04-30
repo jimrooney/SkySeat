@@ -17,15 +17,12 @@
       // Manifest Div
       //
       let _span = this.$parent
-        .append(`<span style="float:left; background: rgba(71, 88, 115, 1); vertical-align: top; display: inline-block;">
-        <div class="Manifest_Container">
+        .append(`<div class="Manifest_Container">
           <div class="Header">
           <span style="float:left;display: inline-block;"></span>
           <span style="float:right;display: inline-block;"><button>&#10226;</button></span> Manifest </div><div class="Manifest"></div>
           <div class="Bookings" style="float:left;display: inline-block;"></div>
-        </div>
-     
-      </span>`)
+      </div>`)
       this.$bookings = this.$parent.find(".Bookings")
       //
       // Manifest Reload Button
