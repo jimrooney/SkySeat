@@ -3,7 +3,7 @@
     constructor($parent) {
       let _this = this
       this.json // Placeholder
-      this.bookings // Placeholder for json.bookings
+      this.bookings // Placeholder... List of Bookings... hash key'd (by orderNumber) from Rezdy load
       this.$bookings // Placeholder
       this.$parent = $parent // Keep a link to the parent jQuery object
     }
@@ -111,22 +111,9 @@
     getBooking(orderNumber) {
       if (!!this.bookings[orderNumber]) {
         console.log("Booking ", orderNumber)
+        return this.bookings[orderNumber]
       }
       return
-
-      let ret = false
-      $("#" + this.root.prop("id") + " .Manifest").each(function () {
-        let json = $(this).data("json")
-        for (let booking in json) {
-          if (json[booking].orderNumber) {
-            let book = json[booking].orderNumber.split("_")[0]
-            if (book == orderNumber) {
-              ret = true
-            }
-          }
-        }
-      })
-      return ret
     }
     //
     // return total number of filled seats

@@ -31,7 +31,7 @@ This object can handle all of the error checking (like null checking)
       }
       return manifest
     },
-    getBooking: function (orderNumber) {
+    get: function (orderNumber) {
       if (!!orderNumber) {
         for (let a in this.list) {
           if (this.list[a].orderNumber == orderNumber) {

@@ -6,6 +6,12 @@
 
 */
   var Events = {
+    highlight: function(Selector){
+      Selector.addClass("highlight")
+    },
+    lowlight: function(Selector){
+      Selector.removeClass("highlight")
+    },
     drop: function (event, ui) {
       // $(this) : The cell dropped onto (same as event.target)
       let $root = $(this).closest(".root") // jQuery root
@@ -16,23 +22,12 @@
       console.log("Dragged: %o", dragged)
       console.log("Dragged ID: %o", dragged.prop("id"))
       console.log("Dragged Classname: %o", dragged.attr("class"))
-
-      //$(".TableCell").css("background", "blue")
-      //ui.draggable.empty()// clears manifest icon
-      //$(this).addClass("ui-state-highlight")
-
-      //
-      // Save State
-      //
+      // -------------------------------------------------------------------
+      // Record Drop
+      // -------------------------------------------------------------------
       root.data.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirror the Board)
       console.log("State: %", root.data.state)
       Events.update($(this))
-    },
-    highlight: function(Selector){
-      Selector.addClass("highlight")
-    },
-    lowlight: function(Selector){
-      Selector.removeClass("highlight")
     },
     update: function (tableCell) {
       let $root = tableCell.closest(".root") // Board jQuery root

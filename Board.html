@@ -16,20 +16,20 @@
       this.data.state = new Array(this.numRows)
       for (let i = 0; i < this.data.state.length; i++) {
         this.data.state[i] = new Array(this.numCols)
+        for (let a = 0; a<this.data.state[i].length;a++) {
+          this.data.state[i][a] = {}
+        }
       }
       //
       this.data.add = function (cell, dragged) {
         // console.log("This: %o", this) // This board object
 
-        let data = dragged.prop("id")
+        let dataKey = dragged.prop("id")
         let row = cell.prop("id").split("_")[0]
         let col = cell.prop("id").split("_")[1]
 
-        console.log("Row: %o", row)
-        console.log("Col %o", col)
-        console.log("Data: %o", data)
-        // Maybe make this an array and push/pull data from it... *******************
-        this.state[row][col] = data
+        // Record the booking ... this could just be an array. We're hashing it for now ************************
+        this.state[row][col][dataKey] = dataKey
       }
       this.data.get = function (cell) {
         let row = cell.prop("id").split("_")[0]
@@ -126,9 +126,11 @@
       // ----------
       // DatePicker
       // ----------
-      this.$root.find(".Manifest_Container").prepend(
-        '<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8" id="MyDatePicker"/></div>'
-      )
+      this.$root
+        .find(".Manifest_Container")
+        .prepend(
+          '<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8" id="MyDatePicker"/></div>'
+        )
       this.$datepicker = $("#" + this.$root.prop("id") + " .datepicker")
       Dates.initPicker(this.$datepicker, this)
       // ******************************************************************************
@@ -136,10 +138,10 @@
       //let date = this.$datepicker.datepicker("getDate")
       this.manifest.load()
 
-
       // ----------
       // Set onClick
       // ----------
+      let _this = this
       $("#" + this.$root.prop("id") + " .TableCell").click(function () {
         // $("#" + this.$root.prop("id") + ...
         // Targeted at this board's .TableCells only so that further instantiation doesn't double fire the click
@@ -152,7 +154,14 @@
         let $root = $(this).closest(".root") // jQuery root
         let root = $root.data("root") // JavaScript root
         let bookingData = root.data.get($(this))
+        let keys = Object.keys(bookingData)
+
         console.log("TableCell Data: ", bookingData)
+
+
+        for (let a in keys){
+          console.log("Booking: %o", _this.manifest.getBooking(keys[a]))
+        }
       })
     }
   }
