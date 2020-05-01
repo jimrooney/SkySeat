@@ -1,10 +1,9 @@
 -------------------------------
 Currently
 -------------------------------
-Remove all the extra draggable stuff.
-
-
-.TableCell click function needs to move out of Events.update()... it's just overcalled there.
+Adding multiple bookings to cells works now... so time to straighten out Rezdy.parse and get everything into the flight object.
+Then we can start working on moving cells.
+Need to eventually check that drops are legal (in/out)
 
 
 Restructure Rezdy.parseData now that we're not lugging all the Rezdy data around (it lives in the Manifest untouched as the json parsed XML)
@@ -14,7 +13,19 @@ Fully move ACI into flight variable
 Check "seats" and "product" in root of booking object to see if they're Rezdy or us. (seats is already in flight object)
 
 
-Look at where the manifest is written to (so it's in the draggable container)
+
+
+Once the data is sorted, then we can start displaying it more correctly.
+Eventually, we can start looking at saving state and undo/redo
+Rebuild TableCell updater (now Events.update) [pretty done for the moment... need to sort out Rezdy data first]
+Look at Events.click for looping over the cell's bookings
+
+Remove all the extra draggable stuff.
+
+
+.TableCell click function needs to move out of Events.update()... it's just overcalled there.
+
+
 init needs to change (draggable)
  
 

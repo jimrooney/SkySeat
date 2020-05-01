@@ -13,19 +13,29 @@
       Selector.removeClass("highlight")
     },
     drop: function (event, ui) {
+      //
+      // First thing's first: is it a legal drop (in/out)
+      // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
+      //
       // $(this) : The cell dropped onto (same as event.target)
       let $root = $(this).closest(".root") // jQuery root
       let root = $root.data("root") // JavaScript root
       let dragged = ui.draggable // ui.draggable : The dropped sprite
 
-      console.log("Drop ID: %o", $(this).prop("id"))
-      console.log("Dragged: %o", dragged)
-      console.log("Dragged ID: %o", dragged.prop("id"))
-      console.log("Dragged Classname: %o", dragged.attr("class"))
+      let manifest = root.manifest
+      let booking = manifest.getBooking(dragged.prop("id"))
+
+      // console.log ("Booking: %o",booking)
+      // console.log("Drop ID: %o", $(this).prop("id"))
+      // console.log("Dragged: %o", dragged)
+      // console.log("Dragged ID: %o", dragged.prop("id"))
+      // console.log("Dragged Classname: %o", dragged.attr("class"))
+      
+      
       // -------------------------------------------------------------------
       // Record Drop
       // -------------------------------------------------------------------
-      root.data.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirror the Board)
+      root.data.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
       console.log("State: %", root.data.state)
       Events.update($(this))
     },
@@ -33,6 +43,12 @@
       let $root = tableCell.closest(".root") // Board jQuery root
       let root = $root.data("root") // Board JavaScript root (lives in the jQuery.data("root"))
       let bookingData = root.data.get(tableCell) // Get the cell's data ([Board].data[row][col])
+
+      console.log("Booking Data: %o", bookingData)
+      for (let b in bookingData){
+        let booking = root.manifest.getBooking(bookingData[b])
+        console.log("Booking: %o",booking)
+      }
 
       // Temp
       let inOut = "in"
