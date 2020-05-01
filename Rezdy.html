@@ -93,13 +93,11 @@
             if (!booking.seats) {
               booking.seats = 0
             }
-            booking.ACI = utility.getPax(rezdyBooking).ACI
 
-            booking.flight.ACI = booking.ACI
+            booking.flight.ACI = utility.getPax(rezdyBooking).ACI
             booking.flight.seats = booking.seats
 
             booking.extras = rezdyBooking.extras
-
             booking.time = rezdyBooking.startTimeLocal
             booking.endTime = rezdyBooking.endTimeLocal
 
