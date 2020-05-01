@@ -1,0 +1,31 @@
+<script>
+  class BookingSprite {
+    constructor($root) {
+      this.$root = $root // save a reference to the jQuery object
+      // Access this object through $([Board Selector]).data('root')
+    }
+    write(booking) {
+      console.log("Write BookingSprites")
+
+
+      //$container = $("#containerdiv");
+
+let $details = $("<span class='tooltip' />")
+//$container.append($widget)
+// let $details
+// $details.appendTo($container)
+
+      //let $container = this.$root.append("<span class='tooltip' />")
+      if (!!booking.orderNumber) {
+        let masterkey = booking.orderNumber.split("-")[0]
+        // "2FCF" coded sprite
+        $details.addClass("BookingSprite")
+        $details.prop("id", booking.orderNumber)
+        $details.css("background-color", colors.getByBooking(booking))
+        $details.text(booking.flight.seats + " " + booking.product)
+      }
+      this.$root.append($details)
+    }
+
+  }
+</script>

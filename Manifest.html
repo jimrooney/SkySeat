@@ -20,8 +20,8 @@
         .append(`<div class="Manifest_Container">
           <div class="Header">
           <span style="float:left;display: inline-block;"></span>
-          <span style="float:right;display: inline-block;"><button>&#10226;</button></span> Manifest </div><div class="Manifest"></div>
-          <div class="Bookings" style="float:left;display: inline-block;"></div>
+          <span style="float:right;display: inline-block;"><button>&#10226;</button></span> Manifest </div><div class="Manifest">
+          <div class="Bookings" style="float:left;display: inline-block;"></div></div>
       </div>`)
       this.$bookings = this.$parent.find(".Bookings")
       //
@@ -45,8 +45,8 @@
       // Loop over bookings next and print each booking div
       //
       for (let b in bookings) {
-        let div = new BookingDiv($Bookings) // Pass in the $Bookings div as the root jQuery object
-        div.write(bookings[b]) // BookingDiv's print their own HTML
+        let div = new BookingSprite($Bookings) // Pass in the $Bookings div as the root jQuery object
+        div.write(bookings[b]) // BookingSprite's print their own HTML
       }
 
       init() // This should change *************** not be root variable, not be such a hatchet **********
