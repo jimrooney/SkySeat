@@ -57,12 +57,22 @@
     }
     onLoad(XML) {
       console.log("Manifest onLoad()")
-      this.json = JSON.parse(XML)
+      this.json = JSON.parse(XML) // Store the Rezdy object so we can write them later.
       this.bookings = Rezdy.parseData(this.json) // Hash key'd by booking orderNumber
-      let json = data.bookings // Store the Rezdy object so we can write them later.
 
       console.log("Manifest.json: %o", this.json)
       console.log("Parsed Bookings: %o", this.bookings)
+
+
+
+      for (let b in this.bookings){
+        console.log("Length: %o",this.bookings[b].getPax())
+        console.log("Product Code: %o", this.bookings[b].getProductCode())
+      }
+
+
+
+
 
       this.$bookings.empty()
       this.show()

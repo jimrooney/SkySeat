@@ -1,0 +1,29 @@
+<script>
+    class Booking {
+        constructor(order,count){
+            console.log("Booking Created: %o %o",order,count)
+            let booking = order.items[count]
+            console.log("Booking: %o",booking)
+
+            this.order = order // keep a reference to the Rezdy Data
+            this.booking = order.items[count]
+            
+        }
+        getPax(){
+            // Eventually, this will sort out participants vs ACI vs Quantities and figure out the actual pax.
+            // Probably want to return an object with pax data
+            return this.booking.quantities.length
+        }
+        getSeats(){
+            // return a raw number of seats this booking will occupy
+
+        }
+        getProductCode(){
+            return gya.getCode(this.booking.productCode) // row from TripCodes spreadsheet ***** GYA object *****
+        }
+    }
+
+
+
+
+</script>

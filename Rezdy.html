@@ -47,176 +47,27 @@
       google.script.run.withSuccessHandler(Rezdy.onTripCodeLoad).loadTripCodes()
     },
     // ========================================== Parse Rezdy Data ==========================================
+
+    //
+    // Takes a JSON object of data and returns a list of Booking objects
+    //
     parseData: function (data) {
-      //
-      // An array to store the bookings
-      //
       let bookings = {}
       //
-      // Translate Rezdy objects into our booking object structure
-      //
-      for (a in data.bookings) {
-        // Check status before continuing
-        if (data.bookings[a].status == "CONFIRMED" && data.bookings[a].orderNumber) {
-          //
-          // -- Skip wrapper data and use "Items" as bookings" --
-          //
-          let rezdyBookings = data.bookings[a].items
-          for (let i in rezdyBookings) {
-            let rezdyBooking = rezdyBookings[i]
-            let booking = {}
-            booking.flight = {} // an object for our data
-            //
-            // Pull some parent values down into the booking so we don't lose them
-            //
-            //
-            // multiPass is for multiple bookings per order
-            //
-            let multiPass = ""
-            if (i > 0) {
-              multiPass = "-" + i
-            }
-            booking.orderNumber = data.bookings[a].orderNumber + multiPass
-            booking.resellerAlias = data.bookings[a].resellerAlias
-            booking.bookingName = data.bookings[a].customer.firstName + " " + data.bookings[a].customer.lastName
-            //
-            // Translate Rezdy Booking to our idea of a booking
-            //
-            booking.productCode = gya.getCode(rezdyBooking.productCode) // row from TripCodes spreadsheet
-            booking.product = booking.productCode[2] || "" // Blank in case missing code in spreadsheet
-
-            // ***********************************************************
-            // These should be internal functions, not callouts to utility
-            // ***********************************************************
-            booking.seats = utility.getPax(rezdyBooking).seats
-
-            if (!booking.seats) {
-              booking.seats = 0
-            }
-
-            booking.flight.ACI = utility.getPax(rezdyBooking).ACI
-            booking.flight.seats = booking.seats
-
-            booking.extras = rezdyBooking.extras
-            booking.time = rezdyBooking.startTimeLocal
-            booking.endTime = rezdyBooking.endTimeLocal
-
-            booking.flight.date = Dates.getNZ(booking.time)
-            booking.flight.ETD = time.getTime(booking.time)
-
-            booking.sourceChannel = rezdyBooking.sourceChannel
-            booking.pickupLocation = rezdyBooking.pickupLocation
-            booking.internalNotes = data.bookings[a].internalNotes
-
-            // Flatten the list of extras
-            let ext = []
-            // each extra
-            for (let e in booking.extras) {
-              // For Each Quantity, push an extra into the ext array
-              for (let num = 0; num <= booking.extras[e].quantity; num++) {
-                ext.push(booking.extras[e])
-              }
-            }
-            //
-            // Parse Pax Data
-            //
-            let pax = []
-            //
-            // If ACI returned false, ignore it.
-            //
-            let sumACI = 0
-            if (booking.ACI) {
-              sumACI = arrays.sum(booking.ACI, 2)
-            }
-            //
-            // Check Passenger list against ACI *************************************************************
-            //
-            if (rezdyBooking.participants.length >= sumACI) {
-              //
-              // Pax List is Good... so use the entered passenger names and details
-              //
-              for (let p in rezdyBooking.participants) {
-                let px = rezdyBooking.participants[p]
-                let person = {}
-                //
-                // Key each individual with the booking order + their number in the pax array
-                //
-                person.key = booking.orderNumber + "_" + p
-                person.paxNumber = p
-                person.product = booking.product
-                person.productCode = booking.productCode
-                person.pickupLocation = booking.pickupLocation
-                person.extra = "" // blank so we can just add it to strings without checking
-                //
-                // Assign Extras to passengers
-                // This will invariably give the wrong type of extra to some people (like vegitarian stuff), but it'll be close enough for now *************
-                //
-                if (ext[p]) {
-                  person.extra = ext[p]
-                }
-                //
-                //
-                //
-                for (let f in px.fields) {
-                  if (typeof px.fields[f] !== "undefined") {
-                    //
-                    // Everyone's an adult unless specified otherwise
-                    //
-                    person.standardWeight = gya.standard.adult
-
-                    switch (px.fields[f].label) {
-                      case "First Name":
-                        person.firstName = px.fields[f].value || booking.bookingName + p
-
-                      case "Last Name":
-                        person.lastName = px.fields[f].value || ""
-
-                      case "Passenger weight (Please specify units: kg or lbs)":
-                        person.weight = px.fields[f].value || ""
-                    }
-                  }
-                }
-                if (booking.ACI && p < booking.ACI[0]) {
-                } else {
-                  person.standardWeight = gya.standard.child
-                }
-                pax.push(person)
-              }
-            } else {
-              //
-              // Generate names from ACI
-              //
-              for (let p = 0; p < sumACI; p++) {
-                // number of ACI
-                let person = {}
-                //
-                // Key each individual with the booking order + their number in the pax array
-                //
-                person.key = booking.orderNumber + "_" + p
-                person.paxNumber = p
-                person.firstName = booking.orderNumber + "_" + p
-                person.lastName = "[Generated]"
-                person.weight = 0
-                person.standardWeight = gya.standard.adult
-                pax.push(person)
-              }
-            }
-
-            booking.pax = pax
-
-            // ************************************************************************************************************************
-
-            // Key/Record/Note if something is an "out" of sorts (overnight cruises, etc) and maybe note the out time?
-
-            // ******************************************************************************************************************************************************
-            // This might be able to be replaced by looking at the "EndTime" from the booking... but likely still needs to account for the flight duration **********
-            booking.offset = gya.getOffset(booking.product) // Get the time (in hours) before the return departure
-
-            // To Array or not to Array, that is the question *****************************************************
-            bookings[booking.orderNumber] = booking
-
-            // ************************************************************************************************************************
+      for (let a in data.bookings) {
+        let order = data.bookings[a]
+        console.log("Order: %o", order)
+        // if there's no orderNumber, skip it
+        if (!order.orderNumber) {
+          continue
+        }
+        console.log("Booking Items: %o",order.items)
+        for (let i in order.items){
+          let key = order.orderNumber
+          if (i>0){
+            key = key + "-" + i
           }
+          bookings[key] = new Booking(order,i)
         }
       }
       return bookings
