@@ -1,29 +1,46 @@
 <script>
-    class Booking {
-        constructor(order,count){
-            console.log("Booking Created: %o %o",order,count)
-            let booking = order.items[count]
-            console.log("Booking: %o",booking)
+  class Booking {
+    constructor(RezdyOrder, count) {
+      console.log("Booking Created: %o %o", RezdyOrder, count)
+      let booking = RezdyOrder.items[count]
+      console.log("Booking: %o", booking)
 
-            this.order = order // keep a reference to the Rezdy Data
-            this.booking = order.items[count]
-            this.productCode = gya.getCode(this.booking.productCode)
-        }
-        getPax(){
-            // Eventually, this will sort out participants vs ACI vs Quantities and figure out the actual pax.
-            // Probably want to return an object with pax data
-            return this.booking.quantities.length
-        }
-        getSeats(){
-            // return a raw number of seats this booking will occupy
-
-        }
-        getProductCode(){
-            return gya.getCode(this.booking.productCode) // row from TripCodes spreadsheet ***** GYA object *****
-        }
+      this.order = RezdyOrder // keep a reference to the Rezdy Data
+      this.booking = this.order.items[count]
+      this.productCode = gya.getCode(this.booking.productCode)
+      this.orderNumber = this.order.orderNumber
     }
-
-
-
-
+    getPax() {
+      // Eventually, this will sort out participants vs ACI vs Quantities and figure out the actual pax.
+      // Probably want to return an object with pax data
+      return this.booking.quantities.length
+    }
+    getSeats() {
+      // return a raw number of seats this booking will occupy
+      return this.booking.quantities.length
+    }
+    getPOB() {
+      // Number of souls on board (includes crew and infants)
+    }
+    getPaxOB() {
+      // Number of sould on board excluding staff (includes infants)
+    }
+    getProductCode() {
+      return gya.getCode(this.booking.productCode) // row from TripCodes spreadsheet ***** GYA object *****
+    }
+    getSprite() {
+      // Constructs and returns a booking sprite
+      let $details = $("<span class='tooltip' />")
+      console.log("OrderNumber: %o", this.orderNumber)
+      if (!!this.orderNumber) {
+        let masterkey = this.orderNumber.split("-")[0]
+        // "2FCF" coded sprite
+        $details.addClass("BookingSprite")
+        $details.prop("id", this.orderNumber)
+        $details.css("background-color", colors.getByBooking(this))
+        $details.text(this.getSeats() + " " + this.productCode)
+      }
+      return $details
+    }
+  }
 </script>

@@ -32,6 +32,20 @@
         _this.load()
       })
     }
+    // Call the Google Rezdy loading script, passing this object so the results can be returned into it
+    load() {
+      Rezdy.load(this)
+    }
+    onLoad(XML) {
+      console.log("Manifest onLoad()")
+      this.json = JSON.parse(XML) // Store the Rezdy object so we can write them later.
+      this.bookings = Rezdy.parseData(this.json) // Hash key'd by booking orderNumber
+      console.log("Manifest.json: %o", this.json)
+      console.log("Parsed Bookings: %o", this.bookings)
+      console.log("Manifest.json 2: %o", this.json)
+      this.$bookings.empty()
+      this.show()
+    }
     show(date) {
       console.log("Manifest.show(%o)", date)
       if (!date) {
@@ -43,42 +57,17 @@
       //
       // Loop over bookings next and print each booking div
       //
+      this.$bookings.append("<B>HI<B>")
       for (let b in bookings) {
-        let div = new BookingSprite($Bookings) // Pass in the $Bookings div as the root jQuery object
-        div.write(bookings[b]) // BookingSprite's print their own HTML
+        this.$bookings.append(bookings[b].getSprite())
+        // let div = new BookingSprite($Bookings) // Pass in the $Bookings div as the root jQuery object
+        // div.write(bookings[b]) // BookingSprite's print their own HTML
+
+        // console.log("getPax: %o",this.bookings[b].getPax())
+        // console.log("Product Code: %o", this.bookings[b].getProductCode())
       }
 
       init() // This should change *************** not be root variable, not be such a hatchet **********
-    }
-
-    // Call the Google Rezdy loading script, passing this object so the results can be returned into it
-    load() {
-      Rezdy.load(this)
-    }
-    onLoad(XML) {
-      console.log("Manifest onLoad()")
-      this.json = JSON.parse(XML) // Store the Rezdy object so we can write them later.
-      this.bookings = Rezdy.parseData(this.json) // Hash key'd by booking orderNumber
-
-      console.log("Manifest.json: %o", this.json)
-      console.log("Parsed Bookings: %o", this.bookings)
-
-
-
-      for (let b in this.bookings){
-        console.log("getPax: %o",this.bookings[b].getPax())
-        console.log("Product Code: %o", this.bookings[b].getProductCode())
-
-
-
-      }
-
-
-      console.log("Manifest.json 2: %o", this.json)
-      
-
-      this.$bookings.empty()
-      this.show()
     }
     // ------------
     // Get Bookings

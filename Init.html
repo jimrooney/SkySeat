@@ -1,6 +1,6 @@
 <script>
   $(document).ready(function () {
-     /*
+    /*
     Some default settings
     Can probably be consolidated later
     
@@ -8,11 +8,6 @@
   */
     $(".HalfHourSchedule").hide()
     //$(".HourSchedule").hide()
-
-    // ------------------------------------------------------------------------------------
-    // Clear the console
-    // ------------------------------------------------------------------------------------
-    //console.clear()
   })
 
   // ------------------------------------------------------------------------------------
@@ -221,7 +216,6 @@
       helper: "clone",
     })
 
-
     $(".TableCell").droppable({
       accept: ".BookingSprite, .TableCell",
       drop: Events.drop,
@@ -241,6 +235,9 @@
       utility.alert("Click")
     })
   }
+  // ------------------------------------------------------------------------------------
+  // Clear the console
+  // ------------------------------------------------------------------------------------
+  console.clear()
   console.log("Window: %o", this) // It's handy to be able to see the whole window object
-  
 </script>

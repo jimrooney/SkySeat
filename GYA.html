@@ -25,12 +25,16 @@
           col = c
         }
       }
-      // search "trips" array(2d) for the Rezdy code
       //
-      // returns product row from TripCodes spreadsheet data
+      // search "trips" range(loaded from Spreadsheet) for the Rezdy code and return that row as an object (key'd by the header row)
+      //
       for (let row in this.trips) {
         if (this.trips[row][col].match(product)) {
-          return this.trips[row]
+          let product = {}
+          for (let col in this.trips[row]){
+            product[this.trips[0][col]] = this.trips[row][col]
+          }
+          return product
         }
       }
       return "|NoCode|"
