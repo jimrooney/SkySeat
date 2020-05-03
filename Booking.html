@@ -7,7 +7,7 @@
 
             this.order = order // keep a reference to the Rezdy Data
             this.booking = order.items[count]
-            
+            this.productCode = gya.getCode(this.booking.productCode)
         }
         getPax(){
             // Eventually, this will sort out participants vs ACI vs Quantities and figure out the actual pax.

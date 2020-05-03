@@ -58,11 +58,9 @@
 
       // --------------------------------- Load TripCodes ----------------------------------------------
       function loadTripCodes() {
-        google.script.run.withSuccessHandler(onTripCodeLoad).loadTripCodes()
+        google.script.run.withSuccessHandler(gya.onTripCodeLoad).loadTripCodes()
       }
-      function onTripCodeLoad(data) {
-        gya.trips = data
-      }
+
 
       /*
   These functions are first called in planemanager ->

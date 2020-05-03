@@ -2,7 +2,7 @@
   class Manifest {
     constructor($parent) {
       let _this = this
-      this.json // Placeholder
+      this.json // Placeholder for Rezdy Parsed Data
       this.bookings // Placeholder... List of Bookings... hash key'd (by orderNumber) from Rezdy load
       this.$bookings // Placeholder
       this.$parent = $parent // Keep a link to the parent jQuery object
@@ -66,13 +66,16 @@
 
 
       for (let b in this.bookings){
-        console.log("Length: %o",this.bookings[b].getPax())
+        console.log("getPax: %o",this.bookings[b].getPax())
         console.log("Product Code: %o", this.bookings[b].getProductCode())
+
+
+
       }
 
 
-
-
+      console.log("Manifest.json 2: %o", this.json)
+      
 
       this.$bookings.empty()
       this.show()

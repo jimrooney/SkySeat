@@ -1,60 +1,84 @@
 <script>
-
-var gya = {
+  var gya = {
     //STND_Extra:4, // extra kg to add to a standard weight declaration
-    standard:{
-      declared_bonus:4,
-      adult:83,
-      child:46,
-      infant:15
+    standard: {
+      declared_bonus: 4,
+      adult: 83,
+      child: 46,
+      infant: 15,
     },
-    trips:[], // Range loaded from spreadsheet via loadTripCodes()
+    trips: [], // Range loaded from spreadsheet via loadTripCodes()
+    //
+    // Called by Rezdy function, loaded values from the spreadsheet.
+    //
+    onTripCodeLoad: function (data) {
+      gya.trips = data
+    },
     //
     // Get code translations (from TripCodes sheet)
     //
-    getCode:function(product){
+    getCode: function (product) {
+      let col = 0
+      for (let c in this.trips[0]) {
+        let regex = new RegExp("^RezdyCode", "gi")
+        if (this.trips[0][c].match(regex)) {
+          col = c
+        }
+      }
       // search "trips" array(2d) for the Rezdy code
       //
       // returns product row from TripCodes spreadsheet data
-      for (let row in this.trips){
-        if (this.trips[row][1].match(product)){
+      for (let row in this.trips) {
+        if (this.trips[row][col].match(product)) {
           return this.trips[row]
         }
       }
-      return("|NoCode|")
+      return "|NoCode|"
     },
     //
-  getOffset:function(product){
-    let offset = 0
-    // search "trips" array(2d) and return the offset
-    for (row in this.trips){
-      let regex = new RegExp("^"+product, "gi")
-      if (this.trips[row][2].match(regex)){
-        return parseInt(this.trips[row][3]) // trip duration
-      }
-    }
-    return offset
-  },
-    // Accepts array of booking objects
-    // returns total number of occupied seats (Adults and Children, skips infants) ****** Need to write the skip infants part ***************
-    getSeats:function(Bookings){
-    let totalSeats = 0
-      for (b in Bookings){
-        let booking = Bookings[b]
-        // Skip extraneous things like _proto_        
-        /// Use ACI if seats doesn't match the # of passengers
-
-        if (booking.pax){
-        let bookingSeats = parseInt(booking.pax.length)
-        
-             //let _aciNum = arrays.sum(booking.ACI,2)
-             
-            if (bookingSeats>0){
-              totalSeats += bookingSeats
-            }
+    getOffset: function (product) {
+      let col = 0
+      let durationCol = 0
+      for (let c in this.trips[0]) {
+        let regex = new RegExp("^RezdyCode", "gi")
+        if (this.trips[0][c].match(regex)) {
+          col = c
+        }
+        let reg = new RegExp("^Duration", "gi")
+        if (this.trips[0][c].match(reg)) {
+          durationCol = c
         }
       }
-    return totalSeats
+      let offset = 0
+      // search "trips" array(2d) and return the offset
+      for (row in this.trips) {
+        let regex = new RegExp("^" + product, "gi")
+        if (this.trips[row][col].match(regex)) {
+          return parseInt(this.trips[row][durationCol]) // trip duration
+        }
+      }
+      return offset
     },
-}
+    // Accepts array of booking objects
+    // returns total number of occupied seats (Adults and Children, skips infants) ****** Need to write the skip infants part ***************
+    getSeats: function (Bookings) {
+      let totalSeats = 0
+      for (b in Bookings) {
+        let booking = Bookings[b]
+        // Skip extraneous things like _proto_
+        /// Use ACI if seats doesn't match the # of passengers
+
+        if (booking.pax) {
+          let bookingSeats = parseInt(booking.pax.length)
+
+          //let _aciNum = arrays.sum(booking.ACI,2)
+
+          if (bookingSeats > 0) {
+            totalSeats += bookingSeats
+          }
+        }
+      }
+      return totalSeats
+    },
+  }
 </script>
