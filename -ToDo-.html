@@ -1,9 +1,14 @@
 -------------------------------
 Currently
 -------------------------------
-Finish Booking structure.
+Dropping onto Plane 5's column breaks things (wrong count)
 
-Continue to straighten out gya loadTripcodes (Look for  function onTripCodeLoad(data) in index.html)
+The rest of the old Manifest Booking Div code is in _scratch.html now.
+
+Continue to flesh out the Booking Object data structure
+Start working on Drop Events and Displaying/Moving data around on the board.
+Highlighting rows when you roll over Booking objects in the manifest.
+
 Continue to work on   onLoad(XML)  in Manifest.html
 
 
@@ -11,19 +16,13 @@ Adding multiple bookings to cells works now... so time to straighten out Rezdy.p
 Then we can start working on moving cells.
 Need to eventually check that drops are legal (in/out)
 
-
-Restructure Rezdy.parseData now that we're not lugging all the Rezdy data around (it lives in the Manifest untouched as the json parsed XML)
-Start looking at the processing of incoming Rezdy data...
-Particularly building our "flight" variables.
-Fully move ACI into flight variable
-Check "seats" and "product" in root of booking object to see if they're Rezdy or us. (seats is already in flight object)
-
+Look more into calculating flight details like how many seats, crew, POB PAXOB etc.
 
 
 
 Once the data is sorted, then we can start displaying it more correctly.
 Eventually, we can start looking at saving state and undo/redo
-Rebuild TableCell updater (now Events.update) [pretty done for the moment... need to sort out Rezdy data first]
+
 Look at Events.click for looping over the cell's bookings
 
 Remove all the extra draggable stuff.
@@ -37,12 +36,8 @@ init needs to change (draggable)
 
 
 
-Rebuilding display.getBookingDiv
 Look at using addClass and removeClass for a lot of the visual effects work...
 https://api.jqueryui.com/theming/css-framework/
-
-Events.drop
-Need to have the data structure setup to process a dropped event into (marking cell position)
 
 
 //

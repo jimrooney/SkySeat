@@ -1,5 +1,141 @@
 
   <script>
+
+
+
+
+
+// The old booking manifest div:
+    //
+    // Booking Div (Booking Sprite)
+    //
+    // ***************** "style" can probably be removed ****************************
+    getBookingDiv(booking, style) {
+      let vis = style == "compact" ? false : true
+      vis = false
+      let container = ""
+      let ret = "<span class='tooltip'>"
+      if (booking.orderNumber) {
+        let masterkey = booking.orderNumber.split("-")[0]
+        ret =
+          ret +
+          // "2FCF" coded sprite
+          '<span style="float:left"><div class="BookingSprite Manifest" id="' +
+          booking.orderNumber +
+          '"' +
+          "> " +
+          '<span style="font-weight:bold;background-color:' +
+          colors.getByTime(booking.time) +
+          '">' +
+          booking.seats +
+          " " +
+          booking.product +
+          "</span>" +
+          "</div></span>"
+        // verbose section
+        ret += '<span class="tooltiptext">'
+        ret +=
+          "<A href='https://app.rezdy.com/orders/edit/" +
+          masterkey +
+          "' target='_blank' style='color: lightgrey;'>" +
+          booking.orderNumber +
+          "</a><br>"
+
+        for (let p in booking.pax) {
+          let firstName = booking.pax[p].firstName || ""
+          let lastName = booking.pax[p].lastName || ""
+          let weight = booking.pax[p].weight || ""
+          //
+          // Display LBS as KG
+          //
+          let inKG = weight
+          if (!!inKG && inKG.match(/lb/gi)) {
+            let w = inKG.toLowerCase().split("lb")[0]
+            inKG = Math.round(parseInt(w) / 2.2)
+            inKG = " [ " + inKG + " kg] "
+          }
+          if (!!inKG && inKG.match(/pound/gi)) {
+            let w = inKG.toLowerCase().split("pound")[0]
+            inKG = Math.round(parseInt(w) / 2.2)
+            inKG = " [ " + inKG + " kg] "
+          }
+
+          if (vis) {
+            ret +=
+              '<div class="BookingSprite Manifest Individual" id="' +
+              booking.orderNumber +
+              '"> ' +
+              "<span style='font-size: x-small' >" +
+              time.getHour(booking.time) +
+              "</span> " +
+              "(" +
+              utility.ACI(booking.ACI) +
+              ") " +
+              "(" +
+              inKG +
+              ")" +
+              "</div><br>"
+          } else {
+            ret += firstName + lastName + " ( " + inKG + " ) " + "<br>"
+          }
+        }
+        if (booking.pickupLocation) {
+          if (booking.pickupLocation.locationName) {
+            ret += "<br><span>" + booking.pickupLocation.locationName + "</span>"
+          }
+        }
+        ret = ret + "<P><span>" + booking.internalNotes + "</span>"
+        ret = ret + "</span>"
+      }
+      container = container + ret + "</span>"
+      return container
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       //
       // An array to store the bookings
       //
