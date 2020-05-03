@@ -57,7 +57,6 @@
       //
       // Loop over bookings next and print each booking div
       //
-      this.$bookings.append("<B>HI<B>")
       for (let b in bookings) {
         this.$bookings.append(bookings[b].getSprite())
         // let div = new BookingSprite($Bookings) // Pass in the $Bookings div as the root jQuery object
@@ -150,7 +149,7 @@
           '"' +
           "> " +
           '<span style="font-weight:bold;background-color:' +
-          colors.getByBooking(booking) +
+          colors.getByTime(booking.time) +
           '">' +
           booking.seats +
           " " +

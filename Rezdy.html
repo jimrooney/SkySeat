@@ -56,12 +56,10 @@
       //
       for (let a in data.bookings) {
         let order = data.bookings[a]
-        console.log("Order: %o", order)
         // if there's no orderNumber, skip it
         if (!order.orderNumber) {
           continue
         }
-        console.log("Booking Items: %o",order.items)
         for (let i in order.items){
           let key = order.orderNumber
           if (i>0){

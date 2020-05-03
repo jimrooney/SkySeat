@@ -12,7 +12,7 @@
         // "2FCF" coded sprite
         $details.addClass("BookingSprite")
         $details.prop("id", booking.orderNumber)
-        $details.css("background-color", colors.getByBooking(booking))
+        $details.css("background-color", colors.getByTime(booking))
         $details.text(booking.flight.seats + " " + booking.product)
       }
       this.$root.append($details)

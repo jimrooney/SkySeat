@@ -361,10 +361,8 @@ var colors = {
       ret.h2 = this.colorList[num][3] // Out highlight
       return ret    
     },
-    getByBooking: function(booking){
-      //booking.time: "2019-11-13 08:00:00"
-      //getHour ... 08:00
-      let t = time.getHour(booking.time)
+    getByTime: function(time){
+      let t = time
       let num = 0
       switch (t){
         case "08:00":
@@ -383,15 +381,23 @@ var colors = {
         num = 4
         break
         case "1:00":
+        case "01:00":
+        case "13:00":
         num = 5
         break
         case "2:00":
+        case "02:00":
+        case "14:00":
         num = 6
         break
         case "3:00":
+        case "03:00":
+        case "15:00":
         num = 7
         break
         case "4:00":
+        case "04:00":
+        case "16:00":
         num = 8
         break
       }
