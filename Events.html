@@ -6,79 +6,88 @@
 
 */
   var Events = {
-    highlight: function(Selector){
+    highlight: function (Selector) {
       Selector.addClass("highlight")
     },
-    lowlight: function(Selector){
+    lowlight: function (Selector) {
       Selector.removeClass("highlight")
     },
     drop: function (event, ui) {
-      //
-      // First thing's first: is it a legal drop (in/out)
-      // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
-      //
       // $(this) : The cell dropped onto (same as event.target)
-      let $root = $(this).closest(".root") // jQuery root
-      let root = $root.data("root") // JavaScript root
-      let dragged = ui.draggable // ui.draggable : The dropped sprite
-
-      let manifest = root.manifest
-      let booking = manifest.getBooking(dragged.prop("id"))
-
       // console.log ("Booking: %o",booking)
       // console.log("Drop ID: %o", $(this).prop("id"))
       // console.log("Dragged: %o", dragged)
       // console.log("Dragged ID: %o", dragged.prop("id"))
       // console.log("Dragged Classname: %o", dragged.attr("class"))
-      
-      
+
+      // ***********************************************************************************
+      // We'll need to handle drops from other boards here
+      // ***********************************************************************************
+      //
+      // First thing's first: is it a legal drop (in/out)
+      // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
+      //
+
+      let $Board = $(this).closest(".root") // jQuery root
+      let board = $Board.data("root") // JavaScript root
+      let dragged = ui.draggable // ui.draggable : The dropped sprite
+
+      let manifest = board.manifest
+      // get a reference to the Booking from this board's Manifest
+      let booking = manifest.getBooking(dragged.prop("id"))
+
       // -------------------------------------------------------------------
       // Record Drop
       // -------------------------------------------------------------------
-      root.data.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
-      console.log("State: %", root.data.state)
+      board.data.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
+      console.log("State: %", board.data.state)
       Events.update($(this))
     },
     update: function (tableCell) {
-      let $root = tableCell.closest(".root") // Board jQuery root
-      let root = $root.data("root") // Board JavaScript root (lives in the jQuery.data("root"))
-      let bookingData = root.data.get(tableCell) // Get the cell's data ([Board].data[row][col])
+      let $Board = tableCell.closest(".root") // Board jQuery root
+      let board = $Board.data("root") // Board JavaScript root (lives in the jQuery.data("root"))
+      let bookingList = board.data.get(tableCell) // Get the cell's data ([Board].data[row][col])
 
-      console.log("Booking Data: %o", bookingData)
-      for (let b in bookingData){
-        let booking = root.manifest.getBooking(bookingData[b])
-        console.log("Booking: %o",booking)
+      console.log("Booking Data: %o", bookingList)
+      for (let b in bookingList) {
+        let booking = board.manifest.getBooking(bookingList[b])
+        console.log("Booking: %o", booking)
       }
 
       // Temp
       let inOut = "in"
       // *****************************************************************
-      let orderNumber = bookingData // just one order for now... will be more later, possibly an object... at least an array.
+      let orderNumber = bookingList // just one order for now... will be more later, possibly an object... at least an array.
       // *****************************************************************
       let c = "yellow" // colors.getByRow(_bookings[bk].IN)
       let clrs = {
         bkin: "#E5E7E9",
         bkout: "#CCD1D1",
       }
-
+       tableCell.css("background", "blue")
+       tableCell.css("position","relative")
+       let $span = $("<span>IN</span")// tableCell.append("<span>IN</span>")
+       $span.addClass("inCell")
+       tableCell.append($span)
+       //$span
       //if (type == "in") {
-      tableCell.addClass("inCell")
-      let bkg = "linear-gradient(-110deg, " + c + " 20%, " + clrs.bkin + " 20%)"
-      tableCell.css("background-image", bkg)
-      let direction = "<span class='inMarker'><div>" + inOut + "</div><div>&#8595;</div></span> " // IN
-      //}
-      // tmp
-      let seats = 5
-      seats =
-        '<span style="font-weight:bold; float: left; display: block;padding-right:5px;padding-left:2px"> ' +
-        seats +
-        "</span>"
-      let orderSpan = '<span style="float: left;display: block;">' + orderNumber + "</span>"
+  
+      
+      // let bkg = "linear-gradient(-110deg, " + c + " 20%, " + clrs.bkin + " 20%)"
 
-      let htmlString = direction + seats + orderSpan
-      tableCell.html(htmlString)
+      
+      // let direction = "<span class='inMarker'><div>" + inOut + "</div><div>&#8595;</div></span> " // IN
+      // //}
+      // // tmp
+      // let seats = 5
+      // seats =
+      //   '<span style="font-weight:bold; float: left; display: block;padding-right:5px;padding-left:2px"> ' +
+      //   seats +
+      //   "</span>"
+      // let orderSpan = '<span style="float: left;display: block;">' + orderNumber + "</span>"
 
-
+      // let htmlString = direction + seats + orderSpan
+      // tableCell.html(htmlString)
     },
   }
 </script>
