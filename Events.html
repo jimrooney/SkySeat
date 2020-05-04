@@ -61,14 +61,14 @@
       // *****************************************************************
       let c = "yellow" // colors.getByRow(_bookings[bk].IN)
       let clrs = {
-        bkin: "#E5E7E9",
-        bkout: "#CCD1D1",
+        in: "#E5E7E9",
+        out: "#CCD1D1",
       }
        tableCell.css("background", "blue")
        tableCell.css("position","relative")
-       let $span = $("<span>IN</span").addClass("inCell").css('--first-color', "black")
+       let $span = $("<span>IN</span").addClass("outCell").css('--background-color', "transparent").css('--chevron-color', clrs.in)
        tableCell.append($span)
-       $span.css("--first-color","green")
+       //$span.css("--first-color","green")
        //$span
       //if (type == "in") {
   

@@ -9,7 +9,7 @@ function clearRezdy(){
 //         Load TripCodes
 // =======================================================
 function loadTripCodes(){
-  var data = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("TripCodes").getRange("A:H").getValues()
+  var data = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("TripCodes").getRange("A:I").getValues()
   return data
 }
 // =======================================================

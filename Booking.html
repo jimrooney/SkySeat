@@ -11,6 +11,7 @@
           ETD: this.booking.startTimeLocal,
           ETA: "",
           ETE: "",
+          direction: this.getDirection(),
         },
         people: {
           POB: this.getPOB(),
@@ -20,6 +21,10 @@
         seats: this.getSeats(),
         color: this.getColor(),
       }
+    }
+    getDirection() {
+      let type = this.productCode["FlightType"].toUpperCase() || null
+      return type.match(/^B/) ? "out" : "in"
     }
     getETD() {
       // Time when the plane leaves

@@ -158,7 +158,7 @@
 
   .inCell {
     -webkit-print-color-adjust: exact;
-    background-image: linear-gradient(-110deg, #3498db 20%, var(--first-color) 20%);
+    background-image: linear-gradient(-110deg, var(--chevron-color) 20%, var(--background-color) 20%);
     width: 100%;
     height: 100%;
     position: absolute;
@@ -167,7 +167,12 @@
   }
   .outCell {
     -webkit-print-color-adjust: exact;
-    /*background-image: linear-gradient(-110deg, #3498db 20%, #9b59b6 20%);*/
+    background-image: linear-gradient(110deg, var(--chevron-color) 80%, var(--background-color) 80%);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
   .inMarker {
     float: right;
