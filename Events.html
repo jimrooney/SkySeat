@@ -66,9 +66,9 @@
       }
        tableCell.css("background", "blue")
        tableCell.css("position","relative")
-       let $span = $("<span>IN</span")// tableCell.append("<span>IN</span>")
-       $span.addClass("inCell")
+       let $span = $("<span>IN</span").addClass("inCell").css('--first-color', "black")
        tableCell.append($span)
+       $span.css("--first-color","green")
        //$span
       //if (type == "in") {
   
