@@ -49,33 +49,55 @@
       let bookingList = board.data.get(tableCell) // Get the cell's data ([Board].data[row][col])
 
       console.log("Booking Data: %o", bookingList)
+
+      // ***** Wrap this into a function that figures out what the cell's contents should be *****
+      // Object for the TableCell's contents to be setup by looping over all the bookings and figuring things out.
+      let content = {
+        color: {
+          marker: "#E5E7E9",
+          main: "#CCD1D1",
+        },
+        direction: {
+          label: "in",
+          class: "inCell",
+        },
+        seats: 0,
+        PAXOB: 0,
+        infants: 0,
+        text: this.seats,
+      }
+
       for (let b in bookingList) {
         let booking = board.manifest.getBooking(bookingList[b])
         console.log("Booking: %o", booking)
+        switch (booking.flight.trip.direction) {
+          case "out":
+            content.direction.lable = "out"
+            content.direction.class = "outCell"
+            break
+        }
+        content.seats += booking.seats
       }
 
-      // Temp
-      let inOut = "in"
       // *****************************************************************
       let orderNumber = bookingList // just one order for now... will be more later, possibly an object... at least an array.
       // *****************************************************************
-      let c = "yellow" // colors.getByRow(_bookings[bk].IN)
-      let clrs = {
-        in: "#E5E7E9",
-        out: "#CCD1D1",
-      }
-       tableCell.css("background", "blue")
-       tableCell.css("position","relative")
-       let $span = $("<span>IN</span").addClass("outCell").css('--background-color', "transparent").css('--chevron-color', clrs.in)
-       tableCell.append($span)
-       //$span.css("--first-color","green")
-       //$span
+
+      tableCell.css("background", content.color.main)
+      tableCell.text(content.text)
+      tableCell.css("position", "relative")
+      let $span = $("<span/>")
+        .addClass(content.direction.class)
+        .css("--background-color", "transparent")
+        .css("--chevron-color", content.color.marker)
+      $span.append($("<span style='float:right;'/>").text(content.direction.label))
+      tableCell.append($span)
+      //$span.css("--first-color","green")
+      //$span
       //if (type == "in") {
-  
-      
+
       // let bkg = "linear-gradient(-110deg, " + c + " 20%, " + clrs.bkin + " 20%)"
 
-      
       // let direction = "<span class='inMarker'><div>" + inOut + "</div><div>&#8595;</div></span> " // IN
       // //}
       // // tmp
