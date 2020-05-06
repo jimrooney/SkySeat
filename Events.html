@@ -14,7 +14,7 @@
     },
     tableCell: {
       handleDrop(event, ui) {
-        let _parent = Events // Necessary _parent hardcoded link for Object Literal sytax
+        let _thisObject = Events // Necessary _thisObject hardcoded link for Object Literal sytax
         // ***********************************************************************************
         // We'll need to handle drops from other boards here
         // ***********************************************************************************
@@ -27,31 +27,20 @@
         let board = $Board.data("root") // JavaScript root
         let dragged = ui.draggable // ui.draggable : The dropped sprite
         let manifest = board.manifest
-        let booking = manifest.getBooking(dragged.prop("id"))// get a reference to the Booking from this board's Manifest
+        let booking = manifest.getBooking(dragged.prop("id")) // get a reference to the Booking from this board's Manifest
         // -------------------------------------------------------------------
         // Record Drop
         // -------------------------------------------------------------------
         board.state.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
         console.log("State: %o", board.state.data)
-        _parent.update($(this))
+        _thisObject.update($(this))
       },
-    },
-    handleDrop: function (event, ui) {
-      // $(this) : The cell dropped onto (same as event.target)
-      // console.log ("Booking: %o",booking)
-      // console.log("Drop ID: %o", $(this).prop("id"))
-      // console.log("Dragged: %o", dragged)
-      // console.log("Dragged ID: %o", dragged.prop("id"))
-      // console.log("Dragged Classname: %o", dragged.attr("class"))
-
-      let $Board = $(this).closest(".root") // jQuery root
-      let board = $Board.data("root") // JavaScript root
-      let dragged = ui.draggable // ui.draggable : The dropped sprite
     },
     // ---------------------------
     // Updates a single Table Cell
     // ---------------------------
     update: function (tableCell) {
+      console.log("Events.update(%o)", tableCell)
       let $Board = tableCell.closest(".root") // Board jQuery root
       let board = $Board.data("root") // Board JavaScript root (lives in the jQuery.data("root"))
       let bookingList = board.state.get(tableCell) // Get the cell's data ({Board}.data[row][col])
@@ -80,15 +69,17 @@
       for (let b in bookingList) {
         let booking = board.manifest.getBooking(bookingList[b])
         console.log("Booking: %o", booking)
-        let c = booking.productCode.GYACode || "NoCode"
-        productCode[c] = c
-        switch (booking.flight.trip.direction) {
-          case "out":
-            content.direction.lable = "out"
-            content.direction.class = "outCell"
-            break
+        if (!!booking) {
+          let c = booking.productCode.GYACode || "NoCode"
+          productCode[c] = c
+          switch (booking.flight.trip.direction) {
+            case "out":
+              content.direction.lable = "out"
+              content.direction.class = "outCell"
+              break
+          }
+          content.seats += booking.seats
         }
-        content.seats += booking.seats
       }
       // Stack multiple products
       let keys = Object.keys(productCode)
