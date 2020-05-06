@@ -39,8 +39,8 @@
       // -------------------------------------------------------------------
       // Record Drop
       // -------------------------------------------------------------------
-      board.data.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
-      console.log("State: %", board.data.state)
+      board.state.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
+      console.log("State: %", board.state.data)
       Events.update($(this))
     },
     // ---------------------------
@@ -49,7 +49,7 @@
     update: function (tableCell) {
       let $Board = tableCell.closest(".root") // Board jQuery root
       let board = $Board.data("root") // Board JavaScript root (lives in the jQuery.data("root"))
-      let bookingList = board.data.get(tableCell) // Get the cell's data ([Board].data[row][col])
+      let bookingList = board.state.get(tableCell) // Get the cell's data ({Board}.data[row][col])
 
       console.log("Booking Data: %o", bookingList)
 

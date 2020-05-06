@@ -11,34 +11,11 @@
       this.manifest = new Manifest($root)
       this.manifest.parent = this
 
-      // 2 Dimensional array to hold the Board's State. (wrapped in an object to hold meta-data)
-      this.data = {}
-      this.data.state = new Array(this.numRows)
-      for (let i = 0; i < this.data.state.length; i++) {
-        this.data.state[i] = new Array(this.numCols)
-        for (let a = 0; a<this.data.state[i].length;a++) {
-          this.data.state[i][a] = {}
-        }
-      }
-      //
-      this.data.add = function (cell, dragged) {
-        // console.log("This: %o", this) // This board object
-
-        let dataKey = dragged.prop("id")
-        let row = cell.prop("id").split("_")[0]
-        let col = cell.prop("id").split("_")[1]
-
-        // Record the booking ... this could just be an array. We're hashing it for now ************************
-        this.state[row][col][dataKey] = dataKey
-      }
-      this.data.get = function (cell) {
-        let row = cell.prop("id").split("_")[0]
-        let col = cell.prop("id").split("_")[1]
-        return this.state[row][col]
-      }
+      this.state = new State(this)
     }
 
     load() {
+      this.state.clear()
       this.manifest.load()
     }
     //
@@ -153,13 +130,12 @@
 
         let $root = $(this).closest(".root") // jQuery root
         let root = $root.data("root") // JavaScript root
-        let bookingData = root.data.get($(this))
+        let bookingData = root.state.get($(this))
         let keys = Object.keys(bookingData)
 
         console.log("TableCell Data: ", bookingData)
 
-
-        for (let a in keys){
+        for (let a in keys) {
           console.log("Booking: %o", _this.manifest.getBooking(keys[a]))
         }
       })

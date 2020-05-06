@@ -1,0 +1,37 @@
+<script>
+  //
+  // Object to hold the state of the board (Holds the booking ID's in a 2D array mirroring the TableCells)
+  //
+  class State {
+    constructor(Board) {
+      this.board = Board
+      this.newState(Board.numRows, Board.numCols)
+    }
+    newState() {
+      let numRows = this.board.numRows
+      let numCols = this.board.numCols
+      this.data = new Array(numRows)
+      for (let i = 0; i < this.data.length; i++) {
+        this.data[i] = new Array(numCols)
+        for (let a = 0; a < this.data[i].length; a++) {
+          this.data[i][a] = {}
+        }
+      }
+    }
+    clear() {
+      console.log("Cleared State")
+      this.newState()
+    }
+    add(cell, dragged) {
+      let dataKey = dragged.prop("id")
+      let row = cell.prop("id").split("_")[0]
+      let col = cell.prop("id").split("_")[1]
+      this.data[row][col][dataKey] = dataKey
+    }
+    get = function (cell) {
+      let row = cell.prop("id").split("_")[0]
+      let col = cell.prop("id").split("_")[1]
+      return this.data[row][col]
+    }
+  }
+</script>
