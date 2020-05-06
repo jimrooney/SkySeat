@@ -59,16 +59,23 @@
     }
     getSprite() {
       // Constructs and returns a booking sprite
-      let $details = $("<span class='tooltip' />")
+      let $sprite = $("<span class='tooltip' />")
       if (!!this.orderNumber) {
+        //
+        $sprite.data("this",this) // Self Reference (for click)
+        //
         let masterkey = this.orderNumber.split("-")[0]
         // "2FCF" coded sprite
-        $details.addClass("BookingSprite")
-        $details.prop("id", this.orderNumber)
-        $details.css("background-color", this.flight.color)
-        $details.text(this.flight.seats + " " + this.productCode.GYACode)
+        $sprite.addClass("BookingSprite")
+        $sprite.prop("id", this.orderNumber)
+        $sprite.css("background-color", this.flight.color)
+        $sprite.text(this.flight.seats + " " + this.productCode.GYACode)
+        $sprite.click(function(){
+          let _this = $(this).data("this")
+          console.log("BookingSprite: %o",_this)
+        })
       }
-      return $details
+      return $sprite
     }
   }
 </script>

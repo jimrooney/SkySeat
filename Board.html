@@ -5,7 +5,7 @@
       // Access this object through $([Board Selector]).data('root')
       //
       this.date = ""
-      this.numCols = 5
+      this.numCols = 6
       this.numRows = 12
 
       this.manifest = new Manifest($root)
@@ -115,9 +115,9 @@
       //let date = this.$datepicker.datepicker("getDate")
       this.manifest.load()
 
-      // ----------
+      // -------------------------------------------------------------------------------------------------------------------
       // Set onClick
-      // ----------
+      // -------------------------------------------------------------------------------------------------------------------
       let _this = this
       $("#" + this.$root.prop("id") + " .TableCell").click(function () {
         // $("#" + this.$root.prop("id") + ...

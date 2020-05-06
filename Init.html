@@ -218,7 +218,7 @@
 
     $(".TableCell").droppable({
       accept: ".BookingSprite, .TableCell",
-      drop: Events.drop,
+      drop: Events.tableCell.handleDrop,
       delay: 100,
     })
     $(".PlaneCell").droppable({
