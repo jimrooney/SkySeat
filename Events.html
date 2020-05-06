@@ -12,7 +12,32 @@
     lowlight: function (Selector) {
       Selector.removeClass("highlight")
     },
-    drop: function (event, ui) {
+    tableCell: {
+      handleDrop(event, ui) {
+        let _parent = Events // Necessary _parent hardcoded link for Object Literal sytax
+        // ***********************************************************************************
+        // We'll need to handle drops from other boards here
+        // ***********************************************************************************
+        //
+        // First thing's first: is it a legal drop (in/out)
+        // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
+        //
+        console.log("TableCell Drop")
+        let $Board = $(this).closest(".root") // jQuery root
+        let board = $Board.data("root") // JavaScript root
+        let dragged = ui.draggable // ui.draggable : The dropped sprite
+        let manifest = board.manifest
+        let booking = manifest.getBooking(dragged.prop("id"))// get a reference to the Booking from this board's Manifest
+
+        // -------------------------------------------------------------------
+        // Record Drop
+        // -------------------------------------------------------------------
+        board.state.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
+        console.log("State: %o", board.state.data)
+        _parent.update($(this))
+      },
+    },
+    handleDrop: function (event, ui) {
       // $(this) : The cell dropped onto (same as event.target)
       // console.log ("Booking: %o",booking)
       // console.log("Drop ID: %o", $(this).prop("id"))
@@ -20,28 +45,9 @@
       // console.log("Dragged ID: %o", dragged.prop("id"))
       // console.log("Dragged Classname: %o", dragged.attr("class"))
 
-      // ***********************************************************************************
-      // We'll need to handle drops from other boards here
-      // ***********************************************************************************
-      //
-      // First thing's first: is it a legal drop (in/out)
-      // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
-      //
-
       let $Board = $(this).closest(".root") // jQuery root
       let board = $Board.data("root") // JavaScript root
       let dragged = ui.draggable // ui.draggable : The dropped sprite
-
-      let manifest = board.manifest
-      // get a reference to the Booking from this board's Manifest
-      let booking = manifest.getBooking(dragged.prop("id"))
-
-      // -------------------------------------------------------------------
-      // Record Drop
-      // -------------------------------------------------------------------
-      board.state.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
-      console.log("State: %", board.state.data)
-      Events.update($(this))
     },
     // ---------------------------
     // Updates a single Table Cell
@@ -76,7 +82,7 @@
         let booking = board.manifest.getBooking(bookingList[b])
         console.log("Booking: %o", booking)
         let c = booking.productCode.GYACode || "NoCode"
-        productCode[c]=c
+        productCode[c] = c
         switch (booking.flight.trip.direction) {
           case "out":
             content.direction.lable = "out"
@@ -87,11 +93,9 @@
       }
       // Stack multiple products
       let keys = Object.keys(productCode)
-      let divList = keys.map(item => $("<div />").append(item))
+      let divList = keys.map((item) => $("<div />").append(item))
       content.text = $("<div />").append(divList)
 
-
-      
       // *****************************************************************
       let orderNumber = bookingList // just one order for now... will be more later, possibly an object... at least an array.
       // *****************************************************************

@@ -8,8 +8,8 @@
       this.newState(Board.numRows, Board.numCols)
     }
     newState() {
-      let numRows = this.board.numRows
-      let numCols = this.board.numCols
+      let numRows = this.board.numRows +1 // (skip header row)
+      let numCols = this.board.numCols +1 // (skip time column)
       this.data = new Array(numRows)
       for (let i = 0; i < this.data.length; i++) {
         this.data[i] = new Array(numCols)

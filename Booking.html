@@ -24,7 +24,10 @@
     }
     getDirection() {
       let type = this.productCode["FlightType"].toUpperCase() || null
-      return type.match(/^B/) ? "out" : "in"
+      if (!!type){
+        return type.match(/^B/) ? "out" : "in"
+      }
+      return null
     }
     getETD() {
       // Time when the plane leaves
