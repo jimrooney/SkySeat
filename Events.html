@@ -61,8 +61,10 @@
         },
         seats: 0,
         PAXOB: 0,
+        PAX:0,
+
         infants: 0,
-        text: "Text",
+        text: " ",
       }
 
       // ************************* We'll need to total all the product information, not just the product code ****************************
@@ -88,11 +90,15 @@
           }
         }
       }
+      //
+      // The whole structrue of how we build this cell can likely be organized a bit better *******
+      //
+      // ? appendTo() *************************
       // Stack multiple products
       let keys = Object.keys(productCode)
       let divList = keys.map((item) => $("<div />").append(item))
       cellData.text = $("<div />").append(divList)
-
+      cellData.text.prepend("<span style='float:left'>" + cellData.seats + "</span>")
       // *****************************************************************
       let orderNumber = bookingList // just one order for now... will be more later, possibly an object... at least an array.
       // *****************************************************************
