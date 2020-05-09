@@ -71,10 +71,19 @@
     // ------------
     // Get Bookings
     // ------------
-    // Returns an object hash key'd by orderNumber
-    getBookings(date) {
+    //
+    // [[ Overloaded Function ]]
+    // if we pass it an array of booking references, pass back the matching booking objects
+    //
+    // if we pass it a data, pass back an object of matching bookings hash key'd by orderNumber ***** Check that we're actually using this
+    getBookings(data) {
+      // if we pass in a list of booking references, return the matching booking objects ************************* (just passing back all bookings right now)
       let _manifest = {}
-
+      if (!!data && Array.isArray(data)){
+      console.log("array")
+        return this.bookings
+      }
+      let date = data
       // If a date object is passed in, make it a string
       if (!!date && typeof date == "object") {
         date = Dates.getNZ(date)

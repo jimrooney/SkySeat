@@ -1,6 +1,16 @@
 
   <script>
 
+  // ---------------------------------------------
+  // Blocking event bubbling... might be necessary
+  // ---------------------------------------------
+                // $("#" + this.$root.prop("id") + ...
+        // Targeted at this board's .TableCells only so that further instantiation doesn't double fire the click
+        // (This might not be necessary)
+
+        //Stop click propagation. (works without this, but could stop problems down the track)
+        event.stopPropagation()
+        event.stopImmediatePropagation()
 
 
 

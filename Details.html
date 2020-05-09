@@ -14,6 +14,30 @@
     console.log("closing details")
   })
 
+
+
+class Details {
+  constructor($root) {
+      this.$root = $root // save a reference to the jQuery object
+      // Access this object through $([Selector]).data('root')
+      this.bookings = []
+  }
+  show(){
+    // display details popup
+    this.$root.empty()
+    this.$root.append("<div>HI</div>")
+  }
+}
+
+
+
+
+
+
+
+
+
+
   /* ****************************************
   
   The PopupSprites should only blow away the source cell (and associated outs)
@@ -186,10 +210,10 @@
                   booking.orderNumber +
                   "</a>"
               )
-              $("#" + masterkey + "_rezdyLink")
+              $("#" + masterkey + "_rezdyLink") // Bodgejob to let you click on Rezdy link on mobile *************************
                 .addClass("mobileLink")
-                .mouseenter(_overEvent)
-                .mouseleave(_outEvent)
+                .mouseenter(_mouseOverEvent)
+                .mouseleave(_mouseOutEvent)
 
               let xmlLink =
                 "<span class='Dev'><A href='https://api.rezdy.com/v1/bookings/" +

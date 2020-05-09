@@ -8,6 +8,7 @@
 <html>
   <head>
     <?!= include('jQuery'); ?>
+    <?!= include('Global'); ?>
     <?!= include('Dates'); ?>
     <?!= include('Time'); ?>
     <?!= include('Events'); ?>
@@ -41,14 +42,15 @@
     </div>
 
     <div id="AutoBoard" class="root" style="display: inline-block;"></div>
+    <div id="Details" class="Details"></div>
 
     <script>
       $(document).ready(function () {
         let $this = $("#AutoBoard")
-        $this.data("root", new Board($this))
+        $this.data("root", new Board($this)) // Attaches the JavaScript object to the jQuery .data('root') property
         $this.data("root").writeBoard()
-        //        testBoard = new Board($("#AutoBoard"))
-        //      testBoard.writeBoard()
+
+        $("#Details").data("root", new Details($("#Details"))) // Attaches the JavaScript object to the jQuery .data('root') property
 
         // Display the window object
         console.log("DOM: %o", this)

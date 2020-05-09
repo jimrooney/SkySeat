@@ -5,6 +5,45 @@
     Maybe make Events.drop polymorphic?
 
 */
+
+  // Mobile Events (could use a rethink) ***********************************
+  // mouse is in Global
+  function _mouseOverEvent(event, ui) {
+    if (isMobile) {
+      mouse.setOver(event.pageX, event.pageY)
+    }
+  }
+  function _mouseOutEvent(event, ui) {
+    if (isMobile) {
+      let click = mouse.isClick(event.pageX, event.pageY)
+      if (click) {
+        if ($(this).hasClass("TableCell")) {
+        }
+        if ($(this).hasClass("popupCloseButton")) {
+          $("#details").hide()
+        }
+        if ($(this).hasClass("popupCloseButtonSmall")) {
+          console.log("Pickup Close")
+          $("#PickupList").hide()
+        }
+        if ($(this).hasClass("Print")) {
+          printLoadsheet()
+          $("#details").hide()
+        }
+        if ($(this).is("a, a *")) {
+          window.open($(this).attr("href"), "_blank")
+        }
+      }
+    }
+  }
+  // On jQuery load...
+  $(document).ready(function () {
+    // For Mobile Click
+    $(".TableCell, .Print, .popupCloseButton, .MobileButton").mouseenter(_mouseOverEvent).mouseleave(_mouseOutEvent)
+  })
+  // -----------------------------------------------------------------------------------------------------------------------
+  // Events Object
+  // -----------------------------------------------------------------------------------------------------------------------
   var Events = {
     highlight: function (Selector) {
       Selector.addClass("highlight")
@@ -35,6 +74,53 @@
         console.log("State: %o", board.state.data)
         _thisObject.update($(this))
       },
+
+      /*
+
+
+
+
+
+Working on right now *************************************
+
+
+
+
+
+
+
+
+
+*/
+      onClick($cell) {
+        let _thisObject = Events // Necessary _thisObject hardcoded link for Object Literal sytax
+        //
+        let $root = $cell.closest(".root") // jQuery root
+        let root = $root.data("root") // JavaScript root
+        //
+        let bookingData = root.state.get($cell)
+        let keys = Object.keys(bookingData)
+
+        console.log("TableCell Data: ", bookingData) // List of booking references [key'd objects (booking reference is key)]
+
+        let container = $("#details")
+        container.css("background", "rgba(71,88,115,1)")
+        let box = $("#detailsContents")
+        //
+        // clear the Details popup
+        //
+        box.empty()
+        //
+        // Each Booking: build details object data
+        //
+        let bookings = $root.data("root").manifest.getBookings(keys) || "No Data"
+        console.log("Bookings: %o",bookings)
+        $("#Details").data('root').show()
+        // for (let a in keys) {
+        //   let ret = $root.data("root").manifest.getBookings(keys[a]) || "No Data"
+        //   console.log("Booking: %o", ret )
+        // }
+      },
     },
     // ---------------------------
     // Updates a single Table Cell
@@ -57,11 +143,11 @@
         direction: {
           label: "in",
           class: "inCell",
-          position: { position: "absolute", right: "0", top: "0" }
+          position: { position: "absolute", right: "0", top: "0" },
         },
         seats: 0,
         PAXOB: 0,
-        PAX:0,
+        PAX: 0,
 
         infants: 0,
         text: " ",

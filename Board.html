@@ -120,24 +120,8 @@
       // -------------------------------------------------------------------------------------------------------------------
       let _this = this
       $("#" + this.$root.prop("id") + " .TableCell").click(function () {
-        // $("#" + this.$root.prop("id") + ...
-        // Targeted at this board's .TableCells only so that further instantiation doesn't double fire the click
-        // (This might not be necessary)
-
-        //Stop click propagation. (works without this, but could stop problems down the track)
-        event.stopPropagation()
-        event.stopImmediatePropagation()
-
-        let $root = $(this).closest(".root") // jQuery root
-        let root = $root.data("root") // JavaScript root
-        let bookingData = root.state.get($(this))
-        let keys = Object.keys(bookingData)
-
-        console.log("TableCell Data: ", bookingData)
-
-        for (let a in keys) {
-          console.log("Booking: %o", _this.manifest.getBooking(keys[a]))
-        }
+        // Pass to Events Object
+        Events.tableCell.onClick($(this))
       })
     }
   }
