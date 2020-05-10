@@ -5,29 +5,36 @@
 </div>
 
 <script>
-  // ===============================
-  // Loadsheet Close Button onClick
-  // ===============================
+    // ===============================
+    // Loadsheet Close Button onClick
+    // ===============================
 
-  $("#DetailsClose").click(function () {
-    $("#details").hide()
-    console.log("closing details")
-  })
+    $("#DetailsClose").click(function () {
+      $("#details").hide()
+      console.log("closing details")
+    })
 
 
 
-class Details {
-  constructor($root) {
-      this.$root = $root // save a reference to the jQuery object
-      // Access this object through $([Selector]).data('root')
-      this.bookings = []
+  class Details {
+    constructor($root) {
+        this.$root = $root // save a reference to the jQuery object
+        // Access this object through $([Selector]).data('root')
+        this.bookings = []
+    }
+    show(){
+      let text = "HI"
+      let visible = (this.$root.css('display') !== 'none')
+      // display details popup
+      this.$root.empty()
+      this.$root.append("<div>" + text + "</div>")
+      if(visible){
+        this.$root.hide()
+      }else{
+      this.$root.show()
+      }
+    }
   }
-  show(){
-    // display details popup
-    this.$root.empty()
-    this.$root.append("<div>HI</div>")
-  }
-}
 
 
 
@@ -38,256 +45,256 @@ class Details {
 
 
 
-  /* ****************************************
-  
-  The PopupSprites should only blow away the source cell (and associated outs)
-  For now though, I think we might just blow everything away.
-  
-  *******************************************/
+    /* ****************************************
 
-  var bookingManager = {
-    getDetails: function (_this, sourceID) {
-      console.log("getDetails()")
-      let container = $("#details")
-      container.css("background", "rgba(71,88,115,1)")
-      let box = $("#detailsContents")
+    The PopupSprites should only blow away the source cell (and associated outs)
+    For now though, I think we might just blow everything away.
 
-      // A popup needs to pass in it's source
-      if (!!sourceID) {
-        _this = $("#" + sourceID)
-      } else {
-        sourceID = _this.prop("id")
-      }
-      //
-      // Get the row's trip manifest
-      //
-      let o = theBoard.getManifest(theBoard.getRow(_this, true)) // true returns the row's classname, not the number
-      console.log("Manifest: %o", o)
-      let milford = o.onGround.Milford
-      let cruiseCount = 0
-      let infantCount = 0
-      for (let a in milford) {
-        cruiseCount += milford[a].seats
-        infantCount += milford[a].ACI[2]
-      }
-      console.log("Seats: %o", cruiseCount)
-      console.log("Infants: %o", infantCount)
-      //
-      // Once we have the source, set the type and json
-      //
-      let type = _this.data("type")
-      let _json = _this.data("json")
-      //
-      console.log("JSON: %o", _json)
-      console.log("Cell Type: %o", _this.data("type"))
-      //
-      if (type == "out") {
-        container.css("background", "green")
-      }
-      //
-      // clear the Details popup
-      //
-      box.empty()
-      box.prepend("<span>[" + type + "]</span>")
-      box.prepend(
-        "<span>Pax Cruising in Milford: [" +
-          cruiseCount +
-          "] (infant:" +
-          infantCount +
-          ")</span>"
-      )
-      //
-      // Add total row pax here:
-      //
+    *******************************************/
 
-      // Find row first....
-      let row = theBoard.getTotalRowPax(_this)
-      box.append("<div>Row Total: " + row + "</div>")
-      box.data("cell", _this)
-      //   let vis = box.is(":visible")
-      //    if (!vis){
-      //      show = true
-      //    }
-      let hasJSON = !jQuery.isEmptyObject(_json)
-      if (hasJSON) {
-        console.log("Details Popup Show")
-        // ----------------------------------------------------------------------------------
-        // WB
-        // ----------------------------------------------------------------------------------
-        let WB = wb.getBalance(_this)
-        let _cg = WB.getCG()
-        let _w = WB.getWeight()
-        let maxLast = WB.lastSeatRange[0]
-        if (!maxLast) {
-          maxLast = ""
+    var bookingManager = {
+      getDetails: function (_this, sourceID) {
+        console.log("getDetails()")
+        let container = $("#details")
+        container.css("background", "rgba(71,88,115,1)")
+        let box = $("#detailsContents")
+
+        // A popup needs to pass in it's source
+        if (!!sourceID) {
+          _this = $("#" + sourceID)
+        } else {
+          sourceID = _this.prop("id")
         }
-        console.log("WB: %o", WB)
-        let _auwLeft = WB.maxWeight - _w
-        let spanner =
-          '<span style="font-size:x-small">CG:' +
-          _cg +
-          " AUW:" +
-          _w +
-          ' <span style="font-size:medium">(AUW Left:' +
-          _auwLeft +
-          ") [LastSeat Max:" +
-          maxLast +
-          "]</span>" +
-          "</span>"
-
-        if (_cg < 0 || _w < 0 || isNaN(_cg) || isNaN(_w)) {
-          let e =
-            "<span style='background:red'>CG ERROR: " + spanner + "</span>"
-          spanner = e
-          container.css("background", "red")
+        //
+        // Get the row's trip manifest
+        //
+        let o = theBoard.getManifest(theBoard.getRow(_this, true)) // true returns the row's classname, not the number
+        console.log("Manifest: %o", o)
+        let milford = o.onGround.Milford
+        let cruiseCount = 0
+        let infantCount = 0
+        for (let a in milford) {
+          cruiseCount += milford[a].seats
+          infantCount += milford[a].ACI[2]
         }
-        spanner += "<p>"
-        box.append(spanner)
-        box.append('<p id="popUpContents"></p>')
+        console.log("Seats: %o", cruiseCount)
+        console.log("Infants: %o", infantCount)
+        //
+        // Once we have the source, set the type and json
+        //
+        let type = _this.data("type")
+        let _json = _this.data("json")
+        //
+        console.log("JSON: %o", _json)
+        console.log("Cell Type: %o", _this.data("type"))
+        //
+        if (type == "out") {
+          container.css("background", "green")
+        }
+        //
+        // clear the Details popup
+        //
+        box.empty()
+        box.prepend("<span>[" + type + "]</span>")
         box.prepend(
-          '<button id="PrintLoadsheet" class="Nav">Print Loadsheet</button><br>'
+          "<span>Pax Cruising in Milford: [" +
+            cruiseCount +
+            "] (infant:" +
+            infantCount +
+            ")</span>"
         )
-        $("#PrintLoadsheet").on("click", function () {
-          //let thisCell = cell //  $(this).parent().parent().data('cell')
-          printLoadsheet()
-        })
-        loadsheetData.WB = WB
-        loadsheetData._json = _json
-        loadsheetData._this = _this
-        //loadsheetData.manifest = o
-        loadsheetData._cruiseCount = cruiseCount
-        loadsheetData._infantCount = infantCount
         //
-        // for each booking
+        // Add total row pax here:
         //
-        for (const b in _json) {
-          let booking = JSON.parse(JSON.stringify(_json[b])) // operate on a copy
-          if (booking && booking.orderNumber) {
-            let masterkey = booking.orderNumber.split("-")[0]
-            // Create sub-div if it doesn't already exist...
-            if ($("#" + booking.orderNumber + "_popup").length) {
-              console.log("DIV exists")
-            } else {
-              //
-              // Booking Sprites
-              //
-              let pickupLocation = ""
-              let pickup = booking.pickupLocation
-              if (pickup) {
-                if (pickup.locationName) {
-                  pickupLocation =
-                    "<div style='color:black'>" + pickup.locationName + "</div>"
-                }
-              }
+
+        // Find row first....
+        let row = theBoard.getTotalRowPax(_this)
+        box.append("<div>Row Total: " + row + "</div>")
+        box.data("cell", _this)
+        //   let vis = box.is(":visible")
+        //    if (!vis){
+        //      show = true
+        //    }
+        let hasJSON = !jQuery.isEmptyObject(_json)
+        if (hasJSON) {
+          console.log("Details Popup Show")
+          // ----------------------------------------------------------------------------------
+          // WB
+          // ----------------------------------------------------------------------------------
+          let WB = wb.getBalance(_this)
+          let _cg = WB.getCG()
+          let _w = WB.getWeight()
+          let maxLast = WB.lastSeatRange[0]
+          if (!maxLast) {
+            maxLast = ""
+          }
+          console.log("WB: %o", WB)
+          let _auwLeft = WB.maxWeight - _w
+          let spanner =
+            '<span style="font-size:x-small">CG:' +
+            _cg +
+            " AUW:" +
+            _w +
+            ' <span style="font-size:medium">(AUW Left:' +
+            _auwLeft +
+            ") [LastSeat Max:" +
+            maxLast +
+            "]</span>" +
+            "</span>"
+
+          if (_cg < 0 || _w < 0 || isNaN(_cg) || isNaN(_w)) {
+            let e =
+              "<span style='background:red'>CG ERROR: " + spanner + "</span>"
+            spanner = e
+            container.css("background", "red")
+          }
+          spanner += "<p>"
+          box.append(spanner)
+          box.append('<p id="popUpContents"></p>')
+          box.prepend(
+            '<button id="PrintLoadsheet" class="Nav">Print Loadsheet</button><br>'
+          )
+          $("#PrintLoadsheet").on("click", function () {
+            //let thisCell = cell //  $(this).parent().parent().data('cell')
+            printLoadsheet()
+          })
+          loadsheetData.WB = WB
+          loadsheetData._json = _json
+          loadsheetData._this = _this
+          //loadsheetData.manifest = o
+          loadsheetData._cruiseCount = cruiseCount
+          loadsheetData._infantCount = infantCount
+          //
+          // for each booking
+          //
+          for (const b in _json) {
+            let booking = JSON.parse(JSON.stringify(_json[b])) // operate on a copy
+            if (booking && booking.orderNumber) {
               let masterkey = booking.orderNumber.split("-")[0]
-              let longDescription = booking.productCode
-                ? booking.productCode[0]
-                : "" // productCode is from the spreadsheet. [longDescription,rezdyCode,gyaCode,duration]
-              let idKey = booking.orderNumber + "_popup"
-              let div =
-                '<div class="BookingSprite PopupSprite ' +
-                booking.orderNumber +
-                '" id="' +
-                idKey +
-                '">' +
-                longDescription +
-                "<br>" +
-                "<span style='font-weight: bold;text-shadow: 2px 2px 3px #000000'>" +
-                booking.product +
-                " </span>" +
-                "<span style='font-size: x-small'>" +
-                time.getHour(booking.time) +
-                "</span>" +
-                pickupLocation +
-                "</div>"
-              $("#popUpContents").append(div)
-              $("#" + idKey).append(
-                "<A id='" +
-                  masterkey +
-                  "_rezdyLink' href='https://app.rezdy.com/orders/edit/" +
-                  masterkey +
-                  "' target='_blank'>" +
+              // Create sub-div if it doesn't already exist...
+              if ($("#" + booking.orderNumber + "_popup").length) {
+                console.log("DIV exists")
+              } else {
+                //
+                // Booking Sprites
+                //
+                let pickupLocation = ""
+                let pickup = booking.pickupLocation
+                if (pickup) {
+                  if (pickup.locationName) {
+                    pickupLocation =
+                      "<div style='color:black'>" + pickup.locationName + "</div>"
+                  }
+                }
+                let masterkey = booking.orderNumber.split("-")[0]
+                let longDescription = booking.productCode
+                  ? booking.productCode[0]
+                  : "" // productCode is from the spreadsheet. [longDescription,rezdyCode,gyaCode,duration]
+                let idKey = booking.orderNumber + "_popup"
+                let div =
+                  '<div class="BookingSprite PopupSprite ' +
                   booking.orderNumber +
-                  "</a>"
-              )
-              $("#" + masterkey + "_rezdyLink") // Bodgejob to let you click on Rezdy link on mobile *************************
-                .addClass("mobileLink")
-                .mouseenter(_mouseOverEvent)
-                .mouseleave(_mouseOutEvent)
+                  '" id="' +
+                  idKey +
+                  '">' +
+                  longDescription +
+                  "<br>" +
+                  "<span style='font-weight: bold;text-shadow: 2px 2px 3px #000000'>" +
+                  booking.product +
+                  " </span>" +
+                  "<span style='font-size: x-small'>" +
+                  time.getHour(booking.time) +
+                  "</span>" +
+                  pickupLocation +
+                  "</div>"
+                $("#popUpContents").append(div)
+                $("#" + idKey).append(
+                  "<A id='" +
+                    masterkey +
+                    "_rezdyLink' href='https://app.rezdy.com/orders/edit/" +
+                    masterkey +
+                    "' target='_blank'>" +
+                    booking.orderNumber +
+                    "</a>"
+                )
+                $("#" + masterkey + "_rezdyLink") // Bodgejob to let you click on Rezdy link on mobile *************************
+                  .addClass("mobileLink")
+                  .mouseenter(_mouseOverEvent)
+                  .mouseleave(_mouseOutEvent)
 
-              let xmlLink =
-                "<span class='Dev'><A href='https://api.rezdy.com/v1/bookings/" +
-                masterkey +
-                "?apiKey=4a02ae91ede241fd80324ec8b2ac57cb" +
-                "' target='_blank'>(xml)</A></span><BR>"
-              $("#" + booking.orderNumber + "_popup").append(xmlLink)
+                let xmlLink =
+                  "<span class='Dev'><A href='https://api.rezdy.com/v1/bookings/" +
+                  masterkey +
+                  "?apiKey=4a02ae91ede241fd80324ec8b2ac57cb" +
+                  "' target='_blank'>(xml)</A></span><BR>"
+                $("#" + booking.orderNumber + "_popup").append(xmlLink)
 
-              $("#" + booking.orderNumber + "_popup").data("json", [booking])
-              $("#" + booking.orderNumber + "_popup").data("sourceID", sourceID)
-              $("#" + booking.orderNumber + "_popup").data("type", type)
-            }
-            //
-            // Build DIV for each booking and sub-divs for each pax in each booking
-            //
-            for (let p in booking.pax) {
-              //
-              // copy the booking, but remove all other pax from the pax array
-              //
-              let paxBooking = JSON.parse(JSON.stringify(booking)) // operate on a copy
-              paxBooking.pax = [booking.pax[p]]
-              paxBooking.paxNumber = booking.pax[p].key.split("_")[1]
-              //
-              // make a booking div with just the single pax booking
-              //
-              // Because standardWeight didn't exist initially, this will make things display better (no "Undefined")
-              let _standard_weight = ""
-              if (paxBooking.pax[0].standardWeight > 0) {
-                _standard_weight = paxBooking.pax[0].standardWeight
+                $("#" + booking.orderNumber + "_popup").data("json", [booking])
+                $("#" + booking.orderNumber + "_popup").data("sourceID", sourceID)
+                $("#" + booking.orderNumber + "_popup").data("type", type)
               }
-              // tag the div id with _# [paxNumber]
+              //
+              // Build DIV for each booking and sub-divs for each pax in each booking
+              //
+              for (let p in booking.pax) {
+                //
+                // copy the booking, but remove all other pax from the pax array
+                //
+                let paxBooking = JSON.parse(JSON.stringify(booking)) // operate on a copy
+                paxBooking.pax = [booking.pax[p]]
+                paxBooking.paxNumber = booking.pax[p].key.split("_")[1]
+                //
+                // make a booking div with just the single pax booking
+                //
+                // Because standardWeight didn't exist initially, this will make things display better (no "Undefined")
+                let _standard_weight = ""
+                if (paxBooking.pax[0].standardWeight > 0) {
+                  _standard_weight = paxBooking.pax[0].standardWeight
+                }
+                // tag the div id with _# [paxNumber]
 
-              let inKG = paxBooking.pax[0].weight
-              if (
-                !!paxBooking.pax[0].weight &&
-                paxBooking.pax[0].weight.match(/lb/)
-              ) {
-                let w = paxBooking.pax[0].weight.split("lb")[0]
-                inKG = Math.round(parseInt(w) / 2.2)
-                inKG = " [ " + inKG + " kg] "
+                let inKG = paxBooking.pax[0].weight
+                if (
+                  !!paxBooking.pax[0].weight &&
+                  paxBooking.pax[0].weight.match(/lb/)
+                ) {
+                  let w = paxBooking.pax[0].weight.split("lb")[0]
+                  inKG = Math.round(parseInt(w) / 2.2)
+                  inKG = " [ " + inKG + " kg] "
+                }
+
+                let paxDiv =
+                  '<div class="BookingSprite PopupSprite PaxSprite ' +
+                  booking.orderNumber +
+                  '" id="' +
+                  booking.orderNumber +
+                  "_" +
+                  p +
+                  '">' +
+                  paxBooking.pax[0].firstName +
+                  " " +
+                  paxBooking.pax[0].lastName + // there will only ever be one pax as this is a per-pax div
+                  "( " +
+                  inKG +
+                  " / " +
+                  _standard_weight +
+                  " )" +
+                  "</div><br>"
+                //
+                // Append the subDiv to the PopUp Div
+                //
+                $("#" + booking.orderNumber + "_popup").append(paxDiv)
+                $("#" + booking.orderNumber + "_" + p).data("json", [paxBooking])
+                $("#" + booking.orderNumber + "_" + p).data("sourceID", sourceID)
+                $("#" + booking.orderNumber + "_" + p).data("type", type)
               }
-
-              let paxDiv =
-                '<div class="BookingSprite PopupSprite PaxSprite ' +
-                booking.orderNumber +
-                '" id="' +
-                booking.orderNumber +
-                "_" +
-                p +
-                '">' +
-                paxBooking.pax[0].firstName +
-                " " +
-                paxBooking.pax[0].lastName + // there will only ever be one pax as this is a per-pax div
-                "( " +
-                inKG +
-                " / " +
-                _standard_weight +
-                " )" +
-                "</div><br>"
-              //
-              // Append the subDiv to the PopUp Div
-              //
-              $("#" + booking.orderNumber + "_popup").append(paxDiv)
-              $("#" + booking.orderNumber + "_" + p).data("json", [paxBooking])
-              $("#" + booking.orderNumber + "_" + p).data("sourceID", sourceID)
-              $("#" + booking.orderNumber + "_" + p).data("type", type)
             }
           }
+          container.show()
+          init() // makes them draggable & clickable
+        } else {
+          container.hide()
         }
-        container.show()
-        init() // makes them draggable & clickable
-      } else {
-        container.hide()
-      }
-    },
-  }
+      },
+    }
 </script>
