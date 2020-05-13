@@ -1,0 +1,92 @@
+<style>
+  .grid-container {
+    width: 155px;
+    display: grid;
+    grid-template-columns: 80px 80px;
+    background-color: #2196f3;
+    padding: 10px;
+  }
+  .grid-item {
+    float: left;
+    width: 45px;
+    height: 65px;
+    padding-bottom: 0;
+    border: 2px solid #333;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    margin: 10px;
+    background: #fff;
+  }
+
+  /* Main content area 
+
+  #content {
+    margin: 80px 70px;
+    text-align: center;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+*/
+  .Airplane {
+    float: left;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
+  /* Individual Passenger Sprites */
+  .Pax {
+    float: left;
+    width: 45px;
+    height: 65px;
+    border: 2px solid #333;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgb(99, 99, 99);
+  }
+
+  /* The initial list of passengers */
+
+  .PassengerList {
+    float: left;
+    width: 150px;
+    height: 420px;
+    margin-left: 20px;
+    padding: 20px;
+    background: rgb(255, 254, 221);
+    border: 2px solid #333;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.8);
+  }
+
+  .PassengerList div:first-child {
+    margin-left: 0;
+  }
+
+  .PassengerList div.hovered {
+    background: rgb(173, 166, 216);
+  }
+
+  .PassengerList div {
+    border-style: dashed;
+  }
+
+  .PassengerList div {
+    background: #666;
+    color: #fff;
+    font-size: 30px;
+    text-shadow: 0 0 3px #000;
+  }
+
+  .PassengerList div.ui-draggable-dragging {
+    -moz-box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.8);
+  }
+</style>

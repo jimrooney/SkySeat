@@ -1,0 +1,98 @@
+<script>
+  console.clear()
+  $(document).ready(function () {
+    // Display the window object
+    console.log("DOM: %o", this)
+  })
+  $(init_details)
+
+  function init_details() {
+    $("#PassengerList").html("")
+
+    // Create the pile
+    var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    numbers.sort(function () {
+      return Math.random() - 0.5
+    })
+
+    // -------------- Passengers -----------------
+    for (var i = 0; i < 10; i++) {
+      $("<div>" + numbers[i] + "</div>")
+        .data("number", numbers[i])
+        .attr("id", "card" + numbers[i])
+        .appendTo("#PassengerList")
+        .addClass("Pax")
+        .draggable({
+          containment: "#content",
+          stack: "#PassengerList div",
+          cursor: "move",
+          revert: true,
+          start: function (evt, ui) {
+            startPos = ui.helper.position()
+          },
+          stop: function (event, ui) {
+            setRevert($(this)) // =============== hack fix ================ (resets to draggable)
+            let $station = $(this).closest(".station")
+            if ($station.length > 0) {
+              ui.helper.position({ of: $station, my: "left top", at: "left top" })
+            }
+          },
+        })
+    }
+
+    // Create the card slots
+    var words = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
+    for (var i = 1; i <= 8; i++) {
+      $("<div></div>").data("number", i).appendTo("#Airplane").addClass("grid-item station")
+    }
+    $(".station").droppable({
+      greedy: true,
+      accept: ".Pax",
+      hoverClass: "hovered",
+      drop: handleDrop,
+    })
+    $(".PassengerList").droppable({
+      accept: ".Pax",
+      hoverClass: "hovered",
+      drop: removePax,
+    })
+    $("body").droppable({
+      accept: ".Pax",
+      drop: function (e, ui) {
+        removePax(e, ui, $(".PassengerList"))
+      },
+    })
+  }
+
+  // =============== Workaround for that stupid position bug ========================
+  // (revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time)
+  function setRevert($obj) {
+    $obj.draggable({ revert: true })
+  }
+  function removePax(event, ui, $source) {
+    let DropPax = ui.draggable.detach()
+    if (!!$source) {
+      DropPax.appendTo($source)
+      return
+    }
+    DropPax.appendTo($(this))
+  }
+  function handleDrop(event, ui) {
+    let x = startPos.left
+    let y = startPos.top
+    let existingPax
+    let DragParent = ui.draggable.closest(".station")
+    let DropPax = ui.draggable.detach()
+
+    if ($(this).children().length > 0) {
+      console.log("Children")
+      existingPax = $(this).children(".Pax").detach()
+      existingPax.appendTo(DragParent)
+      existingPax.position({ of: DragParent, my: "left top", at: "left top" })
+    }
+
+    DropPax.appendTo($(this))
+    DropPax.draggable({ revert: false })
+    DropPax.position({ of: $(this), my: "left top", at: "left top" })
+  }
+</script>
