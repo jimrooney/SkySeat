@@ -23,8 +23,11 @@
       }
     }
     getDirection() {
-      let type = this.productCode["FlightType"].toUpperCase() || null
-      if (!!type){
+      let type = null
+      if (!!this.productCode["FlightType"]) {
+        type = this.productCode["FlightType"].toUpperCase() || null
+      }
+      if (!!type) {
         return type.match(/^B/) ? "out" : "in"
       }
       return null
@@ -62,7 +65,7 @@
       let $sprite = $("<span class='tooltip' />")
       if (!!this.orderNumber) {
         //
-        $sprite.data("this",this) // Self Reference (for click)
+        $sprite.data("this", this) // Self Reference (for click)
         //
         let masterkey = this.orderNumber.split("-")[0]
         // "2FCF" coded sprite
@@ -70,9 +73,9 @@
         $sprite.prop("id", this.orderNumber)
         $sprite.css("background-color", this.flight.color)
         $sprite.text(this.flight.seats + " " + this.productCode.GYACode)
-        $sprite.click(function(){
+        $sprite.click(function () {
           let _this = $(this).data("this")
-          console.log("BookingSprite: %o",_this)
+          console.log("BookingSprite: %o", _this)
         })
       }
       return $sprite
