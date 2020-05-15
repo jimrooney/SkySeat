@@ -30,9 +30,17 @@
     <?!= include('Manifest'); ?>
     <?!= include('Details'); ?>
     <?!= include('Details_CSS'); ?>
-    <?!= include('Details_JS'); ?>
     <?!= include('Click'); ?>
-
+    //
+    // Some Debug Stuff
+    //
+    <script>
+      console.clear()
+      $(document).ready(function () {
+        // Display the window object
+        console.log("DOM: %o", this)
+      })
+    </script>
     <base target="_top" />
   </head>
   <body>
@@ -40,12 +48,10 @@
       [[ 2.0 ]] []
     </div>
 
-
     <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
     <div id="PickupList" class="pickupDetails">
       <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
     </div>
-
 
     <div id="AutoBoard" class="root" style="display: inline-block;"></div>
 

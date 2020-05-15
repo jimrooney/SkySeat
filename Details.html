@@ -10,16 +10,25 @@
 </div>
 
 <script>
+  // ===============================
+  // Details Close Button onClick
+  // ===============================
+  $("#DetailsClose").click(function () {
+    $("#Details").hide()
+    console.log("closing details")
+  })
+
+  // ===============================
+  // Details Class
+  // ===============================
   class Details {
     constructor($root) {
       this.$root = $root // save a reference to the jQuery object
       // Access this object through $([Selector]).data('root')
       this.bookings = []
     }
-    talkToMeGoose() {
-      console.log("Ya know, the finger")
-    }
     init() {
+      let _this = this // used to reference this Details object from within the $body element's function
       console.log("Init")
       $(".station").droppable({
         greedy: true,
@@ -30,14 +39,22 @@
       $(".PassengerList").droppable({
         accept: ".Pax",
         hoverClass: "hovered",
-        drop: removePax,
+        drop: this.removePax,
       })
       $("body").droppable({
         accept: ".Pax",
         drop: function (e, ui) {
-          removePax(e, ui, $(".PassengerList"))
+          _this.removePax(e, ui, $(".PassengerList"))
         },
       })
+    }
+    removePax(event, ui, $source) {
+      let DropPax = ui.draggable.detach()
+      if (!!$source) {
+        DropPax.appendTo($source)
+        return
+      }
+      DropPax.appendTo($(this))
     }
     reset() {
       $("#PassengerList").html("") // will be able to be removed since we'll just plot all pax in seats (don't need a populated pax list... maybe a holding pen though)
@@ -70,9 +87,16 @@
       DropPax.draggable({ revert: false })
       DropPax.position({ of: $(this), my: "left top", at: "left top" })
     }
+    // =============== Workaround for that stupid position bug ========================
+    // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time
+    // This lets it revert to something close to the new container
+    setRevert($obj) {
+      $obj.draggable({ revert: true })
+    }
     show(bookings) {
       console.log("Details.show() Bookings: %o", bookings)
       let visible = this.$root.css("display") !== "none"
+      let _this = this
 
       this.reset()
 
@@ -93,7 +117,7 @@
               this.startPos = ui.helper.position()
             },
             stop: function (event, ui) {
-              setRevert($(this)) // =============== hack fix ================ (resets to draggable)
+              _this.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
               let $station = $(this).closest(".station")
               if ($station.length > 0) {
                 ui.helper.position({ of: $station, my: "left top", at: "left top" })
