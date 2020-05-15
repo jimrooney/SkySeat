@@ -115,7 +115,7 @@ Working on right now *************************************
         //
         let bookings = $root.data("root").manifest.getBookings(keys) || "No Data"
         console.log("Bookings: %o",bookings)
-        container.data('root').show()
+        container.data('root').show(bookings)
         // for (let a in keys) {
         //   let ret = $root.data("root").manifest.getBookings(keys[a]) || "No Data"
         //   console.log("Booking: %o", ret )
