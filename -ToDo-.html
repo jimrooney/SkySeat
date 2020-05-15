@@ -1,17 +1,20 @@
 -------------------------------
 Currently
 -------------------------------
+
+Display Popup is printing the entire manifest?
+
 Still not sure why MC_HH isn't registering correctly on the board.
 
-
+Manifest doesn't generate correct divs for bookings (it likes to split all these new style bookings into per-pax sprites)
+Think about dropping pax from the Details popup back onto the board... need to change the "containment" to allow for it and the handleDrop code of the TableCells to accept it.
 Clicking plotted sprites on mobile doesn't show Details popup (draggable clickable mobile)
 
 Manifest.getBookings... need to retunrn only matching booking objects (just passing back everything right now)
 Check that we're actually using the overloaded function of passing it a date.
 
-Details popup should be an object.
-It should also be a full weight and balance tool.
-
+Details Popup to do weight and balance
+Start on plotting bookings (we're only plotting "INS" for the moment)
 
 
 

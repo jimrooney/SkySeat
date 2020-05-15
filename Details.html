@@ -9,19 +9,17 @@
   </div>
 </div>
 
-
 <script>
-
   class Details {
     constructor($root) {
       this.$root = $root // save a reference to the jQuery object
       // Access this object through $([Selector]).data('root')
       this.bookings = []
     }
-     talkToMeGoose(){
-  console.log("Ya know, the finger")
-}
-    init(){
+    talkToMeGoose() {
+      console.log("Ya know, the finger")
+    }
+    init() {
       console.log("Init")
       $(".station").droppable({
         greedy: true,
@@ -41,75 +39,78 @@
         },
       })
     }
-    handleDrop(event, ui) {
-    let existingPax
-    let DragParent = ui.draggable.closest(".station")
-    let DropPax = ui.draggable.detach()
-
-    if ($(this).children().length > 0) {
-      console.log("Children")
-      existingPax = $(this).children(".Pax").detach()
-      existingPax.appendTo(DragParent)
-      existingPax.position({ of: DragParent, my: "left top", at: "left top" })
-    }
-
-    DropPax.appendTo($(this))
-    DropPax.draggable({ revert: false })
-    DropPax.position({ of: $(this), my: "left top", at: "left top" })
-  }
-    show(bookings){
-      console.log("Details.show() Bookings: %o",bookings)
-      let visible = (this.$root.css('display') !== 'none')
-
-      $("#PassengerList").html("")
-
+    reset() {
+      $("#PassengerList").html("") // will be able to be removed since we'll just plot all pax in seats (don't need a populated pax list... maybe a holding pen though)
+      //
+      // *************************************************************
+      // Tweak for different plane types
+      // *************************************************************
+      //
       // Setup type
       // We'll need to clear this jQuery object with each plane loaded.. *******************
+      $("#Airplane").empty()
       for (var i = 1; i <= 8; i++) {
         $("<div></div>").data("number", i).appendTo("#Airplane").addClass("grid-item station")
       }
-      // display details popup
-      // this.$root.empty()
-      // this.$root.append("<div>" + text + "</div>")
+    }
+    handleDrop(event, ui) {
+      let existingPax
+      let DragParent = ui.draggable.closest(".station")
+      let DropPax = ui.draggable.detach()
 
-    //      We'll need to loop over each participant (not just over each booking)...
-    // -------------- Passengers -----------------
-    for (let key in bookings) {
-      $("<div>" + key + "</div>")
-        .data("number", key)
-        .attr("id", "card" + key)
-        .appendTo("#PassengerList")
-        .addClass("Pax")
-        .draggable({
-          containment: "#content",
-          stack: "#PassengerList div",
-          cursor: "move",
-          revert: true,
-          start: function (evt, ui) {
-            this.startPos = ui.helper.position()
-          },
-          stop: function (event, ui) {
-            setRevert($(this)) // =============== hack fix ================ (resets to draggable)
-            let $station = $(this).closest(".station")
-            if ($station.length > 0) {
-              ui.helper.position({ of: $station, my: "left top", at: "left top" })
-            }
-          },
-        })
+      // Swap with any existing pax
+      if ($(this).children().length > 0) {
+        console.log("Children")
+        existingPax = $(this).children(".Pax").detach()
+        existingPax.appendTo(DragParent)
+        existingPax.position({ of: DragParent, my: "left top", at: "left top" })
+      }
 
-      this.init() // initialize jQuery drag/drop code
+      DropPax.appendTo($(this))
+      DropPax.draggable({ revert: false })
+      DropPax.position({ of: $(this), my: "left top", at: "left top" })
+    }
+    show(bookings) {
+      console.log("Details.show() Bookings: %o", bookings)
+      let visible = this.$root.css("display") !== "none"
 
-      if(visible){
-        this.$root.hide()
-      }else{
-        this.$root.css("width","400px")
-        this.$root.css("heigh","600px")
-      this.$root.show()
+      this.reset()
+
+      //      We'll need to loop over each participant (not just over each booking)...
+      // -------------- Passengers -----------------
+      for (let key in bookings) {
+        $("<div>" + key + "</div>")
+          .data("number", key)
+          .attr("id", "card" + key)
+          .appendTo("#PassengerList")
+          .addClass("Pax")
+          .draggable({
+            containment: "#content",
+            stack: "#PassengerList div",
+            cursor: "move",
+            revert: true,
+            start: function (evt, ui) {
+              this.startPos = ui.helper.position()
+            },
+            stop: function (event, ui) {
+              setRevert($(this)) // =============== hack fix ================ (resets to draggable)
+              let $station = $(this).closest(".station")
+              if ($station.length > 0) {
+                ui.helper.position({ of: $station, my: "left top", at: "left top" })
+              }
+            },
+          })
+
+        this.init() // initialize jQuery drag/drop code
+
+        if (visible) {
+          this.$root.hide()
+        } else {
+          this.$root.css("width", "400px")
+          this.$root.css("heigh", "600px")
+          this.$root.show()
+        }
       }
     }
-    // init(bookings){
-
-    // }
-  }
   }
 </script>
