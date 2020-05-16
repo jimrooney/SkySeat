@@ -77,11 +77,13 @@
     //
     // if we pass it a data, pass back an object of matching bookings hash key'd by orderNumber ***** Check that we're actually using this
     getBookings(data) {
-      // if we pass in a list of booking references, return the matching booking objects ************************* (just passing back all bookings right now)
+      // if we pass in a list of booking references, return the matching booking objects
       let _manifest = {}
       if (!!data && Array.isArray(data)){
-      console.log("array")
-        return this.bookings
+        for (let b in data){
+          _manifest[data[b]] = this.bookings[data[b]]
+        }
+        return _manifest
       }
       let date = data
       // If a date object is passed in, make it a string

@@ -100,21 +100,14 @@ Working on right now *************************************
         //
         let bookingData = root.state.get($cell)
         let keys = Object.keys(bookingData)
-
-        console.log("TableCell Data: ", bookingData) // List of booking references [key'd objects (booking reference is key)]
-
         let container = $("#Details")
         container.css("background", "rgba(71,88,115,1)")
         let box = $("#detailsContents")
         //
-        // clear the Details popup
-        //
-        // box.empty()
-        //
         // Each Booking: build details object data
         //
         let bookings = $root.data("root").manifest.getBookings(keys) || "No Data"
-        console.log("Bookings: %o",bookings)
+        console.log(".manifest.getBookings(keys): %o",bookings)
 
         
         container.data('root').show(bookings)
