@@ -1,26 +1,21 @@
 -------------------------------
 Currently
 -------------------------------
-
-Booking.html object constructs getSprite incorrectly.
-Manifest object might be calling Booking object incorrectly as well.
-
+Filter out Cancelled bookings (etc)
+Look more into calculating flight details like how many seats, crew, POB PAXOB etc.
+Start on plotting bookings (we're only plotting "INS" for the moment)
 
 nodeType of undefined when dropping from Details manifest onto seated PAX
 
-Display Popup is printing the entire manifest?
 
 Still not sure why MC_HH isn't registering correctly on the board.
 
-Manifest doesn't generate correct divs for bookings (it likes to split all these new style bookings into per-pax sprites)
 Think about dropping pax from the Details popup back onto the board... need to change the "containment" to allow for it and the handleDrop code of the TableCells to accept it.
 Clicking plotted sprites on mobile doesn't show Details popup (draggable clickable mobile)
 
-Manifest.getBookings... need to retunrn only matching booking objects (just passing back everything right now)
-Check that we're actually using the overloaded function of passing it a date.
 
 Details Popup to do weight and balance
-Start on plotting bookings (we're only plotting "INS" for the moment)
+
 
 
 
@@ -28,22 +23,17 @@ Start on plotting bookings (we're only plotting "INS" for the moment)
 We're currently plotting all bookings, including CANCELLED ones in the manifest.
 Clear the board when switching days
 Fix plot text size when multiple products (somehow)
-Dropping onto Plane 5's column breaks things (wrong count)
-
-The rest of the old Manifest Booking Div code is in _scratch.html now.
 
 Continue to flesh out the Booking Object data structure
 Start working on Drop Events and Displaying/Moving data around on the board.
 Highlighting rows when you roll over Booking objects in the manifest.
-
-Continue to work on   onLoad(XML)  in Manifest.html
 
 
 Adding multiple bookings to cells works now... so time to straighten out Rezdy.parse and get everything into the flight object.
 Then we can start working on moving cells.
 Need to eventually check that drops are legal (in/out)
 
-Look more into calculating flight details like how many seats, crew, POB PAXOB etc.
+
 
 
 
@@ -117,11 +107,3 @@ need to pass this to Display for the popup. Right now, Display goes to test and 
 We can save a copy of the current row manifest in Display till the popup is closed.
 
 
-
-
-
-
-Change booking type
-Create bookings
-
-Cleanup overuse of display.upate
