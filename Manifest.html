@@ -58,7 +58,7 @@
       // Loop over bookings next and print each booking div
       //
       for (let b in bookings) {
-        if (bookings[b].flight.date == date){
+        if (bookings[b].flight.date == date && bookings[b].order.status == "CONFIRMED"){
           this.$bookings.append(bookings[b].getSprite())
         }
       }
@@ -100,7 +100,9 @@
 
       console.log("Date %o", date)
       console.log("Bookings.list: %o", Bookings.list)
-
+      //
+      // Filter list (date and status)
+      //
       for (let a in Bookings.list) {
         if (!!Bookings.list[a] && Bookings.list[a].flight) {
           if (Bookings.list[a].flight.date == date) {

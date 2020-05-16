@@ -4,6 +4,7 @@
       //
       this.order = RezdyOrder // keep a reference to the Rezdy Data. The Rezdy Order contains all the Bookings when there's multiple bookings per client.
       this.booking = this.order.items[count] // Rezdy "Items" are a list of Bookings. We split them, so we keep a reference to which array index this one is.
+      this.status = this.order.status
       this.productCode = gya.getCode(this.booking.productCode)
       this.orderNumber = this.order.orderNumber
       this.flight = {
