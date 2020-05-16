@@ -7,6 +7,7 @@
       this.productCode = gya.getCode(this.booking.productCode)
       this.orderNumber = this.order.orderNumber
       this.flight = {
+        date: Dates.getNZ(this.booking.startTimeLocal),
         trip: {
           ETD: this.booking.startTimeLocal,
           ETA: "",
@@ -47,12 +48,12 @@
       return this.booking.quantities.length
     }
     getSeats() {
-      // return a raw number of seats this booking will occupy ***********************************
-      return this.booking.quantities.length
+      // return a raw number of seats this booking will occupy *********************************** Need to filter out infants.
+      return this.booking.participants.length
     }
     getPOB() {
-      // Number of souls on board (includes crew and infants) **************************************
-      return this.booking.quantities.length
+      // Number of souls on board (includes crew and infants) ************************************** Need to add Crew to this.
+      return this.booking.participants.length
     }
     getPaxOB() {
       // Number of sould on board excluding staff (includes infants)

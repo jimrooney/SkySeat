@@ -58,12 +58,9 @@
       // Loop over bookings next and print each booking div
       //
       for (let b in bookings) {
-        this.$bookings.append(bookings[b].getSprite())
-        // let div = new BookingSprite($Bookings) // Pass in the $Bookings div as the root jQuery object
-        // div.write(bookings[b]) // BookingSprite's print their own HTML
-
-        // console.log("getPax: %o",this.bookings[b].getPax())
-        // console.log("Product Code: %o", this.bookings[b].getProductCode())
+        if (bookings[b].flight.date == date){
+          this.$bookings.append(bookings[b].getSprite())
+        }
       }
 
       init() // This should change *************** not be root variable, not be such a hatchet **********
