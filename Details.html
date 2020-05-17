@@ -65,7 +65,20 @@
       // Setup type
       // We'll need to clear this jQuery object with each plane loaded.. *******************
       $("#Airplane").empty()
-      for (var i = 1; i <= 8; i++) {
+      
+      $("<div></div>").data("number", 1)
+      .appendTo("#Airplane")
+      .addClass("grid-item station")
+      .addClass("PilotSeat")
+      .addClass("Crew")
+
+      // $("<div></div>").data("number", 2)
+      // .appendTo("#Airplane")
+      // .addClass("grid-item station")
+      // .addClass("CoPilotSeat")
+      // .addClass("Crew")
+
+      for (var i = 2; i <= 8; i++) {
         $("<div></div>").data("number", i).appendTo("#Airplane").addClass("grid-item station")
       }
     }
