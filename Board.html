@@ -74,15 +74,17 @@
           $timeTD.addClass('TimeCell Row_' + thisRow + ' Col_0')
           $timeTD.attr("id",thisRow + '_0')
 
+          let $HS = $('<span />')
+          .text(thisHour + ":00")
+          .addClass("HourSchedule")
 
-          $timeTD.append('<span class="HourSchedule"><span class="hour">' +
-          thisHour +
-          '</span>:<span class="minute">00</span></span>' +
-          '<div class="HalfHourSchedule">(' +
-          thisHour +
-          ":30)</div>")
+          let $hHS = $('<span />')
+          .text(thisHour + ":30")
+          .addClass("HalfHourSchedule")
+          //.hide()
 
-
+          $timeTD.append($HS)
+          $timeTD.append($hHS)
 
         myRow.push($timeTD)
 
@@ -126,6 +128,11 @@
         // Pass to Events Object
         Events.tableCell.onClick($(this))
       })
+
+      // -----------------------------------------
+      // Set Winter/Summer **********************************************
+      // -----------------------------------------
+      $(".HalfHourSchedule").hide()
     }
   }
 </script>

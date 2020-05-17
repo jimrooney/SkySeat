@@ -3,6 +3,7 @@
   // $(function() { ... }); is shorthand for document.ready
   // Setup popups
   $(function () {
+
     $(".TimeCell").each(function (index) {
       let c = colors.colorList[index][1]
       let bkg = "linear-gradient(90deg, " + c + " 0% ,#fff 50%)"
@@ -114,9 +115,4 @@
       utility.alert("Click")
     })
   }
-  // ------------------------------------------------------------------------------------
-  // Clear the console
-  // ------------------------------------------------------------------------------------
-  console.clear()
-  console.log("Window: %o", this) // It's handy to be able to see the whole window object
 </script>
