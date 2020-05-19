@@ -1,0 +1,153 @@
+<script>
+  //==================================================================================================
+  // Colors
+  //==================================================================================================
+  class Colors {
+    constructor() {
+      // In-Strong / In-Pastel  / HighlightIn / HighlightOut
+      this.colorList = [
+        ["#3D52F4", "#9fa9f9", "yellow", "yellow"],
+        ["#C39BD3", "#dfcae8", "yellow", "yellow"],
+        ["#4CB963", "#b6e2bf", "yellow", "yellow"],
+        ["#A9CCE3", "#d8e8f3", "yellow", "yellow"],
+        ["#CF5C36", "#f0cdc1", "yellow", "yellow"],
+        ["#F9E79F", "#fcf3cf", "yellow", "yellow"],
+        ["#EF5D60", "#f8b9ba", "yellow", "yellow"],
+        ["#EDBB99", "#f7e2d4", "yellow", "yellow"],
+        ["#EDBB99", "#f7e2d4", "yellow", "yellow"],
+        ["#EDBB99", "#f7e2d4", "yellow", "yellow"],
+        ["#EDBB99", "#f7e2d4", "yellow", "yellow"],
+      ]
+      this.count = 0
+      this.hue = [
+        0,
+        30,
+        45,
+        60,
+        75,
+        105,
+        120,
+        150,
+        180,
+        195,
+        210,
+        225,
+        240,
+        255,
+        270,
+        285,
+        300,
+        315,
+        330,
+        345,
+        360
+      ]
+    }
+    getByBooking(booking) {
+      let index = this.count
+      let ret = "hsl(" + this.hue[index] + ",100%,50%)"
+      this.count++
+      if(this.count>this.hue.length){
+        this.count = 0
+      }
+      return ret
+    }
+
+    getByRow(arg) {
+      if (!!arg) {
+        arg = arg.slice(0, -1)
+        let ret = this.colorList[arg][0] || this.colorList[0][0]
+        return ret
+      }
+      return "#E59866" // (outs highlight colour)
+    }
+    get(arg) {
+      console.log("colors.get")
+      let tp = typeof arg
+
+      let num
+      typeof arg === "undefined"
+        ? (num = 0)
+        : typeof arg === "object"
+        ? (num = 1)
+        : typeof arg === "string"
+        ? (num = this.getColorNum(arg))
+        : (num = 0)
+
+      if (num >= this.colorList.length) {
+        num = 0
+      }
+
+      let ret = {}
+      ret.in = this.colorList[num][0]
+      ret.out = this.colorList[num][1]
+      ret.highlight = this.colorList[num][2] // Basic In/Out highlight (Just the in highlight)
+      ret.h1 = this.colorList[num][2] // In highlight
+      ret.h2 = this.colorList[num][3] // Out highlight
+      return ret
+    }
+    getByTime(time) {
+      let t = time
+      let num = 0
+      switch (t) {
+        case "08:00":
+          num = 0
+          break
+        case "09:00":
+          num = 1
+          break
+        case "10:00":
+          num = 2
+          break
+        case "11:00":
+          num = 3
+          break
+        case "12:00":
+          num = 4
+          break
+        case "1:00":
+        case "01:00":
+        case "13:00":
+          num = 5
+          break
+        case "2:00":
+        case "02:00":
+        case "14:00":
+          num = 6
+          break
+        case "3:00":
+        case "03:00":
+        case "15:00":
+          num = 7
+          break
+        case "4:00":
+        case "04:00":
+        case "16:00":
+          num = 8
+          break
+      }
+      return this.hue[num]
+    }
+    getColorNum(arg) {
+      /*
+***********************************************************************************************************
+
+We can brand by tripCell (JSON) (dropped cell coordinates) and check if it's an in (need to not brand outs with it)
+
+Then colour the Text by IN cell
+So 8am kayak, 11am FCF out and 1pm Kayak outs all get the same text colour
+
+*/
+      // let bookings = Manifest.bookings
+      // for(b in bookings){
+      //   if (bookings[b]&&bookings[b].orderNumber){
+      //     if (bookings[b].orderNumber == arg){
+      //       return b
+      //     }
+      //   }
+      // }
+      return 0
+    }
+  }
+  var colors = new Colors()
+</script>

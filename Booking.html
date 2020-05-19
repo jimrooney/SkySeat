@@ -40,7 +40,8 @@
       return this.booking.startTimeLocal
     }
     getColor() {
-      return colors.getByTime(time.getHour(this.getETD()))
+      return colors.getByBooking(this)
+      //return colors.getByTime(time.getHour(this.getETD()))
     }
     getCrew() {}
     getPax() {
