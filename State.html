@@ -4,34 +4,31 @@
   //
   class State {
     constructor(Board) {
+
       this.board = Board
-      this.newState(Board.numRows, Board.numCols)
-    }
-    newState() {
-      let numRows = this.board.numRows +1 // (skip header row)
-      let numCols = this.board.numCols +1 // (skip time column)
-      this.data = new Array(numRows)
-      for (let i = 0; i < this.data.length; i++) {
-        this.data[i] = new Array(numCols)
-        for (let a = 0; a < this.data[i].length; a++) {
-          this.data[i][a] = {}
-        }
-      }
+      this.date = this.board.manifest.getDate()
+      this.data = {}
     }
     clear() {
       console.log("Cleared State")
-      this.newState()
+      this.data = {}
     }
     add(cell, dragged) {
       let dataKey = dragged.prop("id")
-      let row = cell.prop("id").split("_")[0]
-      let col = cell.prop("id").split("_")[1]
-      this.data[row][col][dataKey] = dataKey
+      let cellKey = cell.prop("id")
+      if (this.data[cellKey] == undefined){
+        this.data[cellKey] = {}
+      }
+      if (this.data[cellKey][dataKey] == undefined){
+        this.data[cellKey][dataKey] = dataKey
+      }
+      console.log("State: %o",this.data)
     }
-    get = function (cell) {
-      let row = cell.prop("id").split("_")[0]
-      let col = cell.prop("id").split("_")[1]
-      return this.data[row][col]
+    get(cell) {
+      return this.data[cell.prop("id")]
+    }
+    remove(cell,key){
+      // Remove a booking from a cell's data
     }
   }
 </script>

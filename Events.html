@@ -98,7 +98,13 @@ Working on right now *************************************
         let $root = $cell.closest(".root") // jQuery root
         let root = $root.data("root") // JavaScript root
         //
-        let bookingData = root.state.get($cell)
+        let bookingData = root.state.get($cell) // gets back an object with a list of objects key'd by booking number
+
+
+        console.log("Booking Data: %o",bookingData)
+
+
+
         let keys = Object.keys(bookingData)
         let container = $("#Details")
         container.css("background", "rgba(71,88,115,1)")
