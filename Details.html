@@ -65,12 +65,13 @@
       // Setup type
       // We'll need to clear this jQuery object with each plane loaded.. *******************
       $("#Airplane").empty()
-      
-      $("<div></div>").data("number", 1)
-      .appendTo("#Airplane")
-      .addClass("grid-item station")
-      .addClass("PilotSeat")
-      .addClass("Crew")
+
+      $("<div></div>")
+        .data("number", 1)
+        .appendTo("#Airplane")
+        .addClass("grid-item station")
+        .addClass("PilotSeat")
+        .addClass("Crew")
 
       // $("<div></div>").data("number", 2)
       // .appendTo("#Airplane")
@@ -91,8 +92,12 @@
       if ($(this).children().length > 0) {
         console.log("Children")
         existingPax = $(this).children(".Pax").detach()
-        existingPax.appendTo(DragParent)
-        existingPax.position({ of: DragParent, my: "left top", at: "left top" })
+        if (DragParent.length > 0) {
+          existingPax.appendTo(DragParent)
+          existingPax.position({ of: DragParent, my: "left top", at: "left top" })
+        } else {
+          existingPax.appendTo($("#PassengerList"))
+        }
       }
 
       DropPax.appendTo($(this))
@@ -108,8 +113,6 @@
     show(bookings) {
       console.log("Details.show() Bookings: %o", bookings)
 
-
-      
       let visible = this.$root.css("display") !== "none"
       let _this = this
 
