@@ -15,9 +15,10 @@
           ETE: "",
           direction: this.getDirection(),
         },
-        people: {
+        pax: this.getPax(),
+        total: {
           POB: this.getPOB(),
-          PAX: this.getPax(),
+          PAX: this.booking.quantities.length,
           crew: this.getCrew(),
         },
         seats: this.getSeats(),
@@ -45,11 +46,25 @@
     }
     getCrew() {}
     getPax() {
-      // Eventually, this will sort out participants vs ACI vs Quantities and figure out the actual pax. *****************************
-      // Probably want to return an object with pax data
-      if (this.booking.quantities){
-        return this.booking.quantities.length
+      // loop over booking and extract pax and brand them with unique key ([orderNumber][firstName][lastName])
+      let ret = []
+      for (let p in this.booking.participants) {
+        let pax = {}
+        let px = this.booking.participants[p].fields
+        //
+        // Sanitize names (no special characters, etc)
+        pax.firstName = px[0].value.replace(/([0-9a-zA-Z]\w+)/ig,'$1')
+        pax.lastName = px[1].value.replace(/([0-9a-zA-Z]\w+)/ig,'$1')
+        pax.weight = px[4].value.replace(/([0-9a-zA-Z]\w+)/ig,'$1')
+        //
+        pax.key = this.orderNumber + "-" + pax.firstName + "-" + pax.lastName
+        //
+        if (px[3].value != undefined){
+          pax.minorAge = px[3].value.replace(/([0-9a-zA-Z]\w+)/ig,'$1')
+        }
+        ret.push(pax)
       }
+      return ret
     }
     getSeats() {
       // return a raw number of seats this booking will occupy *********************************** Need to filter out infants.

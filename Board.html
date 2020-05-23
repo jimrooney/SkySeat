@@ -10,10 +10,14 @@
 
       this.manifest = new Manifest($root)
       this.manifest.parent = this
-
-      this.state = new State(this)
     }
-
+    //
+    // Fix for jQuery timing issues (elements that get created downstream of the Classes)
+    //
+    init(){
+      this.state = new State(this)
+      // this.$datepicker ... created in writeBoard()
+    }
     load() {
       this.state.clear()
       this.manifest.load()
@@ -133,6 +137,8 @@
       // Set Winter/Summer **********************************************
       // -----------------------------------------
       $(".HourSchedule").hide()
+
+      this.init() // Initalize the board
     }
   }
 </script>

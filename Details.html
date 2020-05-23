@@ -65,12 +65,13 @@
       // Setup type
       // We'll need to clear this jQuery object with each plane loaded.. *******************
       $("#Airplane").empty()
-      
-      $("<div></div>").data("number", 1)
-      .appendTo("#Airplane")
-      .addClass("grid-item station")
-      .addClass("PilotSeat")
-      .addClass("Crew")
+
+      $("<div></div>")
+        .data("number", 1)
+        .appendTo("#Airplane")
+        .addClass("grid-item station")
+        .addClass("PilotSeat")
+        .addClass("Crew")
 
       // $("<div></div>").data("number", 2)
       // .appendTo("#Airplane")
@@ -79,7 +80,16 @@
       // .addClass("Crew")
 
       for (var i = 2; i <= 8; i++) {
-        $("<div></div>").data("number", i).appendTo("#Airplane").addClass("grid-item station")
+        $("<div></div>")
+          .data("number", i)
+          .appendTo("#Airplane")
+          .addClass("grid-item station")
+          .click(function () {
+            $(this).children().each(function(index,child){
+              console.log("Child: %o",child)
+            })
+            console.log("Click This: %o",$(this).data("number"))
+          })
       }
     }
     handleDrop(event, ui) {
@@ -87,12 +97,18 @@
       let DragParent = ui.draggable.closest(".station")
       let DropPax = ui.draggable.detach()
 
-      // Swap with any existing pax
+      // Swap with any existing seated pax
       if ($(this).children().length > 0) {
-        console.log("Children")
+        // Detach pax from seat
         existingPax = $(this).children(".Pax").detach()
-        existingPax.appendTo(DragParent)
-        existingPax.position({ of: DragParent, my: "left top", at: "left top" })
+        // Two pax, both seated, swap seats
+        if (DragParent.length > 0) {
+          existingPax.appendTo(DragParent)
+          existingPax.position({ of: DragParent, my: "left top", at: "left top" })
+        } else {
+          // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
+          existingPax.appendTo($("#PassengerList"))
+        }
       }
 
       DropPax.appendTo($(this))
@@ -108,8 +124,6 @@
     show(bookings) {
       console.log("Details.show() Bookings: %o", bookings)
 
-
-      
       let visible = this.$root.css("display") !== "none"
       let _this = this
 
@@ -123,7 +137,7 @@
           let $pax = $("<div>" + firstName + "</div>")
             .data("number", p)
             .data("booking", key)
-            .attr("id", "card" + p)
+            .attr("id", "pax" + p)
             .appendTo("#PassengerList")
             .addClass("Pax")
             .draggable({
