@@ -47,7 +47,9 @@
     getPax() {
       // Eventually, this will sort out participants vs ACI vs Quantities and figure out the actual pax. *****************************
       // Probably want to return an object with pax data
-      return this.booking.quantities.length
+      if (this.booking.quantities){
+        return this.booking.quantities.length
+      }
     }
     getSeats() {
       // return a raw number of seats this booking will occupy *********************************** Need to filter out infants.
