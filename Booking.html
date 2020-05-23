@@ -1,12 +1,15 @@
 <script>
   class Booking {
-    constructor(RezdyOrder, count) {
+    constructor(RezdyOrder, count, key) {
       //
       this.order = RezdyOrder // keep a reference to the Rezdy Data. The Rezdy Order contains all the Bookings when there's multiple bookings per client.
       this.booking = this.order.items[count] // Rezdy "Items" are a list of Bookings. We split them, so we keep a reference to which array index this one is.
       this.status = this.order.status
       this.productCode = gya.getCode(this.booking.productCode)
-      this.orderNumber = this.order.orderNumber
+      this.orderNumber = this.order.orderNumber // if a key is passed in, use the key instead of the orderNumber (it means there's multiple products in the order)
+      if (!!key){
+        this.orderNumber = key
+      }
       this.flight = {
         date: Dates.getNZ(this.booking.startTimeLocal),
         trip: {
@@ -48,6 +51,7 @@
     getPax() {
       // loop over booking and extract pax and brand them with unique key ([orderNumber][firstName][lastName])
       let ret = []
+      let missingDataCount = 0
       for (let p in this.booking.participants) {
         let pax = {}
         if (this.booking.participants[p].fields != undefined) {
@@ -57,13 +61,11 @@
           //
           // Could check for "firstName" fields rather than just checking each px item.. *************
           //
-
-          console.log("PXF: %o",pxf)
           pax.firstName = ""
           pax.lastName = ""
           pax.weight = ""
           let addPax = false
-
+          
           for (let f in pxf){
           //
           // Loop over participants feilds 
@@ -72,9 +74,17 @@
             let label = pxf[f].label
             let _pxf = pxf[f].value.replace(/([0-9a-zA-Z]\w+)/gi, "$1")
             if (label.match(/first/i)){
+              if (!_pxf){
+                _pxf = "[MissingName]" + missingDataCount
+                missingDataCount++
+              }
               pax.firstName = _pxf
             }
             if (label.match(/last/i)){
+              if (!_pxf){
+                _pxf = "[MissingLastName]" + missingDataCount
+                missingDataCount++
+              }
               pax.lastName = _pxf
             }
             if (label.match(/weight/i)){
@@ -83,13 +93,12 @@
             if (label.match(/age/i)){
               pax.minorAge = _pxf
             }
-              pax.key = this.orderNumber + "-" + pax.firstName + "-" + pax.lastName
+              pax.key = this.orderNumber + "_" + pax.firstName + "|" + pax.lastName
           }
           if (pax.key){
             ret.push(pax)
           }
         }
-        console.log("Pax: %o",pax)
       }
       return ret
     }
