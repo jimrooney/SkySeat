@@ -40,8 +40,8 @@
       console.log("Manifest onLoad()")
       this.$parent.data.state
       this.json = JSON.parse(XML) // Store the Rezdy object so we can write them later.
-      this.bookings = Rezdy.parseData(this.json) // Hash key'd by booking orderNumber
       console.log("Manifest.json: %o", this.json)
+      this.bookings = Rezdy.parseData(this.json) // Hash key'd by booking orderNumber
       console.log("Manifest.bookings: %o", this.bookings)
       this.$bookings.empty()
       this.show()

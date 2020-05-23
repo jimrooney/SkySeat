@@ -50,19 +50,46 @@
       let ret = []
       for (let p in this.booking.participants) {
         let pax = {}
-        let px = this.booking.participants[p].fields
-        //
-        // Sanitize names (no special characters, etc)
-        pax.firstName = px[0].value.replace(/([0-9a-zA-Z]\w+)/ig,'$1')
-        pax.lastName = px[1].value.replace(/([0-9a-zA-Z]\w+)/ig,'$1')
-        pax.weight = px[4].value.replace(/([0-9a-zA-Z]\w+)/ig,'$1')
-        //
-        pax.key = this.orderNumber + "-" + pax.firstName + "-" + pax.lastName
-        //
-        if (px[3].value != undefined){
-          pax.minorAge = px[3].value.replace(/([0-9a-zA-Z]\w+)/ig,'$1')
+        if (this.booking.participants[p].fields != undefined) {
+          let pxf = this.booking.participants[p].fields
+          //
+          // Sanitize names (no special characters, etc)
+          //
+          // Could check for "firstName" fields rather than just checking each px item.. *************
+          //
+
+          console.log("PXF: %o",pxf)
+          pax.firstName = ""
+          pax.lastName = ""
+          pax.weight = ""
+          let addPax = false
+
+          for (let f in pxf){
+          //
+          // Loop over participants feilds 
+          //
+            // Sanitize field
+            let label = pxf[f].label
+            let _pxf = pxf[f].value.replace(/([0-9a-zA-Z]\w+)/gi, "$1")
+            if (label.match(/first/i)){
+              pax.firstName = _pxf
+            }
+            if (label.match(/last/i)){
+              pax.lastName = _pxf
+            }
+            if (label.match(/weight/i)){
+              pax.weight = _pxf
+            }
+            if (label.match(/age/i)){
+              pax.minorAge = _pxf
+            }
+              pax.key = this.orderNumber + "-" + pax.firstName + "-" + pax.lastName
+          }
+          if (pax.key){
+            ret.push(pax)
+          }
         }
-        ret.push(pax)
+        console.log("Pax: %o",pax)
       }
       return ret
     }
