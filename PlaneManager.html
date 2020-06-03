@@ -139,18 +139,9 @@ PlaneManager.planes references can be changed to this.
           $("#0_" + num).data("PCF", [parsed.REG, [pilots.matrix[0], null], 150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
           count++
         }
-        console.log("Planes: %o",_this.planes.reg)
-        
         PlaneManager.updatePlaneCells()
       }
-      // *************************************************************************
-      // This should move (it's here for now for timing issues... boards trying to plot before planes exist)
-      // *************************************************************************
-      //
-      // Load current day
-      //
-      // Rezdy.load()
-      // theBoard.load()
+      console.log("Planes: %o",_this.planes.reg)
     },
     planePopup: function (_this) {
       let container = $("#planeDetails")
