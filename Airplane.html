@@ -1,0 +1,223 @@
+<script>
+  class Station {
+    constructor(data) {
+      this.type = data.type || ""
+      this.weight = data.weight || 0
+      this.arm = data.arm || 0
+      this.moment = data.moment || 0
+    }
+  }
+
+  class Airplane {
+    constructor(data) {
+      // data.REG data.Weight,data.ARM,data.Moment,data.Type,data.RegColor]
+      //
+      // Could probably dynamically build type by processing data.Type... would need more defaults like seats and arms passed in.
+      //
+      this.reg = data.REG
+      this.wam = [data.Weight, data.ARM, data.Moment]
+      this.stations = [] // WAM for each wb item
+      this.regColor = data.RegColor
+      this.maxWeight = 0
+      this.fuel = 0
+      this.arms = {}
+      this.arms.seats = []
+      //this.arms.fuel ***********
+      this.seatWeights = []
+      this.seats = [] // [[]]
+      this.WAM = []
+      this.Burn = data.Burn
+    }
+    getSeats() {
+      let ret = []
+      for (let i in this.stations) {
+        if (this.stations[i].type == "seat") {
+          ret.push(this.stations[i])
+        }
+      }
+      return ret
+    }
+    // -----------------------------------
+    // Get Weight and Balance
+    // -----------------------------------
+    getWB() {
+      this.WAM = [] // Clear old values
+      let ZFW = 0
+      let totalMoment = 0
+
+      this.WAM.push(this.wam)
+      //
+      // Add seatweights to WAM
+      //
+      for (let a in this.seats) {
+        let weight = this.seats[a][0]
+        let arm = this.arms.seats[a]
+        let moment = weight * arm
+        let row = [weight, arm, moment]
+        this.WAM.push(row)
+        totalMoment += moment
+        ZFW += weight
+      }
+      // Fuel
+      let fuelWeight = this.fuel * 0.72
+      let fuelRow = [fuelWeight, this.arms.fuel, fuelWeight * this.arms.fuel]
+      this.WAM.push(fuelRow)
+
+      // ------------------------------------------------------------------- ***********************
+      // Bags
+      // -------------------------------------------------------------------
+      // add bag weight to ZFW
+
+      let tW = 0
+      let tM = 0
+      for (let r in this.WAM) {
+        tW += this.WAM[r][0]
+        tM += this.WAM[r][2]
+      }
+
+      // Seems pretty redundant... just pass the object? ********************************
+      // Object to hold the results
+      // can add things like ZFW and such later. Could even pass functions as part of the object to calculate them.
+      //
+      let ret = {}
+      ret.type = this.type
+      ret.reg = this.reg
+      ret.regColor = this.regColor
+      ret.wam = this.WAM
+      ret.seats = this.seats // POB
+      ret.tW = tW
+      ret.tM = tM
+      ret.cg = tM / tW
+      ret.maxCG = this.maxCG
+      ret.maxWeight = this.maxWeight
+      ret.fuel = this.fuel
+      ret.ZFW = this.ZFW
+      ret.fuelWeight = this.fuelWeight
+      ret.MCTOW = this.maxWeight
+      ret.TOW = tW
+      ret.maxCG = this.maxCG
+      ret.Burn = this.Burn
+      ret.getCG = function () {
+        // rounded cg could go either way... calculate "over cg" before or after the rounding ************************************
+        let cg = Math.round(ret.cg * 100) / 100
+        if (cg > this.maxCG[1]) {
+          cg = -cg
+        }
+        return cg
+      }
+      ret.getWeight = function () {
+        let w = Math.round(ret.tW)
+        if (w > ret.maxWeight) {
+          w = -w
+        }
+        return w
+      }
+      return ret
+    }
+    // -----------------------------------
+    // Load the plane
+    // -----------------------------------
+    load(PCF, POB) {
+      // POB[0,1] 0=weight 1=paxObject ... includes crew
+      this.fuel = PCF[2]
+      this.seats = POB
+      this.seatWeights = []
+      // Probably build WAM instead of a seats array? ****************************************************************************************************
+      // Or maybe build it off the POB array
+      for (let a in POB) {
+        this.seatWeights.push(POB[a][0])
+      }
+    }
+  }
+
+  class GA8 extends Airplane {
+    constructor(data) {
+      super(data)
+
+      this.type = "GA8"
+      this.maxWeight = 1905 // ** Takeoff / Landing weights could be supported **
+      this.maxCG = [, 1.626] // fore/aft
+
+      this.seats = []
+      this.baggageShelf = []
+      this.pod = []
+      this.arms = {}
+      this.stations = [
+        new Station({ type: "seat", arm: 0.965 }),
+        new Station({ type: "seat", arm: 0.965 }),
+        new Station({ type: "seat", arm: 1.772 }),
+        new Station({ type: "seat", arm: 1.772 }),
+        new Station({ type: "seat", arm: 2.523 }),
+        new Station({ type: "seat", arm: 2.523 }),
+        new Station({ type: "seat", arm: 3.247 }),
+        new Station({ type: "seat", arm: 3.247 }),
+        new Station({ type: "fuel", arm: 1.715 }),
+        new Station({ type: "baggage", arm: 3.763 }),
+        new Station({ type: "baggage", arm: 4.623 }),
+      ]
+      this.arms.seats = [
+        0.965, // Row 1
+        0.965,
+        1.772, // Row 2
+        1.772,
+        2.523, // Row 3
+        2.523,
+        3.247, // Row 4
+        3.247,
+      ]
+      this.arms.fuel = 1.715 // Fuel
+      ;(this.arms.bags = 3.763), // Baggage Shelf
+        (this.arms.luggage = 4.623), // Aft Luggage Bin
+        (this.moments = [])
+
+      //      this.WAM = [
+      //        [,,],
+      //        [,0.965,],
+      //        [,0.965,],
+      //        [,1.772,],
+      //        [,1.772,],
+      //        [,2.523,],
+      //        [,2.523,0],
+      //        [,3.247,0],
+      //        [,3.247,0],
+      //        [,3.763,0],
+      //        [,4.623,0]
+      //      ]
+    }
+  }
+
+  class C206 extends Airplane {
+    constructor(data) {
+      super(data)
+
+      this.type = "C206"
+      this.maxWeight = 1719 // ** Takeoff / Landing weights could be supported **
+      this.maxCG = [, 125.984] // fore/aft
+
+      this.stations = [
+        new Station({ type: "seat", arm: 93.98 }),
+        new Station({ type: "seat", arm: 93.98 }),
+        new Station({ type: "seat", arm: 177.8 }),
+        new Station({ type: "seat", arm: 177.8 }),
+        new Station({ type: "seat", arm: 254 }),
+        new Station({ type: "seat", arm: 254 }),
+        new Station({ type: "fuel", arm: 118.11 }),
+      ]
+
+      this.seats = []
+      this.baggageShelf = []
+      this.pod = []
+      this.arms = {}
+      this.arms.seats = [
+        93.98, // Row 1
+        93.98,
+        177.8, // Row 2
+        177.8,
+        254, // Row 3
+        254,
+      ]
+      this.arms.fuel = 118.11 // Fuel
+      this.moments = []
+    }
+  }
+</script>

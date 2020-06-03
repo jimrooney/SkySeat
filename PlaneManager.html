@@ -46,11 +46,11 @@ PlaneManager.planes references can be changed to this.
   // An array of plane objects... could rather be a key'd object array of plane key'd by reg though ****************
   //
   var planes = {
-    reg: [],
+    list: [],
     getPlane: function (registration) {
-      for (let r in this.reg) {
-        if (this.reg[r].reg == registration) {
-          return this.reg[r]
+      for (let r in this.list) {
+        if (this.list[r].reg == registration) {
+          return this.list[r]
         }
       }
       return null
@@ -58,11 +58,11 @@ PlaneManager.planes references can be changed to this.
   }
   var PlaneManager = {
     planes: {
-      reg: [],
+      list: [],
       getPlane: function (registration) {
-        for (let r in this.reg) {
-          if (this.reg[r].reg == registration) {
-            return this.reg[r]
+        for (let r in this.list) {
+          if (this.list[r].reg == registration) {
+            return this.list[r]
           }
         }
         return null
@@ -122,7 +122,7 @@ PlaneManager.planes references can be changed to this.
         // Skipping JTK for now *****************************************************
         //
         if (parsed.REG != "REG" && parsed.REG != "JTK") {
-          _this.planes.reg.push(new GA8(parsed))
+          _this.planes.list.push(new GA8(parsed))
 
           let num = count + 1
           let planeCell = $("#0_" + num)
@@ -131,7 +131,7 @@ PlaneManager.planes references can be changed to this.
           count++
         }
         if (parsed.REG != "REG" && parsed.REG == "JTK") {
-          _this.planes.reg.push(new C206(parsed))
+          _this.planes.list.push(new C206(parsed))
 
           let num = count + 1
           let planeCell = $("#0_" + num)
@@ -141,7 +141,7 @@ PlaneManager.planes references can be changed to this.
         }
         PlaneManager.updatePlaneCells()
       }
-      console.log("Planes: %o",_this.planes.reg)
+      console.log("Planes: %o",_this.planes.list)
     },
     planePopup: function (_this) {
       let container = $("#planeDetails")
@@ -202,8 +202,8 @@ PlaneManager.planes references can be changed to this.
       box.empty() // clear the old contents
       box.append(_drop)
       $("#PlaneDrop").click(function () {
-        for (let p in PlaneManager.planes.reg) {
-          let selected = PlaneManager.planes.reg[p].reg
+        for (let p in PlaneManager.planes.list) {
+          let selected = PlaneManager.planes.list[p].reg
 
           let menu_row = "<div class='changePlane' id='" + selected + "'>" + selected + "</div>"
           box.append(menu_row)
