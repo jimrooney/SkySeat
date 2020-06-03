@@ -174,7 +174,14 @@ var pilots={
 }
 
 
-
+class Station {
+  constructor(data){
+    this.type = ""
+    this.weight = data.weight || 0
+    this.arm = data.arm || 0
+    this.moment = data.moment || 0
+  }
+}
 
 class Airplane {
     constructor(data) {
@@ -184,6 +191,7 @@ class Airplane {
     //
         this.reg = data.REG
         this.wam = [data.Weight,data.ARM,data.Moment]
+        this.stations = [] // WAM for each wb item
         this.regColor = data.RegColor
         this.maxWeight = 0
         this.fuel = 0
@@ -194,6 +202,15 @@ class Airplane {
         this.seats = [] // [[]]
         this.WAM = []
         this.Burn = data.Burn
+    }
+    getSeats(){
+      let ret = []
+      for (let i in this.stations){
+        if (this.stations[i].type == "seat"){
+          ret.push(this.stations[i])
+        }
+      }
+      return ret
     }
     // -----------------------------------
     // Get Weight and Balance
