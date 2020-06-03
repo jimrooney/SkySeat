@@ -176,7 +176,7 @@ var pilots={
 
 class Station {
   constructor(data){
-    this.type = ""
+    this.type = data.type || ""
     this.weight = data.weight || 0
     this.arm = data.arm || 0
     this.moment = data.moment || 0
@@ -316,6 +316,7 @@ class GA8 extends Airplane {
       this.baggageShelf = []
       this.pod = []
       this.arms = {}
+      this.stations = [new Station({type:"seat",arm:0.965}),new Station({type:"seat2",arm:0.965})]
       this.arms.seats = [
         0.965, // Row 1
         0.965,

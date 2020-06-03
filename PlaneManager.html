@@ -139,6 +139,8 @@ PlaneManager.planes references can be changed to this.
           $("#0_" + num).data("PCF", [parsed.REG, [pilots.matrix[0], null], 150]) // Plane-Crew-Fuel default // pilots.matrix[1] for co-pilot *************
           count++
         }
+        console.log("Planes: %o",_this.planes.reg)
+        
         PlaneManager.updatePlaneCells()
       }
       // *************************************************************************
