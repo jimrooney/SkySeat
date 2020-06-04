@@ -89,6 +89,7 @@
     <div id="TheBoard" style="float: none; margin: 10px;">
       <div>
         <button class="Nav Dev" onClick="utility.close()">Close</button>
+        <button class="Dark" onClick="test()">Test</button>
         <button class="Nav" id="SaveButton" onClick="saveBoard()">Save</button>
         <button class="Nav" onClick="theBoard.timeStamp.checkRemote()">Check</button>
         <button class="Nav" onClick="theBoard.load()">&#10226;</button>
@@ -119,7 +120,6 @@
       <!--  Putting all the extra buttons in Day2 cuz we hide Day2 by default -->
       <span id="Day2" style="display: inline-block;">
         <div>
-          <button class="Dark" onClick="test()">Test</button>
           <button class="Dark" onClick="theBoard.highlightFerryLegs()">Ferry Legs</button>
           <button class="Dark" onClick="Rezdy.load()">Load Rezdy</button>
           <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(-1,false)"><</button>

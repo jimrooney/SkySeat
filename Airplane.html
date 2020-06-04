@@ -37,6 +37,16 @@
       }
       return ret
     }
+    getStations(type) {
+      let ret = []
+      let regex = new RegExp(type, "g")
+      for (let i in this.stations) {
+        if (this.stations[i].type.match(regex)) {
+          ret.push(this.stations[i])
+        }
+      }
+      return ret
+    }
     // -----------------------------------
     // Get Weight and Balance
     // -----------------------------------

@@ -1,24 +1,29 @@
 <script>
   function test(args) {
-    // console.log("getManifest: %o",Bookings.getManifest("06/03/2020"))
-
-    $(".TableCell").click(function () {
-        let $root = $(this).closest(".root") // jQuery root
-        let root = $root.data("root") // JavaScript root
-        let bookingData = root.state.get($(this))
-        console.log("TableCell Data: ", bookingData)
-      })
-
-// console.log("Test %o",args)
-
-// $("#AutoBoard .Col_2.Row_2").html("HI")
-
-// $("#AutoBoard .Col_2.Row_2").addClass("highlight")
-
-    // $(".PlaneCell").each(function () {
-    //   console.log("PlaneCell: %0",$(this))
-    // })
+    let p = PlaneManager.planes.getPlane("JRR")
+    console.log("JRR: %o", p)
   }
+
+  //
+
+  // console.log("getManifest: %o",Bookings.getManifest("06/03/2020"))
+
+  // $(".TableCell").click(function () {
+  //     let $root = $(this).closest(".root") // jQuery root
+  //     let root = $root.data("root") // JavaScript root
+  //     let bookingData = root.state.get($(this))
+  //     console.log("TableCell Data: ", bookingData)
+  //   })
+
+  // console.log("Test %o",args)
+
+  // $("#AutoBoard .Col_2.Row_2").html("HI")
+
+  // $("#AutoBoard .Col_2.Row_2").addClass("highlight")
+
+  // $(".PlaneCell").each(function () {
+  //   console.log("PlaneCell: %0",$(this))
+  // })
 
   // Rezdy.loadTripCodes()
 
@@ -66,9 +71,7 @@
     $("#PickupContents").remove()
     pickupList.append("<div id='PickupContents'></div>")
     //$("#PickupContents").append("<div id='TripManifest' class='TripManifest'></div")
-    $("#PickupContents").append(
-      "<div id='PickupManifest' class='PickupManifest'></div>"
-    )
+    $("#PickupContents").append("<div id='PickupManifest' class='PickupManifest'></div>")
 
     $("." + row).each(function () {
       let JSON = $(this).data("json")
@@ -97,9 +100,7 @@
             if (JSON[b].product && JSON[b].product.match(/out/gi)) {
               pickupLocation = "Outs"
             }
-            $("#PickupManifest").append(
-              "<B>" + _seats + "</B> " + pickupLocation + "<br>"
-            )
+            $("#PickupManifest").append("<B>" + _seats + "</B> " + pickupLocation + "<br>")
             totalPickup += _seats
           }
         }
@@ -139,12 +140,7 @@
                 // **************************** Could be turned into an array and pushed *****************************
                 let _quantity = _booking.extras[e].quantity
                 let _ex = _booking.extras[e].name.split("(")[0]
-                extras +=
-                  "<span style='font-size:x-small'>(" +
-                  _quantity +
-                  ")</span>" +
-                  _ex +
-                  " "
+                extras += "<span style='font-size:x-small'>(" + _quantity + ")</span>" + _ex + " "
               }
             }
           }
@@ -155,12 +151,8 @@
       }
     })
     if (totalPickup > 0) {
-      $("#PickupManifest").prepend(
-        "Pickup Manifest.<BR>Total Pax: " + totalPickup + "<P>"
-      )
-      $("#TripManifest").prepend(
-        "Flight Manifest.<BR>Total Pax: " + totalPax + "<P>"
-      )
+      $("#PickupManifest").prepend("Pickup Manifest.<BR>Total Pax: " + totalPickup + "<P>")
+      $("#TripManifest").prepend("Flight Manifest.<BR>Total Pax: " + totalPax + "<P>")
 
       $("#PickupContents").prepend("<br>")
       //$("#PickupContents").prepend("<B>" + $(this).html() + "</B><br>") // ** What's $(this).html() ?
@@ -168,9 +160,7 @@
         "<span style='float:right; width: 100%; display: block; position: absolute; top: 0;' onClick='utility.printPickup()' >Print</span>"
       )
     } else {
-      $("#PickupContents").prepend(
-        "<B>No Pickups/Dropoffs Required for this time<P>"
-      )
+      $("#PickupContents").prepend("<B>No Pickups/Dropoffs Required for this time<P>")
     }
     pickupList.show()
   }
@@ -180,21 +170,13 @@
     //utility.printDiv($("#TheBoard"))
 
     let printMe = getElementChildrenAndStyles($("#TheBoard"))
-    let style =
-      "<style> .inMarker{float:right; display: block;} .outMarker{float:right;display: block;} </style>"
+    let style = "<style> .inMarker{float:right; display: block;} .outMarker{float:right;display: block;} </style>"
     // -webkit-print-color-adjust to keep colors for the printing version
-    let keepColors =
-      "<style>body {-webkit-print-color-adjust: exact !important; }</style>"
+    let keepColors = "<style>body {-webkit-print-color-adjust: exact !important; }</style>"
     let newWin = window.open("", "Print-Window")
     newWin.document.open()
     newWin.document.write(
-      "<html><head>" +
-        keepColors +
-        " " +
-        style +
-        '</head><body onload="window.print()">' +
-        printMe +
-        "</body></html>"
+      "<html><head>" + keepColors + " " + style + '</head><body onload="window.print()">' + printMe + "</body></html>"
     )
     newWin.document.close()
     setTimeout(function () {
