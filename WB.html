@@ -6,6 +6,7 @@
     // Accepts a Cell object and returns a WB object
     //
     getBalance: function (dis) {
+      return // ******************************** Disabling for now (for testing) ***************************
       let pax = {
         declared: [],
         standard: [],
@@ -101,7 +102,7 @@
       // load everything into the plane
       //
       plane.load(PCF, POB)
-      let WB = plane.getWB() // calculate the results (returns an object)
+      let WB = plane.getOldWB() // calculate the results (returns an object)
       //WB.plane = plane
 
       WB.tPaxW = tPaxW
@@ -123,7 +124,7 @@
         for (let i = 0; i <= 130; i++) {
           POB[lastSeat] = [i, ""]
           plane.load(PCF, POB)
-          let WB = plane.getWB()
+          let WB = plane.getOldWB()
           let _cg = WB.getCG()
           let _AUW = WB.getWeight()
           if (_cg > 0 && _AUW > 0) {

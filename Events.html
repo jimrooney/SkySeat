@@ -52,7 +52,7 @@
       Selector.removeClass("highlight")
     },
     tableCell: {
-      handleDrop: function(event, ui) {
+      handleDrop: function (event, ui) {
         let _thisObject = Events // Necessary _thisObject hardcoded link for Object Literal sytax
         // ***********************************************************************************
         // We'll need to handle drops from other boards here
@@ -99,28 +99,17 @@ Working on right now *************************************
         let root = $root.data("root") // JavaScript root
         //
         let bookingData = root.state.get($cell) // gets back an object with a list of objects key'd by booking number
-
-
-        console.log("Booking Data: %o",bookingData)
-
-
-
         let keys = Object.keys(bookingData)
-        let container = $("#Details")
-        container.css("background", "rgba(71,88,115,1)")
-        let box = $("#detailsContents")
         //
         // Each Booking: build details object data
         //
         let bookings = $root.data("root").manifest.getBookings(keys) || "No Data"
-        console.log(".manifest.getBookings(keys): %o",bookings)
-
-        
-        container.data('root').show(bookings)
-        // for (let a in keys) {
-        //   let ret = $root.data("root").manifest.getBookings(keys[a]) || "No Data"
-        //   console.log("Booking: %o", ret )
-        // }
+        console.log(".manifest.getBookings(keys): %o", bookings)
+        //
+        // Calls the show() function of the Details Object (attached to root('data') of the #Details handle)
+        //
+        $("#Details").data("root").show(bookings,$cell)
+        $("#Details").css("background", "rgba(71,88,115,1)")
       },
     },
     // ---------------------------

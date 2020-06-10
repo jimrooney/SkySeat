@@ -16,7 +16,7 @@
       //
       this.reg = data.REG
       this.wam = [data.Weight, data.ARM, data.Moment]
-      this.stations = [] // WAM for each wb item
+      this.stations = [] // Station object for each weight and balance item
       this.regColor = data.RegColor
       this.maxWeight = 0
       this.fuel = 0
@@ -50,79 +50,13 @@
     // -----------------------------------
     // Get Weight and Balance
     // -----------------------------------
-    getWB() {
-      this.WAM = [] // Clear old values
-      let ZFW = 0
-      let totalMoment = 0
-
-      this.WAM.push(this.wam)
-      //
-      // Add seatweights to WAM
-      //
-      for (let a in this.seats) {
-        let weight = this.seats[a][0]
-        let arm = this.arms.seats[a]
-        let moment = weight * arm
-        let row = [weight, arm, moment]
-        this.WAM.push(row)
-        totalMoment += moment
-        ZFW += weight
-      }
-      // Fuel
-      let fuelWeight = this.fuel * 0.72
-      let fuelRow = [fuelWeight, this.arms.fuel, fuelWeight * this.arms.fuel]
-      this.WAM.push(fuelRow)
-
-      // ------------------------------------------------------------------- ***********************
-      // Bags
-      // -------------------------------------------------------------------
-      // add bag weight to ZFW
-
-      let tW = 0
-      let tM = 0
-      for (let r in this.WAM) {
-        tW += this.WAM[r][0]
-        tM += this.WAM[r][2]
-      }
-
-      // Seems pretty redundant... just pass the object? ********************************
-      // Object to hold the results
-      // can add things like ZFW and such later. Could even pass functions as part of the object to calculate them.
-      //
-      let ret = {}
-      ret.type = this.type
-      ret.reg = this.reg
-      ret.regColor = this.regColor
-      ret.wam = this.WAM
-      ret.seats = this.seats // POB
-      ret.tW = tW
-      ret.tM = tM
-      ret.cg = tM / tW
-      ret.maxCG = this.maxCG
-      ret.maxWeight = this.maxWeight
-      ret.fuel = this.fuel
-      ret.ZFW = this.ZFW
-      ret.fuelWeight = this.fuelWeight
-      ret.MCTOW = this.maxWeight
-      ret.TOW = tW
-      ret.maxCG = this.maxCG
-      ret.Burn = this.Burn
-      ret.getCG = function () {
-        // rounded cg could go either way... calculate "over cg" before or after the rounding ************************************
-        let cg = Math.round(ret.cg * 100) / 100
-        if (cg > this.maxCG[1]) {
-          cg = -cg
-        }
-        return cg
-      }
-      ret.getWeight = function () {
-        let w = Math.round(ret.tW)
-        if (w > ret.maxWeight) {
-          w = -w
-        }
-        return w
-      }
-      return ret
+    /*
+        We'll need to pass the loading data into a plane as there is only one plane object.
+        We can still use the top cell data (fuel pilot), but we can also override it here.
+        
+    */
+    getWB(data) {
+      console.log("GET WB")
     }
     // -----------------------------------
     // Load the plane
