@@ -15,7 +15,12 @@ class Board {
     this.$root = $root // save a reference to the jQuery object
 -------------------------------------------------------------------------------------------------------------------
 
-
+[[ Substituting "this" in Google Sheet Returns]]
+In Planemanager.loadPlanes()
+//
+// Because this gets called from a Success Handler (Google), "this" is the Window Object, so we'll make our own "_this"
+//
+let _this = PlaneManager
 
 -------------------------------------------------------------------------------------------------------------------
 [[ Passing User Objects through Google script calls]]

@@ -1,7 +1,13 @@
 <script>
   function test(args) {
     let p = PlaneManager.planes.getPlane("JRR")
-    console.log("JRR: %o", p)
+    console.log("Seats: %o",p.getSeats())
+
+    console.log("Planemanager: %o",PlaneManager)
+    for (let p in PlaneManager.planes.list){
+      let _this = PlaneManager.planes.list[p]
+      console.log("name: %o",_this.constructor.name)
+    }
   }
 
   //

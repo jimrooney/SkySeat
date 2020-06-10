@@ -4,7 +4,7 @@
       this.type = data.type || ""
       this.weight = data.weight || 0
       this.arm = data.arm || 0
-      this.moment = data.moment || 0
+      this.moment = this.weight * this.arm
     }
   }
 
@@ -18,14 +18,6 @@
       this.wam = [data.Weight, data.ARM, data.Moment]
       this.stations = [] // Station object for each weight and balance item
       this.regColor = data.RegColor
-      this.maxWeight = 0
-      this.fuel = 0
-      this.arms = {}
-      this.arms.seats = []
-      //this.arms.fuel ***********
-      this.seatWeights = []
-      this.seats = [] // [[]]
-      this.WAM = []
       this.Burn = data.Burn
     }
     getSeats() {
@@ -56,7 +48,7 @@
         
     */
     getWB(data) {
-      console.log("GET WB")
+      console.log("GET WB: %o",this.reg)
     }
     // -----------------------------------
     // Load the plane
@@ -78,14 +70,11 @@
     constructor(data) {
       super(data)
 
-      this.type = "GA8"
-      this.maxWeight = 1905 // ** Takeoff / Landing weights could be supported **
-      this.maxCG = [, 1.626] // fore/aft
-
-      this.seats = []
-      this.baggageShelf = []
-      this.pod = []
-      this.arms = {}
+      this.type = this.constructor.name // "GA8"
+      this.limits = {
+        weight: [0,1905],
+        CG:[0,1.626]
+      }
       this.stations = [
         new Station({ type: "seat", arm: 0.965 }),
         new Station({ type: "seat", arm: 0.965 }),
@@ -99,34 +88,6 @@
         new Station({ type: "baggage", arm: 3.763 }),
         new Station({ type: "baggage", arm: 4.623 }),
       ]
-      this.arms.seats = [
-        0.965, // Row 1
-        0.965,
-        1.772, // Row 2
-        1.772,
-        2.523, // Row 3
-        2.523,
-        3.247, // Row 4
-        3.247,
-      ]
-      this.arms.fuel = 1.715 // Fuel
-      ;(this.arms.bags = 3.763), // Baggage Shelf
-        (this.arms.luggage = 4.623), // Aft Luggage Bin
-        (this.moments = [])
-
-      //      this.WAM = [
-      //        [,,],
-      //        [,0.965,],
-      //        [,0.965,],
-      //        [,1.772,],
-      //        [,1.772,],
-      //        [,2.523,],
-      //        [,2.523,0],
-      //        [,3.247,0],
-      //        [,3.247,0],
-      //        [,3.763,0],
-      //        [,4.623,0]
-      //      ]
     }
   }
 
@@ -134,10 +95,11 @@
     constructor(data) {
       super(data)
 
-      this.type = "C206"
-      this.maxWeight = 1719 // ** Takeoff / Landing weights could be supported **
-      this.maxCG = [, 125.984] // fore/aft
-
+      this.type = this.constructor.name // "C206"
+      this.limits = {
+        weight: [0,1719],
+        CG:[0,125.984]
+      }
       this.stations = [
         new Station({ type: "seat", arm: 93.98 }),
         new Station({ type: "seat", arm: 93.98 }),
@@ -147,21 +109,6 @@
         new Station({ type: "seat", arm: 254 }),
         new Station({ type: "fuel", arm: 118.11 }),
       ]
-
-      this.seats = []
-      this.baggageShelf = []
-      this.pod = []
-      this.arms = {}
-      this.arms.seats = [
-        93.98, // Row 1
-        93.98,
-        177.8, // Row 2
-        177.8,
-        254, // Row 3
-        254,
-      ]
-      this.arms.fuel = 118.11 // Fuel
-      this.moments = []
     }
   }
 </script>
