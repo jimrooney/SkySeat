@@ -94,9 +94,22 @@
     }
     handleDrop(event, ui) {
       let existingPax
-      let DragParent = ui.draggable.closest(".station")
+      let DragParent = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
       let DropPax = ui.draggable.detach()
-
+      let pax = DropPax.data("pax")
+      //
+      // Victory is mine :)
+      //
+      // **************************************************************************************************
+      // Assign sets ... this just keeps adding seat numbers... needs to add maybe objects and overwrite old seat assignments,
+      // but it modifiest the source object (by copy, not reference), so it retains the seat assignment.
+      // This might need to moce into the "flight" object for state saving
+      // 
+      // **************************************************************************************************
+      console.log("Pax: %o", pax )
+      pax.push($(this).data("number"))
+      console.log("Seat: %o", $(this).data("number"))
+      
       // Swap with any existing seated pax
       if ($(this).children().length > 0) {
         // Detach pax from seat
@@ -139,8 +152,9 @@
           let $pax = $("<div>" + firstName + "</div>")
             .data("number", p)
             .data("booking", key)
+            .data("pax",pax)
             .attr("id", "pax" + p)
-            .appendTo("#PassengerList")
+            .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
             .addClass("Pax")
             .draggable({
               containment: "#content",
