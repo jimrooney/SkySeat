@@ -154,8 +154,8 @@
         for (let p in bookings[key].booking.participants) {
           
           let pax = new Pax({fields:bookings[key].booking.participants[p].fields})
-          let firstName = pax.getName()
-          let $pax = $("<div>" + firstName + "</div>")
+          let firstName = pax.getFirstName()
+          let $pax = $("<div>" + firstName + " " + pax.getWeight() + "</div>")
             .data("number", p)
             .data("booking", key)
             .data("pax",pax.fields)

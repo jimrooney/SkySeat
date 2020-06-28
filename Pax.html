@@ -18,5 +18,13 @@
       }
       return _name
     }
+    getWeight(){
+      let ret = this.fields[4].value || 0
+      return ret
+    }
+    getAge(){
+      let ret = this.fields[3].value || -1
+      return ret
+    }
   }
 </script>
