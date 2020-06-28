@@ -4,25 +4,29 @@
       this.fields = data.fields || ""
       this.seat = data.seat || null
     }
-    getName(){
+    getName() {
       let _name = ""
       let FN = this.fields[0].value || ""
       let LN = this.fields[1].value || ""
-        _name = FN + " " + LN
+      _name = FN + " " + LN
       return _name
     }
-    getFirstName(){
+    getFirstName() {
       let _name = ""
-      if (!!this.fields[0]){
+      if (!!this.fields[0]) {
         _name = this.fields[0].value
       }
       return _name
     }
-    getWeight(){
+    getWeight() {
       let ret = this.fields[4].value || 0
+      // Always return KG...
+      // Removes KG LBS etc
+      ret = wb.getKilos(ret)
+
       return ret
     }
-    getAge(){
+    getAge() {
       let ret = this.fields[3].value || -1
       return ret
     }

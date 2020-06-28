@@ -155,7 +155,7 @@
           
           let pax = new Pax({fields:bookings[key].booking.participants[p].fields})
           let firstName = pax.getFirstName()
-          let $pax = $("<div>" + firstName + " " + pax.getWeight() + "</div>")
+          let $pax = $("<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>")
             .data("number", p)
             .data("booking", key)
             .data("pax",pax.fields)
