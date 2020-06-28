@@ -1,0 +1,22 @@
+<script>
+  class Pax {
+    constructor(data) {
+      this.fields = data.fields || ""
+      this.seat = data.seat || null
+    }
+    getName(){
+      let _name = ""
+      let FN = this.fields[0].value || ""
+      let LN = this.fields[1].value || ""
+        _name = FN + " " + LN
+      return _name
+    }
+    getFirstName(){
+      let _name = ""
+      if (!!this.fields[0]){
+        _name = this.fields[0].value
+      }
+      return _name
+    }
+  }
+</script>
