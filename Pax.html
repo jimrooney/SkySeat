@@ -1,8 +1,25 @@
 <script>
   class Pax {
     constructor(data) {
-      this.fields = data.fields || ""
+      console.log("New Pax: %o",data)
+      if (!!data.fields){
+        this.fields = data.fields || ""
+      } else {
+        this.fields = data
+      }
+      
       this.seat = data.seat || null
+      this.barcode = this.getBarcode()
+      this.orderNumber = this.getOrderNumber()
+    }
+    getOrderNumber(){
+      let ret = this.barcode || ""
+      ret = ret.split("*")[0]
+      return ret
+    }
+    getBarcode (){
+      let ret = this.fields[2].value || ""
+      return ret
     }
     getName() {
       let _name = ""
@@ -29,6 +46,9 @@
     getAge() {
       let ret = this.fields[3].value || -1
       return ret
+    }
+    getGroupColor(){
+      Color.getByBooking()
     }
   }
 </script>

@@ -106,12 +106,14 @@
       // This might need to moce into the "flight" object for state saving
       // 
       // **************************************************************************************************
-      let _pax = new Pax(pax)
-      console.log("_pax: %o",_pax)
       
       
+       let _pax = new Pax(pax)
+       console.log("_pax: %o",_pax)
       
-      console.log("Pax: %o", pax )
+
+      // assign seat, don't just push it into the fields array... (assigning it needs to put it into the array so that the manifest object saves it... just don't push it in there)
+
       pax.push($(this).data("number"))
       console.log("Seat: %o", $(this).data("number"))
       
