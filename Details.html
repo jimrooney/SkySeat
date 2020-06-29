@@ -85,10 +85,12 @@
           .appendTo("#Airplane")
           .addClass("grid-item station")
           .click(function () {
-            $(this).children().each(function(index,child){
-              console.log("Child: %o",child)
-            })
-            console.log("Click This: %o",$(this).data("number"))
+            $(this)
+              .children()
+              .each(function (index, child) {
+                console.log("Child: %o", child)
+              })
+            console.log("Click This: %o", $(this).data("number"))
           })
       }
     }
@@ -104,19 +106,30 @@
       // Assign sets ... this just keeps adding seat numbers... needs to add maybe objects and overwrite old seat assignments,
       // but it modifiest the source object (by copy, not reference), so it retains the seat assignment.
       // This might need to moce into the "flight" object for state saving
-      // 
+      //
       // **************************************************************************************************
-      
-      
-       let _pax = new Pax(pax)
-       console.log("_pax: %o",_pax)
-      
+
+      let _pax = new Pax(pax)
+      console.log("_pax: %o", _pax)
+
+      const data = [20, 18, 15, 10, 9]
+      let found = data.find((element) => element < 12)
+      console.log("FOUND: %o", found)
+
+      const fruits = [
+        { name: "apples", quantity: 2 },
+        { name: "bananas", quantity: 0 },
+        { name: "cherries", quantity: 5 },
+      ]
+      const getFruit = fruits.find((fruit) => fruit.name === "pie")
+
+      console.log(getFruit)
 
       // assign seat, don't just push it into the fields array... (assigning it needs to put it into the array so that the manifest object saves it... just don't push it in there)
 
       pax.push($(this).data("number"))
       console.log("Seat: %o", $(this).data("number"))
-      
+
       // Swap with any existing seated pax
       if ($(this).children().length > 0) {
         // Detach pax from seat
@@ -141,10 +154,10 @@
     setRevert($obj) {
       $obj.draggable({ revert: true })
     }
-    show(bookings,$cell) {
+    show(bookings, $cell) {
       console.log("Details.show()")
-      console.log("Cell: %o",$cell.prop('id'))
-      console.log("Bookings: %o",bookings)
+      console.log("Cell: %o", $cell.prop("id"))
+      console.log("Bookings: %o", bookings)
 
       let visible = this.$root.css("display") !== "none"
       let _this = this
@@ -154,13 +167,14 @@
       // -------------- Passengers -----------------
       for (let key in bookings) {
         for (let p in bookings[key].booking.participants) {
-          
-          let pax = new Pax({fields:bookings[key].booking.participants[p].fields})
+          let pax = new Pax({ fields: bookings[key].booking.participants[p].fields })
           let firstName = pax.getFirstName()
-          let $pax = $("<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>")
+          let $pax = $(
+            "<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"
+          )
             .data("number", p)
             .data("booking", key)
-            .data("pax",pax.fields)
+            .data("pax", pax.fields)
             .attr("id", "pax" + p)
             .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
             .addClass("Pax")

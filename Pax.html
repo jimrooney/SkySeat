@@ -6,11 +6,13 @@
         this.fields = data.fields || ""
       } else {
         this.fields = data
-      }
-      
+      } 
       this.seat = data.seat || null
       this.barcode = this.getBarcode()
       this.orderNumber = this.getOrderNumber()
+    }
+    setSeat(number){
+      
     }
     getOrderNumber(){
       let ret = this.barcode || ""
