@@ -99,6 +99,7 @@
       let DragParent = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
       let DropPax = ui.draggable.detach()
       let pax = DropPax.data("pax")
+      let seatNumber = $(this).data("number")
       //
       // Victory is mine :)
       //
@@ -110,25 +111,22 @@
       // **************************************************************************************************
 
       let _pax = new Pax(pax)
+      const paxSeat = _pax.fields.find((p) => p.label === "seat")
+      if(!paxSeat){
+        console.log("No Seat")
+        let p = {
+          label:"seat",
+          value: seatNumber
+        }
+        pax.push(p)
+      }
+      else {
+        console.log("Changing Seat")
+        console.log("paxSeat: %o",paxSeat)
+        paxSeat.value = seatNumber
+      }
       console.log("_pax: %o", _pax)
 
-      const data = [20, 18, 15, 10, 9]
-      let found = data.find((element) => element < 12)
-      console.log("FOUND: %o", found)
-
-      const fruits = [
-        { name: "apples", quantity: 2 },
-        { name: "bananas", quantity: 0 },
-        { name: "cherries", quantity: 5 },
-      ]
-      const getFruit = fruits.find((fruit) => fruit.name === "pie")
-
-      console.log(getFruit)
-
-      // assign seat, don't just push it into the fields array... (assigning it needs to put it into the array so that the manifest object saves it... just don't push it in there)
-
-      pax.push($(this).data("number"))
-      console.log("Seat: %o", $(this).data("number"))
 
       // Swap with any existing seated pax
       if ($(this).children().length > 0) {
