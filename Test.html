@@ -1,5 +1,12 @@
 <script>
   function test(args) {
+
+    let $Board = $("#AutoBoard").data("root")
+    let $Manifest = $Board.manifest
+
+    console.log("Board Manifest: %o", $Manifest)
+
+
     let p = PlaneManager.planes.getPlane("JRR")
     console.log("Seats: %o",p.getSeats())
 
