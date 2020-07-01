@@ -39,9 +39,7 @@
     onLoad(XML) {
       console.log("Manifest onLoad()")
       this.$parent.data.state
-      this.json = JSON.parse(XML) // Store the Rezdy object so we can write them later.
-      console.log("Manifest.json: %o", this.json)
-      this.bookings = Rezdy.parseData(this.json) // Hash key'd by booking orderNumber
+      this.data = JSON.parse(XML) // Store the Rezdy object so we can write them later.
       console.log("Manifest.bookings: %o", this.bookings)
       this.$bookings.empty()
       this.show()
@@ -51,14 +49,20 @@
       if (!date) {
         date = this.getDate()
       }
-      let bookings = this.bookings
       let $Bookings = this.$parent.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
+      
+      
+      let bookings = this.data.bookings.filter(booking => booking.status == "CONFIRMED")
       console.log("bookings %o", bookings)
+
+
+
+
       //
       // Loop over bookings next and print each booking div
       //
       for (let b in bookings) {
-        if (bookings[b].flight.date == date && bookings[b].order.status == "CONFIRMED"){
+        if (bookings[b].flight.date == date && bookings[b].order.status == "CONFIRMED") {
           this.$bookings.append(bookings[b].getSprite())
         }
       }
@@ -76,8 +80,8 @@
     getBookings(data) {
       // if we pass in a list of booking references, return the matching booking objects
       let _manifest = {}
-      if (!!data && Array.isArray(data)){
-        for (let b in data){
+      if (!!data && Array.isArray(data)) {
+        for (let b in data) {
           _manifest[data[b]] = this.bookings[data[b]]
         }
         return _manifest
