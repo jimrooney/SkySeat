@@ -6,6 +6,7 @@
       this.bookings // Placeholder... List of Bookings... hash key'd (by orderNumber) from Rezdy load
       this.$bookings // Placeholder
       this.$parent = $parent // Keep a link to the parent jQuery object
+      //this.$Bookings = this.$parent.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
     }
     getDate() {
       let date = this.parent.$datepicker.datepicker("getDate")
@@ -40,7 +41,7 @@
       console.log("Manifest onLoad()")
       this.$parent.data.state
       this.data = JSON.parse(XML) // Store the Rezdy object so we can write them later.
-      console.log("Manifest.bookings: %o", this.bookings)
+      this.orders = this.data.bookings
       this.$bookings.empty()
       this.show()
     }
@@ -49,26 +50,32 @@
       if (!date) {
         date = this.getDate()
       }
-      let $Bookings = this.$parent.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
 
+      console.log("this.data %o", this.data)
       // Need to filter by date as well **********************************
-      let bookings = this.data.bookings.filter((booking) => booking.status == "CONFIRMED")
-      console.log("bookings %o", bookings)
+      /* 
+
+      Rezdy's list of "bookings" is actually a list of orders (each with an orderNumber).
+      What Rezdy calls an "Item" (in the items array) is what is actually a booking (it's an order for a product)
+
+      */
+      let orders = this.orders.filter((order) => order.status == "CONFIRMED")
+      console.log("orders %o", orders)
 
       //
       // Loop over bookings (Items) and print each booking div
       //
-      for (let b in bookings) {
-        let orderNumber = bookings[b].orderNumber
-        for (let i in bookings[b].items) {
-          this.$bookings.append(this.getSprite(bookings[b].items[i], orderNumber)) // Passing in the orderNumber.. this can be extracted from the barcode or all the items can be passed in... this is just for now ***********************
+      for (let o in orders) {
+        let orderNumber = orders[o].orderNumber
+        for (let i in orders[o].items) {
+          this.$bookings.append(this.getSprite(orders[o].items[i], orderNumber)) // Passing in the orderNumber.. this can be extracted from the barcode or all the items can be passed in... this is just for now ***********************
         }
       }
 
       init() // This should change *************** not be root variable, not be such a hatchet **********
     }
 
-    getSprite(booking,orderNumber) {
+    getSprite(booking, orderNumber) {
       console.log("GetSprite: %o %o", booking, orderNumber)
       // Constructs and returns a booking sprite
       let $sprite = $("<span class='tooltip' />")

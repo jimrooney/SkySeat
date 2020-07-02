@@ -1,6 +1,21 @@
+
+Rezdy's messed up data structure...
+"Bookings" are actually "Orders"
+"Items" are actually "Bookings"
+A "Complete booking object" (for doing Rezdy writes) is actually an Order object.
+---------------------------------------------------------------------------------
+
+
 -------------------------------
 Currently
 -------------------------------
+We need a unique identifier for each Booking Object ("Items" in Rezdy)
+Most likely, a combination of the orderNumber, product code and booking time (uhg)
+It's a pain because a customer can book different products at the same time...
+but can also book the same product at different times.
+
+
+
 Continue to rewrite Manifest.show() to use the Rezdy data structure directly.
 The Sprite generation in particular is still messy and needs a rebuild.
 
