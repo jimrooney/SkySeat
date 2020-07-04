@@ -4,6 +4,7 @@
       //
       this.item = item // keep a reference to the Rezdy Data.
       this.orderNumber = orderNumber || null
+      this.product = gya.getProduct(item.productCode)
     }
     getSprite(){
       let orderNumber = this.orderNumber
@@ -19,7 +20,7 @@
         $sprite.prop("object",this)
         // $sprite.css("background-color", booking.flight.color)
         // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
-        $sprite.text(this.orderNumber)
+        $sprite.text(this.item.participants.length + " " + this.product.GYACode)
         //
         // Click
         //

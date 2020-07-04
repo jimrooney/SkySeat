@@ -162,7 +162,9 @@ Working on right now *************************************
         // Each Booking
         //
         if (!!booking) {
-          let c = booking.item.productCode || "NoCode" // Need to translate into GYA product codes
+          let _p = gya.getProduct(booking.item.productCode) || "NoProduct" // Get GYA Product Object (loaded from Spreadsheet)
+          console.log("Product: %o",_p)
+          let c = _p.GYACode || "NoCode"
           productCode[c] = c
 
           // Seats and direction
