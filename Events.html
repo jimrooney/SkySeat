@@ -69,8 +69,8 @@
 
 
 
-
-        let booking = dragged.prop("object")// get a reference to the Booking from this board's Manifest
+        // Get the javascript booking object
+        let booking = dragged.prop("object")
         
         console.log("Record Drop")
         console.log("booking: %o",booking)
@@ -79,7 +79,7 @@
         // -------------------------------------------------------------------
         board.state.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
         console.log("State: %o", board.state.data)
-        _thisObject.update($(this))
+        _thisObject.update($(this),booking)
       },
 
       /*
@@ -122,13 +122,13 @@ Working on right now *************************************
     // ---------------------------
     // Updates a single Table Cell
     // ---------------------------
-    update: function (tableCell) {
+    update: function (tableCell,booking) {
       console.log("Events.update(%o)", tableCell)
       let $Board = tableCell.closest(".root") // Board jQuery root
       let board = $Board.data("root") // Board JavaScript root (lives in the jQuery.data("root"))
       let bookingList = board.state.get(tableCell) // Get the cell's data ({Board}.data[row][col])
 
-      console.log("Booking Data: %o", bookingList)
+      console.log("Tablecell booking list: %o", bookingList)
 
       // ***** Wrap this into a function that figures out what the cell's contents should be *****
       // Object for the TableCell's contents to be setup by looping over all the bookings and figuring things out.
@@ -150,29 +150,42 @@ Working on right now *************************************
         text: " ",
       }
 
+
       // ************************* We'll need to total all the product information, not just the product code ****************************
       let productCode = {}
+      console.log("bookingList: %o",bookingList)
       for (let b in bookingList) {
-        let booking = board.manifest.getBooking(bookingList[b])
+        let orderNumber = bookingList[b]
+
         console.log("Booking: %o", booking)
         //
         // Each Booking
         //
         if (!!booking) {
-          let c = booking.productCode.GYACode || "NoCode"
+          let c = booking.item.productCode || "NoCode" // Need to translate into GYA product codes
           productCode[c] = c
-          switch (booking.flight.trip.direction) {
-            case "out":
-              cellData.direction.label = "out"
-              cellData.direction.class = "outCell"
-              cellData.direction.position = { position: "absolute", right: "0", bottom: "0" }
-              break
-          }
-          if (booking.flight.seats > 0) {
-            cellData.seats += booking.flight.seats
-          }
+
+          // Seats and direction
+          // Might not be necessary anymore ********************************************************
+
+          // switch (booking.flight.trip.direction) {
+          //   case "out":
+          //     cellData.direction.label = "out"
+          //     cellData.direction.class = "outCell"
+          //     cellData.direction.position = { position: "absolute", right: "0", bottom: "0" }
+          //     break
+          // }
+          // if (booking.flight.seats > 0) {
+          //   cellData.seats += booking.flight.seats
+          // }
+
+
+
+
         }
       }
+
+      console.log("After BookingList")
       //
       // The whole structrue of how we build this cell can likely be organized a bit better *******
       //

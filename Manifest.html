@@ -52,13 +52,14 @@
       }
 
       console.log("this.data %o", this.data)
-      // Need to filter by date as well **********************************
+
       /* 
 
       Rezdy's list of "bookings" is actually a list of orders (each with an orderNumber).
       What Rezdy calls an "Item" (in the items array) is what is actually a booking (it's an order for a product)
 
       */
+      // Need to filter by date as well **********************************
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
       console.log("orders %o", orders)
       //
@@ -67,7 +68,7 @@
       for (let o in orders) {
         let orderNumber = orders[o].orderNumber
         for (let i in orders[o].items) {
-          let booking  = new Booking(orders[o].items[i], orderNumber)
+          let booking = new Booking(orders[o].items[i], orderNumber)
           this.$bookings.append(booking.getSprite()) // Passing in the orderNumber.. this can be extracted from the barcode or all the items can be passed in... this is just for now ***********************
         }
       }
