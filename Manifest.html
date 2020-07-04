@@ -61,41 +61,18 @@
       */
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
       console.log("orders %o", orders)
-
       //
       // Loop over bookings (Items) and print each booking div
       //
       for (let o in orders) {
         let orderNumber = orders[o].orderNumber
         for (let i in orders[o].items) {
-          this.$bookings.append(this.getSprite(orders[o].items[i], orderNumber)) // Passing in the orderNumber.. this can be extracted from the barcode or all the items can be passed in... this is just for now ***********************
+          let booking  = new Booking(orders[o].items[i], orderNumber)
+          this.$bookings.append(booking.getSprite()) // Passing in the orderNumber.. this can be extracted from the barcode or all the items can be passed in... this is just for now ***********************
         }
       }
 
       init() // This should change *************** not be root variable, not be such a hatchet **********
-    }
-
-    getSprite(booking, orderNumber) {
-      console.log("GetSprite: %o %o", booking, orderNumber)
-      // Constructs and returns a booking sprite
-      let $sprite = $("<span class='tooltip' />")
-      if (!!orderNumber) {
-        //
-        $sprite.data("this", booking) // Self Reference (for click)
-        //
-        let masterkey = orderNumber
-        // "2FCF" coded sprite
-        $sprite.addClass("BookingSprite")
-        $sprite.prop("id", orderNumber)
-        // $sprite.css("background-color", booking.flight.color)
-        // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
-        $sprite.text(orderNumber)
-        $sprite.click(function () {
-          let _this = $(this).data("this")
-          console.log("BookingSprite: %o", _this)
-        })
-      }
-      return $sprite
     }
 
     // ------------

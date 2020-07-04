@@ -1,140 +1,141 @@
 <script>
   class Booking {
-    constructor(RezdyOrder, count, key) {
+    constructor(item,orderNumber) {
       //
-      this.order = RezdyOrder // keep a reference to the Rezdy Data. The Rezdy Order contains all the Bookings when there's multiple bookings per client.
-      this.booking = this.order.items[count] // Rezdy "Items" are a list of Bookings. We split them, so we keep a reference to which array index this one is.
-      this.status = this.order.status
-      this.productCode = gya.getCode(this.booking.productCode)
-      this.orderNumber = this.order.orderNumber // if a key is passed in, use the key instead of the orderNumber (it means there's multiple products in the order)
-      if (!!key){
-        this.orderNumber = key
-      }
-      this.flight = {
-        date: Dates.getNZ(this.booking.startTimeLocal),
-        trip: {
-          ETD: this.booking.startTimeLocal,
-          ETA: "",
-          ETE: "",
-          direction: this.getDirection(),
-        },
-        pax: this.getPax(),
-        total: {
-          POB: this.getPOB(),
-          PAX: this.booking.quantities.length,
-          crew: this.getCrew(),
-        },
-        seats: this.getSeats(),
-        color: this.getColor(),
-      }
+      this.item = item // keep a reference to the Rezdy Data.
+      this.orderNumber = orderNumber || null
     }
-    getDirection() {
-      let type = null
-      if (!!this.productCode["FlightType"]) {
-        type = this.productCode["FlightType"].toUpperCase() || null
-      }
-      if (!!type) {
-        return type.match(/^B/) ? "out" : "in"
-      }
-      return null
-    }
-    getETD() {
-      // Time when the plane leaves
-      this.booking.startTime
-      return this.booking.startTimeLocal
-    }
-    getColor() {
-      return colors.getByBooking(this)
-      //return colors.getByTime(time.getHour(this.getETD()))
-    }
-    getCrew() {}
-    getPax() {
-      // loop over booking and extract pax and brand them with unique key ([orderNumber][firstName][lastName])
-      let ret = []
-      let missingDataCount = 0
-      for (let p in this.booking.participants) {
-        let pax = {}
-        if (this.booking.participants[p].fields != undefined) {
-          let pxf = this.booking.participants[p].fields
-          //
-          // Sanitize names (no special characters, etc)
-          //
-          // Could check for "firstName" fields rather than just checking each px item.. *************
-          //
-          pax.firstName = ""
-          pax.lastName = ""
-          pax.weight = ""
-          let addPax = false
-          
-          for (let f in pxf){
-          //
-          // Loop over participants feilds 
-          //
-            // Sanitize field
-            let label = pxf[f].label
-            let _pxf = pxf[f].value.replace(/([0-9a-zA-Z]\w+)/gi, "$1")
-            if (label.match(/first/i)){
-              if (!_pxf){
-                _pxf = "[MissingName]" + missingDataCount
-                missingDataCount++
-              }
-              pax.firstName = _pxf
-            }
-            if (label.match(/last/i)){
-              if (!_pxf){
-                _pxf = "[MissingLastName]" + missingDataCount
-                missingDataCount++
-              }
-              pax.lastName = _pxf
-            }
-            if (label.match(/weight/i)){
-              pax.weight = _pxf
-            }
-            if (label.match(/age/i)){
-              pax.minorAge = _pxf
-            }
-              pax.key = this.orderNumber + "_" + pax.firstName + "|" + pax.lastName
-          }
-          if (pax.key){
-            ret.push(pax)
-          }
-        }
-      }
-      return ret
-    }
-    getSeats() {
-      // return a raw number of seats this booking will occupy *********************************** Need to filter out infants.
-      return this.booking.participants.length
-    }
-    getPOB() {
-      // Number of souls on board (includes crew and infants) ************************************** Need to add Crew to this.
-      return this.booking.participants.length
-    }
-    getPaxOB() {
-      // Number of sould on board excluding staff (includes infants)
-    }
-    getProductCode() {
-      return gya.getCode(this.booking.productCode) // row from TripCodes spreadsheet ***** GYA object *****
-    }
-    getSprite() {
+    getSprite(){
+      let orderNumber = this.orderNumber
       // Constructs and returns a booking sprite
       let $sprite = $("<span class='tooltip' />")
-      if (!!this.orderNumber) {
-        //
         $sprite.data("this", this) // Self Reference (for click)
-        //
-        let masterkey = this.orderNumber.split("-")[0]
         // "2FCF" coded sprite
         $sprite.addClass("BookingSprite")
         $sprite.prop("id", this.orderNumber)
-        $sprite.css("background-color", this.flight.color)
-        $sprite.text(this.flight.seats + " " + this.productCode.GYACode)
+        //
+        //
+        //
+        $sprite.prop("object",this)
+        // $sprite.css("background-color", booking.flight.color)
+        // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
+        $sprite.text(this.orderNumber)
+        //
+        // Click
+        //
         $sprite.click(function () {
           let _this = $(this).data("this")
           console.log("BookingSprite: %o", _this)
         })
-      }
       return $sprite
     }
+    // getDirection() {
+    //   let type = null
+    //   if (!!this.productCode["FlightType"]) {
+    //     type = this.productCode["FlightType"].toUpperCase() || null
+    //   }
+    //   if (!!type) {
+    //     return type.match(/^B/) ? "out" : "in"
+    //   }
+    //   return null
+    // }
+    // getETD() {
+    //   // Time when the plane leaves
+    //   this.booking.startTime
+    //   return this.booking.startTimeLocal
+    // }
+    // getColor() {
+    //   return colors.getByBooking(this)
+    //   //return colors.getByTime(time.getHour(this.getETD()))
+    // }
+
+    // getPax() {
+    //   // loop over booking and extract pax and brand them with unique key ([orderNumber][firstName][lastName])
+    //   let ret = []
+    //   let missingDataCount = 0
+    //   for (let p in this.booking.participants) {
+    //     let pax = {}
+    //     if (this.booking.participants[p].fields != undefined) {
+    //       let pxf = this.booking.participants[p].fields
+    //       //
+    //       // Sanitize names (no special characters, etc)
+    //       //
+    //       // Could check for "firstName" fields rather than just checking each px item.. *************
+    //       //
+    //       pax.firstName = ""
+    //       pax.lastName = ""
+    //       pax.weight = ""
+    //       let addPax = false
+          
+    //       for (let f in pxf){
+    //       //
+    //       // Loop over participants feilds 
+    //       //
+    //         // Sanitize field
+    //         let label = pxf[f].label
+    //         let _pxf = pxf[f].value.replace(/([0-9a-zA-Z]\w+)/gi, "$1")
+    //         if (label.match(/first/i)){
+    //           if (!_pxf){
+    //             _pxf = "[MissingName]" + missingDataCount
+    //             missingDataCount++
+    //           }
+    //           pax.firstName = _pxf
+    //         }
+    //         if (label.match(/last/i)){
+    //           if (!_pxf){
+    //             _pxf = "[MissingLastName]" + missingDataCount
+    //             missingDataCount++
+    //           }
+    //           pax.lastName = _pxf
+    //         }
+    //         if (label.match(/weight/i)){
+    //           pax.weight = _pxf
+    //         }
+    //         if (label.match(/age/i)){
+    //           pax.minorAge = _pxf
+    //         }
+    //           pax.key = this.orderNumber + "_" + pax.firstName + "|" + pax.lastName
+    //       }
+    //       if (pax.key){
+    //         ret.push(pax)
+    //       }
+    //     }
+    //   }
+    //   return ret
+    // }
+    // getSeats() {
+    //   // return a raw number of seats this booking will occupy *********************************** Need to filter out infants.
+    //   return this.booking.participants.length
+    // }
+    // getPOB() {
+    //   // Number of souls on board (includes crew and infants) ************************************** Need to add Crew to this.
+    //   return this.booking.participants.length
+    // }
+    // getPaxOB() {
+    //   // Number of sould on board excluding staff (includes infants)
+    // }
+    // getProductCode() {
+    //   return gya.getCode(this.booking.productCode) // row from TripCodes spreadsheet ***** GYA object *****
+    // }
+    // getSprite() {
+    //   // Constructs and returns a booking sprite
+    //   let $sprite = $("<span class='tooltip' />")
+    //   if (!!this.orderNumber) {
+    //     //
+    //     $sprite.data("this", this) // Self Reference (for click)
+    //     //
+    //     let masterkey = this.orderNumber.split("-")[0]
+    //     // "2FCF" coded sprite
+    //     $sprite.addClass("BookingSprite")
+    //     $sprite.prop("id", this.orderNumber)
+    //     $sprite.css("background-color", this.flight.color)
+    //     $sprite.text(this.flight.seats + " " + this.productCode.GYACode)
+    //     $sprite.click(function () {
+    //       let _this = $(this).data("this")
+    //       console.log("BookingSprite: %o", _this)
+    //     })
+    //   }
+    //   return $sprite
+    // }
   }
 </script>
