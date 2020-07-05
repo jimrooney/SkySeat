@@ -47,12 +47,11 @@
     }
     show(date) {
       console.log("Manifest.show(%o)", date)
+      console.log("Manifest JSON %o", this.data)
+
       if (!date) {
         date = this.getDate()
       }
-
-      console.log("this.data %o", this.data)
-
       /* 
 
       Rezdy's list of "bookings" is actually a list of orders (each with an orderNumber).

@@ -1,45 +1,53 @@
 <script>
   class Booking {
-    constructor(item,orderNumber) {
+    constructor(item, orderNumber) {
       //
-      this.item = item // keep a reference to the Rezdy Data.
+      this.item = item // keep a reference to the Rezdy Data. (item = booking)
       this.orderNumber = orderNumber || null
       this.product = gya.getProduct(item.productCode)
     }
-    getSprite(){
+    getDirection() {
+      let type = this.product.FlightType
+      return type.match(/^O/ig) ? "out" : "in"
+    }
+    getSprite() {
       let orderNumber = this.orderNumber
       // Constructs and returns a booking sprite
       let $sprite = $("<span class='tooltip' />")
-        $sprite.data("this", this) // Self Reference (for click)
-        // "2FCF" coded sprite
-        $sprite.addClass("BookingSprite")
-        $sprite.prop("id", this.orderNumber)
-        //
-        // Attach this object to the sprite
-        //
-        $sprite.prop("object",this)
-        // $sprite.css("background-color", booking.flight.color)
-        // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
-        $sprite.text(this.item.participants.length + " " + this.product.GYACode)
-        //
-        // Click
-        //
-        $sprite.click(function () {
-          let _this = $(this).data("this")
-          console.log("BookingSprite: %o", _this)
-        })
+      $sprite.data("this", this) // Self Reference (for click)
+      // "2FCF" coded sprite
+      $sprite.addClass("BookingSprite")
+      $sprite.prop("id", this.orderNumber)
+      //
+      // Attach this object to the sprite
+      //
+      $sprite.prop("object", this)
+      // $sprite.css("background-color", booking.flight.color)
+      // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
+      $sprite.text(this.getSeats() + " " + this.product.GYACode + " " + this.getDirection())
+      //
+      // Click
+      //
+      $sprite.click(function () {
+        let _this = $(this).data("this")
+        console.log("BookingSprite: %o", _this)
+      })
       return $sprite
     }
-    // getDirection() {
-    //   let type = null
-    //   if (!!this.productCode["FlightType"]) {
-    //     type = this.productCode["FlightType"].toUpperCase() || null
-    //   }
-    //   if (!!type) {
-    //     return type.match(/^B/) ? "out" : "in"
-    //   }
-    //   return null
-    // }
+
+    getSeats() {
+      // return a raw number of seats this booking will occupy *********************************** Need to filter out infants.
+      return this.item.participants.length
+    }
+    getPOB() {
+      // Number of souls on board (includes crew and infants) ************************************** Need to add Crew to this.
+      return this.item.participants.length
+    }
+    getPaxOB() {
+      // Number of sould on board excluding staff (includes infants)
+    }
+
+
     // getETD() {
     //   // Time when the plane leaves
     //   this.booking.startTime
@@ -67,10 +75,10 @@
     //       pax.lastName = ""
     //       pax.weight = ""
     //       let addPax = false
-          
+
     //       for (let f in pxf){
     //       //
-    //       // Loop over participants feilds 
+    //       // Loop over participants feilds
     //       //
     //         // Sanitize field
     //         let label = pxf[f].label
@@ -104,17 +112,7 @@
     //   }
     //   return ret
     // }
-    // getSeats() {
-    //   // return a raw number of seats this booking will occupy *********************************** Need to filter out infants.
-    //   return this.booking.participants.length
-    // }
-    // getPOB() {
-    //   // Number of souls on board (includes crew and infants) ************************************** Need to add Crew to this.
-    //   return this.booking.participants.length
-    // }
-    // getPaxOB() {
-    //   // Number of sould on board excluding staff (includes infants)
-    // }
+
     // getProductCode() {
     //   return gya.getCode(this.booking.productCode) // row from TripCodes spreadsheet ***** GYA object *****
     // }
