@@ -140,10 +140,9 @@
 
       this.init() // Initalize the board
 
-      let $t = $("<button>").append("<BR>").text("Test")
+      let $t = $("<button class='Dark Debug'>").append("<BR>").text("State")
       this.$root.prepend($t)
       $t.on("click", function () {
-        console.log("ThisBoard.test()")
         console.log("State: %o",_this.state.data)
       })
     }
