@@ -14,7 +14,7 @@
     //
     // Fix for jQuery timing issues (elements that get created downstream of the Classes)
     //
-    init(){
+    init() {
       this.state = new State(this)
       // this.$datepicker ... created in writeBoard()
     }
@@ -75,20 +75,20 @@
         // Time column
         //
         let $timeTD = $("<TD/>")
-          $timeTD.addClass('TimeCell Row_' + thisRow + ' Col_0')
-          $timeTD.attr("id",thisRow + '_0')
+        $timeTD.addClass("TimeCell Row_" + thisRow + " Col_0")
+        $timeTD.attr("id", thisRow + "_0")
 
-          let $HS = $('<span />')
+        let $HS = $("<span />")
           .text(thisHour + ":00")
           .addClass("HourSchedule")
 
-          let $hHS = $('<span />')
+        let $hHS = $("<span />")
           .text(thisHour + ":30")
           .addClass("HalfHourSchedule")
-          //.hide()
+        //.hide()
 
-          $timeTD.append($HS)
-          $timeTD.append($hHS)
+        $timeTD.append($HS)
+        $timeTD.append($hHS)
 
         myRow.push($timeTD)
 
@@ -128,7 +128,7 @@
       // Set onClick
       // -------------------------------------------------------------------------------------------------------------------
       let _this = this
-      $("#" + this.$root.prop("id") + " .TableCell").click(function () {
+      $("#" + _this.$root.prop("id") + " .TableCell").click(function () {
         // Pass to Events Object
         Events.tableCell.onClick($(this))
       })
@@ -139,6 +139,13 @@
       $(".HourSchedule").hide()
 
       this.init() // Initalize the board
+
+      let $t = $("<button>").append("<BR>").text("Test")
+      this.$root.prepend($t)
+      $t.on("click", function () {
+        console.log("ThisBoard.test()")
+        console.log("State: %o",_this.state.data)
+      })
     }
   }
 </script>
