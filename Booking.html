@@ -8,7 +8,7 @@
     }
     getDirection() {
       let type = this.product.FlightType
-      return type.match(/^O/ig) ? "out" : "in"
+      return type.match(/^B/ig) ? "out" : "in" // A-B-A A-A B-A (outs)
     }
     getSprite() {
       let orderNumber = this.orderNumber
@@ -22,9 +22,9 @@
       // Attach this object to the sprite
       //
       $sprite.prop("object", this)
-      // $sprite.css("background-color", booking.flight.color)
+      $sprite.css("background-color", colors.getByBooking(this))
       // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
-      $sprite.text(this.getSeats() + " " + this.product.GYACode + " " + this.getDirection())
+      $sprite.text(this.getSeats() + " " + this.product.GYACode)
       //
       // Click
       //
