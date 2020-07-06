@@ -28,6 +28,13 @@
     //
     update(){
       console.log("Board.update()")
+      $(".TableCell").each(
+        function(){
+
+          // Reference to the calling table's jQuery root ID
+          console.log("Each TableCell %o",$(this).prop("root").prop("id"))
+        }
+      )
     }
     
     //***********************************************************************************************
@@ -269,6 +276,7 @@
             id: r + "_" + c,
             text: r + "_" + c,
           })
+          TD.prop('root',this.$root)
           myRow.push(TD)
         }
         this.newRow(table, myRow)
