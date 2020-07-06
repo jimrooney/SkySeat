@@ -1,11 +1,20 @@
 <script>
   // Object for TableCells
-  class TableCell{
-    constructor($root){
-      this.$root = $root
+  class TableCell {
+    constructor(r, c) {
+      this._this = this
+      this.row = r
+      this.column = c
+      let TD = $("<td />", {
+        class: "TableCell Row_" + r + " Col_" + c,
+        id: r + "_" + c,
+        text: r + "_" + c,
+      })
+      TD.prop("_this", this._this)
+      this.$this = TD
     }
-    update(){
-      console.log("Update()")
+    update() {
+      console.log("Update() %o",this.$this)
     }
   }
 </script>

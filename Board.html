@@ -26,19 +26,16 @@
     //
     // Reflect the current State onto the board
     //
-    update(){
+    update() {
       console.log("Board.update()")
-      $(".TableCell").each(
-        function(){
-          $(this).prop("_this").update()
+      $(".TableCell").each(function () {
+        $(this).prop("_this").update()
 
-          // Cuz I'm a shithead:
-//          console.log("Each TableCell %o",$(this).prop("_this").$root.prop("id"))
-
-        }
-      )
+        // Cuz I'm a shithead:
+        //          console.log("Each TableCell %o",$(this).prop("_this").$root.prop("id"))
+      })
     }
-    
+
     //***********************************************************************************************
     // Rebuild Me
     //***********************************************************************************************
@@ -51,14 +48,12 @@
     board's class as well as the TableCell's class... that way we only update the relevant boards.
     Might have cases where we need to update all boards though? Might be easier to just update everything.
     
-    */ 
-
-
+    */
 
     // ---------------------------
     // Updates a single Table Cell
     // ---------------------------
-    updateTableCell(tableCell,booking) {
+    updateTableCell(tableCell, booking) {
       console.log("Events.update(%o)", tableCell)
       let $Board = tableCell.closest(".root") // Board jQuery root
       let board = $Board.data("root") // Board JavaScript root (lives in the jQuery.data("root"))
@@ -86,10 +81,9 @@
         text: " ",
       }
 
-
       // ************************* We'll need to total all the product information, not just the product code ****************************
       let productCode = {}
-      console.log("bookingList: %o",bookingList)
+      console.log("bookingList: %o", bookingList)
       for (let b in bookingList) {
         let orderNumber = bookingList[b]
 
@@ -99,14 +93,12 @@
         //
         if (!!booking) {
           let _p = gya.getProduct(booking.item.productCode) || "NoProduct" // Get GYA Product Object (loaded from Spreadsheet)
-          console.log("Product: %o",_p)
+          console.log("Product: %o", _p)
           let c = _p.GYACode || "NoCode"
           productCode[c] = c
 
           // Seats and direction
           // Might not be necessary anymore ********************************************************
-
-
 
           // switch (booking.flight.trip.direction) {
           //   case "out":
@@ -118,10 +110,6 @@
           // if (booking.flight.seats > 0) {
           //   cellData.seats += booking.flight.seats
           // }
-
-
-
-
         }
       }
 
@@ -174,8 +162,7 @@
       console.log("Cell Data: %o", cellData)
     }
 
-
-/*
+    /*
 
 
 
@@ -268,18 +255,12 @@
         $timeTD.append($hHS)
 
         myRow.push($timeTD)
-
         //
         // TableCells
         //
         for (let c = 1; c <= this.numCols; c++) {
-          let TD = $("<td />", {
-            class: "TableCell Row_" + r + " Col_" + c,
-            id: r + "_" + c,
-            text: r + "_" + c,
-          })
-          TD.prop("_this",new TableCell(TD))
-          myRow.push(TD)
+          let TC = new TableCell(r, c).$this
+          myRow.push(TC)
         }
         this.newRow(table, myRow)
       }
@@ -321,7 +302,7 @@
       let $t = $("<button class='Dark Debug'>").append("<BR>").text("State")
       this.$root.prepend($t)
       $t.on("click", function () {
-        console.log("State: %o",_this.state.data)
+        console.log("State: %o", _this.state.data)
       })
     }
   }
