@@ -3,7 +3,12 @@
     constructor($parent) {
       let _this = this
       this.json // Placeholder for Rezdy Parsed Data
+
+      // **************************************
+      // I think this is this.data.bookings now
+      // **************************************
       this.bookings // Placeholder... List of Bookings... hash key'd (by orderNumber) from Rezdy load
+
       this.$bookings // Placeholder
       this.$parent = $parent // Keep a link to the parent jQuery object
       //this.$Bookings = this.$parent.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
@@ -74,10 +79,27 @@
 
       init() // This should change *************** not be root variable, not be such a hatchet **********
     }
+    //
+    // Takes a list of booking numbers {GYA000881: "GYA000881", GYA000839: "GYA000839"}
+    // And returns an array of booking objects
+    //
+    getTripData(data) {
+      console.log("data: ", data)
+      console.log("bookings: %o", this.data.bookings)
 
+      let bookings = this.data.bookings
+      let _manifest = []
+      for (let b in data) {
+        _manifest.push(bookings.find((item) => item.orderNumber === data[b]))
+      }
+      return _manifest
+    }
     // ------------
     // Get Bookings
     // ------------
+    // ****************************************************
+    // Perhaps re-write as a filter?
+    // ****************************************************
     //
     // [[ Overloaded Function ]]
     // if we pass it an array of booking references, pass back the matching booking objects

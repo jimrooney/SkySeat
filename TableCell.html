@@ -21,7 +21,9 @@
     update() {
       let data = this.parent.state.data[this.id]
       if(!!data){
-        console.log("Data: %o",data)
+        let bookings = this.parent.manifest.getTripData(data)
+        console.log("Bookings: %o",bookings)
+        this.$this.text(data)
       }
       //console.log("Update() %o",this.$this.prop("id"))
     }
