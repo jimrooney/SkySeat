@@ -259,8 +259,9 @@
         // TableCells
         //
         for (let c = 1; c <= this.numCols; c++) {
-          let TC = new TableCell(r, c).$this
-          myRow.push(TC)
+          let TC = new TableCell(this,r,c)
+          let $TC = TC.$this // The class contructor makes a jQuery object and stores it in $this
+          myRow.push($TC)
         }
         this.newRow(table, myRow)
       }

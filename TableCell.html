@@ -1,20 +1,29 @@
 <script>
   // Object for TableCells
   class TableCell {
-    constructor(r, c) {
-      this._this = this
+    constructor(parent, r, c) {
+
+      this._this = this // keep a reference to this JS object
+      this.parent = parent // reference to the instantiating board
+      this.id = r + "_" + c
+
       this.row = r
       this.column = c
       let TD = $("<td />", {
         class: "TableCell Row_" + r + " Col_" + c,
-        id: r + "_" + c,
-        text: r + "_" + c,
+        id: this.id,
+        text: this.id,
       })
       TD.prop("_this", this._this)
       this.$this = TD
+      
     }
     update() {
-      console.log("Update() %o",this.$this)
+      let data = this.parent.state.data[this.id]
+      if(!!data){
+        console.log("Data: %o",data)
+      }
+      //console.log("Update() %o",this.$this.prop("id"))
     }
   }
 </script>
