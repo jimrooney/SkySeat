@@ -1,6 +1,12 @@
 <script>
   function test(args) {
 
+    
+    let color = getComputedStyle(document.documentElement).getPropertyValue("--main-bg-color")
+    console.log("Color: %o",color)
+    document.querySelector(":root").style.setProperty('--main-bg-color', 'GREEN')
+
+
     let $Board = $("#AutoBoard").data("root")
     let $Manifest = $Board.manifest
 

@@ -33,6 +33,18 @@ This allows you to specify an object (withUserObject) that will process the goog
 // google.script.run.withSuccessHandler(this.onTripCodeLoad).withUserObject(this).loadTripCodes()
 -------------------------------------------------------------------------------------------------------------------
 
+-------------------------------------------------------------------------------------------------------------------
+CSS Variables and the :root element 
+-------------------------------------------------------------------------------------------------------------------
+:root {
+  --main-bg-color: lightblue;
+}
+background-color: var(--main-bg-color);
+
+let color = getComputedStyle(document.documentElement).getPropertyValue("--main-bg-color")
+console.log("Color: %o",color)
+document.querySelector(":root").style.setProperty('--main-bg-color', 'GREEN')
+-------------------------------------------------------------------------------------------------------------------
 
     
 // Prototyping in functions

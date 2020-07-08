@@ -1,4 +1,9 @@
 <style>
+  :root {
+  --main-bg-color: lightblue;
+  --in-highlight-color: lightblue;
+  --out-highlight-color: blue;
+}
   .BoardTable {
     border-collapse: collapse;
     background-color: white;
@@ -6,6 +11,7 @@
   .TableCell,
   .PopupTableCell,
   .divTableHead {
+    background-color: var(--main-bg-color);
     border: 3px solid #493c81;
     height: 40px;
     width: 100px;
