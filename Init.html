@@ -90,12 +90,7 @@
     $(".Draggable").draggable({
       revert: false,
     })
-
-    $(".TableCell").draggable({
-      revert: true,
-      helper: "clone",
-    })
-
+    
     $(".TableCell").droppable({
       accept: ".BookingSprite, .TableCell",
       drop: Events.tableCell.handleDrop,
