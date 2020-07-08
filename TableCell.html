@@ -16,7 +16,11 @@
       })
       TD.prop("_this", this._this)
       this.$this = TD
-      
+      this.$this.click(function() {
+        console.log("Click")
+        TD.removeClass("inTest")
+
+    })
     }
     update() {
       let data = this.parent.state.data[this.id]
@@ -28,6 +32,7 @@
           main: "blue",
           highlight: "yellow"
         }
+        this.$this.addClass("inTest")
         this.$this.css("background-image","var(--gradient-in)")
       }
       //console.log("Update() %o",this.$this.prop("id"))

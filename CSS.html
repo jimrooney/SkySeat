@@ -1,14 +1,22 @@
 <style>
-:root {
-  --main-bg-color: lightblue;
-  --in: red;
-  --out: blue;
-  --gradient-in: linear-gradient(-110deg,var(--in) 20%, var(--main-bg-color) 20%);
-  --gradient-out: linear-gradient(110deg, var(--main-bg-color) 80%, var(--out) 80%);
-}
+  :root {
+    --main-bg-color: lightblue;
+    --in: red;
+    --out: blue;
+  }
+  .inTest{
+    --in: rgb(36, 138, 151);
+  }
+  .outTest{
+    --in: rgb(198, 201, 42);
+  }
   .BoardTable {
     border-collapse: collapse;
     background-color: white;
+  }
+  .TableCell {
+    --gradient-in: linear-gradient(-110deg, var(--in) 20%, var(--main-bg-color) 20%);
+    --gradient-out: linear-gradient(110deg, var(--main-bg-color) 80%, var(--out) 80%);
   }
   .TableCell,
   .PopupTableCell,
@@ -22,10 +30,10 @@
     text-align: center;
   }
   .TableCell.ui-draggable-dragging {
-  -moz-box-shadow: 0 0 .5em rgba(0, 0, 0, .8);
-  -webkit-box-shadow: 0 0 .5em rgba(0, 0, 0, .8);
-  box-shadow: 0 0 .5em rgba(0, 0, 0, .8);
-}
+    -moz-box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.8);
+  }
   .TimeCell,
   .Label {
     border: 3px solid #999999;
@@ -200,7 +208,7 @@
     display: block;
   }
   .detailsDiv {
-    display:none;
+    display: none;
     width: auto;
     background: rgba(71, 88, 115, 1);
     color: #fff;
@@ -208,9 +216,9 @@
     padding: 5px 15px 5px 15px;
     border-radius: 6px;
 
-    position:absolute;
+    position: absolute;
     top: 50px;
-    left:50px;
+    left: 50px;
     width: 120px;
     height: 40px;
     z-index: 5;
@@ -442,5 +450,4 @@
     border: 3px solid #ff0000;
     background-color: #1e6330;
   }
-  
 </style>
