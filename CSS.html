@@ -1,8 +1,10 @@
 <style>
-  :root {
+:root {
   --main-bg-color: lightblue;
-  --in-highlight-color: lightblue;
-  --out-highlight-color: blue;
+  --in: red;
+  --out: blue;
+  --gradient-in: linear-gradient(-110deg,var(--in) 20%, var(--main-bg-color) 20%);
+  --gradient-out: linear-gradient(110deg, var(--main-bg-color) 80%, var(--out) 80%);
 }
   .BoardTable {
     border-collapse: collapse;
