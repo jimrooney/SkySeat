@@ -290,11 +290,11 @@
       $(".HourSchedule").hide()
 
       this.init() // Initalize the board
-
+      let _this = this.state
       let $t = $("<button class='Dark Debug'>").append("<BR>").text("State")
       this.$root.prepend($t)
       $t.on("click", function () {
-        console.log("State: %o", _this.state.data)
+        console.log("State: %o", _this.data)
       })
     }
   }
