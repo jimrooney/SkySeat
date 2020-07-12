@@ -31,28 +31,15 @@
 
 */
 
-
-
-
       let orderNumber = dragged.prop("id")
       let cell_ID = cell.prop("id")
-
-
-
       //
       // If the cell data exists, add to it, if not create it.
       //
       if (this.data[cell_ID] == undefined) {
         this.data[cell_ID] = new Tripdata(cell_ID)
       }
-      this.data[cell_ID].add(this.data[cell_ID].orderNumber)
-
-      // if (this.data[cell_ID][orderNumber] == undefined) {
-      //   this.data[cell_ID][orderNumber] = orderNumber
-      // }
-
-
-      console.log("State: %o", this.data)
+      this.data[cell_ID].add(orderNumber)
     }
     get(cell) {
       return this.data[cell.prop("id")]

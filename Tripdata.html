@@ -1,10 +1,13 @@
 <script>
   class Tripdata {
-    constructor(data) {
-      this.orderNumbers = []
+    constructor(cellID) {
+      this.cellID = cellID
+      this.orders = []
     }
     add(orderNumber) {
-      this.orderNumbers.push(orderNumber) // change to update existing rather than piling in
+      if (!this.orders.includes(orderNumber)){
+        this.orders.push(orderNumber)
+      }
     }
   }
 </script>

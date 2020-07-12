@@ -53,6 +53,7 @@
     },
     tableCell: {
       handleDrop: function (event, ui) {
+        // $(this) is the TD
         let _thisObject = Events // Necessary _thisObject hardcoded link for Object Literal sytax
         // ***********************************************************************************
         // We'll need to handle drops from other boards here
@@ -66,14 +67,10 @@
         let board = $Board.data("root") // JavaScript root
         let dragged = ui.draggable // ui.draggable : The dropped sprite
         let manifest = board.manifest
-
+        //
         // Color the manifest object
+        //
         dragged.css("background-color","var(--main-bg-color)")
-
-
-        // $(this) is the TD
-        // console.log("this %o",$(this))
-
         // -------------------------------------------------------------------
         // Record Drop
         // -------------------------------------------------------------------

@@ -15,13 +15,22 @@
       })
       $TC.prop("_this", this._this) // Backreference to JS from jQuery object
       this.$this = $TC
+      let _this = this
       this.$this.click(function () {
         console.log("Click")
-        $TC.removeClass("inTest") // ******* Testing. This can be removed *************
+
+        // Remove the inMarker class (just to see class removal function visually)
+        $TC.removeClass("inMarker") // ******* Testing. This can be removed *************
+
+        let data = _this.parent.state.get($TC) // get the cell data from the state object
+        if (!!data) {
+        let bookings = _this.parent.manifest.getTripData(data)
+        console.log("TableCell bookings: %o", bookings)
+        }
       })
     }
     update() {
-      let data = this.parent.state.data[this.id] // get the cell data from the state object
+      let data = this.parent.state.get(this.$this) // get the cell data from the state object
       let $this = this.$this // simplify the reference to the jQuery object
       // set draggable so can be removed without testing or just left active
       $this.draggable({
@@ -37,19 +46,19 @@
       */
       if (!!data) {
         let bookings = this.parent.manifest.getTripData(data)
-        console.log("Bookings: %o", bookings)
+        console.log("TableCell Update bookings: %o", bookings)
         $this.text(data)
         let color = {
           main: "blue",
           highlight: "yellow",
         }
-        $this.addClass("inTest")
+        // In or Out? ***************************************************
+        $this.addClass("inMarker")
         $this.css("background-image", "var(--gradient-in)")
       } else {
         $this.draggable("disable")
         $this.text("")
       }
-      //console.log("Update() %o",this.$this.prop("id"))
     }
   }
 </script>

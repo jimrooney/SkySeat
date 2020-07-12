@@ -85,12 +85,13 @@
     //
     getTripData(data) {
       console.log("data: ", data)
+      console.log("orders: %o", data.orders)
       console.log("bookings: %o", this.data.bookings)
 
       let bookings = this.data.bookings
       let _manifest = []
-      for (let b in data) {
-        _manifest.push(bookings.find((item) => item.orderNumber === data[b]))
+      for (let b in data.orders) {
+        _manifest.push(bookings.find((item) => item.orderNumber === data.orders[b]))
       }
       return _manifest
     }
