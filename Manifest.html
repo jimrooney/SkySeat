@@ -83,10 +83,10 @@
     // Takes a list of booking numbers {GYA000881: "GYA000881", GYA000839: "GYA000839"}
     // And returns an array of booking objects
     //
-    getTripData(data) {
-      console.log("data: ", data)
-      console.log("orders: %o", data.orders)
-      console.log("bookings: %o", this.data.bookings)
+    getBookingObjects(data) {
+      console.log("Manifest.getBookingObjects")
+      console.log("data: %o", data)
+      console.log("Maifest bookings: %o", this.data.bookings)
 
       let bookings = this.data.bookings
       let _manifest = []

@@ -1,36 +1,40 @@
 <script>
   // Object for TableCells
   class TableCell {
-    constructor(parent, r, c) {
-      this._this = this // keep a reference to this JS object
-      this.parent = parent // reference to the instantiating board
+    constructor(board, r, c) {
+      let _this = this // reference for inside the click function scope
+      this._this = this // keep a reference to this JS object (self reference)
+      this.board = board // reference to the instantiating board
       this.id = r + "_" + c
 
       this.row = r
       this.column = c
-      let $TC = $("<td />", {
+      let $this = $("<td />", {
         class: "TableCell Row_" + r + " Col_" + c,
         id: this.id,
         text: this.id,
       })
-      $TC.prop("_this", this._this) // Backreference to JS from jQuery object
-      this.$this = $TC
-      let _this = this
-      this.$this.click(function () {
-        console.log("Click")
-
+      $this.prop("_this", this._this) // Backreference to JS from jQuery object
+      this.$this = $this // keep a reference to the jQuery object
+      //
+      $this.click(function () {
+        console.log("TableCell Click")
+        
+        // ******************************************************************************
         // Remove the inMarker class (just to see class removal function visually)
-        $TC.removeClass("inMarker") // ******* Testing. This can be removed *************
+        $this.removeClass("inMarker") // ******* Testing. This can be removed *************
+        // ******************************************************************************
 
-        let data = _this.parent.state.get($TC) // get the cell data from the state object
+        let data = _this.board.state.getCell($this) // get the cell data from the state object     
         if (!!data) {
-        let bookings = _this.parent.manifest.getTripData(data)
+          console.log("TableCell data: %o",data)
+        let bookings = _this.board.manifest.getBookingObjects(data)
         console.log("TableCell bookings: %o", bookings)
         }
       })
     }
     update() {
-      let data = this.parent.state.get(this.$this) // get the cell data from the state object
+      let data = this.board.state.getCell(this.$this) // get the cell data from the state object
       let $this = this.$this // simplify the reference to the jQuery object
       // set draggable so can be removed without testing or just left active
       $this.draggable({
@@ -45,8 +49,8 @@
 
       */
       if (!!data) {
-        let bookings = this.parent.manifest.getTripData(data)
-        console.log("TableCell Update bookings: %o", bookings)
+        let bookings = this.board.manifest.getBookingObjects(data)
+        console.log("TableCell.update()... bookings: %o", bookings)
         $this.text(data)
         let color = {
           main: "blue",

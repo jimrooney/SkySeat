@@ -1,11 +1,12 @@
 <script>
-  class Tripdata {
+  class CellData {
     constructor(cellID) {
       this.cellID = cellID
       this.orders = []
     }
-    add(orderNumber) {
-      if (!this.orders.includes(orderNumber)){
+    add(booking) {
+      let orderNumber = booking.orderNumber
+      if (!!orderNumber && !this.orders.includes(orderNumber)){
         this.orders.push(orderNumber)
       }
     }

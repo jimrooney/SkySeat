@@ -103,7 +103,7 @@ Working on right now *************************************
         let $root = $cell.closest(".root") // jQuery root
         let root = $root.data("root") // JavaScript root
         //
-        let bookingData = root.state.get($cell) // gets back an object with a list of objects key'd by booking number
+        let bookingData = root.state.getCell($cell) // gets back an object with a list of objects key'd by booking number
         let keys = Object.keys(bookingData)
         //
         // Each Booking: build details object data

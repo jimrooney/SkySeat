@@ -16,10 +16,9 @@
       this.data = {}
     }
     add(cell, dragged) {
-      // Get the javascript booking object
-      let booking = dragged.prop("object")
-      console.log("booking: %o", booking)
-
+      //
+      // add dragged object to cell it was dropped onto
+      //
 /*
 
       Record into the state the booking orderNumber... partial bookings will have [orderNumber-participantKey] (maybe the barcode?)
@@ -30,18 +29,21 @@
       All the booking data can be pulled from the manifest.
 
 */
-
+      let booking = dragged.prop("object")
       let orderNumber = dragged.prop("id")
       let cell_ID = cell.prop("id")
       //
-      // If the cell data exists, add to it, if not create it.
+      // If the CellData Object doesn't exist, create it
       //
       if (this.data[cell_ID] == undefined) {
-        this.data[cell_ID] = new Tripdata(cell_ID)
+        this.data[cell_ID] = new CellData(cell_ID)
       }
-      this.data[cell_ID].add(orderNumber)
+      //
+      // Add the booking to the CellData Object
+      //
+      this.data[cell_ID].add(booking)
     }
-    get(cell) {
+    getCell(cell) {
       return this.data[cell.prop("id")]
     }
     remove(cell, key) {
