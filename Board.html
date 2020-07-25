@@ -57,7 +57,12 @@
       console.log("Events.update(%o)", tableCell)
       let $Board = tableCell.closest(".root") // Board jQuery root
       let board = $Board.data("root") // Board JavaScript root (lives in the jQuery.data("root"))
-      let bookingList = board.state.getCell(tableCell) // Get the cell's data ({Board}.data[row][col])
+
+      // *********************************
+      //
+      // This shouldn't be working right now
+      //
+      let bookingList = board.state.getCellData(tableCell) // Get the cell's data ({Board}.data[row][col])
 
       console.log("Tablecell booking list: %o", bookingList)
 

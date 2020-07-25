@@ -84,10 +84,9 @@
     // And returns an array of booking objects
     //
     getBookingObjects(data) {
-      console.log("Manifest.getBookingObjects")
-      console.log("data: %o", data)
-      console.log("Maifest bookings: %o", this.data.bookings)
-
+      //
+      // Takes a list of CellData objects and returns the corresponding booking objects
+      //
       let bookings = this.data.bookings
       let _manifest = []
       for (let b in data.orders) {

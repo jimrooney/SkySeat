@@ -6,7 +6,6 @@
       this._this = this // keep a reference to this JS object (self reference)
       this.board = board // reference to the instantiating board
       this.id = r + "_" + c
-
       this.row = r
       this.column = c
       let $this = $("<td />", {
@@ -17,24 +16,40 @@
       $this.prop("_this", this._this) // Backreference to JS from jQuery object
       this.$this = $this // keep a reference to the jQuery object
       //
+      // -------------------------------------------
+      // Click
+      // -------------------------------------------
       $this.click(function () {
         console.log("TableCell Click")
-        
+        //
         // ******************************************************************************
         // Remove the inMarker class (just to see class removal function visually)
         $this.removeClass("inMarker") // ******* Testing. This can be removed *************
         // ******************************************************************************
-
-        let data = _this.board.state.getCell($this) // get the cell data from the state object     
+        //
+        let data = _this.board.state.getCellData($this) // get the CellData Object from the state object
         if (!!data) {
-          console.log("TableCell data: %o",data)
-        let bookings = _this.board.manifest.getBookingObjects(data)
-        console.log("TableCell bookings: %o", bookings)
+          let bookings = _this.getBookingObjects(data)
+          //
+          console.log("TableCell bookings: %o", bookings)
+          console.log("TableCell data: %o", data)
         }
       })
     }
+    getBookingObjects(){
+      let ret
+      let data = this.board.state.getCellData(this.$this) // get the CellData Object from the state object
+      if (!!data){
+        ret = this.board.manifest.getBookingObjects(data)
+      }
+      return ret
+    }
+    getDirection() {
+      let direction = ""
+    }
+    getData() {}
     update() {
-      let data = this.board.state.getCell(this.$this) // get the cell data from the state object
+      let data = this.board.state.getCellData(this.$this) // get the cell data from the state object
       let $this = this.$this // simplify the reference to the jQuery object
       // set draggable so can be removed without testing or just left active
       $this.draggable({
@@ -49,6 +64,7 @@
 
       */
       if (!!data) {
+        console.log("TableCell Update Data: %o", data)
         let bookings = this.board.manifest.getBookingObjects(data)
         console.log("TableCell.update()... bookings: %o", bookings)
         $this.text(data)
