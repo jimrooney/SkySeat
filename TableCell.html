@@ -27,7 +27,7 @@
         $this.removeClass("inMarker") // ******* Testing. This can be removed *************
         // ******************************************************************************
         //
-        let data = _this.board.state.getCellData($this) // get the CellData Object from the state object
+        let data = _this.getDataObject()
         if (!!data) {
           let bookings = _this.getBookingObjects(data)
           //
@@ -36,6 +36,13 @@
         }
       })
     }
+    // ------------------------------
+    // getBookingObjects
+    // ------------------------------
+    //
+    // Check the State and get the CellData objects
+    // pass them to the Manifest and get back the actual booking objects
+    //
     getBookingObjects(){
       let ret
       let data = this.board.state.getCellData(this.$this) // get the CellData Object from the state object
@@ -47,9 +54,15 @@
     getDirection() {
       let direction = ""
     }
-    getData() {}
+    getDataObject() {
+      //
+      // get the CellData Object from the state object
+      //
+      let data = this.board.state.getCellData(this.$this) 
+      return data
+    }
     update() {
-      let data = this.board.state.getCellData(this.$this) // get the cell data from the state object
+      let data = this.getDataObject()
       let $this = this.$this // simplify the reference to the jQuery object
       // set draggable so can be removed without testing or just left active
       $this.draggable({
