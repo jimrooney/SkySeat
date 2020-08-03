@@ -1,0 +1,371 @@
+<script type="text/javascript">
+/////////////////
+// Trash
+////////////////
+function handleTrashDrop(event, ui) {
+  //
+  // Hide the sprite
+  ui.helper.hide()
+  //
+  // Reset Booking List Object
+  //
+  $(".BookingSprite").each(function() {
+     //
+     let json = ui.draggable.data("json")
+     for ( a in json){
+       if (json[a].orderNumber){
+         $("#" + json[a].orderNumber).css("background", "lightgrey")
+       }
+     }
+     
+  })
+  //
+  // Remove the bookings from the board
+  //
+  display.removeBookings(ui.draggable.data("json"))
+}
+////////////////
+//  Drop
+////////////////
+function handleDropEvent(event, ui) {
+    
+    let isBookingSprite = ui.draggable.prop("class").includes("BookingSprite")
+    let isPopupSprite = ui.draggable.prop("class").includes("PopupSprite")
+    let isPaxSprite = ui.draggable.prop("class").includes("PaxSprite")
+    let isTableCell = ui.draggable.prop("class").includes("TableCell")
+    let isPlaneCell = $(this).prop("class").includes("PlaneCell")
+    let isOUT = ui.draggable.data("type") == "out"? true:false // [in,out,null]
+        
+    let DroppedBookings = ui.draggable.data("json")
+    let sourceCell = ui.draggable
+    
+    let targetID = $(this).prop("id")
+    let sourceID = ui.draggable.prop("id")
+    if (isPopupSprite){
+      sourceID = ui.draggable.data("sourceID")
+    }
+    
+    let targetCell = $(this.element)   
+    let targetCellBookings = targetCell.data("json")
+    let returnTripTarget = {}
+    
+    // Objects to hold the list of in and out cells (ins should all be the current cell)
+    var outs = {}
+    var ins = {}
+    var oldOuts = {}
+    //
+    // Reject Outs dropped on Plane Cells
+    // This could also be done with jQuery (change the class) **************
+    // We would lose the ability to notify though ************** (unless jQuery handles that... hrm... I think it does) ************
+    if (isPlaneCell && isOUT){
+      utility.alert("PlaneCells don't accept outs")
+      return
+    }
+    //
+    // Remove all other previously dropped bookings
+    //    
+    if (isPaxSprite || isPopupSprite){
+      //
+      for (let b in DroppedBookings){
+        let booking = DroppedBookings[b]
+        if (booking){
+          for (let a in booking.pax){
+            let key = booking.pax[a].key
+            display.removeBooking(key,sourceCell)
+          }
+        }
+      }
+    } else if (isBookingSprite){
+        for(let b in DroppedBookings){
+          let booking = DroppedBookings[b]
+          //
+          // Skip null
+          //
+          if (!!booking.orderNumber){
+            let id = booking.orderNumber.split("_")[0]
+            display.removeBookings(DroppedBookings,sourceCell)
+          }
+        }
+    }
+    //
+    // Find the target cell and build ins/outs arrays based on booking data
+    // Depends on if it's dropped on the PlaneCell / BookingCell
+    // ----------------------------------------------------------------------
+    // Build lists of ins/outs
+    // ----------------------------------------------------------------------
+    for (b in DroppedBookings){
+      let booking = DroppedBookings[b]
+      if (booking.orderNumber){
+      
+      
+      // Is it an out? ***************************
+      // TableCells are key'd with "type" (in/out)
+      // Manifest Cells? (BookingSprite)
+
+      //
+      // Start with the old bookings
+      // What are we bringing with the dropped cell? (if anything)
+      
+      // we only calculate the outs if it's a BookingSprite
+      // Otherwise we drag the outs along with us (if they exist)
+      
+      // We'll handle outs the same as booking sprite drops for now (no need to calculate anything) *****?
+      
+      // Table Cell IN drops (not outs)
+      if (isTableCell && !isOUT){
+        let ID = $(this).attr('id')
+        let inKey = ID
+        let row = theBoard.getRow($(this))
+        let col = theBoard.getCol($(this))
+        //
+        // 1st, what is the old cell?       
+        // if it's an in, where are the out cells for those bookings?
+        let inOut = utility.getTarget(ui.draggable,booking)
+        // inOut[0] is the in
+        // inOut[1] is the out
+        // inOut[2] is the offset  
+        let offset = inOut[2]
+        let newRow = row+offset
+        //
+        // 3rd, does the out still exist or has it moved?
+        // If it exists, push the outs and oldOuts
+        //
+        let theOutKey = inOut[1].join("")
+        let theOutCell = $("#"+theOutKey)
+        //
+        // Look through the old booking cells. If the out is there, add it to the old outs list.
+        //
+        let oldBookings = theOutCell.data('json')
+        if (oldBookings){
+          for (b in oldBookings){
+            //
+            // Match
+            //
+            if (!!oldBookings[b].orderNumber && !!booking.orderNumber){
+              if(oldBookings[b].orderNumber == booking.orderNumber){
+                let outKey = ""+newRow+col
+                if(isOUT){ outKey = inKey } // If it's a dropped out, swap the inKey for the outKey (dropped outs only have inKeys)
+                utility.pushKey(outs,outKey,booking)
+                utility.pushKey(oldOuts,theOutKey,booking)
+              }
+            }
+          }
+        }
+        //
+        // Push the in Key
+        //
+        if (!isOUT){
+          utility.pushKey(ins,inKey,booking)
+        }
+      }
+      // -------------------------------------------------------------------------------------------------------
+      // BookingSprite dropps need the in/out calculated
+      // -------------------------------------------------------------------------------------------------------
+      if ( isBookingSprite || isOUT) {
+        //
+        // an out product will only send back an OUT array (the IN will be blank)
+        //
+        let INOUT = utility.getTarget($(this),booking) // Array [[IN,OUT,offset]] cells (Coordinate IDs)
+        console.log("INOUT: %o",INOUT)
+        if(!INOUT){return} // =================== If null, exit ===================
+        //
+        let inKey = INOUT[0].join("")
+        let outKey = INOUT[1].join("")
+        let offset = INOUT[2]
+        //
+        // is the drop branded IN? 
+        //
+        if (!isOUT){ 
+            utility.pushKey(ins,inKey,booking)
+            utility.pushKey(outs,outKey,booking)
+          } else {
+            // If it's an out, push the __inKey__ into the __outs__
+            if(inKey){
+              utility.pushKey(outs,inKey,booking)
+            } else {
+              utility.pushKey(outs,outKey,booking)            
+            }
+          }
+          //
+          // If it's an out, brand everything out.
+          //
+          if (isOUT || inKey.length<1){
+            if (isOUT && ui.draggable.data("type")=="in"){ // if there's outs in an IN drop, there's a problem... exit.
+              utility.error("INOUT Error")
+              return
+            } 
+            isOUT = true // If anything's going out, it's all going out.
+          }
+      }
+     }
+    }
+    // ----------------- End Dropped Bookings loop -----------------------------
+
+    // ---------------------------------------------------------------------------------------
+    // Check IN-OUT. Make sure it's a legal drop.
+    // ---------------------------------------------------------------------------------------
+    for (a in ins){
+      let type = $("#"+a).data("type")
+      if (type == "out"){
+        let msg = "In/Out Conflict"
+        utility.error(msg,ins[a])
+        return
+      }
+    }
+    for (a in outs){
+      let type = $("#"+a).data("type")
+      if (type == "in"){
+        let msg = "In/Out Conflict"
+        utility.error(msg,outs[a])
+        return
+      }
+    }
+
+    let InOut = ins
+    let InOutType = "in"
+    if(isOUT){
+      InOut = outs
+      InOutType = "out"
+    }
+    // ---------------------------------------------------------------------------------
+    // IN Cell
+    // ---------------------------------------------------------------------------------
+    for (i in InOut){
+      for(b in InOut[i]){
+        if (InOut[i][b].orderNumber){ // skip blanks
+          targetCell = $("#" + i)
+          if (targetCell.data('type')){
+            if (targetCell.data('type')!=InOutType){
+              let msg = "Wrong Type: " + InOutType + " Cell Type: " + targetCell.data('type')
+              utility.error(msg)
+              return
+            }
+          }
+          targetCell.data('type', InOutType) // brand the cell
+          break // Should only be one IN so we'll break the loop
+        }
+      }
+    }
+    // ------------------
+    // Merge IN Cell JSON
+    // ------------------
+    let merge = typeof targetCell.data('json') !== 'undefined' ? true : false
+    if (merge && targetCell.data('json')==null){merge=false}
+    //
+    let obj = {};
+    if (merge) {
+        obj = targetCell.data('json')
+        if (obj){
+          for (j in ui.draggable.data('json')){
+            obj = obj.concat(ui.draggable.data('json')[j])
+          }
+        }
+    } else {
+        obj = ui.draggable.data('json')
+    }
+    
+    // ---------------------------------------------------------------------------------
+    // Disable Sprite
+    // ---------------------------------------------------------------------------------
+    ui.helper.hide()
+    
+    // ---------------------------------------------------------------------------------
+    // tag JSON with coordinates
+    // ---------------------------------------------------------------------------------
+    let myIn
+    for (i in ins){
+      myIn = i
+      break
+    }
+    for (a in obj){
+      obj[a].tripCell = targetCell.attr("id")
+      for ( i in ins){
+        obj[a].IN = myIn
+      }
+    }
+   
+    // ---------------------------------------------------------------------------------
+    // Mark grid
+    // ---------------------------------------------------------------------------------
+    // targetCell.text(totalSeats)
+    targetCell.data('json', obj)    
+    // ---------------------------------------------------------------------------------
+    // Mark the OUTs of the INs
+    // ---------------------------------------------------------------------------------
+    // outs is a list of out cell ID's with the value of an array of booking objects
+    // (already branded JSON)
+    if(!isOUT){
+      //
+      for (cell in outs){ // cell is the coordinate
+        let outCell = $("#"+cell) // Key
+        let bookingList = outs[cell] // Value (array of booking objects)
+        let merge = typeof outCell.data('json') !== 'undefined' ? true : false // Check for existing bookings in the target cell
+            
+        let obj = {}
+        obj = outCell.data('json')
+        
+        if (merge && obj!=null) {
+
+            for (j in bookingList){
+              obj = obj.concat(bookingList[j])
+            }
+    
+        } else {
+            obj = bookingList
+        }
+        for ( b in obj){
+              obj[b].IN = myIn
+        }
+        outCell.data('json', obj)
+        outCell.data('type', 'out') // brand the cell
+      }
+    }
+    // ---------------------------------------------------------------------------------
+    // Cleanup
+    // ---------------------------------------------------------------------------------
+    if (!isOUT && isTableCell){
+    // {key:bookings[],key:bookings[]}
+    let ary = oldOuts // hashtable of booking arrays key'd by source cell coordinates
+      for (key in ary){
+        for(i in ary[key]){
+          //
+          // Each Key
+          //
+            // If array booking == cell booking, remove it from the cell
+            let cell = $("#"+key)
+            let cj = cell.data('json')
+            // loop through the list of bookings and remove matches
+            for (o in cj){
+              if (cj[o].orderNumber){
+                if (!!ary[key][i].orderNumber){
+                  if (cj[o].orderNumber == ary[key][i].orderNumber){
+                    delete(cj[o])
+                  }
+                }
+              }
+            }
+
+            if ( jQuery.isEmptyObject(cell.data('json')) ){
+              cell.removeData('json')
+              cell.removeData('type')
+              cell.text(null)            
+            }   
+        }
+      }
+    }
+    if (ui.draggable.prop("class").includes("TableCell")) {
+        //
+        // Clear the old cell
+        //
+        //ui.draggable.css("background-color", "white")
+        ui.draggable.text("")
+        ui.draggable.data('json',null)                                          /// maybe just flag for removal??????
+        ui.draggable.data('type',null) // Remove IN/OUT branding
+        targetCell.draggable('enable', "helper", "clone")
+    }
+    //display.update()
+    if(isPopupSprite){
+      bookingManager.getDetails(ui.draggable,sourceID)
+    }
+}
+</script>

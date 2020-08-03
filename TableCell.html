@@ -14,6 +14,11 @@
         id: this.id,
         text: this.id,
       })
+      $this.droppable({
+      accept: ".BookingSprite, .TableCell",
+      drop: this.handleDrop,
+      delay: 100, // Might not need this now *******************
+    })
       $this.prop("_this", this._this) // Backreference to JS from jQuery object
       this.$this = $this // keep a reference to the jQuery object
       //
@@ -23,7 +28,7 @@
       $this.click(function () {
         console.log("TableCell Click")
         console.log("Classes: %o", $(this).attr("class"))
-        console.log("TableCell.hour: %o",_this.hour)
+        console.log("TableCell.hour: %o", _this.hour)
         //
         // ******************************************************************************
         // Remove the inMarker class (just to see class removal function visually)
@@ -39,6 +44,9 @@
         }
       })
     }
+    handleDrop(e) {
+      console.log("Drop: %o",e)
+    }
     // ------------------------------
     // getBookingObjects
     // ------------------------------
@@ -46,10 +54,10 @@
     // Check the State and get the CellData objects
     // pass them to the Manifest and get back the actual booking objects
     //
-    getBookingObjects(){
+    getBookingObjects() {
       let ret
       let data = this.board.state.getCellData(this.$this) // get the CellData Object from the state object
-      if (!!data){
+      if (!!data) {
         ret = this.board.manifest.getBookingObjects(data)
       }
       return ret
@@ -57,18 +65,15 @@
     getDirection() {
       let direction = ""
     }
-    getTime(){
+    getTime() {
       // Maybe make the row's time a class? **************************************
-
     }
-    getHour(){
-
-    }
+    getHour() {}
     getDataObject() {
       //
       // get the CellData Object from the state object
       //
-      let data = this.board.state.getCellData(this.$this) 
+      let data = this.board.state.getCellData(this.$this)
       return data
     }
     update() {

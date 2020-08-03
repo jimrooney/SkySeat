@@ -91,20 +91,15 @@
       revert: false,
     })
     
-    $(".TableCell").droppable({
-      accept: ".BookingSprite, .TableCell",
-      drop: Events.tableCell.handleDrop,
-      delay: 100,
-    })
     $(".PlaneCell").droppable({
       accept: ".BookingSprite",
-      drop: handleDropEvent,
-      over: handleOverEvent,
-      out: handleOutEvent,
+      // drop: handleDropEvent,
+      // over: handleOverEvent,
+      // out: handleOutEvent,
     })
     $(".Trash").droppable({
       accept: ".BookingSprite, .TableCell",
-      drop: handleTrashDrop,
+      // drop: handleTrashDrop,
     })
     $(".productCode").click(function () {
       utility.alert("Click")
