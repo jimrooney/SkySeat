@@ -79,102 +79,35 @@
 
       init() // This should change *************** not be root variable, not be such a hatchet **********
     }
+    // ------------
+    // Get Bookings
+    // ------------
     //
     // Takes a list of booking numbers {GYA000881: "GYA000881", GYA000839: "GYA000839"}
     // And returns an array of booking objects
     //
-    getBookingObjects(data) {
-      //
-      // Takes a list of CellData objects and returns the corresponding booking objects
-      //
-      let bookings = this.data.bookings
-      let _manifest = []
-      for (let b in data.orders) {
-        _manifest.push(bookings.find((item) => item.orderNumber === data.orders[b]))
-      }
-      return _manifest
-    }
-    // ------------
-    // Get Bookings
-    // ------------
-    // ****************************************************
-    // Perhaps re-write as a filter?
-    // ****************************************************
-    //
-    // [[ Overloaded Function ]]
-    // if we pass it an array of booking references, pass back the matching booking objects
-    //
-    // if we pass it a data, pass back an object of matching bookings hash key'd by orderNumber ***** Check that we're actually using this
     getBookings(data) {
       console.log("Manifest.getBookings() data: %o", data)
-      // if we pass in a list of booking references, return the matching booking objects
+      // [[ Overloaded Function ]]
+      // If it's a CellData object, re-run with just the CellData.orders[] array
+      if (!!data && typeof data == "object" && !!data.orders) {
+        return this.getBookings(data.orders)
+      }
+      //
+      // return the matching booking objects
+      //
       let _manifest = []
       if (!!data && Array.isArray(data)) {
-        console.log("manifest: %o",this.orders)
-        console.log("data.orders: %o",data)
         // Loop over the orders and return the matching manifest object
         for (let b in data) {
-          console.log("Order: %o",data[b])
-          _manifest.push(this.orders.find(x => x.orderNumber === data[b]))
+          _manifest.push(this.orders.find((x) => x.orderNumber === data[b]))
         }
         return _manifest
       }
-
-/*
-
-I think everything below is outdated old-code and can be deleted
-
-
-
-
-
-
-*/
-      let date = data
-      // If a date object is passed in, make it a string
-      if (!!date && typeof date == "object") {
-        date = Dates.getNZ(date)
-      }
-      console.log("[Manifest].getBookings(%o)", date)
-      console.log("This %o", this)
-
-      // Do we even want to be able to pass in strings? (if not, the check above changes) *******************
-      if (!!date && date.match(/\d\d.\d\d.*/gi)) {
-        // Checkvalve... date is sane
-      } else {
-        date = this.getDate() // this or _this? ***************
-        return
-      }
-
-      console.log("Date %o", date)
-      console.log("Bookings.list: %o", Bookings.list)
-      //
-      // Filter list (date and status)
-      //
-      for (let a in Bookings.list) {
-        if (!!Bookings.list[a] && Bookings.list[a].flight) {
-          if (Bookings.list[a].flight.date == date) {
-            _manifest[Bookings.list[a].orderNumber] = Bookings.list[a]
-          }
-        }
-      }
-      return _manifest
+      return
     }
 
-/*
-
-I think everything above is outdated old-code and can be deleted
-
-
-
-
-
-
-*/
-
-
-
-/*
+    /*
 
 This should all be replacable with a find statement like this one above:
 this.orders.find(x => x.orderNumber === data[b])

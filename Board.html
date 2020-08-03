@@ -33,7 +33,9 @@
       console.log("Board.update()")
       let $tableCells = this.$root.find(".TableCell")
       $tableCells.each(function (index) {
-        $(this).prop("_this").update()
+        if (!!$(this).prop("_this")) {
+          $(this).prop("_this").update()
+        }
       })
     }
 

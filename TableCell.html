@@ -45,10 +45,10 @@
         //
         let data = _this.getDataObject()
         if (!!data) {
-          let bookings = _this.getBookingObjects(data)
-          //
-          console.log("TableCell bookings: %o", bookings)
           console.log("TableCell data: %o", data)
+
+          let bookings = _this.getBookings(data)
+          console.log("TableCell bookings: %o", bookings)
         }
       })
     }
@@ -85,11 +85,12 @@
     // Check the State and get the CellData objects
     // pass them to the Manifest and get back the actual booking objects
     //
-    getBookingObjects() {
+    getBookings() {
       let ret
       let data = this.board.state.getCellData(this.$this) // get the CellData Object from the state object
       if (!!data) {
-        ret = this.board.manifest.getBookingObjects(data)
+        console.log("Data: %o",data)
+        ret = this.board.manifest.getBookings(data)
       }
       return ret
     }
