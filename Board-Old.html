@@ -1,0 +1,116 @@
+// ---------------------------
+// Updates a single Table Cell
+// ---------------------------
+updateTableCell(tableCell, booking) {
+	console.log("Events.update(%o)", tableCell)
+	let $Board = tableCell.closest(".root") // Board jQuery root
+	let board = $Board.data("root") // Board JavaScript root (lives in the jQuery.data("root"))
+
+	// *********************************
+	//
+	// This shouldn't be working right now
+	//
+	let bookingList = board.state.getCellData(tableCell) // Get the cell's data ({Board}.data[row][col])
+
+	console.log("Tablecell booking list: %o", bookingList)
+
+	// ***** Wrap this into a function that figures out what the cell's contents should be *****
+	// Object for the TableCell's contents to be setup by looping over all the bookings and figuring things out.
+	let cellData = {
+		color: {
+			marker: "#E5E7E9",
+			main: "#CCD1D1",
+		},
+		direction: {
+			label: "in",
+			class: "inCell",
+			position: { position: "absolute", right: "0", top: "0" },
+		},
+		seats: 0,
+		PAXOB: 0,
+		PAX: 0,
+
+		infants: 0,
+		text: " ",
+	}
+
+	// ************************* We'll need to total all the product information, not just the product code ****************************
+	let productCode = {}
+	console.log("bookingList: %o", bookingList)
+	for (let b in bookingList) {
+		let orderNumber = bookingList[b]
+
+		console.log("Booking: %o", booking)
+		//
+		// Each Booking
+		//
+		if (!!booking) {
+			let _p = gya.getProduct(booking.item.productCode) || "NoProduct" // Get GYA Product Object (loaded from Spreadsheet)
+			console.log("Product: %o", _p)
+			let c = _p.GYACode || "NoCode"
+			productCode[c] = c
+
+			// Seats and direction
+			// Might not be necessary anymore ********************************************************
+
+			// switch (booking.flight.trip.direction) {
+			//   case "out":
+			//     cellData.direction.label = "out"
+			//     cellData.direction.class = "outCell"
+			//     cellData.direction.position = { position: "absolute", right: "0", bottom: "0" }
+			//     break
+			// }
+			// if (booking.flight.seats > 0) {
+			//   cellData.seats += booking.flight.seats
+			// }
+		}
+	}
+
+	console.log("After BookingList")
+	//
+	// The whole structrue of how we build this cell can likely be organized a bit better *******
+	//
+	// ? appendTo() *************************
+	// Stack multiple products
+	let keys = Object.keys(productCode)
+	let divList = keys.map((item) => $("<div />").append(item))
+	cellData.text = $("<div />").append(divList)
+	cellData.text.prepend("<span style='float:left'>" + cellData.seats + "</span>")
+	// *****************************************************************
+	let orderNumber = bookingList // just one order for now... will be more later, possibly an object... at least an array.
+	// *****************************************************************
+	tableCell.empty()
+	tableCell.html(cellData.text)
+	tableCell.css("background", cellData.color.main)
+	tableCell.css("position", "relative")
+	// diagonal tag
+	// This floats obove the cell (picture frame style)
+	let $span = $("<span/>")
+		.addClass(cellData.direction.class)
+		.css("--background-color", "transparent")
+		.css("--chevron-color", cellData.color.marker)
+
+	$("<span/>").text(cellData.direction.label).css(cellData.direction.position).appendTo($span)
+
+	tableCell.append($span)
+
+	//$span.css("--first-color","green")
+	//$span
+	//if (type == "in") {
+
+	// let bkg = "linear-gradient(-110deg, " + c + " 20%, " + clrs.bkin + " 20%)"
+
+	// let direction = "<span class='inMarker'><div>" + inOut + "</div><div>&#8595;</div></span> " // IN
+	// //}
+	// // tmp
+	// let seats = 5
+	// seats =
+	//   '<span style="font-weight:bold; float: left; display: block;padding-right:5px;padding-left:2px"> ' +
+	//   seats +
+	//   "</span>"
+	// let orderSpan = '<span style="float: left;display: block;">' + orderNumber + "</span>"
+
+	// let htmlString = direction + seats + orderSpan
+	// tableCell.html(htmlString)
+	console.log("Cell Data: %o", cellData)
+}
