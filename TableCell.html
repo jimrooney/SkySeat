@@ -9,19 +9,27 @@
       this.row = r
       this.column = c
       this.hour // Placeholder
+      // -------------------------------------------
+      // jQuery object
+      // -------------------------------------------
       let $this = $("<td />", {
         class: "TableCell Row_" + r + " Col_" + c,
         id: this.id,
         text: this.id,
       })
-      $this.droppable({
-      accept: ".BookingSprite, .TableCell",
-      drop: this.handleDrop,
-      delay: 100, // Might not need this now *******************
-    })
+      // -------------------------------------------
+      // Backreference
+      // -------------------------------------------
       $this.prop("_this", this._this) // Backreference to JS from jQuery object
       this.$this = $this // keep a reference to the jQuery object
-      //
+      // -------------------------------------------
+      // Drop
+      // -------------------------------------------
+      $this.droppable({
+        accept: ".BookingSprite, .TableCell",
+        drop: this.handleDrop,
+        delay: 100, // Might not need this now *******************
+      })
       // -------------------------------------------
       // Click
       // -------------------------------------------
@@ -44,8 +52,33 @@
         }
       })
     }
-    handleDrop(e) {
-      console.log("Drop: %o",e)
+    handleDrop (event, ui) {
+        // $(this) is the TD
+        let _thisObject = Events // Necessary _thisObject hardcoded link for Object Literal sytax
+        // ***********************************************************************************
+        // We'll need to handle drops from other boards here
+        // ***********************************************************************************
+        //
+        // First thing's first: is it a legal drop (in/out)
+        // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
+        //
+        console.log("TableCell Drop")
+        let $Board = $(this).closest(".root") // jQuery root
+        let board = $Board.data("root") // JavaScript root
+        let dragged = ui.draggable // ui.draggable : The dropped sprite
+        let manifest = board.manifest
+        //
+        // Color the manifest object
+        //
+        dragged.css("background-color","var(--main-bg-color)")
+        // -------------------------------------------------------------------
+        // Record Drop
+        // -------------------------------------------------------------------
+        board.state.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
+        board.update()
+        //console.log("State: %o", board.state.data)
+        //_thisObject.update($(this),booking)
+      
     }
     // ------------------------------
     // getBookingObjects
