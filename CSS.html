@@ -3,6 +3,7 @@
     --main-bg-color: rgb(214, 215, 216);
     --in: rgb(100, 83, 83);
     --out: rgb(90, 90, 133);
+    --main-border-color: #999999;
   }
   .inMarker{
     --in: rgb(36, 138, 151);
@@ -22,7 +23,7 @@
   .PopupTableCell,
   .divTableHead {
     background-color: var(--main-bg-color);
-    border: 3px solid #493c81;
+    border: 3px solid var(--main-border-color);
     height: 40px;
     width: 100px;
     max-width: 100px;
@@ -36,7 +37,7 @@
   }
   .TimeCell,
   .Label {
-    border: 3px solid #999999;
+    border: 3px solid var(--main-border-color);
     text-align: center;
     font-weight: bold;
     height: 40px;
@@ -44,7 +45,7 @@
   }
   .PlaneCell,
   .PilotCell {
-    border: 3px solid #999999;
+    border: 3px solid var(--main-border-color);
     height: 40px;
     width: 100px;
     max-width: 100px;

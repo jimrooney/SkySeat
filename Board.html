@@ -31,28 +31,16 @@
     //
     update() {
       console.log("Board.update()")
-      let $tableCells = this.$root.find(".BoardTable").find(".TableCell")
+      let $tableCells = this.$root.find(".TableCell")
       $tableCells.each(function (index) {
         $(this).prop("_this").update()
       })
-
-      //
-      // .css( "background-color", "red" )
-      // .text("HI")
-
-      // this.$this.children().filter(".TableCell").each(function () {
-      //   $(this).prop("_this").update()
-      // })
     }
 
     /*
 
-    TableCell.Each() => get $this.prop('ID') and reflect the state cell (12_4 for example) that matches it.
+    Will need to update the origin board if moving between days.
 
-    Will need to demarkate which board each TableCell belongs to... so probably an Each() that must include the current
-    board's class as well as the TableCell's class... that way we only update the relevant boards.
-    Might have cases where we need to update all boards though? Might be easier to just update everything.
-    
     */
 
     //
@@ -61,8 +49,8 @@
     newRow($table, cols) {
       let $row = $("<tr/>")
       for (let i = 0; i < cols.length; i++) {
-        let $col = $("<td/>").append(cols[i])
-        $row.append($col)
+        //let $col = $("<td/>").append(cols[i])
+        $row.append(cols[i])
       }
       $table.append($row)
     }
