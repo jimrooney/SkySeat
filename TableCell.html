@@ -68,16 +68,14 @@
       console.log("TableCell Drop")
       let $Board = $(this).closest(".root") // jQuery root
       let _board = $Board.data("root") // JavaScript root
-      let dragged = ui.draggable // ui.draggable : The dropped sprite
+      let dropped = ui.draggable // ui.draggable : The manifest sprite
       let manifest = _board.manifest
-      //
-      // Color the manifest object
-      //
-      dragged.css("background-color", "var(--main-bg-color)")
+
+      dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
       // -------------------------------------------------------------------
       // Record Drop
       // -------------------------------------------------------------------
-      _board.state.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
+      _board.state.add($(this), dropped) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
       _board.update() // board.update() calls update() on each TableCell.
     }
     // ------------------------------
@@ -112,7 +110,13 @@
     update() {
       let data = this.getDataObject()
       let $this = this.$this // simplify the reference to the jQuery object
-      // set draggable so can be removed without testing or just left active
+      // Make Draggable
+      // Turn draggable on by default, then off if not needed... otherwise you have to test for it's existence before truning it off.
+      /*
+      (Example)
+      Uncaught Error: cannot call methods on draggable prior to initialization; 
+      attempted to call method 'disable'
+      */
       $this.draggable({
         revert: true,
         helper: "clone",
@@ -124,24 +128,31 @@
 
 
       */
+      // --------------
+      // Blank the cell
+      // --------------
       $this.text("")
+      $this.css("background-image", "")
+
+
       if (!!data) {
-        console.log("CellID: %o",data.cellID)
         console.log("TableCell Update Data: %o", data)
-        // let bookings = this.board.manifest.getBookingObjects(data)
-        // console.log("TableCell.update()... bookings: %o", bookings)
-        
+
+        // ********************* color? necessary? (use CSS instead?)
         let color = {
           main: "blue",
           highlight: "yellow",
         }
-        // In or Out? ***************************************************
+        // In or Out? **********************************************************
         //$this.addClass("inMarker") // WTF? This breaks things? ***************
+        // Breaks due to the css variable for some reason. *********************
         $this.css("background-image", "var(--gradient-in)")
-        $this.text(data.cellID) // just show the cellID for now ********
-      } else {
-        // $this.draggable("disable")
+        $this.html(data.orders.join("<br>")) // just show the cellID for now ********
 
+        let orders = this.board.manifest.getBookings(data.orders)
+        console.log("TableCell Orders: %o", orders)
+      } else {
+        $this.draggable("disable")
       }
     }
   }

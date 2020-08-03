@@ -117,6 +117,7 @@
         //
         for (let c = 1; c <= this.numCols; c++) {
           let TC = new TableCell(this, r, c)
+          TC.$board = this.$root
           TC.hour = thisHour
           let $TC = TC.$this // The class contructor makes a jQuery object and stores it in $this
           myRow.push($TC)

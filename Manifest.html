@@ -106,14 +106,30 @@
     //
     // if we pass it a data, pass back an object of matching bookings hash key'd by orderNumber ***** Check that we're actually using this
     getBookings(data) {
+      console.log("Manifest.getBookings() data: %o", data)
       // if we pass in a list of booking references, return the matching booking objects
-      let _manifest = {}
+      let _manifest = []
       if (!!data && Array.isArray(data)) {
+        console.log("manifest: %o",this.orders)
+        console.log("data.orders: %o",data)
+        // Loop over the orders and return the matching manifest object
         for (let b in data) {
-          _manifest[data[b]] = this.bookings[data[b]]
+          console.log("Order: %o",data[b])
+          _manifest.push(this.orders.find(x => x.orderNumber === data[b]))
         }
         return _manifest
       }
+
+/*
+
+I think everything below is outdated old-code and can be deleted
+
+
+
+
+
+
+*/
       let date = data
       // If a date object is passed in, make it a string
       if (!!date && typeof date == "object") {
@@ -144,6 +160,27 @@
       }
       return _manifest
     }
+
+/*
+
+I think everything above is outdated old-code and can be deleted
+
+
+
+
+
+
+*/
+
+
+
+/*
+
+This should all be replacable with a find statement like this one above:
+this.orders.find(x => x.orderNumber === data[b])
+
+*/
+
     //
     // Loop over each booking for a match
     //
