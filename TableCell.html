@@ -57,7 +57,10 @@
     // -------------------------------------------
     handleDrop(event, ui) {
       // $(this) is the TD
-      let _thisObject = Events // Necessary _thisObject hardcoded link for Object Literal sytax
+      let _this = $(this).prop("_this") // This JS Object
+      // Since this is getting called externally, "this" isn't this obj
+      // So we'll use the jQuery $(this) to get a pointer to this object
+      //
       // ***********************************************************************************
       // We'll need to handle drops from other boards here
       // ***********************************************************************************
@@ -66,17 +69,22 @@
       // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
       //
       console.log("TableCell Drop")
-      let $Board = $(this).closest(".root") // jQuery root
-      let _board = $Board.data("root") // JavaScript root
+      
       let dropped = ui.draggable // ui.draggable : The manifest sprite
-      let manifest = _board.manifest
-
+      //let manifest = $Board.data("root").manifest
+      
+      // Drop accepted, record and update.
+      _this.recordDrop($(this), dropped)
+    }
+    // -------------------------------------------------------------------
+    // Record Drop
+    // -------------------------------------------------------------------
+    recordDrop($this, dropped) {
+      let $Board = $this.closest(".root") // jQuery root
+      let _board_ = $Board.data("root") // JavaScript root
+      _board_.state.add($this, dropped) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
+      _board_.update() // board.update() calls update() on each TableCell.
       dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
-      // -------------------------------------------------------------------
-      // Record Drop
-      // -------------------------------------------------------------------
-      _board.state.add($(this), dropped) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
-      _board.update() // board.update() calls update() on each TableCell.
     }
     // ------------------------------
     // getBookingObjects
@@ -89,7 +97,7 @@
       let ret
       let data = this.board.state.getCellData(this.$this) // get the CellData Object from the state object
       if (!!data) {
-        console.log("Data: %o",data)
+        console.log("Data: %o", data)
         ret = this.board.manifest.getBookings(data)
       }
       return ret
@@ -125,7 +133,8 @@
       /*
       
 
-      Next up... need to discern all of the cell information for display based on the orderNumbers in the state object.
+      Next up... need to discern all of the cell information for display based on 
+      the orderNumbers in the state object.
 
 
       */
@@ -134,7 +143,6 @@
       // --------------
       $this.text("")
       $this.css("background-image", "")
-
 
       if (!!data) {
         console.log("TableCell Update Data: %o", data)
