@@ -43,7 +43,7 @@
         $this.removeClass("inMarker") // ******* Testing. This can be removed *************
         // ******************************************************************************
         //
-        let data = _this.getDataObject()
+        let data = _this.getCellData()
         if (!!data) {
           console.log("TableCell data: %o", data)
 
@@ -69,12 +69,17 @@
       // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
       //
       console.log("TableCell Drop")
-      
+
       let dropped = ui.draggable // ui.draggable : The manifest sprite
-      //let manifest = $Board.data("root").manifest
-      
-      // Drop accepted, record and update.
-      _this.recordDrop($(this), dropped)
+      let booking = dropped.prop("_this")
+
+      if (!!booking) {
+        console.log("Booking: %o", booking)
+        console.log("Direction: %o", booking.getDirection())
+
+        // Drop accepted, record and update.
+        _this.recordDrop($(this), dropped)
+      }
     }
     // -------------------------------------------------------------------
     // Record Drop
@@ -82,7 +87,10 @@
     recordDrop($this, dropped) {
       let $Board = $this.closest(".root") // jQuery root
       let _board_ = $Board.data("root") // JavaScript root
-      _board_.state.add($this, dropped) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
+      //
+      // // This is the magic //
+      //
+      _board_.state.add($this, dropped) // This adds the data to the State object (two dimensional array that mirrors the Board)
       _board_.update() // board.update() calls update() on each TableCell.
       dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
     }
@@ -95,12 +103,18 @@
     //
     getBookings() {
       let ret
-      let data = this.board.state.getCellData(this.$this) // get the CellData Object from the state object
+      let data = this.getCellData()
       if (!!data) {
-        console.log("Data: %o", data)
+        console.log("CellData: %o", data)
         ret = this.board.manifest.getBookings(data)
       }
       return ret
+    }
+    getCellData() {
+      //
+      // get the CellData Object from the state object
+      //
+      return this.board.state.getCellData(this.$this) // get the CellData Object from the state object
     }
     getDirection() {
       let direction = ""
@@ -109,15 +123,8 @@
       // Maybe make the row's time a class? **************************************
     }
     getHour() {}
-    getDataObject() {
-      //
-      // get the CellData Object from the state object
-      //
-      let data = this.board.state.getCellData(this.$this)
-      return data
-    }
     update() {
-      let data = this.getDataObject()
+      let data = this.getCellData() // Get the data from the state object
       let $this = this.$this // simplify the reference to the jQuery object
       // Make Draggable
       // Turn draggable on by default, then off if not needed... otherwise you have to test for it's existence before truning it off.
@@ -145,7 +152,7 @@
       $this.css("background-image", "")
 
       if (!!data) {
-        console.log("TableCell Update Data: %o", data)
+        console.log("TableCell.update() Data: %o", data)
 
         // ********************* color? necessary? (use CSS instead?)
         let color = {
@@ -158,7 +165,7 @@
         $this.css("background-image", "var(--gradient-in)")
         $this.html(data.orders.join("<br>")) // just show the cellID for now ********
 
-        let orders = this.board.manifest.getBookings(data.orders)
+        let orders = this.board.manifest.getBookings(data.orders) // Rezdy "Orders"
         console.log("TableCell Orders: %o", orders)
       } else {
         $this.draggable("disable")

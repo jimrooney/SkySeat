@@ -6,22 +6,33 @@
       this.orderNumber = orderNumber || null
       this.product = gya.getProduct(item.productCode)
     }
+    /*
+      Anything that starts with a B is an "out" direction.
+      A-B-A : Overhead
+      A-A : Local
+      B-A : Outs
+      A-B/-A : Landing
+      A-B : Dropoff
+    */
     getDirection() {
       let type = this.product.FlightType
-      return type.match(/^B/ig) ? "out" : "in" // A-B-A A-A B-A (outs)
+      return type.match(/^B/ig) ? "out" : "in" 
     }
+    // -----------
+    // getSprite()
+    // -----------
+    //
+    //Constructs and returns a booking sprite
+    //
     getSprite() {
       let orderNumber = this.orderNumber
-      // Constructs and returns a booking sprite
-      let $sprite = $("<span class='tooltip' />")
+      let $sprite = $("<span class='BookingSprite' />")
       $sprite.data("this", this) // Self Reference (for click)
-      // "2FCF" coded sprite
-      $sprite.addClass("BookingSprite")
       $sprite.prop("id", this.orderNumber)
       //
       // Attach this object to the sprite
       //
-      $sprite.prop("object", this)
+      $sprite.prop("_this", this)
       $sprite.css("background-color", colors.getByBooking(this))
       // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
       $sprite.text(this.getSeats() + " " + this.product.GYACode)

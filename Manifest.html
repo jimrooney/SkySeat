@@ -84,11 +84,14 @@
     // ------------
     //
     // Takes a list of booking numbers {GYA000881: "GYA000881", GYA000839: "GYA000839"}
-    // And returns an array of booking objects
+    // And returns an array of Rezdy Orders (complete Order objects)
     //
+    /* 
+      This will likely need some magic to handle split bookings ***********
+    */
     getBookings(data) {
-      console.log("Manifest.getBookings() data: %o", data)
-      // [[ Overloaded Function ]]
+      console.log("Manifest.getBookings() data: %o", data) // array of order numbers
+      // [ Recursive ]
       // If it's a CellData object, re-run with just the CellData.orders[] array
       if (!!data && typeof data == "object" && !!data.orders) {
         return this.getBookings(data.orders)
