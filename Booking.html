@@ -24,9 +24,18 @@
       A-B/-A : Landing
       A-B : Dropoff
     */
+    //
+    // Compare Booking data to which cell it's in and determine which leg it's on.
+    //
     getDirection() {
       let type = this.product.FlightType
       return type.match(/^B/ig) ? "out" : "in" 
+    }
+    getTripTimes(TableCell){
+      let cellHour = TableCell.hour
+      let stTime = this.item.startTimeLocal //"2020-08-08 10:00:00"
+      let startHour = new Date(stTime).getHours()
+
     }
     // -----------
     // getSprite()

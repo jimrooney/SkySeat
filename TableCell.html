@@ -75,7 +75,7 @@
       if (!!booking) {
         console.log("{TableCell} Handledrop\nBooking: %o", booking)
 
-        let direction = booking.getDirection()
+        let direction = booking.getDirection() // ******************************************
         let type = booking.constructor.name
         //
         // TableCell or Booking? **************
@@ -133,10 +133,14 @@
       //
       return this.board.state.getCellData(this.$this) // get the CellData Object from the state object
     }
-    getDirection() {
-      let direction = "TableCell Direction"
-      let bookingOrders = this.getOrders()
-      return bookingOrders
+
+    isOut() {
+      let out = false
+      let bookings = this.getOrders()
+      for (let b in bookings) {
+        bookings[b].getDirection() == "out" ? (out = true) : (out = out)
+      }
+      return out
     }
     getTime() {
       // Maybe make the row's time a class? **************************************
@@ -167,7 +171,8 @@
         let bookings = this.getOrders() // returns an array of Booking Objects [{Booking},{Booking}]
         console.log("[TableCell].Update()\nTableCell Bookings: %o", bookings)
 
-      /*
+        //$this.text(out)
+        /*
       
 
       Next up... need to discern all of the cell information for display based on 
@@ -181,11 +186,38 @@
           row cells stack vertically instead of horizontally
           */
         // Breaks due to the css variable for some reason. *********************
-        document.documentElement.style.setProperty('--in', 'pink');
 
-         $this.css("background-image", "var(--gradient-in)")
+        //document.documentElement.style.setProperty('--in', 'pink');
+
+
+/*
+
+        Many things need to chang here *******************
+        In/Out depends on which leg we're on, not just if it's an "Outs" flight
+
+*/
+        let isOut = this.isOut()
+        if (!isOut) {
+          //
+          //  Doesn't need to be set globally, but just keeping for an example for now *************
+          //
+          let name = "--in"
+          let val = "pink"
+          CSS.setVal(name, val)
+          //
+          //
+          //
+          $this.css("background-image", "var(--gradient-in)")
+        }
+        else {
+          $this.css("background-image", "var(--gradient-out)")
+        }
+
+        //        $(':root').css(name,val)
+
+        //document.documentElement.setAttribute("style", "--in: pink");
+
         // $this.html(cellData.orders.join("<br>")) // just show the cellID for now ********
-
       } else {
         $this.draggable("disable")
       }
