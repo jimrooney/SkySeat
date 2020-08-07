@@ -14,7 +14,18 @@
       } else {
         code = item
       }
-      this.product = gya.getProduct(code)
+      this.product = gya.getProduct(code) // returns an object key'd by the header row of the spreadsheet.
+      /*
+      Duration: 1
+      FlightFollowing: ""
+      FlightType: "A-A"
+      Full Route: "QN - MFOH - QN"
+      GYACode: "MFOH"
+      OnGround: ""
+      OutRoute: "MF - QN"
+      Product: "Milford Sound Scenic Flyover"
+      RezdyCode: "PSLMYT"
+      */
     }
     /*
       Anything that starts with a B is an "out" direction.

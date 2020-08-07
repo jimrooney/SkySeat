@@ -74,19 +74,30 @@
 
       if (!!booking) {
         console.log("{TableCell} Handledrop\nBooking: %o", booking)
-
-        let direction = booking.getDirection() // ******************************************
-        let type = booking.constructor.name
         //
         // TableCell or Booking? **************
         //
-
+        let type = booking.constructor.name
+        if (type == "Booking"){
+          let direction = booking.getDirection() // ******************************************
+          console.log("Booking Flight Type: %o", booking.product.FlightType)
+        }
+        console.log("IsOut? type: %o", type)
         //
         // Legal Drop? (in/out/etc) *************************************
         //
 
+        /*
+          Times we're dropping outs....
+          If it's explicitly an out (Type starts with B)
+          If it's a TableCell that's branded as an out
+        */
+
+
+        // ====================================================================
         // Drop accepted, record and update.
         _this.recordDrop($(this), dropped) // recordDrop({TableCell},{Booking})
+        // ====================================================================
       }
     }
     // -------------------------------------------------------------------
@@ -189,8 +200,7 @@
 
         //document.documentElement.style.setProperty('--in', 'pink');
 
-
-/*
+        /*
 
         Many things need to chang here *******************
         In/Out depends on which leg we're on, not just if it's an "Outs" flight
@@ -208,8 +218,7 @@
           //
           //
           $this.css("background-image", "var(--gradient-in)")
-        }
-        else {
+        } else {
           $this.css("background-image", "var(--gradient-out)")
         }
 

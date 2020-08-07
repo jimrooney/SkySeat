@@ -18,6 +18,12 @@
     // Get code translations (from TripCodes sheet)
     //
     getProduct: function (product) {
+      //
+      // Takes a Rezdy Product Code and returns an array (row loaded from the spreadsheet)
+      //
+      //
+      // Find the colum that's titled "RezdyCode"
+      //
       let col = 0
       for (let c in this.trips[0]) {
         let regex = new RegExp("^RezdyCode", "gi")
