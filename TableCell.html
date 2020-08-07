@@ -68,13 +68,12 @@
       // First thing's first: is it a legal drop (in/out)
       // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
       //
-      console.log("TableCell Handle Drop", )
 
       let dropped = ui.draggable // ui.draggable : The manifest sprite
       let booking = dropped.prop("_this")
 
       if (!!booking) {
-        console.log("[TableCell Handledrop]\nBooking: %o", booking)
+        console.log("{TableCell} Handledrop\nBooking: %o", booking)
 
         let direction = booking.getDirection()
         let type = booking.constructor.name
@@ -94,7 +93,6 @@
     // Record Drop
     // -------------------------------------------------------------------
     recordDrop($this, dropped) {
-      console.log("[TableCell].recordDrop")
       let $Board = $this.closest(".root") // jQuery root
       let _board_ = $Board.data("root") // JavaScript root
       //
@@ -112,24 +110,10 @@
     // pass them to the Manifest and get back the actual booking order objects
     //
     getOrders() {
-      /* 
-        Change this to return Booking Objects, not Rezdy Objects
-        It's not used anywhere yet
-        *********************
-
-        Booking objects want an item and orderNumber... both can be got from the State
-      */
-
       //
-      // Returns an array of (rezdy) booking order objects (from State)
+      // Returns an array of booking objects objects (from State)
       //
-
-      /*
-********************************************************************
-      Need to add the rezdy item
-
-      */
-      let retArray =[]
+      let retArray = []
       let data = this.getCellData()
       if (!!data) {
         for (let o in data.bookingOrders) {
@@ -159,7 +143,7 @@
     }
     getHour() {}
     update() {
-      let data = this.getCellData() // Get the data from the state object
+      let cellData = this.getCellData() // Get the data from the state object
       let $this = this.$this // simplify the reference to the jQuery object
       // Make Draggable
       // Turn draggable on by default, then off if not needed... otherwise you have to test for it's existence before truning it off.
@@ -172,6 +156,17 @@
         revert: true,
         helper: "clone",
       })
+      // --------------
+      // Blank the cell
+      // --------------
+      $this.text("")
+      $this.css("background-image", "")
+
+      if (!!cellData) {
+        console.log("[TableCell].update() \nTableCell Data: %o", cellData)
+        let bookings = this.getOrders() // returns an array of Booking Objects [{Booking},{Booking}]
+        console.log("[TableCell].Update()\nTableCell Bookings: %o", bookings)
+
       /*
       
 
@@ -180,30 +175,17 @@
 
 
       */
-      // --------------
-      // Blank the cell
-      // --------------
-      $this.text("")
-      $this.css("background-image", "")
+        // In or Out? **********************************************************
+        //$this.addClass("inMarker") // WTF? This breaks things? ***************
+        /*
+          row cells stack vertically instead of horizontally
+          */
+        // Breaks due to the css variable for some reason. *********************
+        document.documentElement.style.setProperty('--in', 'pink');
 
-      if (!!data) {
-        console.log("[TableCell].update() \nTableCell Data: %o", data)
+         $this.css("background-image", "var(--gradient-in)")
+        // $this.html(cellData.orders.join("<br>")) // just show the cellID for now ********
 
-        // // ********************* color? necessary? (use CSS instead?)
-        // let color = {
-        //   main: "blue",
-        //   highlight: "yellow",
-        // }
-        // // In or Out? **********************************************************
-        // //$this.addClass("inMarker") // WTF? This breaks things? ***************
-        // // Breaks due to the css variable for some reason. *********************
-        // $this.css("background-image", "var(--gradient-in)")
-        // $this.html(data.orders.join("<br>")) // just show the cellID for now ********
-
-        // let orders = this.board.manifest.getOrders(data.orders) // Rezdy "Orders"
-        // console.log("TableCell Orders: %o", orders)
-
-        console.log("[TableCell].Update()\nTableCell Bookings: %o", this.getOrders())
       } else {
         $this.draggable("disable")
       }
