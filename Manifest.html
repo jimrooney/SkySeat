@@ -89,23 +89,27 @@
     /* 
       This will likely need some magic to handle split bookings ***********
     */
-    getBookings(data) {
-      console.log("Manifest.getBookings() data: %o", data) // array of order numbers
+    getOrders(data) {
+      //
+      // returns an array of (rezdy) order objects 
+      //
+      console.log("Manifest.getOrders() data: %o", data) // array of order numbers
       // [ Recursive ]
       // If it's a CellData object, re-run with just the CellData.orders[] array
       if (!!data && typeof data == "object" && !!data.orders) {
-        return this.getBookings(data.orders)
+        return this.getOrders(data.orders)
       }
       //
-      // return the matching booking objects
+      // return the matching order objects
       //
-      let _manifest = []
+      let Orders = []
       if (!!data && Array.isArray(data)) {
         // Loop over the orders and return the matching manifest object
         for (let b in data) {
-          _manifest.push(this.orders.find((x) => x.orderNumber === data[b]))
+          let _oNum = data[b].split("_")[0]
+          Orders.push(this.orders.find((x) => x.orderNumber === _oNum))
         }
-        return _manifest
+        return Orders
       }
       return
     }

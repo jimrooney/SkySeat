@@ -2,9 +2,19 @@
   class Booking {
     constructor(item, orderNumber) {
       //
-      this.item = item // keep a reference to the Rezdy Data. (item = booking)
+      this.item = item // keep a reference to the Rezdy Data. (item = product)
       this.orderNumber = orderNumber || null
-      this.product = gya.getProduct(item.productCode)
+
+      //
+      // TableCell calls this with just the product code (insead of item) *******
+      //
+      let code = ""
+      if (!!item.productCode){
+        code = item.productCode
+      } else {
+        code = item
+      }
+      this.product = gya.getProduct(code)
     }
     /*
       Anything that starts with a B is an "out" direction.

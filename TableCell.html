@@ -47,7 +47,7 @@
         if (!!data) {
           console.log("TableCell data: %o", data)
 
-          let bookings = _this.getBookings(data)
+          let bookings = _this.getOrders(data)
           console.log("TableCell bookings: %o", bookings)
         }
       })
@@ -68,23 +68,33 @@
       // First thing's first: is it a legal drop (in/out)
       // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
       //
-      console.log("TableCell Drop")
+      console.log("TableCell Handle Drop", )
 
       let dropped = ui.draggable // ui.draggable : The manifest sprite
       let booking = dropped.prop("_this")
 
       if (!!booking) {
-        console.log("Booking: %o", booking)
-        console.log("Direction: %o", booking.getDirection())
+        console.log("[TableCell Handledrop]\nBooking: %o", booking)
+
+        let direction = booking.getDirection()
+        let type = booking.constructor.name
+        //
+        // TableCell or Booking? **************
+        //
+
+        //
+        // Legal Drop? (in/out/etc) *************************************
+        //
 
         // Drop accepted, record and update.
-        _this.recordDrop($(this), dropped)
+        _this.recordDrop($(this), dropped) // recordDrop({TableCell},{Booking})
       }
     }
     // -------------------------------------------------------------------
     // Record Drop
     // -------------------------------------------------------------------
     recordDrop($this, dropped) {
+      console.log("[TableCell].recordDrop")
       let $Board = $this.closest(".root") // jQuery root
       let _board_ = $Board.data("root") // JavaScript root
       //
@@ -99,16 +109,39 @@
     // ------------------------------
     //
     // Check the State and get the CellData objects
-    // pass them to the Manifest and get back the actual booking objects
+    // pass them to the Manifest and get back the actual booking order objects
     //
-    getBookings() {
-      let ret
+    getOrders() {
+      /* 
+        Change this to return Booking Objects, not Rezdy Objects
+        It's not used anywhere yet
+        *********************
+
+        Booking objects want an item and orderNumber... both can be got from the State
+      */
+
+      //
+      // Returns an array of (rezdy) booking order objects (from State)
+      //
+
+      /*
+********************************************************************
+      Need to add the rezdy item
+
+      */
+      let retArray =[]
       let data = this.getCellData()
       if (!!data) {
-        console.log("CellData: %o", data)
-        ret = this.board.manifest.getBookings(data)
+        for (let o in data.bookingOrders) {
+          // data will have let key = orderNumber + "_" + product
+          let s = data.bookingOrders[o].split("_")
+          let orderNumber = s[0]
+          let product = s[1]
+          let booking = new Booking(product, orderNumber) // [booking] expects a product object, we're giving it a product Number (which [booking] just looks up anyway)
+          retArray.push(booking)
+        }
       }
-      return ret
+      return retArray
     }
     getCellData() {
       //
@@ -117,7 +150,9 @@
       return this.board.state.getCellData(this.$this) // get the CellData Object from the state object
     }
     getDirection() {
-      let direction = ""
+      let direction = "TableCell Direction"
+      let bookingOrders = this.getOrders()
+      return bookingOrders
     }
     getTime() {
       // Maybe make the row's time a class? **************************************
@@ -152,21 +187,23 @@
       $this.css("background-image", "")
 
       if (!!data) {
-        console.log("TableCell.update() Data: %o", data)
+        console.log("[TableCell].update() \nTableCell Data: %o", data)
 
-        // ********************* color? necessary? (use CSS instead?)
-        let color = {
-          main: "blue",
-          highlight: "yellow",
-        }
-        // In or Out? **********************************************************
-        //$this.addClass("inMarker") // WTF? This breaks things? ***************
-        // Breaks due to the css variable for some reason. *********************
-        $this.css("background-image", "var(--gradient-in)")
-        $this.html(data.orders.join("<br>")) // just show the cellID for now ********
+        // // ********************* color? necessary? (use CSS instead?)
+        // let color = {
+        //   main: "blue",
+        //   highlight: "yellow",
+        // }
+        // // In or Out? **********************************************************
+        // //$this.addClass("inMarker") // WTF? This breaks things? ***************
+        // // Breaks due to the css variable for some reason. *********************
+        // $this.css("background-image", "var(--gradient-in)")
+        // $this.html(data.orders.join("<br>")) // just show the cellID for now ********
 
-        let orders = this.board.manifest.getBookings(data.orders) // Rezdy "Orders"
-        console.log("TableCell Orders: %o", orders)
+        // let orders = this.board.manifest.getOrders(data.orders) // Rezdy "Orders"
+        // console.log("TableCell Orders: %o", orders)
+
+        console.log("[TableCell].Update()\nTableCell Bookings: %o", this.getOrders())
       } else {
         $this.draggable("disable")
       }

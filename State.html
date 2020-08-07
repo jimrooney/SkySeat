@@ -15,17 +15,17 @@
       console.log("Cleared State")
       this.data = {}
     }
-    add(cell, dropped) {
+    add(TableCell, Booking) { // ({TableCell},{Booking})
       //
-      // add dropped object to cell it was dropped onto
+      // add dropped object to TableCell it was dropped onto
       //
       /*
 
       Record into the state the booking orderNumber... partial bookings will have [orderNumber-participantKey] (maybe the barcode?)
-      We can also record the cell specific details like pax seat numbers and plane details (if not default)
+      We can also record the TableCell specific details like pax seat numbers and plane details (if not default)
 
 
-      Only cell specific data should get recorded into State (which will be plane/trip data).
+      Only TableCell specific data should get recorded into State (which will be plane/trip data).
       All the booking data can be pulled from the manifest.
 
 */
@@ -33,12 +33,16 @@
       //
       // If a tablecell is dropped, it's multiple bookings *******************
       //
-      let booking = dropped.prop("_this")
-      let dropped_ID = dropped.prop("id")
-      let cell_ID = cell.prop("id")
+      let booking = Booking.prop("_this")
+      let dropped_ID = Booking.prop("id")
+      let cell_ID = TableCell.prop("id")
 
       if (!!booking) {
-        console.log("Booking: %o",booking)
+        console.log("[State].add(%o)",booking)
+        
+        // Booking.item.productCode ... can this live in the CellData?? ***********************
+
+
         //
         // If the CellData Object doesn't exist, create it
         //
@@ -47,6 +51,7 @@
         }
         //
         // Add the booking to the CellData Object
+        // CellData.add()
         //
         this.data[cell_ID].add(booking)
       }

@@ -2,12 +2,16 @@
   class CellData {
     constructor(cellID) {
       this.cellID = cellID
-      this.orders = []
+      this.bookingOrders = []
     }
     add(booking) {
+      // Perhaps an object instead of key (more flexible for later)
+      console.log("[CellData].add(%o)",booking)
       let orderNumber = booking.orderNumber
-      if (!!orderNumber && !this.orders.includes(orderNumber)){
-        this.orders.push(orderNumber)
+      let product = booking.item.productCode
+      let key = orderNumber + "_" + product
+      if (!!key && !this.bookingOrders.includes(key)){
+        this.bookingOrders.push(key)
       }
     }
   }
