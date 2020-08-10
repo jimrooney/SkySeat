@@ -75,31 +75,29 @@
       let _dropped = dropped.prop("_this") // ({TableCell} or {Booking}) JS object attached to the Selector
       let _this = $(this).prop("_this") // This JS Object
       let cellData = _this.getCellData()
+   
 
-        let dropDirection
       //_dropped.constructor.name // {TableCell} or {Booking}
-      if (_dropped.constructor.name == "TableCell") {
-        //
-        // Might not need to do anything further here... ***********
-        //
-        console.log(_dropped.getCellData()) // {CellData}
-        console.log("GetOrders: %o", _this.getOrders()) // returns [{Booking},{Booking},{Booking}]
-        dropDirection = _this.isOut()
-      } else {
-        // {Booking} ... ( {{item},orderNumber,{product}} )
-        dropDirection = _dropped.isOut()
-      }
-      console.log("\n\n\nDropped Direction: %o\n\n\n",dropDirection)
+      // if (_dropped.constructor.name == "TableCell") {
+      //   //
+      //   // Might not need to do anything further here... ***********
+      //   //
+      //   console.log(_dropped.getCellData()) // {CellData}
+      //   console.log("GetOrders: %o", _this.getOrders()) // returns [{Booking},{Booking},{Booking}]
+      //   droppedIsOut =  _dropped.isOut()//_this.isOut()
+      // } else {
+      //   // {Booking} ... ( {{item},orderNumber,{product}} )
+      //   droppedIsOut = _dropped.isOut()
+      // }
+      
       /*
 
         In/Out... drop/cell
         Cell been tagged yet?
 
       */
-      let legalDrop = false
-      let cellInOut = _this.isOut()
+      
 
-      let dropInOut
       /*
 
         Maybe bring the two types of drops together?
@@ -108,11 +106,11 @@
         */
 
       // Nessessary? *********************************
-      if (!_dropped) {
-        console.log("[handleDrop] No Data dropped")
-        return
-      }
-      console.log("{TableCell} Handledrop\nBooking: %o", _dropped)
+      // if (!_dropped) {
+      //   console.log("[handleDrop] No Data dropped")
+      //   return
+      // }
+      // console.log("{TableCell} Handledrop\nBooking: %o", _dropped)
 
       // ***********************************************************************************
       // We'll need to handle drops from other boards here
@@ -134,36 +132,38 @@
           
           
           */
-      let isOut = false
-      if (!!cellData) {
-        isOut = _this.getDirection()
-      }
-      switch (
-        _dropped.constructor.name // [Tablecell / Booking]
-      ) {
-        case "Booking":
-          console.log("Case: Booking")
+      // let isOut = false
+      // if (!!cellData) {
+      //   isOut = _this.getDirection()
+      // }
+      // switch (
+      //   _dropped.constructor.name // [Tablecell / Booking]
+      // ) {
+      //   case "Booking":
+      //     console.log("Case: Booking")
 
-          let direction = _dropped.getDirection() // Returns "in" or "out" based on FlightType
-          console.log("Booking Flight Type: %o", _dropped.product.FlightType)
+      //     let direction = _dropped.getDirection() // Returns "in" or "out" based on FlightType
+      //     console.log("Booking Flight Type: %o", _dropped.product.FlightType)
 
-          console.log("Cell:%o", cellData)
-          if (!!cellData) {
-            legalDrop = _this.isLegalDrop(direction)
-          } else {
-            // No data, so anything's legal
-            legalDrop = true
-          }
-          break
-        default:
-          //
-          // TableCell drop
-          //
-          console.log("Case: NotBooking (TD)")
-          break
-      }
-
-      if (legalDrop) {
+      //     console.log("Cell:%o", cellData)
+      //     if (!!cellData) {
+      //       legalDrop = _this.isLegalDrop(direction)
+      //     } else {
+      //       // No data, so anything's legal
+      //       legalDrop = true
+      //     }
+      //     break
+      //   default:
+      //     //
+      //     // TableCell drop
+      //     //
+      //     console.log("Case: NotBooking (TD)")
+      //     break
+      // }
+      
+        console.log("Cell/Drop %o / %o", _this.isOut(),_dropped.isOut())
+      if (_this.isLegalDrop(_this.isOut(),_dropped.isOut())) {
+        console.log("RecordDrop")
         // ====================================================================
         // Drop accepted, record and update.
         _this.recordDrop($(this), dropped) // recordDrop({TableCell},{Booking})
@@ -171,13 +171,14 @@
       }
     }
     getDirection() {
+      //(_dropped.isOut() == _this.isOut())
       return "in" //*********************************************
     }
-    isLegalDrop(direction) {
-      //
-      // Logic here **************************************
-      //
-      return true
+    isLegalDrop(cellIsOut,droppedIsOut) {
+      let legal
+      cellIsOut == null? legal = true :
+      cellIsOut == droppedIsOut ? legal = true : legal = false
+      return legal
     }
     // -------------------------------------------------------------------
     // Record Drop
@@ -225,7 +226,7 @@
     }
 
     isOut() {
-      let out = false
+      let out = null
       let bookings = this.getOrders()
       for (let b in bookings) {
         bookings[b].getDirection() == "out" ? (out = true) : (out = out)
