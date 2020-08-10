@@ -56,49 +56,128 @@
     // Drop
     // -------------------------------------------
     handleDrop(event, ui) {
-      // $(this) is the TD
-      let _this = $(this).prop("_this") // This JS Object
+      //
       // Since this is getting called externally, "this" isn't this obj
       // So we'll use the jQuery $(this) to get a pointer to this object
       //
+      // this is the <TD>
+      // $(this) is the jQuery <TD>
+      // ui.draggable is the dropped object
+      // dropped.prop("_this") is this JavaScript object
+      //
+
+      //
+      // console.log("THIS CellData: %o", this) // <TD>
+      //
+      // _this.getCellData() // ... returns CellData object for _this ********
+      //
+      let dropped = ui.draggable // ui.draggable : The Manifest Sprite or dropped TableCell
+      let _dropped = dropped.prop("_this") // ({TableCell} or {Booking}) JS object attached to the Selector
+      let _this = $(this).prop("_this") // This JS Object
+      let cellData = _this.getCellData()
+
+        let dropDirection
+      //_dropped.constructor.name // {TableCell} or {Booking}
+      if (_dropped.constructor.name == "TableCell") {
+        //
+        // Might not need to do anything further here... ***********
+        //
+        console.log(_dropped.getCellData()) // {CellData}
+        console.log("GetOrders: %o", _this.getOrders()) // returns [{Booking},{Booking},{Booking}]
+        dropDirection = _this.isOut()
+      } else {
+        // {Booking} ... ( {{item},orderNumber,{product}} )
+        dropDirection = _dropped.isOut()
+      }
+      console.log("\n\n\nDropped Direction: %o\n\n\n",dropDirection)
+      /*
+
+        In/Out... drop/cell
+        Cell been tagged yet?
+
+      */
+      let legalDrop = false
+      let cellInOut = _this.isOut()
+
+      let dropInOut
+      /*
+
+        Maybe bring the two types of drops together?
+        Maybe shove Manifest Drops into CellData objects?
+
+        */
+
+      // Nessessary? *********************************
+      if (!_dropped) {
+        console.log("[handleDrop] No Data dropped")
+        return
+      }
+      console.log("{TableCell} Handledrop\nBooking: %o", _dropped)
+
       // ***********************************************************************************
       // We'll need to handle drops from other boards here
       // ***********************************************************************************
+      /*
+            Times we're dropping outs....
+            If it's explicitly an out (Type starts with B)
+            If it's a TableCell that's branded as an out
+          */
       //
-      // First thing's first: is it a legal drop (in/out)
-      // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
+      // Legal Drop? (in/out/etc) *************************************
       //
 
-      let dropped = ui.draggable // ui.draggable : The manifest sprite
-      let booking = dropped.prop("_this")
+      /* 
+          
+          
+            will need a think about outcell legality 
+            (need to add checks for out cells ***********)
+          
+          
+          */
+      let isOut = false
+      if (!!cellData) {
+        isOut = _this.getDirection()
+      }
+      switch (
+        _dropped.constructor.name // [Tablecell / Booking]
+      ) {
+        case "Booking":
+          console.log("Case: Booking")
 
-      if (!!booking) {
-        console.log("{TableCell} Handledrop\nBooking: %o", booking)
-        //
-        // TableCell or Booking? **************
-        //
-        let type = booking.constructor.name
-        if (type == "Booking"){
-          let direction = booking.getDirection() // ******************************************
-          console.log("Booking Flight Type: %o", booking.product.FlightType)
-        }
-        console.log("IsOut? type: %o", type)
-        //
-        // Legal Drop? (in/out/etc) *************************************
-        //
+          let direction = _dropped.getDirection() // Returns "in" or "out" based on FlightType
+          console.log("Booking Flight Type: %o", _dropped.product.FlightType)
 
-        /*
-          Times we're dropping outs....
-          If it's explicitly an out (Type starts with B)
-          If it's a TableCell that's branded as an out
-        */
+          console.log("Cell:%o", cellData)
+          if (!!cellData) {
+            legalDrop = _this.isLegalDrop(direction)
+          } else {
+            // No data, so anything's legal
+            legalDrop = true
+          }
+          break
+        default:
+          //
+          // TableCell drop
+          //
+          console.log("Case: NotBooking (TD)")
+          break
+      }
 
-
+      if (legalDrop) {
         // ====================================================================
         // Drop accepted, record and update.
         _this.recordDrop($(this), dropped) // recordDrop({TableCell},{Booking})
         // ====================================================================
       }
+    }
+    getDirection() {
+      return "in" //*********************************************
+    }
+    isLegalDrop(direction) {
+      //
+      // Logic here **************************************
+      //
+      return true
     }
     // -------------------------------------------------------------------
     // Record Drop
@@ -163,10 +242,10 @@
       // Make Draggable
       // Turn draggable on by default, then off if not needed... otherwise you have to test for it's existence before truning it off.
       /*
-      (Example)
-      Uncaught Error: cannot call methods on draggable prior to initialization; 
-      attempted to call method 'disable'
-      */
+        (Example)
+        Uncaught Error: cannot call methods on draggable prior to initialization;
+        attempted to call method 'disable'
+        */
       $this.draggable({
         revert: true,
         helper: "clone",
@@ -184,28 +263,28 @@
 
         //$this.text(out)
         /*
-      
-
-      Next up... need to discern all of the cell information for display based on 
-      the orderNumbers in the state object.
 
 
-      */
+        Next up... need to discern all of the cell information for display based on
+        the orderNumbers in the state object.
+
+
+        */
         // In or Out? **********************************************************
         //$this.addClass("inMarker") // WTF? This breaks things? ***************
         /*
-          row cells stack vertically instead of horizontally
-          */
+            row cells stack vertically instead of horizontally
+            */
         // Breaks due to the css variable for some reason. *********************
 
         //document.documentElement.style.setProperty('--in', 'pink');
 
         /*
 
-        Many things need to chang here *******************
-        In/Out depends on which leg we're on, not just if it's an "Outs" flight
+          Many things need to chang here *******************
+          In/Out depends on which leg we're on, not just if it's an "Outs" flight
 
-*/
+  */
         let isOut = this.isOut()
         if (!isOut) {
           //

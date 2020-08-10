@@ -42,6 +42,9 @@
       let type = this.product.FlightType
       return type.match(/^B/ig) ? "out" : "in" 
     }
+    isOut(){
+      return this.getDirection() == "out" ? true : false
+    }
     getTripTimes(TableCell){
       let cellHour = TableCell.hour
       let stTime = this.item.startTimeLocal //"2020-08-08 10:00:00"
