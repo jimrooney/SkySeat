@@ -1,26 +1,29 @@
 <script>
   function test(args) {
 
+    let board = $("#AutoBoard").data("root")
+    let result = board.manifest.getBookingTest("GYA001117")
+    console.log("Result: %o",result)
     
-    let color = getComputedStyle(document.documentElement).getPropertyValue("--main-bg-color")
-    console.log("Color: %o",color)
-    document.querySelector(":root").style.setProperty('--main-bg-color', 'GREEN')
+    // let color = getComputedStyle(document.documentElement).getPropertyValue("--main-bg-color")
+    // console.log("Color: %o",color)
+    // document.querySelector(":root").style.setProperty('--main-bg-color', 'GREEN')
 
 
-    let $Board = $("#AutoBoard").data("root")
-    let $Manifest = $Board.manifest
+    // let $Board = $("#AutoBoard").data("root")
+    // let $Manifest = $Board.manifest
 
-    console.log("Board Manifest: %o", $Manifest)
+    // console.log("Board Manifest: %o", $Manifest)
 
 
-    let p = PlaneManager.planes.getPlane("JRR")
-    console.log("Seats: %o",p.getSeats())
+    // let p = PlaneManager.planes.getPlane("JRR")
+    // console.log("Seats: %o",p.getSeats())
 
-    console.log("Planemanager: %o",PlaneManager)
-    for (let p in PlaneManager.planes.list){
-      let _this = PlaneManager.planes.list[p]
-      console.log("name: %o",_this.constructor.name)
-    }
+    // console.log("Planemanager: %o",PlaneManager)
+    // for (let p in PlaneManager.planes.list){
+    //   let _this = PlaneManager.planes.list[p]
+    //   console.log("name: %o",_this.constructor.name)
+    // }
   }
 
   //

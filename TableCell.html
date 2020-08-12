@@ -75,7 +75,6 @@
       let _dropped = dropped.prop("_this") // ({TableCell} or {Booking}) JS object attached to the Selector
       let _this = $(this).prop("_this") // This JS Object
       let cellData = _this.getCellData()
-   
 
       //_dropped.constructor.name // {TableCell} or {Booking}
       // if (_dropped.constructor.name == "TableCell") {
@@ -89,14 +88,13 @@
       //   // {Booking} ... ( {{item},orderNumber,{product}} )
       //   droppedIsOut = _dropped.isOut()
       // }
-      
+
       /*
 
         In/Out... drop/cell
         Cell been tagged yet?
 
       */
-      
 
       /*
 
@@ -160,24 +158,36 @@
       //     console.log("Case: NotBooking (TD)")
       //     break
       // }
-      
-        console.log("Cell/Drop %o / %o", _this.isOut(),_dropped.isOut())
-      if (_this.isLegalDrop(_this.isOut(),_dropped.isOut())) {
+
+      let cellIsOut = _this.isOut()
+      let droppedIsOut = _dropped.isOut()
+      if (_this.isLegalDrop(cellIsOut,droppedIsOut)) {
         console.log("RecordDrop")
         // ====================================================================
         // Drop accepted, record and update.
         _this.recordDrop($(this), dropped) // recordDrop({TableCell},{Booking})
         // ====================================================================
+      } else {
+        let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellIsOut: " + cellIsOut
+              utility.error(msg)
       }
     }
     getDirection() {
       //(_dropped.isOut() == _this.isOut())
       return "in" //*********************************************
     }
-    isLegalDrop(cellIsOut,droppedIsOut) {
+    isLegalDrop(cellIsOut, droppedIsOut) {
+      /*
+      Cell hasn't been branded = legal // can be either
+      Cell matches drop = legal
+
+      ***************************************************************************
+      Probably need to add further looking tests for return flight cell checks...
+      Or, those checks can call this function
+      ***************************************************************************
+      */
       let legal
-      cellIsOut == null? legal = true :
-      cellIsOut == droppedIsOut ? legal = true : legal = false
+      cellIsOut == null ? (legal = true) : cellIsOut == droppedIsOut ? (legal = true) : (legal = false)
       return legal
     }
     // -------------------------------------------------------------------
@@ -208,11 +218,11 @@
       let data = this.getCellData()
       if (!!data) {
         for (let o in data.bookingOrders) {
-          // data will have let key = orderNumber + "_" + product
+          // data will have let key = orderNumber + "_" + productNumber
           let s = data.bookingOrders[o].split("_")
           let orderNumber = s[0]
-          let product = s[1]
-          let booking = new Booking(product, orderNumber) // [booking] expects a product object, we're giving it a product Number (which [booking] just looks up anyway)
+          let productNumber = s[1]
+          let booking = new Booking(productNumber, orderNumber) // [booking] expects a product object, we're giving it a product Number (which [booking] just looks up anyway)
           retArray.push(booking)
         }
       }
@@ -240,7 +250,9 @@
     update() {
       let cellData = this.getCellData() // Get the data from the state object
       let $this = this.$this // simplify the reference to the jQuery object
+      // --------------
       // Make Draggable
+      // --------------
       // Turn draggable on by default, then off if not needed... otherwise you have to test for it's existence before truning it off.
       /*
         (Example)
@@ -256,9 +268,14 @@
       // --------------
       $this.text("")
       $this.css("background-image", "")
-
+      // --------
+      // If Data
+      // --------
       if (!!cellData) {
         console.log("[TableCell].update() \nTableCell Data: %o", cellData)
+
+
+
         let bookings = this.getOrders() // returns an array of Booking Objects [{Booking},{Booking}]
         console.log("[TableCell].Update()\nTableCell Bookings: %o", bookings)
 

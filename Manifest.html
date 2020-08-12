@@ -91,7 +91,7 @@
     */
     getOrders(data) {
       //
-      // returns an array of (rezdy) order objects 
+      // returns an array of (rezdy) order objects
       //
       console.log("Manifest.getOrders() data: %o", data) // array of order numbers
       // [ Recursive ]
@@ -124,7 +124,31 @@ this.orders.find(x => x.orderNumber === data[b])
     //
     // Loop over each booking for a match
     //
-    getBooking(orderNumber) {
+    getBookingTest(orderNumber, productCode) {
+      // const inventory = [
+      //   { name: "apples", quantity: 2 },
+      //   { name: "bananas", quantity: 0 },
+      //   { name: "cherries", quantity: 5 },
+      // ]
+      console.log("Bookings: %o", this.data.bookings)
+      let PC = productCode
+      let ON = orderNumber
+
+      const result = this.data.bookings.find(({ orderNumber }) => orderNumber === ON)
+      return result
+      // console.log(result) // { name: 'cherries', quantity: 5 }
+
+      // if (!!this.bookings[orderNumber]) {
+      //   console.log("Booking ", orderNumber)
+      //   return this.bookings[orderNumber]
+      // }
+      // return
+    }
+
+    //
+    // Loop over each booking for a match
+    //
+    getBooking(orderNumber, productNumber) {
       if (!!this.bookings[orderNumber]) {
         console.log("Booking ", orderNumber)
         return this.bookings[orderNumber]
