@@ -1,10 +1,10 @@
 <script>
   class Booking {
-    constructor(item, orderNumber) {
+    constructor(item, orderNumber, order) {
       //
       this.item = item // keep a reference to the Rezdy Data. (item = product)
       this.orderNumber = orderNumber || null
-
+      this.order = order
       //
       // TableCell calls this with just the product code (insead of item) *******
       //
@@ -26,6 +26,9 @@
       Product: "Milford Sound Scenic Flyover"
       RezdyCode: "PSLMYT"
       */
+    }
+    getBookingObject(){
+
     }
     /*
       Anything that starts with a B is an "out" direction.

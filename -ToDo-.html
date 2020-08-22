@@ -9,6 +9,12 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Currently
 -------------------------------
+In Manifest.getBooking()...
+the find() function needs to search for both orderNumbers and productCodes (inside items) so that the return
+can handle multiple products booked by the same person
+
+
+
 Updating TableCells
 Drops are recording the correct data now, so time to start displaying that data.
 

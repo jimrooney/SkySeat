@@ -113,6 +113,22 @@
       }
       return
     }
+    getOrder(orderNumber, productNumber) {
+      //
+      // return the matching order objects
+      //
+      let data = this.bookings
+      let Orders = []
+      if (!!data && Array.isArray(data)) {
+        // Loop over the orders and return the matching manifest object
+        for (let b in data) {
+          let _oNum = data[b].split("_")[0]
+          Orders.push(this.orders.find((x) => x.orderNumber === _oNum))
+        }
+        return Orders
+      }
+      return
+    }
 
     /*
 
@@ -124,36 +140,40 @@ this.orders.find(x => x.orderNumber === data[b])
     //
     // Loop over each booking for a match
     //
-    getBookingTest(orderNumber, productCode) {
+    getBooking(orderNumber, productCode) {
+      //
+      // Add filterCodes (for things like status codes)? **********************************
+
       // const inventory = [
       //   { name: "apples", quantity: 2 },
       //   { name: "bananas", quantity: 0 },
       //   { name: "cherries", quantity: 5 },
       // ]
+      console.log("getBooking(%o,%o)", orderNumber, productCode)
       console.log("Bookings: %o", this.data.bookings)
       let PC = productCode
       let ON = orderNumber
 
-      const result = this.data.bookings.find(({ orderNumber }) => orderNumber === ON)
+      /*
+
+        Search orders for a matching orderNumber and productCode
+        The orderNumber search might be accomplished with the same => function syntax as the orderNumber search *********
+
+      */
+      // Nice find syntax for passing a single attribute of an object 
+      //const result = this.data.bookings.find(({ orderNumber }) => {orderNumber === ON})
+      const result = this.data.bookings.find((order) => {
+        let match = order.orderNumber === ON
+        if (match) {
+          for (let item in order.items) {
+            if (order.items[item].productCode == productCode) {
+              match = true
+            }
+          }
+        }
+        return match
+      })
       return result
-      // console.log(result) // { name: 'cherries', quantity: 5 }
-
-      // if (!!this.bookings[orderNumber]) {
-      //   console.log("Booking ", orderNumber)
-      //   return this.bookings[orderNumber]
-      // }
-      // return
-    }
-
-    //
-    // Loop over each booking for a match
-    //
-    getBooking(orderNumber, productNumber) {
-      if (!!this.bookings[orderNumber]) {
-        console.log("Booking ", orderNumber)
-        return this.bookings[orderNumber]
-      }
-      return
     }
     //
     // return total number of filled seats

@@ -155,11 +155,11 @@
       //
       // Show State Button
       //
-      let _this = this.state
+      let _this = this
       let $_s = $("<button class='Dark Debug'>").append("<BR>").text("State")
       this.$root.prepend($_s)
       $_s.on("click", function () {
-        console.log("State.data: %o", _this.data)
+        console.log("State.data: %o", _this.state.getState())
       })
     }
   }

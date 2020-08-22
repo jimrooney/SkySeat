@@ -222,7 +222,8 @@
           let s = data.bookingOrders[o].split("_")
           let orderNumber = s[0]
           let productNumber = s[1]
-          let booking = new Booking(productNumber, orderNumber) // [booking] expects a product object, we're giving it a product Number (which [booking] just looks up anyway)
+          let order = this.board.manifest.getBooking(orderNumber,productNumber)
+          let booking = new Booking(productNumber, orderNumber, order) // [booking] expects a product object, we're giving it a product Number (which [booking] just looks up anyway)
           retArray.push(booking)
         }
       }
@@ -250,6 +251,9 @@
     update() {
       let cellData = this.getCellData() // Get the data from the state object
       let $this = this.$this // simplify the reference to the jQuery object
+      console.log("TableCell Update()")
+      let orders = this.getOrders()
+      console.log("Orders: %o",orders)
       // --------------
       // Make Draggable
       // --------------
@@ -303,6 +307,18 @@
           In/Out depends on which leg we're on, not just if it's an "Outs" flight
 
   */
+
+
+
+        // *****************************************************
+        // Get the number of pax and which product they're doing
+        // *****************************************************
+        // We have the orderNumber and item
+        // reach into the manifest and get the Booking Object
+        //
+        console.log("Manifest: %o",this.board.manifest)
+
+
         let isOut = this.isOut()
         if (!isOut) {
           //

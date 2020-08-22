@@ -1,6 +1,19 @@
 [[[[[[[[[[[[[[[[[[[[[[[ Random bits of magic that make this all work ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
 
 -------------------------------------------------------------------------------------------------------------------
+Reduce for Objects
+-------------------------------------------------------------------------------------------------------------------
+const add = {
+  a: 1,
+  b: 2,
+  c: 3
+}
+
+const total = Object.values(add).reduce((t, n) => t + n)
+
+console.log(total) // 6
+
+-------------------------------------------------------------------------------------------------------------------
 [[ Javascript / jQuery linking ]]
 
 To link up the two for backreferences from each, we first attach the JavaScript object to the jQuery .data('root') property on creation.
