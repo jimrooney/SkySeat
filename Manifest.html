@@ -143,33 +143,17 @@ this.orders.find(x => x.orderNumber === data[b])
     getBooking(orderNumber, productCode) {
       //
       // Add filterCodes (for things like status codes)? **********************************
-
-      // const inventory = [
-      //   { name: "apples", quantity: 2 },
-      //   { name: "bananas", quantity: 0 },
-      //   { name: "cherries", quantity: 5 },
-      // ]
-      console.log("getBooking(%o,%o)", orderNumber, productCode)
-      console.log("Bookings: %o", this.data.bookings)
-      let PC = productCode
-      let ON = orderNumber
-
       /*
 
         Search orders for a matching orderNumber and productCode
-        The orderNumber search might be accomplished with the same => function syntax as the orderNumber search *********
-
+  
       */
       // Nice find syntax for passing a single attribute of an object 
-      //const result = this.data.bookings.find(({ orderNumber }) => {orderNumber === ON})
+      //const result = this.data.bookings.find(({ orderNumber }) => {orderNumber === orderNumber})
       const result = this.data.bookings.find((order) => {
-        let match = order.orderNumber === ON
+        let match = order.orderNumber === orderNumber
         if (match) {
-          for (let item in order.items) {
-            if (order.items[item].productCode == productCode) {
-              match = true
-            }
-          }
+          match = order.items.find( ({productCode}) => productCode === productCode )
         }
         return match
       })
