@@ -224,8 +224,29 @@
           }
           return acc + paxNum
         },0)
+
+
+        let codes = []
+        for (let a in bookings){
+          let p = bookings[a].product.GYACode 
+          if (!!p){
+            codes.push(p)
+          }
+        }
+
+
+        // let details =  bookings.reduce((booking) => {
+        //   if (!!booking.getCode()){
+        //     return booking.getCode()
+        //   }
+        // })
+
+
+
+
+        debug.log("Codes",codes)
         debug.log("pax",pax)
-        $this.html(pax) // just show the cellID for now ********
+        $this.html(pax + " " + codes.join("<BR>"))
 
         //var colSum = matrix.reduce((a, b) => a.map((x, i) => x + b[i]))
       } else {

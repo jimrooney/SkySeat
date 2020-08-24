@@ -16,6 +16,9 @@
       }
       this.product = this.getProduct(code)
     }
+    getCode(){
+      return this.product.GYACode
+    }
     getItem(){
       let _oNum = this.orderNumber
       return this.order.items.find((x) => x.orderNumber === _oNum)
