@@ -9,6 +9,7 @@
       this.row = r
       this.column = c
       this.hour // Placeholder
+      this.leg
       // -------------------------------------------
       // jQuery object
       // -------------------------------------------
@@ -43,7 +44,7 @@
         $this.removeClass("inMarker") // ******* Testing. This can be removed *************
         // ******************************************************************************
         //
-        let data = _this.getCellData()
+        let data = _this.getCellDataObject()
         if (!!data) {
           console.log("TableCell data: %o", data)
 
@@ -60,123 +61,27 @@
       // Since this is getting called externally, "this" isn't this obj
       // So we'll use the jQuery $(this) to get a pointer to this object
       //
-      // this is the <TD>
-      // $(this) is the jQuery <TD>
-      // ui.draggable is the dropped object
-      // dropped.prop("_this") is this JavaScript object
-      //
-
-      //
-      // console.log("THIS CellData: %o", this) // <TD>
-      //
-      // _this.getCellData() // ... returns CellData object for _this ********
-      //
-      let dropped = ui.draggable // ui.draggable : The Manifest Sprite or dropped TableCell
-      let _dropped = dropped.prop("_this") // ({TableCell} or {Booking}) JS object attached to the Selector
-      let _this = $(this).prop("_this") // This JS Object
-      let cellData = _this.getCellData()
-
+      let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
+      let _dropped = $dropped.prop("_this") // ({TableCell} or {Booking}) JS object attached to the Selector
       //_dropped.constructor.name // {TableCell} or {Booking}
-      // if (_dropped.constructor.name == "TableCell") {
-      //   //
-      //   // Might not need to do anything further here... ***********
-      //   //
-      //   console.log(_dropped.getCellData()) // {CellData}
-      //   console.log("GetOrders: %o", _this.getOrders()) // returns [{Booking},{Booking},{Booking}]
-      //   droppedIsOut =  _dropped.isOut()//_this.isOut()
-      // } else {
-      //   // {Booking} ... ( {{item},orderNumber,{product}} )
-      //   droppedIsOut = _dropped.isOut()
-      // }
+      let _this = $(this).prop("_this") // This JS Object
+      let cellData = _this.getCellDataObject()
 
-      /*
-
-        In/Out... drop/cell
-        Cell been tagged yet?
-
-      */
-
-      /*
-
-        Maybe bring the two types of drops together?
-        Maybe shove Manifest Drops into CellData objects?
-
-        */
-
-      // Nessessary? *********************************
-      // if (!_dropped) {
-      //   console.log("[handleDrop] No Data dropped")
-      //   return
-      // }
-      // console.log("{TableCell} Handledrop\nBooking: %o", _dropped)
-
-      // ***********************************************************************************
-      // We'll need to handle drops from other boards here
-      // ***********************************************************************************
-      /*
-            Times we're dropping outs....
-            If it's explicitly an out (Type starts with B)
-            If it's a TableCell that's branded as an out
-          */
-      //
-      // Legal Drop? (in/out/etc) *************************************
-      //
-
-      /* 
-          
-          
-            will need a think about outcell legality 
-            (need to add checks for out cells ***********)
-          
-          
-          */
-      // let isOut = false
-      // if (!!cellData) {
-      //   isOut = _this.getDirection()
-      // }
-      // switch (
-      //   _dropped.constructor.name // [Tablecell / Booking]
-      // ) {
-      //   case "Booking":
-      //     console.log("Case: Booking")
-
-      //     let direction = _dropped.getDirection() // Returns "in" or "out" based on FlightType
-      //     console.log("Booking Flight Type: %o", _dropped.product.FlightType)
-
-      //     console.log("Cell:%o", cellData)
-      //     if (!!cellData) {
-      //       legalDrop = _this.isLegalDrop(direction)
-      //     } else {
-      //       // No data, so anything's legal
-      //       legalDrop = true
-      //     }
-      //     break
-      //   default:
-      //     //
-      //     // TableCell drop
-      //     //
-      //     console.log("Case: NotBooking (TD)")
-      //     break
-      // }
-
-      let cellIsOut = _this.isOut()
+      let leg = _this.getLeg()
       let droppedIsOut = _dropped.isOut()
-      if (_this.isLegalDrop(cellIsOut,droppedIsOut)) {
-        console.log("RecordDrop")
+
+      if (_this.isLegalDrop(leg, droppedIsOut)) {
         // ====================================================================
         // Drop accepted, record and update.
-        _this.recordDrop($(this), dropped) // recordDrop({TableCell},{Booking})
+        _this.recordDrop($(this), $dropped) // recordDrop({TableCell},{Booking})
         // ====================================================================
       } else {
-        let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellIsOut: " + cellIsOut
-              utility.error(msg)
+        let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellLeg: " + leg
+        utility.error(msg)
       }
     }
-    getDirection() {
-      //(_dropped.isOut() == _this.isOut())
-      return "in" //*********************************************
-    }
-    isLegalDrop(cellIsOut, droppedIsOut) {
+    isLegalDrop(cellLeg, droppedIsOut) {
+      let cellIsOut = cellLeg == "B"
       /*
       Cell hasn't been branded = legal // can be either
       Cell matches drop = legal
@@ -186,22 +91,23 @@
       Or, those checks can call this function
       ***************************************************************************
       */
+      console.log("isLegalDrop(cellIsOut, droppedIsOut) %o %o", cellIsOut, droppedIsOut)
       let legal
-      cellIsOut == null ? (legal = true) : cellIsOut == droppedIsOut ? (legal = true) : (legal = false)
+      cellLeg == null ? (legal = true) : cellIsOut == droppedIsOut ? (legal = true) : (legal = false)
       return legal
     }
     // -------------------------------------------------------------------
     // Record Drop
     // -------------------------------------------------------------------
-    recordDrop($this, dropped) {
-      let $Board = $this.closest(".root") // jQuery root
-      let _board_ = $Board.data("root") // JavaScript root
+    recordDrop($this, $dropped) {
       //
       // // This is the magic //
       //
-      _board_.state.add($this, dropped) // This adds the data to the State object (two dimensional array that mirrors the Board)
+      let $Board = $this.closest(".root") // jQuery root
+      let _board_ = $Board.data("root") // JavaScript root
+      _board_.state.add($this, $dropped) // This adds the data to the State object (two dimensional array that mirrors the Board)
       _board_.update() // board.update() calls update() on each TableCell.
-      dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
+      $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
     }
     // ------------------------------
     // getBookingObjects
@@ -215,45 +121,45 @@
       // Returns an array of booking objects objects (from State)
       //
       let retArray = []
-      let data = this.getCellData()
+      let data = this.getCellDataObject()
       if (!!data) {
         for (let o in data.bookingOrders) {
           // data will have let key = orderNumber + "_" + productNumber
           let s = data.bookingOrders[o].split("_")
           let orderNumber = s[0]
           let productNumber = s[1]
-          let order = this.board.manifest.getBooking(orderNumber,productNumber)
+          let order = this.board.manifest.getBooking(orderNumber, productNumber)
           let booking = new Booking(productNumber, orderNumber, order) // [booking] expects a product object, we're giving it a product Number (which [booking] just looks up anyway)
           retArray.push(booking)
         }
       }
       return retArray
     }
-    getCellData() {
+    getCellDataObject() {
       //
       // get the CellData Object from the state object
       //
-      return this.board.state.getCellData(this.$this) // get the CellData Object from the state object
+      return this.board.state.getCellDataObject(this.$this) // get the CellData Object from the state object
     }
 
-    isOut() {
-      let out = null
-      let bookings = this.getOrders()
-      for (let b in bookings) {
-        bookings[b].getDirection() == "out" ? (out = true) : (out = out)
+    getLeg() {
+      if (!!this.getCellDataObject()) {
+        return this.getCellDataObject().leg
       }
-      return out
+      return null
+    }
+    // Perhaps "hasOuts()" ************************************
+    // This only tells you if the cell contains outs, not the direction of the leg
+    isOut() {
+      return this.getOrders().some((x) => x.isOut() == true)
     }
     getTime() {
       // Maybe make the row's time a class? **************************************
     }
     getHour() {}
     update() {
-      let cellData = this.getCellData() // Get the data from the state object
+      let cellData = this.getCellDataObject() // Get the data from the state object
       let $this = this.$this // simplify the reference to the jQuery object
-      console.log("TableCell Update()")
-      let orders = this.getOrders()
-      console.log("Orders: %o",orders)
       // --------------
       // Make Draggable
       // --------------
@@ -262,7 +168,7 @@
         (Example)
         Uncaught Error: cannot call methods on draggable prior to initialization;
         attempted to call method 'disable'
-        */
+      */
       $this.draggable({
         revert: true,
         helper: "clone",
@@ -277,13 +183,8 @@
       // --------
       if (!!cellData) {
         console.log("[TableCell].update() \nTableCell Data: %o", cellData)
-
-
-
         let bookings = this.getOrders() // returns an array of Booking Objects [{Booking},{Booking}]
         console.log("[TableCell].Update()\nTableCell Bookings: %o", bookings)
-
-        //$this.text(out)
         /*
 
 
@@ -292,23 +193,6 @@
 
 
         */
-        // In or Out? **********************************************************
-        //$this.addClass("inMarker") // WTF? This breaks things? ***************
-        /*
-            row cells stack vertically instead of horizontally
-            */
-        // Breaks due to the css variable for some reason. *********************
-
-        //document.documentElement.style.setProperty('--in', 'pink');
-
-        /*
-
-          Many things need to chang here *******************
-          In/Out depends on which leg we're on, not just if it's an "Outs" flight
-
-  */
-
-
 
         // *****************************************************
         // Get the number of pax and which product they're doing
@@ -316,23 +200,27 @@
         // We have the orderNumber and item
         // reach into the manifest and get the Booking Object
         //
-        console.log("Manifest: %o",this.board.manifest)
 
-
-        let isOut = this.isOut()
-        if (!isOut) {
-          //
-          //  Doesn't need to be set globally, but just keeping for an example for now *************
-          //
-          let name = "--in"
-          let val = "pink"
-          CSS.setVal(name, val)
-          //
-          //
-          //
-          $this.css("background-image", "var(--gradient-in)")
-        } else {
-          $this.css("background-image", "var(--gradient-out)")
+        //
+        // In/Out Chevrons
+        //
+        switch (this.getLeg()) {
+          case "A":
+          case null:
+            let name = "--in"
+            let val = "pink"
+            CSS.setVal(name, val)
+            //
+            // In
+            //
+            $this.css("background-image", "var(--gradient-in)")
+            break
+          case "B":
+            //
+            // Out
+            //
+            $this.css("background-image", "var(--gradient-out)")
+            break
         }
 
         //        $(':root').css(name,val)

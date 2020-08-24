@@ -22,10 +22,13 @@
       //
       // Manifest Div
       //
+      let _this = this // _this instead of this because this is the calling button right now.
       let _span = this.$parent.append(`<div class="Manifest_Container">
           <div class="Header">
           <span style="float:left;display: inline-block;"></span>
-          <span style="float:right;display: inline-block;"><button>&#10226;</button></span> Manifest </div>
+          <span style="float:right;display: inline-block;"><button id="reload">&#10226;</button></span>
+          <span style="float:right;display: inline-block;"><button id="debug">&#937;</button></span>
+           Manifest </div>
           <div class="Bookings" style="float:left;display: inline-block;"></div>
       </div>`)
       this.$bookings = this.$parent.find(".Bookings")
@@ -33,9 +36,11 @@
       // Manifest Reload Button
       //
       _span.find("button").off("click")
-      _span.find("button").click(function () {
-        // _this instead of this because this is the calling button right now.
+      _span.find("#reload").click(function () {
         _this.load()
+      })
+      _span.find("#debug").click(function () {
+        console.log(_this)
       })
     }
     // Call the Google Rezdy loading script, passing this object so the results can be returned into it
@@ -51,9 +56,7 @@
       this.show()
     }
     show(date) {
-      console.log("Manifest.show(%o)", date)
-      console.log("Manifest JSON %o", this.data)
-
+      debug.log("Manifest.show(date)", date)
       if (!date) {
         date = this.getDate()
       }
@@ -80,7 +83,7 @@
       init() // This should change *************** not be root variable, not be such a hatchet **********
     }
     // ------------
-    // Get Bookings
+    // Get Orders
     // ------------
     //
     // Takes a list of booking numbers {GYA000881: "GYA000881", GYA000839: "GYA000839"}
@@ -129,27 +132,15 @@
       }
       return
     }
-
-    /*
-
-This should all be replacable with a find statement like this one above:
-this.orders.find(x => x.orderNumber === data[b])
-
-*/
-
     //
     // Loop over each booking for a match
     //
     getBooking(orderNumber, productCode) {
       //
       // Add filterCodes (for things like status codes)? **********************************
-      /*
-
-        Search orders for a matching orderNumber and productCode
-  
-      */
-      // Nice find syntax for passing a single attribute of an object 
-      //const result = this.data.bookings.find(({ orderNumber }) => {orderNumber === orderNumber})
+      //
+      // Search orders for a matching orderNumber and productCode
+      //
       const result = this.data.bookings.find((order) => {
         let match = order.orderNumber === orderNumber
         if (match) {

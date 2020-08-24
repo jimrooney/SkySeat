@@ -15,10 +15,13 @@
       console.log("Cleared State")
       this.data = {}
     }
-    add(TableCell, Booking) { // ({TableCell},{Booking})
+    add(TableCell, $dropped) { // ({TableCell},{Booking})
       //
       // add dropped object to TableCell it was dropped onto
       //
+
+      let _dropped = $dropped.prop("_this") // ({TableCell} or {Booking}) JS object attached to the Selector
+      let cell_ID = TableCell.prop("id")
       /*
 
       Record into the state the booking orderNumber... partial bookings will have [orderNumber-participantKey] (maybe the barcode?)
@@ -33,30 +36,24 @@
       //
       // If a tablecell is dropped, it's multiple bookings *******************
       //
-      let booking = Booking.prop("_this")
-      let dropped_ID = Booking.prop("id")
-      let cell_ID = TableCell.prop("id")
-
-      if (!!booking) {
-        //console.log("[State].add(%o)",booking)
-        
-        // Booking.item.productCode ... can this live in the CellData?? ***********************
-
-
+      if (!!_dropped) {
         //
         // If the CellData Object doesn't exist, create it
         //
         if (this.data[cell_ID] == undefined) {
           this.data[cell_ID] = new CellData(cell_ID)
         }
+        // Brand the cell (for In/Out/Etc)
+        let cellData = this.data[cell_ID]
+        cellData.leg = _dropped.getLeg()
         //
         // Add the booking to the CellData Object
         // CellData.add()
         //
-        this.data[cell_ID].add(booking)
+        this.data[cell_ID].add(_dropped)
       }
     }
-    getCellData(cell) {
+    getCellDataObject(cell) {
       return this.data[cell.prop("id")]
     }
     remove(cell, key) {

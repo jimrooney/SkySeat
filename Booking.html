@@ -14,18 +14,7 @@
       } else {
         code = item
       }
-      this.product = gya.getProduct(code) // returns an object key'd by the header row of the spreadsheet.
-      /*
-      Duration: 1
-      FlightFollowing: ""
-      FlightType: "A-A"
-      Full Route: "QN - MFOH - QN"
-      GYACode: "MFOH"
-      OnGround: ""
-      OutRoute: "MF - QN"
-      Product: "Milford Sound Scenic Flyover"
-      RezdyCode: "PSLMYT"
-      */
+      this.product = this.getProduct(code)
     }
     getBookingObject(){
 
@@ -38,15 +27,38 @@
       A-B/-A : Landing
       A-B : Dropoff
     */
+
+
+
+//      this.product = gya.getProduct(code) // returns an object key'd by the header row of the spreadsheet.
+      /*
+      Duration: 1
+      FlightFollowing: ""
+      FlightType: "A-A"
+      Full Route: "QN - MFOH - QN"
+      GYACode: "MFOH"
+      OnGround: ""
+      OutRoute: "MF - QN"
+      Product: "Milford Sound Scenic Flyover"
+      RezdyCode: "PSLMYT"
+      */
+    getProduct(productCode){
+        return gya.getProduct(productCode)
+      }
+
+
     //
     // Compare Booking data to which cell it's in and determine which leg it's on.
     //
+    getLeg(){
+      return this.getDirection()
+    }
     getDirection() {
       let type = this.product.FlightType
-      return type.match(/^B/ig) ? "out" : "in" 
+      return type.match(/^B/ig) ? "B" : "A" 
     }
     isOut(){
-      return this.getDirection() == "out" ? true : false
+      return this.getDirection() == "B" ? true : false
     }
     getTripTimes(TableCell){
       let cellHour = TableCell.hour
