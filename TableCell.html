@@ -182,25 +182,7 @@
       // If Data
       // --------
       if (!!cellData) {
-        console.log("[TableCell].update() \nTableCell Data: %o", cellData)
-        let bookings = this.getOrders() // returns an array of Booking Objects [{Booking},{Booking}]
-        console.log("[TableCell].Update()\nTableCell Bookings: %o", bookings)
-        /*
-
-
-        Next up... need to discern all of the cell information for display based on
-        the orderNumbers in the state object.
-
-
-        */
-
-        // *****************************************************
-        // Get the number of pax and which product they're doing
-        // *****************************************************
-        // We have the orderNumber and item
-        // reach into the manifest and get the Booking Object
-        //
-
+        debug.log("{TableCell}.update()")
         //
         // In/Out Chevrons
         //
@@ -222,12 +204,30 @@
             $this.css("background-image", "var(--gradient-out)")
             break
         }
+        // *****************************************************
+        // Get the number of pax and which product they're doing
+        // *****************************************************
+        // We have the orderNumber and item
+        // reach into the manifest and get the Booking Object
+        //
 
-        //        $(':root').css(name,val)
+        debug.log("cellData", cellData)
+        let bookings = this.getOrders() // returns an array of Booking Objects [{Booking},{Booking}]
+        debug.log("bookings", bookings)
 
-        //document.documentElement.setAttribute("style", "--in: pink");
+        let pax = bookings.reduce((acc, booking) => {
+          // Find the item that matches the booking's .item variable
+          let item = booking.order.items.find((item) => item.productCode == booking.item)
+          let paxNum 
+          if (!!item){
+            paxNum = item.participants.length
+          }
+          return acc + paxNum
+        },0)
+        debug.log("pax",pax)
+        $this.html(pax) // just show the cellID for now ********
 
-        // $this.html(cellData.orders.join("<br>")) // just show the cellID for now ********
+        //var colSum = matrix.reduce((a, b) => a.map((x, i) => x + b[i]))
       } else {
         $this.draggable("disable")
       }

@@ -1,52 +1,50 @@
-<script >
-
-  function msgbox(text,buttontext,title) {
+<script>
+  function msgbox(text, buttontext, title) {
     buttontext = buttontext || "OK"
     title = title || ""
-    $( "<div>" + text + "</div>" ).dialog({
+    $("<div>" + text + "</div>").dialog({
       dialogClass: "no-close",
       title: title,
       position: { my: "left top", at: "left top", of: this },
       show: {
-      effect: "blind", 
-      duration: 300
+        effect: "blind",
+        duration: 300,
       },
       buttons: [
         {
           text: buttontext,
-          click: function() {
-            window.top.close()           
-            $( this ).dialog( "close" );
-            $( this ).remove();
-          }
-        }
-      ]
-    });
+          click: function () {
+            window.top.close()
+            $(this).dialog("close")
+            $(this).remove()
+          },
+        },
+      ],
+    })
   }
-  
-function createArry() {
+
+  function createArry() {
     createArray(3, 5)
-}
+  }
 
-function createArray(d1, d2) {
-
-    var x = new Array(d1);
+  function createArray(d1, d2) {
+    var x = new Array(d1)
 
     for (var i = 0; i < x.length; i++) {
-        x[i] = new Array(d2);
+      x[i] = new Array(d2)
     }
-    return (x)
-}
-var debug = {
-  debug:true,
-  log: function(...args){
-      if (this.debug == true){
+    return x
+  }
+  var debug = {
+    debug: true,
+    log: function (...args) {
+      if (this.debug == true) {
         console.log(args)
       }
-    }
-}
+    },
+  }
 
-var utility = {
+  var utility = {
     // ========================================== Get Pax ==========================================
     // Takes JSON booking
     // Returns pax object
@@ -56,282 +54,291 @@ var utility = {
     //    seats: seats,
     //    code: code,
     //    ACI: ACI,
-                
+
     // -----------------------------------------------------------------------------
     // Get passenger numbers. If quantities are by product and not pax, return false
     // -----------------------------------------------------------------------------
-    getPax: function(json) {
-        let byPax = false
-        let ret = new Array(2)
-        if (json.quantities) {
-            // -----------------------------------------------------------------------------
-            // Check for ACI... if not, return false
-            // -----------------------------------------------------------------------------
-            let q = json.quantities
-            if (q){
-              for (let i in q){
-                  if ( q[i].optionLabel.match(/Adult/ig) ){
-                    byPax = true
-                  }
-                  if ( q[i].optionLabel.match(/Child/ig) ){
-                    byPax = true
-                  }
-                  if ( q[i].optionLabel.match(/Infant/ig) ){
-                    byPax = true
-                  }
-                }
-              
+    getPax: function (json) {
+      let byPax = false
+      let ret = new Array(2)
+      if (json.quantities) {
+        // -----------------------------------------------------------------------------
+        // Check for ACI... if not, return false
+        // -----------------------------------------------------------------------------
+        let q = json.quantities
+        if (q) {
+          for (let i in q) {
+            if (q[i].optionLabel.match(/Adult/gi)) {
+              byPax = true
             }
-
-            let A = typeof q[0] !== "undefined" ? parseInt(q[0].value) || 0 : 0
-            let C = typeof q[1] !== "undefined" ? parseInt(q[1].value) || 0 : 0
-            let I = typeof q[2] !== "undefined" ? parseInt(q[2].value) || 0 : 0
-
-            let Adult = parseInt(ret[0]) || 0
-            let Child = parseInt(ret[1]) || 0
-            let Infant = parseInt(ret[2]) || 0
-
-            ret[0] = Adult + A
-            ret[1] = Child + C
-            ret[2] = Infant + I
-
-            let ACI = ret
-
-            let code = ""
-            ret[0] > 0 ? code += ret[0] + "A" : code
-            ret[1] > 0 ? code += ret[1] + "C" : code
-            ret[2] > 0 ? code += ret[2] + "I" : code
-            let seats = ret[0] + ret[1];
-
-            var pax = {
-                adult: ret[0],
-                child: ret[1],
-                infant: ret[2],
-                seats: seats,
-                code: code,
-                ACI: ACI,
+            if (q[i].optionLabel.match(/Child/gi)) {
+              byPax = true
             }
+            if (q[i].optionLabel.match(/Infant/gi)) {
+              byPax = true
+            }
+          }
         }
-        if (byPax){
-          return pax
-        } else {
-          return false
+
+        let A = typeof q[0] !== "undefined" ? parseInt(q[0].value) || 0 : 0
+        let C = typeof q[1] !== "undefined" ? parseInt(q[1].value) || 0 : 0
+        let I = typeof q[2] !== "undefined" ? parseInt(q[2].value) || 0 : 0
+
+        let Adult = parseInt(ret[0]) || 0
+        let Child = parseInt(ret[1]) || 0
+        let Infant = parseInt(ret[2]) || 0
+
+        ret[0] = Adult + A
+        ret[1] = Child + C
+        ret[2] = Infant + I
+
+        let ACI = ret
+
+        let code = ""
+        ret[0] > 0 ? (code += ret[0] + "A") : code
+        ret[1] > 0 ? (code += ret[1] + "C") : code
+        ret[2] > 0 ? (code += ret[2] + "I") : code
+        let seats = ret[0] + ret[1]
+
+        var pax = {
+          adult: ret[0],
+          child: ret[1],
+          infant: ret[2],
+          seats: seats,
+          code: code,
+          ACI: ACI,
         }
+      }
+      if (byPax) {
+        return pax
+      } else {
+        return false
+      }
     },
-    getACI: function(booking){
+    getACI: function (booking) {
       let ret = booking.pax
       return ret.length
     },
     // Stringify Adult/Child/Infant for display (2A3C1I)
-    ACI: function(array) {
+    ACI: function (array) {
+      let ret = ""
+      for (a in array) {
+        let A = parseInt(array[a])
 
-        let ret = ""
-        for (a in array) {
-
-            let A = parseInt(array[a])
-
-            if (A > 0) {
-                a = parseInt(a)
-                switch (a) {
-                    case 0:
-                        ret = ret + array[a] + "A"
-                        break
-                    case 1:
-                        ret = ret + array[a] + "C"
-                        break
-                    case 2:
-                        ret = ret + array[a] + "I"
-                        break
-                }
-            }
+        if (A > 0) {
+          a = parseInt(a)
+          switch (a) {
+            case 0:
+              ret = ret + array[a] + "A"
+              break
+            case 1:
+              ret = ret + array[a] + "C"
+              break
+            case 2:
+              ret = ret + array[a] + "I"
+              break
+          }
         }
-        return ret
+      }
+      return ret
     },
     // Takes either a PlaneCell and a booking or a TableCell and a booking
     // Returns Two cell coordinates, the IN cell and the OUT cell
-    getTarget: function(cell,booking){
-          
-      let offset = gya.getOffset(booking.product)      
+    getTarget: function (cell, booking) {
+      let offset = gya.getOffset(booking.product)
       let row = null
       let col = null
-      
-      if ( cell.attr("class").search("PlaneCell") >=0 ){
-        row = parseInt( time.getRow(booking.time) )
-        col = parseInt( cell.prop('id').match(/\d+/g) ) // Get PlaneCell id digits (which equal the column)
+
+      if (cell.attr("class").search("PlaneCell") >= 0) {
+        row = parseInt(time.getRow(booking.time))
+        col = parseInt(cell.prop("id").match(/\d+/g)) // Get PlaneCell id digits (which equal the column)
       } else {
         //console.log("Parent Row: %o",cell.parent().prop('id'))
-        row = parseInt( cell.parent().prop('id').match(/\d+/g) ) // Get Cell Parent id digits (which equal the column)
-        col = parseInt( cell.prop('id').slice(-1) )
+        row = parseInt(cell.parent().prop("id").match(/\d+/g)) // Get Cell Parent id digits (which equal the column)
+        col = parseInt(cell.prop("id").slice(-1))
       }
-        let IN = [row,col]
-        let outRow = row+offset
-        let OUT = [outRow,col]
-        let isout = false
-        if ( booking.product && booking.product.toUpperCase().includes("CCF") ){ isout = true }
-        if ( booking.product && booking.product.toUpperCase().includes("OUTS") ){ isout = true }
-        if ( cell.data("type") && cell.data("type").toUpperCase().includes("OUTS") ){ isout = true }
-        
-        if (isout){
-          OUT = [row,col]
-          IN = []
-        }
-        return ([IN,OUT,offset])
+      let IN = [row, col]
+      let outRow = row + offset
+      let OUT = [outRow, col]
+      let isout = false
+      if (booking.product && booking.product.toUpperCase().includes("CCF")) {
+        isout = true
+      }
+      if (booking.product && booking.product.toUpperCase().includes("OUTS")) {
+        isout = true
+      }
+      if (cell.data("type") && cell.data("type").toUpperCase().includes("OUTS")) {
+        isout = true
+      }
+
+      if (isout) {
+        OUT = [row, col]
+        IN = []
+      }
+      return [IN, OUT, offset]
     },
-    pushKey:function(obj,key,val){
+    pushKey: function (obj, key, val) {
       let newVal = JSON.parse(JSON.stringify(val))
-      if (key){
-        if (typeof obj[key] != 'undefined'){     
+      if (key) {
+        if (typeof obj[key] != "undefined") {
           obj[key].push(newVal)
-        }
-        else {
+        } else {
           obj[key] = [newVal]
         }
       }
     },
-    getTimes: function(bookings,target){
-      let col = target.prop('id').match(/\d+/g)//get only digits
+    getTimes: function (bookings, target) {
+      let col = target.prop("id").match(/\d+/g) //get only digits
       let match = false
       let returnTripTarget = ""
+      //
+      // Each Booking
+      //
+      for (b in bookings) {
+        let booking = bookings[b]
+        let t = time.getHour(booking.time)
         //
-        // Each Booking
+        // Array of all TimeCells
         //
-        for (b in bookings){
-          let booking = bookings[b]
-          let t = time.getHour(booking.time)
-          //
-          // Array of all TimeCells
-          //
-          var all = $(".TimeCell").map(function() {
-            return this.id;
-          }).get();
-          //
-          // Each Timecell
-          //
-          for (id in all){
-            let row = $("#" + all[id]).parent().prop('id').match(/\d+/g) // Get Time Row#
-  
-            let cellTime = $("#" + all[id]).text()
-            let timeCellID = $("#" + all[id]).prop('id')
-            
-            let timeCell = $("#" + row + col)
-            let offset = gya.getOffset(booking.product)
-            let outRow = parseInt(row) + parseInt(offset)// pull from data
-            returnTripTarget = $("#" + outRow + col)
-            
-            if (cellTime == t){
-              target = timeCell
-              match = true
-              break
-            }
+        var all = $(".TimeCell")
+          .map(function () {
+            return this.id
+          })
+          .get()
+        //
+        // Each Timecell
+        //
+        for (id in all) {
+          let row = $("#" + all[id])
+            .parent()
+            .prop("id")
+            .match(/\d+/g) // Get Time Row#
+
+          let cellTime = $("#" + all[id]).text()
+          let timeCellID = $("#" + all[id]).prop("id")
+
+          let timeCell = $("#" + row + col)
+          let offset = gya.getOffset(booking.product)
+          let outRow = parseInt(row) + parseInt(offset) // pull from data
+          returnTripTarget = $("#" + outRow + col)
+
+          if (cellTime == t) {
+            target = timeCell
+            match = true
+            break
           }
         }
-        if (!match){
+      }
+      if (!match) {
         // Invalid Drop (reject or it will plot on the Plane Cell)
         return null
-        }
-        return [target,returnTripTarget]
+      }
+      return [target, returnTripTarget]
     },
-    close:function(){
-    //google.script.run()
-    google.script.host.close()
+    close: function () {
+      //google.script.run()
+      google.script.host.close()
     },
-    error:function(message,object){
+    error: function (message, object) {
       object = object || ""
       message = "<BR>" + message
-      $('<div class="error">Error: '+message+'</div>').insertAfter('#Error').delay(3000).fadeOut(function() {$(this).remove()})
+      $('<div class="error">Error: ' + message + "</div>")
+        .insertAfter("#Error")
+        .delay(3000)
+        .fadeOut(function () {
+          $(this).remove()
+        })
     },
-    alert:function(message,targetObject){
-      targetObject = targetObject || '#Alert'
-      $('<div class="alert">'+message+'</div>').insertAfter(targetObject).delay(3000).fadeOut(function() {$(this).remove()})
+    alert: function (message, targetObject) {
+      targetObject = targetObject || "#Alert"
+      $('<div class="alert">' + message + "</div>")
+        .insertAfter(targetObject)
+        .delay(3000)
+        .fadeOut(function () {
+          $(this).remove()
+        })
     },
-  // Get a list of products in a list of bookings
-  // Eventually maybe even list the # of pax per product **********
-  getProducts:function(bookings){
-    let ret = {}
-    for (b in bookings){
-      let B = bookings[b]
-      let product = B.product
-      if (!ret[product]){ // can probably just assign this regardless of if it exists.
-        ret[product]=product
+    // Get a list of products in a list of bookings
+    // Eventually maybe even list the # of pax per product **********
+    getProducts: function (bookings) {
+      let ret = {}
+      for (b in bookings) {
+        let B = bookings[b]
+        let product = B.product
+        if (!ret[product]) {
+          // can probably just assign this regardless of if it exists.
+          ret[product] = product
+        }
       }
-    } 
-    return ret    
-  },
+      return ret
+    },
 
-  printDiv: function (_this) 
-  {
-    let printMe = getElementChildrenAndStyles($("#TheBoard"))
-    if(_this){
-      printMe = getElementChildrenAndStyles(_this)
-    }
-    let style = "<style> .inMarker{float:right; display: block;} .outMarker{float:right;display: block;} </style>"
-    // -webkit-print-color-adjust to keep colors for the printing version
-    let keepColors = '<style>body {-webkit-print-color-adjust: exact !important; }</style>'
-    let newWin=window.open('','Print-Window')
-    newWin.document.open()
-    newWin.document.write('<html><head>' + keepColors + ' ' + style + '</head><body onload="window.print()">'+printMe+'</body></html>')
-    newWin.document.close()
-    setTimeout(function(){newWin.close();},10)
-  },
-  printPickup: function(){
-    //utility.printDiv($("#PickupList"))
-    $('#PickupList').focus()
+    printDiv: function (_this) {
+      let printMe = getElementChildrenAndStyles($("#TheBoard"))
+      if (_this) {
+        printMe = getElementChildrenAndStyles(_this)
+      }
+      let style = "<style> .inMarker{float:right; display: block;} .outMarker{float:right;display: block;} </style>"
+      // -webkit-print-color-adjust to keep colors for the printing version
+      let keepColors = "<style>body {-webkit-print-color-adjust: exact !important; }</style>"
+      let newWin = window.open("", "Print-Window")
+      newWin.document.open()
+      newWin.document.write(
+        "<html><head>" + keepColors + " " + style + '</head><body onload="window.print()">' + printMe + "</body></html>"
+      )
+      newWin.document.close()
+      setTimeout(function () {
+        newWin.close()
+      }, 10)
+    },
+    printPickup: function () {
+      //utility.printDiv($("#PickupList"))
+      $("#PickupList").focus()
       window.print()
-  },
-}
-
-
-
-var arrays = {
-  average:function(ary) {
-    var sum = 0;
-    for( var i = 0; i < ary.length; i++ ){
-      sum += parseInt( ary[i], 10 ); //don't forget to add the base
-    }    
-    var avg = sum/ary.length;
-    return (
-      avg
-    );
-  },
-  sum:function(ary,maxCol) {
-    var col = ary.length
-    if (typeof maxCol !== 'undefined'){
-      col = maxCol
-    }
-    var sum = 0;
-    for( var i = 0; i < col; i++ ){
-      sum += parseInt( ary[i], 10 ); //don't forget to add the base
-    }
-    return (
-      sum
-    );
-  },
-  colSum:function(a,b){
-  let matrix = [a,b]
-  var colSum = matrix.reduce((a, b) => a.map((x, i) => x + b[i]));
-  return colSum  
-  },
-  sumArray:function(arry){
-    return arry.reduce((a, b) => a + b, 0)
-  },
-  sortFunction:function(a, b) {
-    if (a[0] === b[0]) {
-        return 0;
-    }
-    else {
-        return (a[0] < b[0]) ? -1 : 1;
-    }
-  },
-  reverseSortFunction:function(a, b) {
-    if (a[0] === b[0]) {
-        return 0;
-    }
-    else {
-        return (a[0] > b[0]) ? -1 : 1;
-    }
+    },
   }
-}
 
-    
-
-    </script>
+  var arrays = {
+    average: function (ary) {
+      var sum = 0
+      for (var i = 0; i < ary.length; i++) {
+        sum += parseInt(ary[i], 10) //don't forget to add the base
+      }
+      var avg = sum / ary.length
+      return avg
+    },
+    sum: function (ary, maxCol) {
+      var col = ary.length
+      if (typeof maxCol !== "undefined") {
+        col = maxCol
+      }
+      var sum = 0
+      for (var i = 0; i < col; i++) {
+        sum += parseInt(ary[i], 10) //don't forget to add the base
+      }
+      return sum
+    },
+    colSum: function (a, b) {
+      let matrix = [a, b]
+      var colSum = matrix.reduce((a, b) => a.map((x, i) => x + b[i]))
+      return colSum
+    },
+    sumArray: function (arry) {
+      return arry.reduce((a, b) => a + b, 0)
+    },
+    sortFunction: function (a, b) {
+      if (a[0] === b[0]) {
+        return 0
+      } else {
+        return a[0] < b[0] ? -1 : 1
+      }
+    },
+    reverseSortFunction: function (a, b) {
+      if (a[0] === b[0]) {
+        return 0
+      } else {
+        return a[0] > b[0] ? -1 : 1
+      }
+    },
+  }
+</script>

@@ -16,6 +16,10 @@
       }
       this.product = this.getProduct(code)
     }
+    getItem(){
+      let _oNum = this.orderNumber
+      return this.order.items.find((x) => x.orderNumber === _oNum)
+    }
     getBookingObject(){
 
     }
