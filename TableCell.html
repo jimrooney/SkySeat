@@ -80,6 +80,22 @@
         utility.error(msg)
       }
     }
+    // -------------------------------------------------------------------
+    // Record Drop
+    // -------------------------------------------------------------------
+    recordDrop($this, $dropped) {
+      //
+      // // This is the magic //
+      //
+      let $Board = $this.closest(".root") // jQuery root
+      let _board_ = $Board.data("root") // JavaScript root
+      _board_.state.add($this, $dropped) // This adds the data to the State object (two dimensional array that mirrors the Board)
+      _board_.update() // board.update() calls update() on each TableCell.
+      $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
+    }
+    // -------------------------------------------------------------------
+    // isLegalDrop
+    // -------------------------------------------------------------------
     isLegalDrop(cellLeg, droppedIsOut) {
       let cellIsOut = cellLeg == "B"
       /*
@@ -95,19 +111,6 @@
       let legal
       cellLeg == null ? (legal = true) : cellIsOut == droppedIsOut ? (legal = true) : (legal = false)
       return legal
-    }
-    // -------------------------------------------------------------------
-    // Record Drop
-    // -------------------------------------------------------------------
-    recordDrop($this, $dropped) {
-      //
-      // // This is the magic //
-      //
-      let $Board = $this.closest(".root") // jQuery root
-      let _board_ = $Board.data("root") // JavaScript root
-      _board_.state.add($this, $dropped) // This adds the data to the State object (two dimensional array that mirrors the Board)
-      _board_.update() // board.update() calls update() on each TableCell.
-      $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
     }
     // ------------------------------
     // getBookingObjects
@@ -182,7 +185,7 @@
       // If Data
       // --------
       if (!!cellData) {
-        debug.log("{TableCell}.update()")
+        debug.log("{TableCell}.update()", cellData)
         //
         // In/Out Chevrons
         //
@@ -218,37 +221,18 @@
         let pax = bookings.reduce((acc, booking) => {
           // Find the item that matches the booking's .item variable
           let item = booking.order.items.find((item) => item.productCode == booking.item)
-          let paxNum 
-          if (!!item){
+          let paxNum
+          if (!!item) {
             paxNum = item.participants.length
           }
           return acc + paxNum
-        },0)
+        }, 0)
 
-
-        let codes = []
-        for (let a in bookings){
-          let p = bookings[a].product.GYACode 
-          if (!!p){
-            codes.push(p)
-          }
-        }
-
-
-        // let details =  bookings.reduce((booking) => {
-        //   if (!!booking.getCode()){
-        //     return booking.getCode()
-        //   }
-        // })
-
-
-
-
-        debug.log("Codes",codes)
-        debug.log("pax",pax)
-        $this.html(pax + " " + codes.join("<BR>"))
-
-        //var colSum = matrix.reduce((a, b) => a.map((x, i) => x + b[i]))
+        // Use map to extract the GYACode into an array
+        // Use [...new Set()] to eliminate duplicates
+        // (Without the [...] you get objects)
+        let codes = [...new Set(bookings.map((b) => b.product.GYACode))].join("<BR>")
+        $this.html(`(${pax})  ${codes}`)
       } else {
         $this.draggable("disable")
       }

@@ -9,36 +9,9 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Currently
 -------------------------------
-In Manifest.getBooking()...
-the find() function needs to search for both orderNumbers and productCodes (inside items) so that the return
-can handle multiple products booked by the same person
-
-
-
-Updating TableCells
-Drops are recording the correct data now, so time to start displaying that data.
-
-Ins and Outs working when dropping from Manifest now...
-Have a look at making drops from other TableCells work too.
-
-Drops need to become aware of if an out-leg of a booking is being dropped, not just an OUTS booking.
-So if you move an out-leg of a trip (the return leg TableCell or the returning pax trip)
-
----------------------------------------------------------------------------------
-Sorted?
----------------------------------------------------------------------------------
-manifest getOrders (muliple products)
-state (multiple products)
----------------------------------------------------------------------------------
-
-
-
-Working on TableCell update function... determining Cell display information and type... particularly in/out 
+In {State}.add()
+Dropping TableCells is partially working... the booking gets recorded correctly but the item doesn't (undefined)
 Drop needs to determine return trip details and plot the associated cells.
-
-Working on handling drops from other Table Cells 
-
-Save State
 We'll also need to move plotted returns when the parent "in" moves.
 
 -------------------------------

@@ -15,13 +15,16 @@
       console.log("Cleared State")
       this.data = {}
     }
-    add(TableCell, $dropped) { // ({TableCell},{Booking})
+    add(TableCell, $dropped) {
+      // ({TableCell},{Booking})
       //
       // add dropped object to TableCell it was dropped onto
       //
 
       let _dropped = $dropped.prop("_this") // ({TableCell} or {Booking}) JS object attached to the Selector
       let cell_ID = TableCell.prop("id")
+      debug.log("_dropped", _dropped)
+
       /*
 
       Record into the state the booking orderNumber... partial bookings will have [orderNumber-participantKey] (maybe the barcode?)
@@ -46,11 +49,18 @@
         // Brand the cell (for In/Out/Etc)
         let cellData = this.data[cell_ID]
         cellData.leg = _dropped.getLeg()
-        //
-        // Add the booking to the CellData Object
-        // CellData.add()
-        //
-        this.data[cell_ID].add(_dropped)
+
+        // Adding Data ***********************************
+        if (_dropped.constructor.name == "TableCell") {
+          debug.log("TableCell Drop")
+          debug.log("Bookings", _dropped.getOrders())
+          debug.log("getCellDataObject()", _dropped.getCellDataObject())
+          _dropped.getOrders().forEach((element) => {
+            this.data[cell_ID].add(element)
+          })
+        } else {
+          this.data[cell_ID].add(_dropped)
+        }
       }
     }
     getCellDataObject(cell) {
@@ -59,7 +69,7 @@
     remove(cell, key) {
       // Remove a booking from a cell's data
     }
-    getState(){
+    getState() {
       return this.data
     }
   }
