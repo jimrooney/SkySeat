@@ -23,7 +23,12 @@
 
       let _dropped = $dropped.prop("_this") // ({TableCell} or {Booking}) JS object attached to the Selector
       let cell_ID = TableCell.prop("id")
-      debug.log("_dropped", _dropped)
+
+      console.log("$dropped", $dropped)
+      $dropped.each( function( index, e ) {
+        console.log("e", e)
+})
+      
 
       /*
 
@@ -52,13 +57,15 @@
 
         // Adding Data ***********************************
         if (_dropped.constructor.name == "TableCell") {
-          debug.log("TableCell Drop")
-          debug.log("Bookings", _dropped.getOrders())
-          debug.log("getCellDataObject()", _dropped.getCellDataObject())
+          console.log("TableCell Drop")
+          console.log("_dropped.getOrders(): %o", _dropped.getOrders())
+          console.log("getCellDataObject(): %o", _dropped.getCellDataObject())
           _dropped.getOrders().forEach((element) => {
+            console.log("Add: %o", element)
             this.data[cell_ID].add(element)
           })
         } else {
+          console.log("Add: %o", _dropped)
           this.data[cell_ID].add(_dropped)
         }
       }

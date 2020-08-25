@@ -130,9 +130,20 @@
           // data will have let key = orderNumber + "_" + productNumber
           let s = data.bookingOrders[o].split("_")
           let orderNumber = s[0]
-          let productNumber = s[1]
-          let order = this.board.manifest.getBooking(orderNumber, productNumber)
-          let booking = new Booking(productNumber, orderNumber, order) // [booking] expects a product object, we're giving it a product Number (which [booking] just looks up anyway)
+          let productCode = s[1]
+          let order = this.board.manifest.getBooking(orderNumber, productCode)
+
+
+console.log("Order: %o",order)
+console.log("productCode: %o",productCode)
+
+
+
+
+
+
+          let item = order.items.find((x) => x.productCode === productCode)
+          let booking = new Booking(item, orderNumber, order) // [booking] expects a product object, we're giving it a product Number (which [booking] just looks up anyway)
           retArray.push(booking)
         }
       }

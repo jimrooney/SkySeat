@@ -9,6 +9,11 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Currently
 -------------------------------
+Clean up Booking Object.
+No need to keep both the order and item objects. Just keep the keys.
+Continue to cleanup TableCell object (same problem)
+
+
 In {State}.add()
 Dropping TableCells is partially working... the booking gets recorded correctly but the item doesn't (undefined)
 Drop needs to determine return trip details and plot the associated cells.
