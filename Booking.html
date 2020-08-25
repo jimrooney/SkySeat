@@ -1,20 +1,15 @@
 <script>
   class Booking {
-    constructor(item, orderNumber, order) {
-      //
-      this.item = item // keep a reference to the Rezdy Data. (item = product)
-      this.orderNumber = orderNumber || null
+    //constructor(item, orderNumber, order) {
+    constructor(manifest,order,item){
+      this.manifest = manifest
       this.order = order
+      this.item = item
+      this.orderNumber = order.orderNumber
       //
       // TableCell calls this with just the product code (insead of item) *******
       //
-      let code = ""
-      if (!!item.productCode){
-        code = item.productCode
-      } else {
-        code = item
-      }
-      this.product = this.getProduct(code)
+      this.product = this.getProduct(item.productCode)
     }
     getCode(){
       return this.product.GYACode

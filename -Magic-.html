@@ -1,5 +1,15 @@
 [[[[[[[[[[[[[[[[[[[[[[[ Random bits of magic that make this all work ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
 
+
+
+let item = order.items.find((x) => x.productCode === productCode)
+...
+let itemIndex = order.items.findIndex((x) => x.productCode === productCode)
+let item = order.items[itemIndex]
+
+
+
+
 -------------------------------------------------------------------------------------------------------------------
 //        $(':root').css(name,val)
 // document.documentElement.setAttribute("style", "--in: pink");

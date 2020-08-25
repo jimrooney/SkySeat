@@ -142,8 +142,19 @@ console.log("productCode: %o",productCode)
 
 
 
-          let item = order.items.find((x) => x.productCode === productCode)
-          let booking = new Booking(item, orderNumber, order) // [booking] expects a product object, we're giving it a product Number (which [booking] just looks up anyway)
+          let itemIndex = order.items.findIndex((x) => x.productCode === productCode)
+          let item = order.items[itemIndex]
+console.log("Item: %o",itemIndex)
+console.log("Item: %o",item)
+
+
+
+
+
+
+
+          let manifest = this.board.manifest
+          let booking = new Booking(manifest, order, item)
           retArray.push(booking)
         }
       }

@@ -73,10 +73,11 @@
       // Loop over bookings (Items) and print each booking div
       //
       for (let o in orders) {
-        let orderNumber = orders[o].orderNumber
+        let order = orders[o]
         for (let i in orders[o].items) {
-          let booking = new Booking(orders[o].items[i], orderNumber)
-          this.$bookings.append(booking.getSprite()) // Passing in the orderNumber.. this can be extracted from the barcode or all the items can be passed in... this is just for now ***********************
+          let item = orders[o].items[i]
+          let booking = new Booking(this,order,item)
+          this.$bookings.append(booking.getSprite())
         }
       }
 
