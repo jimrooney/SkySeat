@@ -211,28 +211,21 @@
             $this.css("background-image", "var(--gradient-out)")
             break
         }
-        // *****************************************************
+        // **********************************************************************************************************
         // Get the number of pax and which product they're doing
-        // *****************************************************
+        // **********************************************************************************************************
         // We have the orderNumber and item
         // reach into the manifest and get the Booking Object
         //
-
-        
         let bookings = this.getOrders() // returns an array of Booking Objects [{Booking},{Booking}]
-
-        console.log("cellData: %o", cellData)
-        console.log("bookings: %o", bookings)
-
-        let pax = bookings.reduce((acc, booking) => {
+        let numPax = bookings.reduce((acc, booking) => {
           return acc + booking.item.participants.length
         }, 0)
-        console.log("Pax: %o",pax)
         // Use map to extract the GYACode into an array
         // Use [...new Set()] to eliminate duplicates
         // (Without the [...] you get objects)
         let codes = [...new Set(bookings.map((b) => b.product.GYACode))].join("<BR>")
-        $this.html(`(${pax})  ${codes}`)
+        $this.html(`(${numPax})  ${codes}`)
       } else {
         $this.draggable("disable")
       }

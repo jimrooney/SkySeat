@@ -9,13 +9,16 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 Eventually
 -------------------------------
 Start saving and loading State
+Look at TableCell pax number display... right now it just totals all the pax... 
+Will want to be able to also show pax-per-product when desired.
 
 -------------------------------
 Currently
 -------------------------------
-Clean up Booking Object.
-No need to keep both the order and item objects. Just keep the keys.
-Continue to cleanup TableCell object (same problem)
+TableCell drops work... need to remove the old cell data after confirming that the drop is legal
+Ins currently are draggable when dropped from the manifest... not from tablecells... and not Outs
+Ins and Outs are not draggable
+TableCell drops do check legality already... so cleanup should be straightforward.
 
 
 In {State}.add()
