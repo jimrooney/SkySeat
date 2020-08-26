@@ -73,8 +73,13 @@
     getCellDataObject(cell) {
       return this.data[cell.prop("id")]
     }
-    remove(cell, key) {
+    remove($cell, key) {
       // Remove a booking from a cell's data
+      // Removing everything for now... will need different for partial removals *************
+      // pass a list of bookings?**********
+      // look in remove function ************
+      // Will need reference to originating board on multiboard?... might come with context though ********
+      this.data[$cell.prop("id")].remove()
     }
     getState() {
       return this.data

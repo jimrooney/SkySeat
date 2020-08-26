@@ -72,37 +72,4 @@
   })
   //-------------------------------------------------------------------------------------------
 
-  // ---------------------------
-  // Init makes things draggable
-  // ---------------------------
-  function init() {
-    $(".BookingSprite").draggable({
-      //revert: true,
-      //helper: 'clone',
-      cursorAt: { left: 5, top: 5 },
-      revert: "invalid",
-      helper: function () {
-        //debugger;
-        return $("<div class='popupCloseButton'></div>") //.append($(this).prop('id'));
-      },
-    })
-
-    $(".Draggable").draggable({
-      revert: false,
-    })
-    
-    $(".PlaneCell").droppable({
-      accept: ".BookingSprite",
-      // drop: handleDropEvent,
-      // over: handleOverEvent,
-      // out: handleOutEvent,
-    })
-    $(".Trash").droppable({
-      accept: ".BookingSprite, .TableCell",
-      // drop: handleTrashDrop,
-    })
-    $(".productCode").click(function () {
-      utility.alert("Click")
-    })
-  }
 </script>

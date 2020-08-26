@@ -16,7 +16,6 @@
       let $this = $("<td />", {
         class: "TableCell Row_" + r + " Col_" + c,
         id: this.id,
-        text: this.id,
       })
       // -------------------------------------------
       // Backreference
@@ -36,8 +35,8 @@
       // -------------------------------------------
       $this.click(function () {
         console.log("TableCell Click")
-        console.log("Classes: %o", $(this).attr("class"))
-        console.log("TableCell.hour: %o", _this.hour)
+        console.log("ID: %o", $(this).prop("id"))
+        console.log("Hour: %o", _this.hour)
         //
         // ******************************************************************************
         // Remove the inMarker class (just to see class removal function visually)
@@ -74,6 +73,12 @@
         // ====================================================================
         // Drop accepted, record and update.
         _this.recordDrop($(this), $dropped) // recordDrop({TableCell},{Booking})
+        $(this).draggable("enable")
+        $(ui.helper).remove()
+        if(!!_dropped.board){
+          _dropped.board.state.remove($dropped) // List of bookings instead?**************
+        }
+        //_this.update() // updates display and draggable
         // ====================================================================
       } else {
         let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellLeg: " + leg
@@ -226,6 +231,11 @@
         // (Without the [...] you get objects)
         let codes = [...new Set(bookings.map((b) => b.product.GYACode))].join("<BR>")
         $this.html(`(${numPax})  ${codes}`)
+        $this.draggable({
+          //revert: true,
+          helper: 'clone',
+          cursorAt: { left: 5, top: 5 },
+        })
       } else {
         $this.draggable("disable")
       }
