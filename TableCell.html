@@ -123,37 +123,19 @@
       //
       // Returns an array of booking objects objects (from State)
       //
+      let manifest = this.board.manifest
       let retArray = []
       let data = this.getCellDataObject()
       if (!!data) {
         for (let o in data.bookingOrders) {
-          // data will have let key = orderNumber + "_" + productNumber
-          let s = data.bookingOrders[o].split("_")
+          //
+          // Split each bookingOrder's key and retrieve it from the Manifest
+          //
+          let s = data.bookingOrders[o].split("_") // orderNumber + "_" + productCode
           let orderNumber = s[0]
           let productCode = s[1]
-          let order = this.board.manifest.getBooking(orderNumber, productCode)
-
-
-console.log("Order: %o",order)
-console.log("productCode: %o",productCode)
-
-
-
-
-
-
-          let itemIndex = order.items.findIndex((x) => x.productCode === productCode)
-          let item = order.items[itemIndex]
-console.log("Item: %o",itemIndex)
-console.log("Item: %o",item)
-
-
-
-
-
-
-
-          let manifest = this.board.manifest
+          let order = manifest.orders.find((x) => x.orderNumber === orderNumber)
+          let item = order.items.find((x) => x.productCode === productCode)
           let booking = new Booking(manifest, order, item)
           retArray.push(booking)
         }
@@ -236,20 +218,16 @@ console.log("Item: %o",item)
         // reach into the manifest and get the Booking Object
         //
 
-        debug.log("cellData", cellData)
+        
         let bookings = this.getOrders() // returns an array of Booking Objects [{Booking},{Booking}]
-        debug.log("bookings", bookings)
+
+        console.log("cellData: %o", cellData)
+        console.log("bookings: %o", bookings)
 
         let pax = bookings.reduce((acc, booking) => {
-          // Find the item that matches the booking's .item variable
-          let item = booking.order.items.find((item) => item.productCode == booking.item)
-          let paxNum
-          if (!!item) {
-            paxNum = item.participants.length
-          }
-          return acc + paxNum
+          return acc + booking.item.participants.length
         }, 0)
-
+        console.log("Pax: %o",pax)
         // Use map to extract the GYACode into an array
         // Use [...new Set()] to eliminate duplicates
         // (Without the [...] you get objects)

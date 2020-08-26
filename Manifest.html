@@ -134,24 +134,6 @@
       return
     }
     //
-    // Loop over each booking for a match
-    //
-    getBooking(orderNumber, productCode) {
-      //
-      // Add filterCodes (for things like status codes)? **********************************
-      //
-      // Search orders for a matching orderNumber and productCode
-      //
-      const result = this.data.bookings.find((order) => {
-        let match = order.orderNumber === orderNumber
-        if (match) {
-          match = order.items.find( ({productCode}) => productCode === productCode )
-        }
-        return match
-      })
-      return result
-    }
-    //
     // return total number of filled seats
     //
     getTotalPax() {
