@@ -21,7 +21,7 @@
       // add dropped object to TableCell it was dropped onto
       //
 
-      let _dropped = $dropped.prop("_script") // ({TableCell} or {Booking}) JS object attached to the Selector
+      let _dropped = $dropped.data("_script") // ({TableCell} or {Booking}) JS object attached to the Selector
       let cell_ID = TableCell.prop("id")
 
       console.log("$dropped", $dropped)
@@ -83,7 +83,7 @@
       let ret = this.data[$cell.prop("id")].remove()
       if (ret == 0){
         delete this.data[$cell.prop("id")]
-        $cell.prop("_script").clear()
+        $cell.data("_script").clear()
       }
 
     }

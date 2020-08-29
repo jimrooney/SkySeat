@@ -65,9 +65,8 @@
 
     <script>
       $(document).ready(function () {
-        let $this = $("#AutoBoard")
-        $this.data("root", new Board($this)) // Attaches the JavaScript object to the jQuery .data('root') property
-        $this.data("root").writeBoard()
+        $("#AutoBoard").data("root", new Board($("#AutoBoard")))
+        $("#AutoBoard").data("root").writeBoard()
 
         $("#Details").data("root", new Details($("#Details"))) // Attaches the JavaScript object to the jQuery .data('root') property
 

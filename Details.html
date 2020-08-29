@@ -24,7 +24,7 @@
   class Details {
     constructor($root) {
       this.$root = $root // save a reference to the jQuery object
-      // Access this object through $([Selector]).data('root')
+      // Access this object through $([Selector]).data('root') // ************* ?
       this.bookings = []
     }
     init() {
@@ -79,6 +79,7 @@
       // .addClass("CoPilotSeat")
       // .addClass("Crew")
 
+      // *** change to reflect any plane *********************************************
       for (var i = 2; i <= 8; i++) {
         $("<div></div>")
           .data("number", i)
