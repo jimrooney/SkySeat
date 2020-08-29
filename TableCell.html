@@ -72,22 +72,28 @@
         // Drop accepted, record and update.
         _this.recordDrop($(this), $dropped) // recordDrop({TableCell},{Booking})
         $(this).draggable("enable")
-        _this.removeBookings(ui,_this)
+        // Centers the cursor
+        $(this).draggable("option", "cursorAt", {
+          left: Math.floor(ui.helper.width() / 2),
+          top: Math.floor(ui.helper.height() / 2),
+        })
+
+        _this.removeBookings(ui, _this)
         // ====================================================================
       } else {
         let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellLeg: " + leg
         utility.error(msg)
       }
     }
-    removeBookings(ui,_this){
+    removeBookings(ui, _this) {
       $(ui.helper).remove()
       let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
       let _dropped = $dropped.data("_script")
-      if(!!_dropped.board){
-          _dropped.board.state.remove($dropped) // List of bookings instead?**************
-        }
+      if (!!_dropped.board) {
+        _dropped.board.state.remove($dropped) // List of bookings instead?**************
+      }
     }
-    clear(){
+    clear() {
       this.$this.removeClass("inCell")
       this.$this.removeClass("outCell")
       this.update()
@@ -244,7 +250,7 @@
         $this.html(`(${numPax})  ${codes}`)
         $this.draggable({
           //revert: true,
-          helper: 'clone',
+          helper: "clone",
           cursorAt: { left: 5, top: 5 },
         })
       } else {
