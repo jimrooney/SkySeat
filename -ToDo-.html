@@ -15,7 +15,13 @@ Will want to be able to also show pax-per-product when desired.
 -------------------------------
 Currently
 -------------------------------
-Add CSS html file to Export to PDF script (add the text of that file to the innerHTML passed into the function in code.gs and see if the renderer accepts it)
+Test() button exports PDF // Using innerHTML worked
+html { -webkit-print-color-adjust: exact; } // gets the background colours to print.
+Still need to figure out how to get the TableCells borders to print (probably just don't use collapse)
+
+data = include("CSS") + data // in code.gs attaches the CSS to the PDF.... 
+External classes work, but CSS variables don't seem to.
+
 Look more into Draggable.html 
 
 TableCell drops work... need to remove the old cell data after confirming that the drop is legal

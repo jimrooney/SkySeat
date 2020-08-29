@@ -7,6 +7,7 @@ function include(filename) {
       .getContent();
 }
 function saveHtmlAsPDF(data){
+  data = include("CSS") + data
   var blob = Utilities.newBlob(data, "text/html", "text.html");
   var pdf = blob.getAs("application/pdf");
   DriveApp.createFile(pdf).setName("htmlToPDF.pdf");
