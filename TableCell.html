@@ -10,6 +10,9 @@
       this.column = c
       this.hour // Placeholder
       this.leg
+      //
+      // _this.getCellDataObject() holds all the Cell's data
+      //
       // -------------------------------------------
       // jQuery object
       // -------------------------------------------
@@ -37,11 +40,6 @@
         console.log("TableCell Click")
         console.log("ID: %o", $(this).prop("id"))
         console.log("Hour: %o", _this.hour)
-        //
-        // ******************************************************************************
-        // Remove the inMarker class (just to see class removal function visually)
-        $this.removeClass("inMarker") // ******* Testing. This can be removed *************
-        // ******************************************************************************
         //
         let data = _this.getCellDataObject()
         if (!!data) {
@@ -74,16 +72,23 @@
         // Drop accepted, record and update.
         _this.recordDrop($(this), $dropped) // recordDrop({TableCell},{Booking})
         $(this).draggable("enable")
-        $(ui.helper).remove()
-        if(!!_dropped.board){
-          _dropped.board.state.remove($dropped) // List of bookings instead?**************
-        }
-        //_this.update() // updates display and draggable
+        _this.removeBookings(ui,_this)
         // ====================================================================
       } else {
         let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellLeg: " + leg
         utility.error(msg)
       }
+    }
+    removeBookings(ui,_this){
+      $(ui.helper).remove()
+      let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
+      let _dropped = $dropped.prop("_this")
+      if(!!_dropped.board){
+          _dropped.board.state.remove($dropped) // List of bookings instead?**************
+        }
+    }
+    clearCell(){
+      
     }
     // -------------------------------------------------------------------
     // Record Drop
@@ -190,6 +195,8 @@
       // --------------
       $this.text("")
       $this.css("background-image", "")
+      $this.removeClass("outCell")
+      $this.removeClass("inCell")
       // --------
       // If Data
       // --------
@@ -207,14 +214,15 @@
             //
             // In
             //
+            $this.removeClass("outCell")
             $this.addClass("inCell")
-            //$this.css("background-image", "var(--gradient-in)")
             break
           case "B":
             //
             // Out
             //
-            $this.css("background-image", "var(--gradient-out)")
+            $this.removeClass("inCell")
+            $this.addClass("outCell")
             break
         }
         // **********************************************************************************************************

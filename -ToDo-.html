@@ -15,12 +15,11 @@ Will want to be able to also show pax-per-product when desired.
 -------------------------------
 Currently
 -------------------------------
-Test() button exports PDF // Using innerHTML worked
-html { -webkit-print-color-adjust: exact; } // gets the background colours to print.
-Still need to figure out how to get the TableCells borders to print (probably just don't use collapse)
+Clearing TableCell data on drop (from other TableCells)
+in {State}, the remove function could remove booking by booking and then check for clear.
 
-data = include("CSS") + data // in code.gs attaches the CSS to the PDF.... 
-External classes work, but CSS variables don't seem to.
+Once all the cleanup is working, then get back to plotting return trips.
+Now need something to manage the inCell outCell colors (since --var in CSS breaks PDF printing)
 
 Look more into Draggable.html 
 

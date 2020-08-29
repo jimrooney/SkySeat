@@ -79,7 +79,15 @@
       // pass a list of bookings?**********
       // look in remove function ************
       // Will need reference to originating board on multiboard?... might come with context though ********
-      this.data[$cell.prop("id")].remove()
+
+      let ret = this.data[$cell.prop("id")].remove()
+      if (ret == 0){
+        delete this.data[$cell.prop("id")]
+        $cell.removeClass("inCell")
+        $cell.removeClass("outCell")
+        $cell.prop("_this").update()
+      }
+
     }
     getState() {
       return this.data

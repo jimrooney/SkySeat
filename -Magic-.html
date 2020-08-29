@@ -7,8 +7,15 @@ let item = order.items.find((x) => x.productCode === productCode)
 let itemIndex = order.items.findIndex((x) => x.productCode === productCode)
 let item = order.items[itemIndex]
 
+-------------------------------------------------------------------------------------------------------------------
+CSS and PDF print
+-------------------------------------------------------------------------------------------------------------------
+html { -webkit-print-color-adjust: exact; } // gets the background colours to print.
 
+data = include("CSS") + data // in code.gs attaches the CSS to the PDF.... 
+External classes work, but CSS variables don't seem to.
 
+Test() button exports PDF // Using innerHTML worked
 
 -------------------------------------------------------------------------------------------------------------------
 //        $(':root').css(name,val)
