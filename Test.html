@@ -1,9 +1,14 @@
 <script>
   function test(args) {
 
-    let board = $("#AutoBoard").data("root")
-    let result = board.manifest.getBookingTest("GYA001117")
-    console.log("Result: %o",result)
+    let x = document.getElementById("AutoBoard").innerHTML
+    google.script.run.withSuccessHandler(done).saveHtmlAsPDF(x)
+
+
+
+    // let board = $("#AutoBoard").data("root")
+    // let result = board.manifest.getBookingTest("GYA001117")
+    // console.log("Result: %o",result)
     
     // let color = getComputedStyle(document.documentElement).getPropertyValue("--main-bg-color")
     // console.log("Color: %o",color)

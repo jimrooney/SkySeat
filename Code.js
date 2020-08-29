@@ -6,6 +6,14 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename)
       .getContent();
 }
+function saveHtmlAsPDF(data){
+  var blob = Utilities.newBlob(data, "text/html", "text.html");
+  var pdf = blob.getAs("application/pdf");
+  DriveApp.createFile(pdf).setName("htmlToPDF.pdf");
+  //  MailApp.sendEmail("email@labnol.org", "PDF File", "",
+  //     {htmlBody: html, attachments: pdf});
+  return "Success";
+}
 function openInDevMode(e) {
   var data  = {text:true}
   var ss,
