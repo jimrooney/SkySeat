@@ -23,7 +23,7 @@
       // -------------------------------------------
       // Backreference
       // -------------------------------------------
-      $this.prop("_this", this._this) // Backreference to JS from jQuery object
+      $this.prop("_script", this._this) // Backreference to JS from jQuery object
       this.$this = $this // keep a reference to the jQuery object
       // -------------------------------------------
       // Droppable
@@ -59,9 +59,9 @@
       // So we'll use the jQuery $(this) to get a pointer to this object
       //
       let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
-      let _dropped = $dropped.prop("_this") // ({TableCell} or {Booking}) JS object attached to the Selector
+      let _dropped = $dropped.prop("_script") // ({TableCell} or {Booking}) JS object attached to the Selector
       //_dropped.constructor.name // {TableCell} or {Booking}
-      let _this = $(this).prop("_this") // This JS Object
+      let _this = $(this).prop("_script") // This JS Object
       let cellData = _this.getCellDataObject()
 
       let leg = _this.getLeg()
@@ -82,13 +82,15 @@
     removeBookings(ui,_this){
       $(ui.helper).remove()
       let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
-      let _dropped = $dropped.prop("_this")
+      let _dropped = $dropped.prop("_script")
       if(!!_dropped.board){
           _dropped.board.state.remove($dropped) // List of bookings instead?**************
         }
     }
-    clearCell(){
-      
+    clear(){
+      this.$this.removeClass("inCell")
+      this.$this.removeClass("outCell")
+      this.update()
     }
     // -------------------------------------------------------------------
     // Record Drop

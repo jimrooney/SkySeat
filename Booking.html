@@ -82,7 +82,7 @@
       //
       // Attach this object to the sprite
       //
-      $sprite.prop("_this", this)
+      $sprite.prop("_script", this)
       $sprite.css("background-color", colors.getByBooking(this))
       // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
       $sprite.text(this.getSeats() + " " + this.product.GYACode)
