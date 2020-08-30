@@ -97,7 +97,14 @@
         let _this = $(this).data("this")
         console.log("BookingSprite: %o", _this)
         console.log("StartHour %o",_this.getStartHour())
-        console.log("Row: %o",time.getRowByHour(_this.getStartHour()))
+
+        let $row = time.getRowByHour(_this.getStartHour())
+        console.log("$row: %o",$row.data("row"))
+
+
+        $(".Row_" + $row.data("row")).css("background-color", "yellow")
+
+
       })
       $sprite.hover(
         function () {
