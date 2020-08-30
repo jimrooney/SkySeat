@@ -63,37 +63,44 @@
       if (!date) {
         date = this.getDate()
       }
-
-      // Need to filter by date as well **********************************
-
       console.log("ManifestSort Date: %o", date)
+      //
+      // Filter by CONFIRMED
+      //
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
       console.log("orders %o", orders) // [{Booking},{Booking},{Booking}]
-
-      let filteredArray = orders
+      //
+      // Filter by Date
+      //
+      let filteredManifest = orders
         .filter((element) => element.items.some((subElement) => Dates.getNZ(subElement.startTimeLocal) == date))
         .map((element) => {
           let newElt = Object.assign({}, element) // copies element
           newElt.items = newElt.items.filter((subElement) => Dates.getNZ(subElement.startTimeLocal) == date)
           return newElt
         })
-
-      console.log("Filtered Array: %o", filteredArray)
-      //  lst.push(this.orders.find((x) => x.orderNumber === _oNum))
-
-      // orders.sort((a, b) => (a.color > b.color) ? 1 : -1)
-
+      console.log("filteredManifest: %o", filteredManifest)
       //
-      // Loop over bookings (Items) and print each booking div // ********* Sort First ***********
+      // Loop over bookings
       //
+      let bookings = []
       for (let o in orders) {
         let order = orders[o]
         for (let i in orders[o].items) {
           let item = orders[o].items[i]
-          let booking = new Booking(this, order, item)
-          this.$bookings.append(booking.getSprite()) // Get a sprite from each Booking Object
+          bookings.push(new Booking(this, order, item))
         }
       }
+      //
+      // Sort Bookings by Start Time
+      //
+      bookings.sort((a, b) => (time.getHour(a.item.startTimeLocal) > time.getHour(b.item.startTimeLocal)) ? 1 : -1)
+      console.log("Sorted Bookings: %o",bookings)
+
+      //
+      // Print Sprites
+      //
+      bookings.forEach(booking => this.$bookings.append(booking.getSprite()))
 
       init() // This should change *************** not be root variable, not be such a hatchet **********
     }

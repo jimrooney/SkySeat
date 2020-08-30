@@ -88,7 +88,12 @@
       //
       // Attach this object to the sprite
       //
-      $sprite.css("background-color", colors.getByBooking(this))
+      console.log("Hour: %o",this.getStartHour())
+
+      let hue = colors.getByTime(this.getStartHour())
+      let cHue = "hsl(" + hue + ", 50%, 75%)"
+
+      $sprite.css("background-color", cHue)
       // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
       $sprite.text(this.getSeats() + " " + this.product.GYACode)
       //
