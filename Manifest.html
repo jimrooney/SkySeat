@@ -49,35 +49,49 @@
     }
     onLoad(XML) {
       console.log("Manifest onLoad()")
-      this.$parent.data.state
+      this.$parent.data.state // ? this is a declaration... doesn't do anything ***************
       this.data = JSON.parse(XML) // Store the Rezdy object so we can write them later.
-      this.orders = this.data.bookings
+      this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
       this.show()
     }
+    // ---------------------------------------------------------
+    // Show Manifest
+    // ---------------------------------------------------------
     show(date) {
-      debug.log("Manifest.show(date)", date)
+      console.log("Manifest.show() date: %o", date)
       if (!date) {
         date = this.getDate()
       }
-      /* 
 
-      Rezdy's list of "bookings" is actually a list of orders (each with an orderNumber).
-      What Rezdy calls an "Item" (in the items array) is what is actually a booking (it's an order for a product)
-
-      */
       // Need to filter by date as well **********************************
+
+      console.log("ManifestSort Date: %o", date)
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
-      console.log("orders %o", orders)
+      console.log("orders %o", orders) // [{Booking},{Booking},{Booking}]
+
+      let filteredArray = orders
+        .filter((element) => element.items.some((subElement) => Dates.getNZ(subElement.startTimeLocal) == date))
+        .map((element) => {
+          let newElt = Object.assign({}, element) // copies element
+          newElt.items = newElt.items.filter((subElement) => Dates.getNZ(subElement.startTimeLocal) == date)
+          return newElt
+        })
+
+      console.log("Filtered Array: %o", filteredArray)
+      //  lst.push(this.orders.find((x) => x.orderNumber === _oNum))
+
+      // orders.sort((a, b) => (a.color > b.color) ? 1 : -1)
+
       //
-      // Loop over bookings (Items) and print each booking div
+      // Loop over bookings (Items) and print each booking div // ********* Sort First ***********
       //
       for (let o in orders) {
         let order = orders[o]
         for (let i in orders[o].items) {
           let item = orders[o].items[i]
-          let booking = new Booking(this,order,item)
-          this.$bookings.append(booking.getSprite())
+          let booking = new Booking(this, order, item)
+          this.$bookings.append(booking.getSprite()) // Get a sprite from each Booking Object
         }
       }
 

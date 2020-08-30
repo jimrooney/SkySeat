@@ -82,11 +82,12 @@
       let orderNumber = this.orderNumber
       let $sprite = $("<span class='BookingSprite' />")
       $sprite.data("this", this) // Self Reference (for click)
+      $sprite.data("script",this)
+      $sprite.data("_script", this)
       $sprite.prop("id", this.orderNumber)
       //
       // Attach this object to the sprite
       //
-      $sprite.data("_script", this)
       $sprite.css("background-color", colors.getByBooking(this))
       // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
       $sprite.text(this.getSeats() + " " + this.product.GYACode)
@@ -110,14 +111,19 @@
         function () {
           let _this = $(this).data("this")
           let $row = time.getRowByHour(_this.getStartHour())
-          $(".Row_" + $row.data("row")).css("background-color", "yellow")
+
+          
+          $(".Row_" + $row.data("row")).addClass("highlight")
+          //$(".Row_" + $row.data("row")).css("background-color", "yellow")
 
           //$(this).css("background-color", "yellow")
         },
         function () {
           let _this = $(this).data("this")
           let $row = time.getRowByHour(_this.getStartHour())
-          $(".Row_" + $row.data("row")).css("background-color", "")
+          $(".Row_" + $row.data("row")).removeClass("highlight")
+          //$(".Row_" + $row.data("row")).css("background-color", "")
+
           //$(this).css("background-color", "pink")
         }
       )
