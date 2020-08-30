@@ -66,7 +66,11 @@
       let cellHour = TableCell.hour
       let stTime = this.item.startTimeLocal //"2020-08-08 10:00:00"
       let startHour = new Date(stTime).getHours()
-
+    }
+    getStartHour(){
+      let stTime = this.item.startTimeLocal //"2020-08-08 10:00:00"
+      let startHour = new Date(stTime).getHours()
+      return startHour
     }
     // -----------
     // getSprite()
@@ -92,7 +96,19 @@
       $sprite.click(function () {
         let _this = $(this).data("this")
         console.log("BookingSprite: %o", _this)
+        console.log("StartHour %o",_this.getStartHour())
+        console.log("Row: %o",time.getRowByHour(_this.getStartHour()))
       })
+      $sprite.hover(
+        function () {
+          console.log("Hover")
+          $(this).css("background-color", "yellow")
+        },
+        function () {
+          $(this).css("background-color", "pink")
+        }
+      )
+
       return $sprite
     }
 
@@ -177,25 +193,6 @@
     // getProductCode() {
     //   return gya.getCode(this.booking.productCode) // row from TripCodes spreadsheet ***** GYA object *****
     // }
-    // getSprite() {
-    //   // Constructs and returns a booking sprite
-    //   let $sprite = $("<span class='tooltip' />")
-    //   if (!!this.orderNumber) {
-    //     //
-    //     $sprite.data("this", this) // Self Reference (for click)
-    //     //
-    //     let masterkey = this.orderNumber.split("-")[0]
-    //     // "2FCF" coded sprite
-    //     $sprite.addClass("BookingSprite")
-    //     $sprite.prop("id", this.orderNumber)
-    //     $sprite.css("background-color", this.flight.color)
-    //     $sprite.text(this.flight.seats + " " + this.productCode.GYACode)
-    //     $sprite.click(function () {
-    //       let _this = $(this).data("this")
-    //       console.log("BookingSprite: %o", _this)
-    //     })
-    //   }
-    //   return $sprite
-    // }
+
   }
 </script>

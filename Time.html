@@ -26,23 +26,25 @@
       hour = hour + ":00"
       return hour
     },
-    getHourByRow: function (row,numDigits) {
+    getHourByRow: function (row, numDigits) {
       let hour = row + 7 // Assumes row 0 is a header row and the day starts at 8am
       if (hour > 12) {
         hour = hour - 12
       }
-      if (!!numDigits && numDigits>1 && hour<10){
+      if (!!numDigits && numDigits > 1 && hour < 10) {
         hour = "0" + "" + hour
       }
       return hour
     },
-    getRow: function (string) {
-      let hour = this.getHour(string)
-      hour = hour.replace(/\:\d\d/, "")
-
-      //console.log("Hour: %o",hour)
-
-      let checkHour = ""
+    getRowByHour(hour) {
+      return this.getRow(hour)
+    },
+    getRow: function (h) {
+      let hour = parseInt(h)
+      if (hour>12){
+        hour = hour - 12
+      }
+      console.log("Hour: %o",hour)
 
       // Array of all TimeCells
       var all = $(".TimeCell")
@@ -50,31 +52,17 @@
           return this.id
         })
         .get()
-
-      //console.log("TimeCells: %o",all)
-
       // Match Time to Timecell
       for (id in all) {
         let row = $("#" + all[id])
-          .parent()
-          .prop("id")
-          .match(/\d+/g) // Get Time Row#
+        let rHour = parseInt(row.data("hour"))
 
-        let cellTime = $("#" + all[id]).text() // Cell Text (08:00)
-        //console.log("CellTimeText: %o",cellTime)
 
-        let cellHour = $("#" + all[id])
-          .children()
-          .children()
-          .filter(".hour")
-        if (cellHour.length > 0) {
-          checkHour = cellHour.text()
-        } else {
-          checkHour = ""
-        }
-        let timeCellID = $("#" + all[id]).prop("id") // RowCol
 
-        if (checkHour == hour) {
+
+
+        if (hour == rHour){
+console.log("Match Row Hour %o", row)
           return row
         }
       }
