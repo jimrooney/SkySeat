@@ -108,11 +108,17 @@
       })
       $sprite.hover(
         function () {
-          console.log("Hover")
-          $(this).css("background-color", "yellow")
+          let _this = $(this).data("this")
+          let $row = time.getRowByHour(_this.getStartHour())
+          $(".Row_" + $row.data("row")).css("background-color", "yellow")
+
+          //$(this).css("background-color", "yellow")
         },
         function () {
-          $(this).css("background-color", "pink")
+          let _this = $(this).data("this")
+          let $row = time.getRowByHour(_this.getStartHour())
+          $(".Row_" + $row.data("row")).css("background-color", "")
+          //$(this).css("background-color", "pink")
         }
       )
 
