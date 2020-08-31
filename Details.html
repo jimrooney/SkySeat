@@ -166,8 +166,8 @@
 
       // -------------- Passengers -----------------
       for (let key in bookings) {
-        for (let p in bookings[key].booking.participants) {
-          let pax = new Pax({ fields: bookings[key].booking.participants[p].fields })
+        for (let p in bookings[key].item.participants) {
+          let pax = new Pax({ fields: bookings[key].item.participants[p].fields })
           let firstName = pax.getFirstName()
           let $pax = $(
             "<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"
@@ -179,7 +179,7 @@
             .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
             .addClass("Pax")
             .draggable({
-              containment: "#content",
+              containment: "#detailsDiv",
               stack: "#PassengerList div",
               cursor: "move",
               revert: true,
