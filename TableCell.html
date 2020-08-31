@@ -48,9 +48,8 @@
           let bookings = _this.getOrders(data)
           console.log("TableCell bookings: %o", bookings)
 
-          $("#Details").data("root").show()
-        $("#Details").show(bookings,$(this))
-
+          $("#Details").data("root").show(bookings, $(this))
+          $("#Details").show()
         }
       })
     }
