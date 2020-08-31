@@ -67,7 +67,8 @@
         $("#AutoBoard").data("root", new Board($("#AutoBoard")))
         $("#AutoBoard").data("root").writeBoard()
 
-        $("#Details").data("root", new Details($("#Details"))) // Attaches the JavaScript object to the jQuery .data('root') property
+$("body").append(new Details())
+        //$("#Details").data("root", new Details($("#Details"))) // Attaches the JavaScript object to the jQuery .data('root') property
 
         // Display the window object
         console.log("DOM: %o", this)

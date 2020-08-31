@@ -1,31 +1,32 @@
-<div id="Details" class="detailsDiv">
-  <div class="Print">Print</div>
-  <div id="DetailsClose" class="popupCloseButton">X</div>
-  <div id="detailsContents">
-    <div id="content" style="width: 100%; overflow: hidden;">
-      <div id="Airplane" class="grid-container Airplane"></div>
-      <div id="PassengerList" class="PassengerList"></div>
-    </div>
-  </div>
-</div>
-
 <script>
-  // ===============================
-  // Details Close Button onClick
-  // ===============================
-  $("#DetailsClose").click(function () {
-    $("#Details").hide()
-    console.log("closing details")
-  })
-
   // ===============================
   // Details Class
   // ===============================
   class Details {
-    constructor($root) {
-      this.$root = $root // save a reference to the jQuery object
-      // Access this object through $([Selector]).data('root') // ************* ?
+    constructor() {
       this.bookings = []
+      this.$root = $(`<div id="Details" class="detailsDiv">
+        <div class="Print">Print</div>
+        <div id="detailsContents">
+          <div id="content" style="width: 100%; overflow: hidden;">
+            <div id="Airplane" class="grid-container Airplane"></div>
+            <div id="PassengerList" class="PassengerList"></div>
+          </div>
+        </div>
+      </div>`)
+      // Access this object through $([Selector]).data('root')
+      this.$root.data("root",this) 
+        // ====================
+        // Details Close Button 
+        // ====================
+        let $pop = $(`<div id="DetailsClose" class="popupCloseButton">X</div>`)
+        let _$root = this.$root 
+        this.$root.append($pop)
+        $pop.click(function () {
+          _$root.hide()
+          console.log("closing details")
+        })
+      return this.$root
     }
     init() {
       let _this = this // used to reference this Details object from within the $body element's function
