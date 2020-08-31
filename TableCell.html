@@ -38,8 +38,6 @@
       // -------------------------------------------
       $this.click(function () {
         console.log("TableCell Click")
-        $("#Details").show()
-
         console.log("ID: %o", $(this).prop("id"))
         console.log("Hour: %o", _this.hour)
         //
@@ -49,6 +47,10 @@
 
           let bookings = _this.getOrders(data)
           console.log("TableCell bookings: %o", bookings)
+
+          $("#Details").data("root").show()
+        $("#Details").show(bookings,$(this))
+
         }
       })
     }
