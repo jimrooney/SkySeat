@@ -10,6 +10,7 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 Glitch
 -------------------------------
 Once a TableCell is moved, it won't highlight.
+Pax per month starts one day behind (probably a timezone issue)
 
 -------------------------------
 Eventually
@@ -24,11 +25,11 @@ Figure out how to best account for trip time.
 The "endtimelocal" may be of help... it'll be great if we can count on that as the "back in QN" time.
 Maybe make the manifest stackable.
 
+Think about better reporting. Just doing "pax per month" so far... could have an object that holds all the stats.
 
 -------------------------------
 Currently
 -------------------------------
-Date filter for Manifest doesn't seem to work right... we're not using the filtered list yet, so we get everything. (easy fix)
 Working on Details popup... passing bookings, but they're the old style of bookings and 
 Need to be updated to the new Booking Object structure.
 
