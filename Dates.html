@@ -31,6 +31,10 @@
       })
       $picker.datepicker("setDate", "today")
     },
+    //
+    // Takes a NZ formatted date String and returns a JS Date Object
+    // 24/8/2020
+    //
     getFromNZ: function (d) {
       d = d.split("/")
       d = d.map(x => parseInt(x))
