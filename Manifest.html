@@ -24,9 +24,8 @@
       // Manifest Div
       //
       let _this = this // _this instead of this because this is the calling button right now.
-      
-        
-        this.$this = $(`<div class="Manifest_Container">
+
+      this.$this = $(`<div class="Manifest_Container">
           <div id="Header" class="Header">
           <span class="total" style="float:left;display: inline-block;"></span>
           <span style="float:right;display: inline-block;"><button id="reload">&#10226;</button></span>
@@ -80,38 +79,27 @@
       // Totals
       //
 
-
-
-
       //
       // Filter by Month
       //
-      let filteredMonth = this.filterByMonth(orders,date)
+      let filteredMonth = this.filterByMonth(orders, date)
       console.log("filteredMonth: %o", filteredMonth)
       //
       let monthBookings = []
       let _this = this
-      filteredMonth.forEach(order => order.items.forEach(item =>  monthBookings.push(new Booking(_this, order, item))))
+      filteredMonth.forEach((order) =>
+        order.items.forEach((item) => monthBookings.push(new Booking(_this, order, item)))
+      )
 
+      let monthSum = monthBookings.reduce((total, booking) => total + booking.item.participants.length, 0)
 
-      let monthSum = monthBookings.reduce((total, booking) => total + booking.item.participants.length ,0)
-
-      console.log("monthBookings %o",monthBookings)
-      console.log("MonthPaxSum: %o",monthSum)
-
-
-
-
-
-
-
-
-
+      console.log("monthBookings %o", monthBookings)
+      console.log("MonthPaxSum: %o", monthSum)
 
       //
       // Filter by Date
       //
-      let filteredManifest = this.filterByDate(orders,date)
+      let filteredManifest = this.filterByDate(orders, date)
       console.log("filteredManifest: %o", filteredManifest)
       //
       // Loop over Manifest Orders and make Booking Objects
@@ -132,8 +120,8 @@
       //
       // Totals
       //
-      let sum = bookings.reduce((total, booking) => total + booking.item.participants.length ,0)
-      this.$this.find("#Header").text("[[Manifest]] pax(day):" + sum + " " + " pax (month):"+monthSum)
+      let sum = bookings.reduce((total, booking) => total + booking.item.participants.length, 0)
+      this.$this.find("#Header").text("Manifest Pax(" + sum + ") " + " month(" + monthSum + ")")
       //
       // Print Sprites
       //
@@ -162,11 +150,9 @@
       date = Dates.getFromNZ(date)
       let month = date.getMonth() - 1
       return orders
-        .filter((element) => element.items.some((subElement) => {
-          console.log ("D1: %o",new Date(subElement.startTimeLocal).getMonth())
-          console.log("Match %o", new Date(subElement.startTimeLocal).getMonth() == month)
-          return new Date(subElement.startTimeLocal).getMonth() == month
-        }))
+        .filter((element) =>
+          element.items.some((subElement) => new Date(subElement.startTimeLocal).getMonth() == month)
+        )
         .map((element) => {
           let newElt = Object.assign({}, element) // copies element
           newElt.items = newElt.items.filter((subElement) => new Date(subElement.startTimeLocal).getMonth() == month)
