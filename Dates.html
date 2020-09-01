@@ -14,7 +14,7 @@
   //--------------------------------------------
 
   var Dates = {
-    initPicker: function ($picker,_board) {
+    initPicker: function ($picker, _board) {
       //
       // DatePicker
       //
@@ -30,6 +30,11 @@
         },
       })
       $picker.datepicker("setDate", "today")
+    },
+    getFromNZ: function (d) {
+      d = d.split("/")
+      d = d.map(x => parseInt(x))
+      return new Date([d[2],d[1]+1,d[0]])
     },
     getNZ: function (d) {
       //if (typeof d === 'undefined') {d = new Date()}

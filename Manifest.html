@@ -10,6 +10,7 @@
       this.bookings // Placeholder... List of Bookings... hash key'd (by orderNumber) from Rezdy load
 
       this.$bookings // Placeholder
+      this.$this
       this.$parent = $parent // Keep a link to the parent jQuery object
       //this.$Bookings = this.$parent.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
     }
@@ -23,23 +24,26 @@
       // Manifest Div
       //
       let _this = this // _this instead of this because this is the calling button right now.
-      let _span = this.$parent.append(`<div class="Manifest_Container">
-          <div class="Header">
-          <span style="float:left;display: inline-block;"></span>
+      
+        
+        this.$this = $(`<div class="Manifest_Container">
+          <div id="Header" class="Header">
+          <span class="total" style="float:left;display: inline-block;"></span>
           <span style="float:right;display: inline-block;"><button id="reload">&#10226;</button></span>
           <span style="float:right;display: inline-block;"><button id="debug">&#937;</button></span>
            Manifest </div>
           <div class="Bookings" style="float:left;display: inline-block;"></div>
       </div>`)
-      this.$bookings = this.$parent.find(".Bookings")
+      this.$parent.append(this.$this)
+      this.$bookings = this.$this.find(".Bookings")
       //
       // Manifest Reload Button
       //
-      _span.find("button").off("click")
-      _span.find("#reload").click(function () {
+      this.$this.find("button").off("click") // ? **********************************
+      this.$this.find("#reload").click(function () {
         _this.load()
       })
-      _span.find("#debug").click(function () {
+      this.$this.find("#debug").click(function () {
         console.log(_this)
       })
     }
@@ -49,7 +53,6 @@
     }
     onLoad(XML) {
       console.log("Manifest onLoad()")
-      this.$parent.data.state // ? this is a declaration... doesn't do anything ***************
       this.data = JSON.parse(XML) // Store the Rezdy object so we can write them later.
       this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
@@ -70,39 +73,105 @@
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
       console.log("orders %o", orders) // [{Booking},{Booking},{Booking}]
       //
+      //
+      //
+
+      //
+      // Totals
+      //
+
+
+
+
+      //
+      // Filter by Month
+      //
+      let filteredMonth = this.filterByMonth(orders,date)
+      console.log("filteredMonth: %o", filteredMonth)
+      //
+      let monthBookings = []
+      let _this = this
+      filteredMonth.forEach(order => order.items.forEach(item =>  monthBookings.push(new Booking(_this, order, item))))
+
+
+      let monthSum = monthBookings.reduce((total, booking) => total + booking.item.participants.length ,0)
+
+      console.log("monthBookings %o",monthBookings)
+      console.log("MonthPaxSum: %o",monthSum)
+
+
+
+
+
+
+
+
+
+
+      //
       // Filter by Date
       //
-      let filteredManifest = orders
-        .filter((element) => element.items.some((subElement) => Dates.getNZ(subElement.startTimeLocal) == date))
-        .map((element) => {
-          let newElt = Object.assign({}, element) // copies element
-          newElt.items = newElt.items.filter((subElement) => Dates.getNZ(subElement.startTimeLocal) == date)
-          return newElt
-        })
+      let filteredManifest = this.filterByDate(orders,date)
       console.log("filteredManifest: %o", filteredManifest)
       //
-      // Loop over bookings
+      // Loop over Manifest Orders and make Booking Objects
       //
       let bookings = []
-      for (let o in orders) {
-        let order = orders[o]
-        for (let i in orders[o].items) {
-          let item = orders[o].items[i]
+      for (let o in filteredManifest) {
+        let order = filteredManifest[o]
+        for (let i in filteredManifest[o].items) {
+          let item = filteredManifest[o].items[i]
           bookings.push(new Booking(this, order, item))
         }
       }
       //
       // Sort Bookings by Start Time
       //
-      bookings.sort((a, b) => (time.getHour(a.item.startTimeLocal) > time.getHour(b.item.startTimeLocal)) ? 1 : -1)
-      console.log("Sorted Bookings: %o",bookings)
-
+      bookings.sort((a, b) => (time.getHour(a.item.startTimeLocal) > time.getHour(b.item.startTimeLocal) ? 1 : -1))
+      console.log("Sorted Bookings: %o", bookings)
+      //
+      // Totals
+      //
+      let sum = bookings.reduce((total, booking) => total + booking.item.participants.length ,0)
+      this.$this.find("#Header").text("[[Manifest]] pax(day):" + sum + " " + " pax (month):"+monthSum)
       //
       // Print Sprites
       //
-      bookings.forEach(booking => this.$bookings.append(booking.getSprite()))
-
+      bookings.forEach((booking) => this.$bookings.append(booking.getSprite()))
+      //
+      //
+      //
       init() // This should change *************** not be root variable, not be such a hatchet **********
+      //
+      //
+      //
+    }
+    // ------------
+    // filter
+    // ------------
+    filterByDate(orders, date) {
+      return orders
+        .filter((element) => element.items.some((subElement) => Dates.getNZ(subElement.startTimeLocal) == date))
+        .map((element) => {
+          let newElt = Object.assign({}, element) // copies element
+          newElt.items = newElt.items.filter((subElement) => Dates.getNZ(subElement.startTimeLocal) == date)
+          return newElt
+        })
+    }
+    filterByMonth(orders, date) {
+      date = Dates.getFromNZ(date)
+      let month = date.getMonth() - 1
+      return orders
+        .filter((element) => element.items.some((subElement) => {
+          console.log ("D1: %o",new Date(subElement.startTimeLocal).getMonth())
+          console.log("Match %o", new Date(subElement.startTimeLocal).getMonth() == month)
+          return new Date(subElement.startTimeLocal).getMonth() == month
+        }))
+        .map((element) => {
+          let newElt = Object.assign({}, element) // copies element
+          newElt.items = newElt.items.filter((subElement) => new Date(subElement.startTimeLocal).getMonth() == month)
+          return newElt
+        })
     }
     // ------------
     // Get Orders
