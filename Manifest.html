@@ -70,7 +70,7 @@
       // Filter by CONFIRMED
       //
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
-      console.log("orders %o", orders) // [{Booking},{Booking},{Booking}]
+      console.log("All Confirmed Orders Returned From Rezdy\n%o", orders) // [{Booking},{Booking},{Booking}]
       //
       //
       //
@@ -78,23 +78,58 @@
       //
       // Totals
       //
-
+      console.log("\n\n")
+      console.log("--Month--")
       //
       // Filter by Month
       //
       let filteredMonth = this.filterByMonth(orders, date)
       console.log("filteredMonth: %o", filteredMonth)
+      
+      let monthCost = this.countTripCost(filteredMonth)
+      let md = []
+      let monthData = filteredMonth.map((order) => {
+        return {
+          totalAmount: order.totalAmount,
+          orderNumber: order.orderNumber,
+          items: order.items.reduce((total, item) => {
+            return {
+              productName: item.productName,
+              numParticipants: item.participants,
+              totalQuantity: item.totalQuantity,
+            }
+          },{}),
+        }
+      },[])
+      console.log("monthData %o",monthData)
+      let monthCosts = filteredMonth.reduce((acc,order)=>{
+
+        let ary = [
+        order.totalAmount,
+        order.orderNumber,
+        order.items.reduce((acc,item)=>(acc + item.productName),""),
+        ]
+        
+        return acc + ary.join("\t") + "\n"
+      },0)
+      console.log("monthCosts %o", monthCosts)
+      //
+      // Get List array of {Booking} Objects for each {Order Item}
       //
       let monthBookings = []
       let _this = this
       filteredMonth.forEach((order) =>
         order.items.forEach((item) => monthBookings.push(new Booking(_this, order, item)))
       )
+      console.log("monthBookings: %o", monthBookings.lenth)
 
-      let monthSum = monthBookings.reduce((total, booking) => total + booking.item.participants.length, 0)
+      let monthPax = this.countPax(monthBookings)
+      let monthParticipants = monthBookings.reduce((total, booking) => total + booking.item.participants.length, 0)
 
-      console.log("monthBookings %o", monthBookings)
-      console.log("MonthPaxSum: %o", monthSum)
+      console.log("month pax: %o", monthPax)
+      console.log("monthParticipants %o", monthParticipants)
+
+      console.log("\n\n")
 
       //
       // Filter by Date
@@ -120,8 +155,18 @@
       //
       // Totals
       //
-      let sum = bookings.reduce((total, booking) => total + booking.item.participants.length, 0)
-      this.$this.find("#Header").text("Manifest Pax(" + sum + ") " + " month(" + monthSum + ")")
+      let dayParticipants = bookings.reduce((total, booking) => {
+        return total + booking.item.participants.length
+      }, 0)
+
+      let dayPax = this.countPax(bookings)
+
+      console.log("Month Total $%o", monthCost)
+      this.$this
+        .find("#Header")
+        .text(
+          "Manifest Pax(" + dayParticipants + ")(" + dayPax + ") month(P" + monthParticipants + ")(X" + monthPax + ")"
+        )
       //
       // Print Sprites
       //
@@ -133,6 +178,35 @@
       //
       //
       //
+    }
+    countPax(arr) {
+      return arr.reduce((total, booking) => {
+        let s1 = booking.item.participants.length
+        let s2 = booking.item.quantities.reduce((total, q) => {
+          let hasACI
+          !!q.optionLabel.match(/^Adult/)
+            ? (hasACI = true)
+            : !!q.optionLabel.match(/^Child/)
+            ? (hasACI = true)
+            : !!q.optionLabel.match(/^Infant/)
+            ? (hasACI = true)
+            : (hasACI = false)
+          if (hasACI) {
+            return total + parseInt(q.value)
+          }
+          return total
+        }, 0)
+        let ret = s1
+        if (s1 < s2) {
+          ret = s2
+        }
+        return total + ret
+      }, 0)
+    }
+    countTripCost(arr) {
+      return arr.reduce((total, order) => {
+        return total + parseInt(order.totalAmount)
+      }, 0)
     }
     // ------------
     // filter
@@ -166,7 +240,7 @@
     // Takes a list of booking numbers {GYA000881: "GYA000881", GYA000839: "GYA000839"}
     // And returns an array of Rezdy Orders (complete Order objects)
     //
-    /* 
+    /*
       This will likely need some magic to handle split bookings ***********
     */
     getOrders(data) {
