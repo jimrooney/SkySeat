@@ -1,6 +1,12 @@
 <script>
   function test(args) {
 
+
+
+
+    google.script.run.withSuccessHandler(done).getState("x")
+
+    return
     let x = document.getElementById("AutoBoard").innerHTML
     google.script.run.withSuccessHandler(done).saveHtmlAsPDF(x)
 
