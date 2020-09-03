@@ -23,12 +23,23 @@ function loadTripCodes() {
 // =======================================================
 //         Load Rezdy
 // =======================================================
-function loadRezdy(myDate) {
-  if (!!myDate) {
-    Logger.log("Loading from Rezdy... Date passed in: " + myDate)
-    var md = myDate.split("/")
-    myDate = md[1] + "/" + md[0] + "/" + md[2]
-  }
+//
+// Accepts one or two date objects in String format... {date}.toString()
+// Returns an object of data values (including the requested dates/etc)
+//
+function loadRezdy(startDate,endDate) {
+  Logger.log("Rezdy_GS.loadRezdy()")
+  Logger.log("startDate " + startDate)
+  Logger.log("endDate " + endDate)
+
+  // Process date arguments ... default to just today if no endDate
+  var date1 = new Date(startDate)
+  var date2 = new Date(startDate)
+  date2.setDate(date1.getDate() + 1) // next Day
+  !!endDate ? date2 = new Date(endDate) : null // if an end date is passed in, use it instead
+  date1 = Utilities.formatDate(date1, Session.getScriptTimeZone(), "yyyy-MM-dd") // Google Utilities Object
+  date2 = Utilities.formatDate(date2, Session.getScriptTimeZone(), "yyyy-MM-dd")
+
   var orderLinkPrefix = "https://app.rezdy.com/orders/edit/"
 
   var ss = SpreadsheetApp.getActiveSpreadsheet()
@@ -38,40 +49,30 @@ function loadRezdy(myDate) {
 
   range.setValue("")
 
-  // ********************* Change to just today ***********************
-  // minTourStartTime=2019-06-08T12:00:00Z
-  // maxTourStartTime=2019-06-09T12:00:00Z
-  //var date1 = sheet.getRange(getProperty("dateCell")).getValue()
-
-  var date1 = myDate
-  var d = new Date(date1)
-
-  //date1 = new Date(d.getTime()-1000*60*60*24)
-  date1 = new Date(d.getTime() - 1000 * 60 * 60 * 48)
-  var date2 = new Date(d.getTime())
-  var date3 = add_months(date2,1)
-  date1 = Utilities.formatDate(date1, Session.getScriptTimeZone(), "yyyy-MM-dd")
-  date2 = Utilities.formatDate(date2, Session.getScriptTimeZone(), "yyyy-MM-dd")
-  date3 = Utilities.formatDate(date3, Session.getScriptTimeZone(), "yyyy-MM-dd")
-  Logger.log("Date1: " + date1)
-  Logger.log("Date2: " + date2)
-  Logger.log("Date3: " + date3)
   // ****************************************
   // Abstract all this away somewhere generic
   // ****************************************
   var rez = "https://api.rezdy.com/v1/bookings"
   var apiKey = "?apiKey=4a02ae91ede241fd80324ec8b2ac57cb"
-  var call = "&minTourStartTime=" + date1 + "T12:00:00Z&maxTourStartTime=" + date3 + "T09:00:00Z"
-
-  Logger.log(rez + apiKey + call) // ========= Useful for debugging ============
+  var call = "&minTourStartTime=" + date1 + "T14:00:00Z&maxTourStartTime=" + date2 + "T14:00:00Z" 
+  // T14:00:00Z Use 2am to avoid Daylight Savings Time issues
 
   // Call the Numbers API for random math fact
-  var response = UrlFetchApp.fetch(rez + apiKey + call)
+  var url = rez + apiKey + call
+  Logger.log("API Call:")
+  Logger.log(rez + apiKey + call) // ========= Useful for debugging ============
+
+  var response = UrlFetchApp.fetch(url)
   //Logger.log(response.getContentText()) // ========= Useful for debugging ============
 
   // Make request to API and get response before this point.
   var json = response.getContentText()
   //DriveApp.createFile('test.json', json);  // ================= Write JSON to file =============================
 
-  return json
+  var ret = {}
+    ret.startTime = date1
+    ret.endTime = date2
+    ret.json = json
+    ret.url = url
+  return ret
 }

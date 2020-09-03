@@ -12,13 +12,13 @@
 
     */
     load: function (Manifest) {
-      console.log("Rezdy.load([Manifest])")
+      console.log("Rezdy.load({Manifest})")
       //
       // Date Check (should be a Manifest object)
       //
       let requestedDate
       if (typeof Manifest == "object") {
-        requestedDate = Manifest.getDate()
+        requestedDate = Manifest.getDate() // returns a {date} object
       } else {
         console.log("Rezdy.load: Wrong object")
         return
@@ -26,14 +26,25 @@
       //
       // Call the google script and pass it the Manifest
       //
-      console.log("Run Google Script loadRezdy(%o)", requestedDate)
+      requestedDate.setUTCHours(03)
+      requestedDate = requestedDate.toString()
+
+      let endDate = new Date(requestedDate)
+      endDate = new Date(endDate.setMonth(endDate.getMonth()+1))
+
+      console.log("Run Google Script loadRezdy( %o )", requestedDate)
+      console.log("startDate %o", requestedDate)
+      console.log("endDate %o", endDate)
+
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
       google.script.run.withSuccessHandler(this.onLoad).withUserObject(Manifest).loadRezdy(requestedDate)
     },
     // Passes Google Script XML return back to the Manifest that called the script
-    onLoad: function (XML, Manifest) {
-      console.log("Rezdy.onLoad( XML, Manifest )")
-      Manifest.onLoad(XML)
+    onLoad: function (ret, Manifest) {
+      console.log("Rezdy.onLoad()")
+      console.log("Requested URL: %o", ret.url)
+      console.log("Ret %o",ret)
+      Manifest.onLoad(ret.json)
     },
     onTripCodeLoad: function (data) {
       console.log("OnTripCodeLoad: %o", data)

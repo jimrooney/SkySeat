@@ -15,10 +15,8 @@
       //this.$Bookings = this.$parent.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
     }
     getDate() {
-      let date = this.parent.$datepicker.datepicker("getDate")
-      date = Dates.getNZ(date)
-      return date
-    }
+      return this.parent.$datepicker.datepicker("getDate")
+      }
     write() {
       //
       // Manifest Div
@@ -50,9 +48,9 @@
     load() {
       Rezdy.load(this)
     }
-    onLoad(XML) {
+    onLoad(json) {
       console.log("Manifest onLoad()")
-      this.data = JSON.parse(XML) // Store the Rezdy object so we can write them later.
+      this.data = JSON.parse(json) // parse json String data into a json object
       this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
       this.show()
@@ -61,25 +59,23 @@
     // Show Manifest
     // ---------------------------------------------------------
     show(date) {
-      console.log("Manifest.show() date: %o", date)
+      console.log("Manifest.show()")
+      console.log("Requested Date: %o",date)
+      console.log("JSON: (this.data) %o",this.data)
       if (!date) {
         date = this.getDate()
       }
-      console.log("ManifestSort Date: %o", date)
+      console.log("Date used: %o", date)
       //
       // Filter by CONFIRMED
       //
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
       console.log("All Confirmed Orders Returned From Rezdy\n%o", orders) // [{Booking},{Booking},{Booking}]
       //
-      //
-      //
-
-      //
       // Totals
       //
       console.log("\n\n")
-      console.log("--Month--")
+      console.log("--Filtered by Month--")
       //
       // Filter by Month
       //
@@ -87,7 +83,7 @@
       console.log("filteredMonth: %o", filteredMonth)
       
       let monthCost = this.countTripCost(filteredMonth)
-      let md = []
+      let md = [] 
       let monthData = filteredMonth.map((order) => {
         return {
           totalAmount: order.totalAmount,
@@ -121,7 +117,7 @@
       filteredMonth.forEach((order) =>
         order.items.forEach((item) => monthBookings.push(new Booking(_this, order, item)))
       )
-      console.log("monthBookings: %o", monthBookings.lenth)
+      console.log("monthBookings: %o", monthBookings.length)
 
       let monthPax = this.countPax(monthBookings)
       let monthParticipants = monthBookings.reduce((total, booking) => total + booking.item.participants.length, 0)
@@ -212,17 +208,21 @@
     // filter
     // ------------
     filterByDate(orders, date) {
+      let _date = date
       return orders
-        .filter((element) => element.items.some((subElement) => Dates.getNZ(subElement.startTimeLocal) == date))
+        .filter((element) => element.items.some((subElement) => {
+          return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
+        }))
         .map((element) => {
           let newElt = Object.assign({}, element) // copies element
-          newElt.items = newElt.items.filter((subElement) => Dates.getNZ(subElement.startTimeLocal) == date)
+          newElt.items = newElt.items.filter((subElement) => {
+            return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
+            })
           return newElt
         })
     }
     filterByMonth(orders, date) {
-      date = Dates.getFromNZ(date)
-      let month = date.getMonth() - 1
+      let month = date.getMonth()
       return orders
         .filter((element) =>
           element.items.some((subElement) => new Date(subElement.startTimeLocal).getMonth() == month)
