@@ -74,6 +74,8 @@
       //
       // Totals
       //
+      // -------------------------------------------------------------------------------------------
+      /*
       console.log("\n\n")
       console.log("--Filtered by Month--")
       //
@@ -104,11 +106,12 @@
         order.totalAmount,
         order.orderNumber,
         order.items.reduce((acc,item)=>(acc + item.productName),""),
+        order.items.reduce((acc,item)=>(acc + item.startTimeLocal),""),
         ]
         
         return acc + ary.join("\t") + "\n"
       },0)
-      console.log("monthCosts %o", monthCosts)
+      console.log("Month tab'd %o", monthCosts)
       //
       // Get List array of {Booking} Objects for each {Order Item}
       //
@@ -126,7 +129,8 @@
       console.log("monthParticipants %o", monthParticipants)
 
       console.log("\n\n")
-
+      // -------------------------------------------------------------------------------------------
+*/
       //
       // Filter by Date
       //
@@ -157,12 +161,15 @@
 
       let dayPax = this.countPax(bookings)
 
-      console.log("Month Total $%o", monthCost)
+      // -------------------------------------------------------------------------------------------
+      // console.log("Month Total $%o", monthCost)
       this.$this
         .find("#Header")
         .text(
-          "Manifest Pax(" + dayParticipants + ")(" + dayPax + ") month(P" + monthParticipants + ")(X" + monthPax + ")"
+          "Manifest Pax(" + dayParticipants + ")(" + dayPax + ") " 
+          //"month(P" + monthParticipants + ")(X" + monthPax + ")"
         )
+      // -------------------------------------------------------------------------------------------
       //
       // Print Sprites
       //

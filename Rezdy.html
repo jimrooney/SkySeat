@@ -31,13 +31,15 @@
 
       let endDate = new Date(requestedDate)
       endDate = new Date(endDate.setMonth(endDate.getMonth()+1))
+      endDate.setUTCHours(03)
+      endDate = endDate.toString()
 
       console.log("Run Google Script loadRezdy( %o )", requestedDate)
       console.log("startDate %o", requestedDate)
       console.log("endDate %o", endDate)
 
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
-      google.script.run.withSuccessHandler(this.onLoad).withUserObject(Manifest).loadRezdy(requestedDate)
+      google.script.run.withSuccessHandler(this.onLoad).withUserObject(Manifest).loadRezdy(requestedDate,endDate)
     },
     // Passes Google Script XML return back to the Manifest that called the script
     onLoad: function (ret, Manifest) {
