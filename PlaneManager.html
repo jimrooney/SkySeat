@@ -120,16 +120,26 @@ PlaneManager.planes references can be changed to this.
       //
       let _planeList = []
       data.forEach((row,i) => {
-        let planeData = {}
+        let rowPlane = {}
         if (i>0){
             row.forEach((element,pos) => {
-            planeData[data[0][pos]] = element
+              rowPlane[data[0][pos].toLowerCase()] = element // use header row element as variable name for element value
           })
+          _planeList.push(rowPlane)
         }
-        _planeList.push(planeData)
       })
       console.log("New PlaneList %o",_planeList)
 
+      _planeList.forEach((plane)=>{
+        let dynamic_class
+        !!plane.type ? dynamic_class=eval(plane.type) : null
+        if (!!dynamic_class){
+        let instance=new dynamic_class(plane)
+        _this.planes.list.push(instance)
+        }
+      })
+
+      console.log("PlaneList: %o", _this.planes.list)
 
 
       let count = 0
