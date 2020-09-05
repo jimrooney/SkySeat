@@ -14,7 +14,87 @@
 
       */
 
+/*
 
+data and load should be two different things.
+constructor will build available loading based on data.
+add/remove seats or infants gets interesting.
+
+
+{airplane}
+
+{
+
+  aircraft: {
+    type: **constructor.name**
+    reg:
+    idColor:
+    weight:
+    arm:
+    moment:
+    burn:{
+      climb:
+      cruise:
+      descent:
+      }
+    limit: {
+      cg: [forard,aft]
+      weight: [TO,LND,Ramp]
+      fuel: (capacity)
+  }
+  stations: [{
+    accepts: ["crew","pax","cargo","seat","fuel"]
+    weight:
+    arm:
+    limit:
+  }]
+  load:[
+    {
+      id: // this.getNextLoadId() ... simple counter. 
+      station:
+      type:
+      weight:
+    },
+    {},
+    {}
+  ]
+  getSeats(){
+    // analyse stations to see how many seats are installed.
+    // default loading of airplane will contain the seats at station
+    // will also contain the controls
+    // and anything else that we have the data for.
+    // we can remove items with negative loads if necessary.
+  }
+  addLoad({id,station,type,weight}){
+    
+    // if id exists, make sure it hasn't been used already
+    // if it has, just get a new one .... this.getNextLoadId()
+    // if no id exists, get one.
+
+    let ret = true
+    this.isLegal() ? load.push({}) : ret = false
+    return ret
+  }
+  isLegal(){
+    // check type and limits, return T/F
+  }
+  removeLoad(id){
+    // remove obj by id
+  }
+  getCG(){
+    // calculate CG based on load (simple WAM)
+    // return [w/cg]
+  }
+  getNextLoadId(){
+    // return highest ID in current load + 1
+  }
+
+}
+
+
+
+
+*/
 
 
 

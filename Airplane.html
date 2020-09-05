@@ -10,62 +10,99 @@
 
   class Airplane {
     constructor(data) {
-      // data.REG data.Weight,data.ARM,data.Moment,data.Type,data.RegColor]
-      //
-      // Could probably dynamically build type by processing data.Type... would need more defaults like seats and arms passed in.
-      //
-      this.reg = data.REG
-      this.wam = [data.Weight, data.ARM, data.Moment]
-      this.stations = [] // Station object for each weight and balance item
-      this.regColor = data.RegColor
-      this.Burn = data.Burn
-    }
-    getSeats() {
-      let ret = []
-      for (let i in this.stations) {
-        if (this.stations[i].type == "seat") {
-          ret.push(this.stations[i])
-        }
+      // data.REG data.Weight,data.ARM,data.Moment,data.Type,data.RegColor] *** update with new signature ***
+      this.reg = data.reg
+      this.idColor = data.idColor
+      this.weight = data.weight
+      this.arm = data.arm
+      this.moment = data.moment
+      this.burn = {
+        // climb:
+        // cruise:
+        // descent:
       }
-      return ret
-    }
-    getStations(type) {
-      let ret = []
-      let regex = new RegExp(type, "g")
-      for (let i in this.stations) {
-        if (this.stations[i].type.match(regex)) {
-          ret.push(this.stations[i])
-        }
+      this.limit = {
+        // cg: [forard,aft]
+        // weight: [TO,LND,Ramp]
+        // fuel: (capacity)
       }
-      return ret
+      this.stations = [
+        // {
+        // accepts: ["crew","pax","cargo","seat","fuel","other"(controls/pods)] // perhaps more "others" details? *************
+        // type: (any of the accepts)
+        // weight:
+        // arm:
+        // limit:
+        // }
+      ]
+      this.load =[
+        // {
+        //   id: // this.getNextLoadId() ... simple counter. 
+        //   station:
+        //   type:
+        //   weight:
+        // },
+        // {},
+        // {}
+      ]
     }
-    // -----------------------------------
-    // Get Weight and Balance
-    // -----------------------------------
-    /*
-        We'll need to pass the loading data into a plane as there is only one plane object.
-        We can still use the top cell data (fuel pilot), but we can also override it here.
-        
-    */
-    getWB(data) {
-      console.log("GET WB: %o",this.reg)
+    getSeats() { // ******************
+      // analyse stations to see how many seats are installed.
+      // default loading of airplane will contain the seats at station
+      // will also contain the controls
+      // and anything else that we have the data for.
+      // we can remove items with negative loads if necessary.
+      const result = this.stations(item => item.type == "seat")
+      return result
     }
-    // -----------------------------------
-    // Load the plane
-    // -----------------------------------
-    load(PCF, POB) {
-      // POB[0,1] 0=weight 1=paxObject ... includes crew
-      this.fuel = PCF[2]
-      this.seats = POB
-      this.seatWeights = []
-      // Probably build WAM instead of a seats array? ****************************************************************************************************
-      // Or maybe build it off the POB array
-      for (let a in POB) {
-        this.seatWeights.push(POB[a][0])
+
+// ************************************************************************************************
+    addLoad(load){ // Accepts: {id,station,type,weight} {station}
+    
+    // ************ Need checks **************************
+    // if id exists, make sure it hasn't been used already
+    // if it has, just get a new one .... this.getNextLoadId()
+    // if no id exists, get one.
+    let legal = false
+    if (this.isLegal(load)){
+      load.id = this.getNextLoadId()
+      this.load.push(load)
+      legal = true
+    }
+    return ret
+  }
+  isLegal(load){
+    // check type and limits, return T/F
+  }
+  removeLoad(load){
+    // remove obj by load.id
+  }
+  getWB(){
+    // calculate CG based on load (simple WAM)
+    // return [w/cg]
+
+    console.log("GET WB: %o",this.reg)
+
+
+  }
+  getNextLoadId(){
+    // return highest ID in current load + 1
+    let count = 0
+    this.load.forEach(element => {
+      if(element.id >= count){
+        count = element.id + 1
       }
-    }
+    })
+    return count
+  }
+// ************************************************************************************************
+
+
   }
 
+  //
+  // Max weight in cargo area 680kg  
+  //
   class GA8 extends Airplane {
     constructor(data) {
       super(data)
@@ -76,17 +113,17 @@
         CG:[0,1.626]
       }
       this.stations = [
-        new Station({ type: "seat", arm: 0.965 }),
-        new Station({ type: "seat", arm: 0.965 }),
-        new Station({ type: "seat", arm: 1.772 }),
-        new Station({ type: "seat", arm: 1.772 }),
-        new Station({ type: "seat", arm: 2.523 }),
-        new Station({ type: "seat", arm: 2.523 }),
-        new Station({ type: "seat", arm: 3.247 }),
-        new Station({ type: "seat", arm: 3.247 }),
-        new Station({ type: "fuel", arm: 1.715 }),
-        new Station({ type: "baggage", arm: 3.763 }),
-        new Station({ type: "baggage", arm: 4.623 }),
+        new Station({ accpets: ["seat","cargo"], arm: 0.965 }),
+        new Station({ accpets: ["seat","cargo"], arm: 0.965 }),
+        new Station({ accpets: ["seat","cargo"], arm: 1.772 }),
+        new Station({ accpets: ["seat","cargo"], arm: 1.772 }),
+        new Station({ accpets: ["seat","cargo"], arm: 2.523 }),
+        new Station({ accpets: ["seat","cargo"], arm: 2.523 }),
+        new Station({ accpets: ["seat","cargo"], arm: 3.247 }),
+        new Station({ accpets: ["seat","cargo"], arm: 3.247 }),
+        new Station({ accpets: ["fuel"], arm: 1.715, limit: 330}),
+        new Station({ accpets: ["cargo"], arm: 3.763, limit:113 }),
+        new Station({ accpets: ["cargo"], arm: 4.623, limit:22 }),
       ]
     }
   }

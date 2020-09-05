@@ -106,12 +106,32 @@ PlaneManager.planes references can be changed to this.
       //
       // Parse loaded two dimensional array into planes object
       //
-      console.log("Planemanager.loadPlanes()")
       //
       // Because this gets called from a Success Handler (Google), "this" is the Window Object, so we'll make our own "_this"
+      // 
+      let _this = PlaneManager   
       //
-      let _this = PlaneManager
       //
+      console.log("Planemanager.loadPlanes(data)")
+      console.log("Data: %o",data)
+      //
+      // _this.planes.list.push(new C206(parsed))
+      //
+      //
+      let _planeList = []
+      data.forEach((row,i) => {
+        let planeData = {}
+        if (i>0){
+            row.forEach((element,pos) => {
+            planeData[data[0][pos]] = element
+          })
+        }
+        _planeList.push(planeData)
+      })
+      console.log("New PlaneList %o",_planeList)
+
+
+
       let count = 0
       for (let row in data) {
         let parsed = {}
@@ -141,6 +161,12 @@ PlaneManager.planes references can be changed to this.
         }
         PlaneManager.updatePlaneCells()
       }
+
+
+
+
+
+
       console.log("Planes: %o", _this.planes.list)
     },
     planePopup: function (_this) {

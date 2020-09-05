@@ -101,36 +101,24 @@
         let _this = $(this).data("this")
         console.log("BookingSprite: %o", _this)
         console.log("StartHour %o",_this.getStartHour())
-
         let $row = time.getRowByHour(_this.getStartHour())
         console.log("$row: %o",$row.data("row"))
 
-
-        $(".Row_" + $row.data("row")).css("background-color", "yellow")
-
-
       })
       $sprite.hover(
+        // On
         function () {
           let _this = $(this).data("this")
           let $row = time.getRowByHour(_this.getStartHour())
-
-          
           $(".Row_" + $row.data("row")).addClass("highlight")
-          //$(".Row_" + $row.data("row")).css("background-color", "yellow")
-
-          //$(this).css("background-color", "yellow")
         },
+        // Off
         function () {
           let _this = $(this).data("this")
           let $row = time.getRowByHour(_this.getStartHour())
           $(".Row_" + $row.data("row")).removeClass("highlight")
-          //$(".Row_" + $row.data("row")).css("background-color", "")
-
-          //$(this).css("background-color", "pink")
         }
       )
-
       return $sprite
     }
 
