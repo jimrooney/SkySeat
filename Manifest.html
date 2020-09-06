@@ -140,13 +140,26 @@
       // Loop over Manifest Orders and make Booking Objects
       //
       let bookings = []
-      for (let o in filteredManifest) {
-        let order = filteredManifest[o]
-        for (let i in filteredManifest[o].items) {
-          let item = filteredManifest[o].items[i]
-          bookings.push(new Booking(this, order, item))
-        }
-      }
+      filteredManifest.forEach((order)=>{
+        order.items.forEach((item,i)=>{
+          bookings.push(new Booking(this,order,item,i))
+        })
+      })
+
+      // for (let o in filteredManifest) {
+      //   let order = filteredManifest[o]
+      //   for (let i in filteredManifest[o].items) {
+      //     let item = filteredManifest[o].items[i]
+      //     bookings.push(new Booking(this, order, item, i))
+      //   }
+      // }
+
+
+
+
+
+
+
       //
       // Sort Bookings by Start Time
       //
