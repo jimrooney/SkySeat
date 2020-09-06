@@ -1,0 +1,48 @@
+<script>
+  // Object for TableCells
+  class PlaneCell {
+    constructor(board, r, c) {
+      let _this = this // reference for inside the click function scope
+      this._this = this // keep a reference to this JS object (self reference)
+      this.board = board // reference to the instantiating board
+      this.id = r + "_" + c
+      this.row = r
+      this.column = c
+      // -------------------------------------------
+      // jQuery object
+      // -------------------------------------------
+      let $this = $("<td />", {
+        class: "PlaneCell Row_" + r + " Col_" + c,
+        id: this.id,
+      }).click(function () {
+        console.log("PlaneCell Click")
+        console.log("ID: %o", $(this).prop("id"))
+        //
+        let data = _this.board.state.getData($this)
+        if (!!data) {
+          console.log("PlaneCell data: %o", data)
+          // $("#Details").data("root").show(bookings, $(this))
+          // $("#Details").show()
+        }
+				_this.setData({
+						type: "Plane",
+						reg: "JRR"
+					})
+      })
+      // -------------------------------------------
+      // Backreference
+      // -------------------------------------------
+      $this.data("_script", this._this) // Backreference to JS from jQuery object
+      this.$this = $this // keep a reference to the jQuery object
+		}
+		update(){
+			this.board.state.setCell(this.$this)
+		}
+		getData() {
+      return this.board.state.getData(this.$this) // get the CellData Object from the state object
+    }
+		setData(data){
+			this.board.state.setData(this.$this,data)
+		}
+	}
+</script>

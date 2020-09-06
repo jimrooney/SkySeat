@@ -1,10 +1,15 @@
 <script>
+  // =====================================================================================================
+  // Always accessed through getters and setters
+  // Functions aren't saved in JSON, so it keeps the save data to a minimum
+  // =====================================================================================================
   class CellData {
     constructor(cellID) {
       this.cellID = cellID
       this.bookingOrders = []
+      this.planeData = {}
     }
-    add(booking) {
+    addOrder(booking) {
       // Perhaps an object instead of key (more flexible for later)
       // console.log("[CellData].add(%o)",booking)
       let orderNumber = booking.orderNumber
@@ -15,7 +20,7 @@
       }
       return true
     }
-    remove(booking){
+    removeOrder(booking){
       // removing everythong for now ********************
       // a loop should fix this 
       /*

@@ -23,30 +23,13 @@ PlaneManager.planes references can be changed to this.
     },
   }
 
-  // Don't think this is used.....
-  // *****************************************************************
-  var planeData = {
-    //  "JRR": [1084.7,1.3392,1452.653,"#d66956"],
-    //  "ORC": [1067.92,1.3096,1398.61,"#568bd6"],
-    //  "LOR": [1066.9,1.36203,1453.151,"#56d687"],
-    //  "ZEA": [1098.6,1.3397,1471.79442,"#f2eb61"],
-    // "JTK"
-  }
-  // *****************************************************************
-
-  //REG	Weight	ARM	Moment	MAUW	MaxCG	Type	Burn	TAS
-  //JTK				1719		C206	80	145
-  //JRR	1084.7	1.3392	1452.653	1905	1.626	GA8	60	105
-  //ZEA	1098.6	1.3397	1471.79442	1905	1.626	GA8	60	105
-  //ZEA-POD	1128.1	1.3563	1530.053	1905	1.626	GA8	60	105
-  //LOR	1066.9	1.36203	1453.151	1905	1.626	GA8	60	105
-  //ORC	1067.92	1.3096	1398.61	1905	1.626	GA8	60	105
 
   //
   // An array of plane objects... could rather be a key'd object array of plane key'd by reg though ****************
   //
   var planes = {
     list: [],
+    // *** Improve me *** (maybe with find()) ***
     getPlane: function (registration) {
       for (let r in this.list) {
         if (this.list[r].reg == registration) {
@@ -56,6 +39,9 @@ PlaneManager.planes references can be changed to this.
       return null
     },
   }
+  //
+  // This could all just be in the root {planes} object ************************
+  //
   var PlaneManager = {
     planes: {
       list: [],
@@ -106,17 +92,15 @@ PlaneManager.planes references can be changed to this.
       //
       // Parse loaded two dimensional array into planes object
       //
+      console.log("Planemanager.loadPlanes(data)")
+      console.log("Data: %o",data)
       //
       // Because this gets called from a Success Handler (Google), "this" is the Window Object, so we'll make our own "_this"
       // 
       let _this = PlaneManager   
       //
-      //
-      console.log("Planemanager.loadPlanes(data)")
-      console.log("Data: %o",data)
-      //
-      // _this.planes.list.push(new C206(parsed))
-      //
+      // Convert [[]] to [{}]
+      // Objects key'd by header row labels (lowercased) *** maybe clean more than just lowercasing ***
       //
       let _planeList = []
       data.forEach((row,i) => {
@@ -130,18 +114,20 @@ PlaneManager.planes references can be changed to this.
       })
       console.log("New PlaneList %o",_planeList)
 
+      console.log("Existing plane list: %o",_this.planes.list)
+
       _planeList.forEach((plane)=>{
-        let dynamic_class
-        !!plane.type ? dynamic_class=eval(plane.type) : null
-        if (!!dynamic_class){
-        let instance=new dynamic_class(plane)
-        _this.planes.list.push(instance)
+        if (!!plane.type){
+          let dynamic_class=eval(plane.type)
+          let instance=new dynamic_class(plane)
+          _this.planes.list.push(instance)
         }
       })
-
       console.log("PlaneList: %o", _this.planes.list)
 
-
+      $(".PlaneCell").update()
+      
+return
       let count = 0
       for (let row in data) {
         let parsed = {}

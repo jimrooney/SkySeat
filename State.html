@@ -2,6 +2,11 @@
   //
   // Object to hold the state of the board (Holds the booking ID's in a 2D array mirroring the TableCells)
   //
+  // =====================================================================================================
+  // Always accessed through getters and setters
+  // This provides two things... one in case an cell data object doesn't exist, it's created first
+  // And functions aren't saved in JSON, so it keeps the save data to a minimum
+  // =====================================================================================================
   class State {
     constructor(Board) {
       this.board = Board
@@ -15,6 +20,34 @@
       console.log("Cleared State")
       this.data = {}
     }
+    /*
+      ************************************************************************************
+      This can likely be combined with add(TableCell,$dropped) as the're the same concept.
+      Especially since we're saving $CellData, not $TableCell or $PlaneCell
+      Adding TableCells just requires different yes/no logic.
+      But then, maybe that shouldn't be at the "State" level?
+      ************************************************************************************
+
+    */
+    getData($cell){
+      let id = $cell
+      typeof $cell == "string" ? id = $cell : id = $cell.prop("id")
+      let data =  this.data[id]
+      if (!data){
+        data = new CellData(id)
+      }
+      return data
+    }
+    setData($cell,data){
+      let cell_ID = $cell.prop("id")
+      if (!this.data[cell_ID]) {
+          this.data[cell_ID] = new CellData(cell_ID)
+        }
+        if (!!data){
+          console.log("{state}.setData: %o",data)
+        }
+    }
+    // -----------------------------------------------------------------------------------------------------
     add(TableCell, $dropped) {
       // ({TableCell},{Booking})
       //
@@ -25,12 +58,17 @@
       let cell_ID = TableCell.prop("id")
 
       console.log("$dropped", $dropped)
-      $dropped.each( function( index, e ) {
+      $dropped.each(function (index, e) {
         console.log("e", e)
-})
-      
+      })
 
       /*
+
+
+      *****************************************************
+      Hrm.... the {state} is doing the add/don't add logic?
+      Shouldn't {state} merely record/delete data?
+      *****************************************************
 
       Record into the state the booking orderNumber... partial bookings will have [orderNumber-participantKey] (maybe the barcode?)
       We can also record the TableCell specific details like pax seat numbers and plane details (if not default)
@@ -59,33 +97,32 @@
         if (_dropped.constructor.name == "TableCell") {
           console.log("TableCell Drop")
           console.log("_dropped.getOrders(): %o", _dropped.getOrders())
-          console.log("getCellDataObject(): %o", _dropped.getCellDataObject())
+          console.log("getData(): %o", _dropped.getData())
           _dropped.getOrders().forEach((element) => {
             console.log("Add: %o", element)
-            this.data[cell_ID].add(element)
+            this.data[cell_ID].addOrder(element)
           })
         } else {
           console.log("Add: %o", _dropped)
-          this.data[cell_ID].add(_dropped)
+          this.data[cell_ID].addOrder(_dropped)
         }
       }
     }
-    getCellDataObject(cell) {
-      return this.data[cell.prop("id")]
-    }
-    remove($cell, key) {
+    // -----------------------------------------------------------------------------------------------------
+    //
+    //
+    removeOrder($cell, key) {
       // Remove a booking from a cell's data
       // Removing everything for now... will need different for partial removals *************
       // pass a list of bookings?**********
       // look in remove function ************
       // Will need reference to originating board on multiboard?... might come with context though ********
 
-      let ret = this.data[$cell.prop("id")].remove()
-      if (ret == 0){
+      let ret = this.data[$cell.prop("id")].removeOrder()
+      if (ret == 0) {
         delete this.data[$cell.prop("id")]
         $cell.data("_script").clear()
       }
-
     }
     getState() {
       return this.data

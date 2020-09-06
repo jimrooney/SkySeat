@@ -64,24 +64,38 @@
       this.$root.append(
         '<div style="float:left; display: inline-block;"><table class="BoardTable" id="MYTable"/></div>'
       )
-      let table = this.$root.find(".BoardTable")
+
+      // ----------------------
+      // Root
+      // ----------------------
+      let $table = this.$root.find(".BoardTable") // Improve me? There should be a better way to find root ****
+
       // ----------------------
       // Header Row
       // ----------------------
-      let headerRow = []
-      headerRow.push($('<td class="PickupAllCell" id="PH">&#9951;</td>'))
-      headerRow.push($('<td class="Label Row_0 Col_0" id="0_0">Time</td>'))
-      //
+      let $row = $("<TR />")
+      .append($('<td class="PickupAllCell" id="PH">&#9951;</td>'))
+      .append($('<td class="Label Row_0 Col_0" id="0_0">Time</td>'))
+
       for (let i = 1; i <= this.numCols; i++) {
-        let id = "0" + "_" + i
-        let col = $("<td />", {
-          class: "BoardTable PlaneCell Row_0 Col_" + i,
-          id: id,
-          text: id,
-        })
-        headerRow.push(col)
+        let planeCell = new PlaneCell(this,0,i) 
+        $row.append(planeCell.$this)
       }
-      this.newRow(table, headerRow)
+      $table.append($row)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       //
       // Plotting Board
       //
@@ -126,7 +140,7 @@
           let $TC = TC.$this // The class contructor makes a jQuery object and stores it in $this
           myRow.push($TC)
         }
-        this.newRow(table, myRow)
+        this.newRow($table, myRow)
       }
       // ----------
       // Manifest

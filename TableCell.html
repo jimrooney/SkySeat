@@ -11,7 +11,7 @@
       this.hour // Placeholder
       this.leg
       //
-      // _this.getCellDataObject() holds all the Cell's data
+      // _this.getData() holds all the Cell's data
       //
       // -------------------------------------------
       // jQuery object
@@ -41,7 +41,7 @@
         console.log("ID: %o", $(this).prop("id"))
         console.log("Hour: %o", _this.hour)
         //
-        let data = _this.getCellDataObject()
+        let data = _this.getData()
         if (!!data) {
           console.log("TableCell data: %o", data)
 
@@ -65,7 +65,7 @@
       let _dropped = $dropped.data("_script") // ({TableCell} or {Booking}) JS object attached to the Selector
       //_dropped.constructor.name // {TableCell} or {Booking}
       let _this = $(this).data("_script") // This JS Object
-      let cellData = _this.getCellDataObject()
+      let cellData = _this.getData()
 
       let leg = _this.getLeg()
       let droppedIsOut = _dropped.isOut()
@@ -93,7 +93,7 @@
       let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
       let _dropped = $dropped.data("_script")
       if (!!_dropped.board) {
-        _dropped.board.state.remove($dropped) // List of bookings instead?**************
+        _dropped.board.state.removeOrder($dropped) // List of bookings instead?**************
       }
     }
     clear() {
@@ -106,13 +106,53 @@
     // -------------------------------------------------------------------
     recordDrop($this, $dropped) {
       //
+      // Drop is legal, record it.
+      //
+      // Since this is getting called externally, "this" isn't this obj
+      // So we pass in $this and use the jQuery $(this) to get a pointer to this object
+      //
       // // This is the magic //
       //
-      let $Board = $this.closest(".root") // jQuery root
-      let _board_ = $Board.data("root") // JavaScript root
-      _board_.state.add($this, $dropped) // This adds the data to the State object (two dimensional array that mirrors the Board)
-      _board_.update() // board.update() calls update() on each TableCell.
-      $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
+      
+
+      // This is the call we're pulling up in to this function ************************
+      //this.board.state.add($this, $dropped) // This adds the data to the State object (two dimensional array that mirrors the Board)
+      
+      // === Update ===
+      // this.board.update() // board.update() calls update() on each TableCell.
+
+      let _dropped = $dropped.data("_script") // {Booking}
+      let cellData = this.board.state.getData(this.id) // {CellData}
+
+      console.log("== Drop ==")
+      console.log("This: %o",this) // {TableCell}
+      console.log("CellData %o",cellData) // {CellData}
+      console.log("Bookings: %o", _dropped) // {Booking}
+
+
+//      let cellData = {}
+        // Brand the cell (for In/Out/Etc)
+        //cellData.leg = this.getLeg()
+
+        // Adding Data ***********************************
+          
+          console.log("getOrders(): %o", this.getOrders())
+          console.log("getData(): %o", this.getData())
+
+          
+          this.getOrders().forEach((element) => {
+            console.log("Add: %o", element)
+
+            // this = CellData ************************************
+            this.board.state.data[this.id].addOrder(element)
+          })
+
+
+
+
+
+
+     $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
     }
     // -------------------------------------------------------------------
     // isLegalDrop
@@ -146,7 +186,7 @@
       //
       let manifest = this.board.manifest
       let retArray = []
-      let data = this.getCellDataObject()
+      let data = this.getData()
       if (!!data) {
         for (let o in data.bookingOrders) {
           //
@@ -163,16 +203,16 @@
       }
       return retArray
     }
-    getCellDataObject() {
+    getData() {
       //
       // get the CellData Object from the state object
       //
-      return this.board.state.getCellDataObject(this.$this) // get the CellData Object from the state object
+      return this.board.state.getData(this.$this) // get the CellData Object from the state object
     }
 
     getLeg() {
-      if (!!this.getCellDataObject()) {
-        return this.getCellDataObject().leg
+      if (!!this.getData()) {
+        return this.getData().leg
       }
       return null
     }
@@ -186,7 +226,7 @@
     }
     getHour() {}
     update() {
-      let cellData = this.getCellDataObject() // Get the data from the state object
+      let cellData = this.getData() // Get the data from the state object
       let $this = this.$this // simplify the reference to the jQuery object
       // --------------
       // Make Draggable
