@@ -134,23 +134,31 @@
       console.log("CellData %o",cellData) // {CellData}
       console.log("Bookings: %o", _dropped) // {Booking}
 
+      cellData.addOrder(_dropped)
+      console.log("New CellData: %o",cellData)
 
-//      let cellData = {}
+      // Add to {state} next
+      if (cellData.bookingOrders.length>0){
+        this.board.state.data[this.id] = cellData
+      }
+
+
         // Brand the cell (for In/Out/Etc)
         //cellData.leg = this.getLeg()
 
         // Adding Data ***********************************
           
-          console.log("getOrders(): %o", this.getOrders())
-          console.log("getData(): %o", this.getData())
+          // **** doesn't work ATM ******
+          // console.log("getOrders(): %o", this.getOrders())
+          // console.log("getData(): %o", this.getData())
 
           
-          this.getOrders().forEach((element) => {
-            console.log("Add: %o", element)
+          // this.getOrders().forEach((element) => {
+          //   console.log("Add: %o", element)
 
-            // this = CellData ************************************
-            this.board.state.data[this.id].addOrder(element)
-          })
+          //   // this = CellData ************************************
+            
+          // })
 
 
 
