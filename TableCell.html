@@ -137,7 +137,7 @@
       cellData.addOrder(_dropped)
       console.log("New CellData: %o",cellData)
 
-      // Add to {state} next
+      // Add to {state}
       if (cellData.bookingOrders.length>0){
         this.board.state.data[this.id] = cellData
       }
@@ -146,25 +146,10 @@
         // Brand the cell (for In/Out/Etc)
         //cellData.leg = this.getLeg()
 
-        // Adding Data ***********************************
-          
-          // **** doesn't work ATM ******
-          // console.log("getOrders(): %o", this.getOrders())
-          // console.log("getData(): %o", this.getData())
 
-          
-          // this.getOrders().forEach((element) => {
-          //   console.log("Add: %o", element)
-
-          //   // this = CellData ************************************
-            
-          // })
-
-
-
-
-
-
+      // === Update ===
+      this.board.update() // board.update() calls update() on each TableCell.
+      // *** possibly only update effected cells ************************************
      $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
     }
     // -------------------------------------------------------------------
@@ -200,19 +185,17 @@
       let manifest = this.board.manifest
       let retArray = []
       let data = this.getData()
+      console.log("getOrders: %o",data)
       if (!!data) {
-        for (let o in data.bookingOrders) {
-          //
-          // Split each bookingOrder's key and retrieve it from the Manifest
-          //
-          let s = data.bookingOrders[o].split("_") // orderNumber + "_" + productCode
+        data.bookingOrders.forEach((o)=>{
+          let s = o.split("_") // orderNumber + "_" + itemNumber
           let orderNumber = s[0]
-          let productCode = s[1]
+          let itemNumber = parseInt(s[1])
           let order = manifest.orders.find((x) => x.orderNumber === orderNumber)
-          let item = order.items.find((x,i) => x.productCode === productCode)
-          let booking = new Booking(manifest, order, item, i)
-          retArray.push(booking)
-        }
+          let item = order.items[itemNumber]
+          let booking = new Booking(manifest, order, item)
+          retArray.push(booking)         
+        })
       }
       return retArray
     }

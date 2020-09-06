@@ -29,6 +29,9 @@
       ************************************************************************************
 
     */
+    //
+    // Returns a {CellData} object based on the provided id
+    //
     getData($cell){
       let id = $cell
       typeof $cell == "string" ? id = $cell : id = $cell.prop("id")
