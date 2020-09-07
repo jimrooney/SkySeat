@@ -143,8 +143,7 @@
       }
 
 
-        // Brand the cell (for In/Out/Etc)
-        //cellData.leg = this.getLeg()
+
 
 
       // === Update ===
@@ -185,7 +184,6 @@
       let manifest = this.board.manifest
       let retArray = []
       let data = this.getData()
-      console.log("getOrders: %o",data)
       if (!!data) {
         data.bookingOrders.forEach((o)=>{
           let s = o.split("_") // orderNumber + "_" + itemNumber
@@ -247,7 +245,7 @@
       // --------
       // If Data
       // --------
-      if (!!cellData) {
+      if (!!cellData && cellData.bookingOrders.length>0) {
         debug.log("{TableCell}.update()", cellData)
         //
         // In/Out Chevrons

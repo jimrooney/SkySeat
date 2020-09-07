@@ -10,7 +10,7 @@
       this.planeData = {}
     }
     addOrder(booking) {
-      console.log("CellData addOrder: %o",booking)
+      this.leg = booking.getLeg()
       let orderNumber = booking.orderNumber
       let product = booking.itemNumber
       let key = orderNumber + "_" + product
