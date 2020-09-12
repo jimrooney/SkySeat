@@ -15,7 +15,24 @@
         </div>
       </div>`)
       // Access this object through $([Selector]).data('root')
-      this.$root.data("root",this) 
+      this.$root.data("root",this)
+      this.$Airplane = this.$root.find(".Airplane")
+      this.$Airplane.click(function(){
+        console.log("Airplane Click")
+        console.log("Airplane: %o",this)
+
+        $(".station").children().each(function(i,child){
+
+
+
+
+
+          console.log("Child: %o",child)
+          console.log("Station: %o",$(this).closest(".station").data("seat"))
+          console.log("Child Data: %o",$(this).data("seat"))
+        })
+
+      })
         // ====================
         // Details Close Button 
         // ====================
@@ -28,6 +45,10 @@
         })
       return this.$root
     }
+    //
+    // .stations are tagged in their data with seat number ... .data("number", i)
+    // numbered 1 - 8 (1=pilot)
+    //
     init() {
       let _this = this // used to reference this Details object from within the $body element's function
       $(".station").droppable({
@@ -49,12 +70,12 @@
       })
     }
     removePax(event, ui, $source) {
-      let DropPax = ui.draggable.detach()
+      let $DropPax = ui.draggable.detach()
       if (!!$source) {
-        DropPax.appendTo($source)
+        $DropPax.appendTo($source)
         return
       }
-      DropPax.appendTo($(this))
+      $DropPax.appendTo($(this))
     }
     reset() {
       $("#PassengerList").html("") // will be able to be removed since we'll just plot all pax in seats (don't need a populated pax list... maybe a holding pen though)
@@ -69,38 +90,37 @@
 
       $("<div></div>")
         .data("number", 1)
+        .data("seat",1)
         .appendTo("#Airplane")
-        .addClass("grid-item station")
+        .addClass("grid-item")
+        .addClass("station")
         .addClass("PilotSeat")
         .addClass("Crew")
-
-      // $("<div></div>").data("number", 2)
-      // .appendTo("#Airplane")
-      // .addClass("grid-item station")
-      // .addClass("CoPilotSeat")
-      // .addClass("Crew")
 
       // *** change to reflect any plane *********************************************
       for (var i = 2; i <= 8; i++) {
         $("<div></div>")
           .data("number", i)
+          .data("seat", i)
           .appendTo("#Airplane")
-          .addClass("grid-item station")
-          .click(function () {
-            $(this)
-              .children()
-              .each(function (index, child) {
-                console.log("Child: %o", child)
-              })
-            console.log("Click This: %o", $(this).data("number"))
-          })
+          .addClass("grid-item")
+          .addClass("station")
+          .addClass("PaxSeat")
+          // .click(function () {
+          //   $(this)
+          //     .children()
+          //     .each(function (index, child) {
+          //       console.log("Child: %o", child)
+          //     })
+          //   console.log("Click This: %o", $(this).data("number"))
+          // })
       }
     }
     handleDrop(event, ui) {
       let existingPax
       let DragParent = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
-      let DropPax = ui.draggable.detach()
-      let pax = DropPax.data("pax")
+      let $DropPax = ui.draggable.detach()
+      let droppedPax = $DropPax.data("pax")
       let seatNumber = $(this).data("number")
       //
       // Victory is mine :)
@@ -112,7 +132,7 @@
       //
       // **************************************************************************************************
 
-      let _pax = new Pax(pax)
+      let _pax = new Pax(droppedPax)
       const paxSeat = _pax.fields.find((p) => p.label === "seat")
       if(!paxSeat){
         console.log("No Seat")
@@ -120,15 +140,14 @@
           label:"seat",
           value: seatNumber
         }
-        pax.push(p)
+        droppedPax.push(p)
       }
       else {
         console.log("Changing Seat")
         console.log("paxSeat: %o",paxSeat)
         paxSeat.value = seatNumber
       }
-      console.log("_pax: %o", _pax)
-
+      console.log({_pax})
 
       // Swap with any existing seated pax
       if ($(this).children().length > 0) {
@@ -144,9 +163,9 @@
         }
       }
 
-      DropPax.appendTo($(this))
-      DropPax.draggable({ revert: false })
-      DropPax.position({ of: $(this), my: "left top", at: "left top" })
+      $DropPax.appendTo($(this))
+      $DropPax.draggable({ revert: false })
+      $DropPax.position({ of: $(this), my: "left top", at: "left top" })
     }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time
@@ -164,7 +183,9 @@
 
       this.reset()
 
+      // ===========================================
       // -------------- Passengers -----------------
+      // ===========================================
       for (let key in bookings) {
         for (let p in bookings[key].item.participants) {
           let pax = new Pax({ fields: bookings[key].item.participants[p].fields })
@@ -173,6 +194,7 @@
             "<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"
           )
             .data("number", p)
+            .data("seat",p)
             .data("booking", key)
             .data("pax", pax.fields)
             .attr("id", "pax" + p)
