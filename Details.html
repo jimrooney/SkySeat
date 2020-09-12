@@ -176,14 +176,76 @@
     }
     getWB(){
       console.log("getWB()")
-      //this.$Airplane
-      $(".station").children().each(function(i,child){
-          console.log("Child: %o",child)
-          console.log("Station: %o",$(this).closest(".station").data("seat"))
+        // Reg
+        // Fuel
+        // Pilot
+        // CoPilot
 
-          console.log("Pax: %o",$(this).data("pax"))
-          console.log("Pax Weight: %o",$(this).data("_pax").getWeight())
+        // Pax
+        // Luggage
+        // Modifications (seats/controls/pods)
+        // Baggage
+
+      //
+      //this.$Airplane // ... The Airplane Div
+      //
+
+
+      /*
+        *******************************
+        For now, we'll use generic airplane data till we start assigning specific planes to cells
+        *******************************
+      */
+
+      let reg = "JRR" //  ********************************* hardcoded for now ***********************
+      let fuel = 150
+      let airplane
+
+      //
+      // Get the airplane raw data
+      //
+      let planeData = PlaneManager.planes.data.find(function (el) {
+        return el.reg == reg
+      })
+      //
+      // convert to Airplane Object
+      //
+        if (!!planeData.type){
+          let dynamic_class = eval(planeData.type)
+          airplane = new dynamic_class(planeData)
+        }
+        console.log("\n\nAirplane: %o",airplane)
+
+/*
+        airplane
+        .station ... stations will include the pilot and copilot... we'll hardcode them for now *****
+*/
+        airplane.stations[0].weight = 83 // hardcoding pilot weight for now *******************
+        airplane.stations[8].weight = fuel * .72 // *******************
+
+      $(".station").children().each(function(i,$div){
+        let seat
+        let weight
+        let pax // array of Rezdy labels [{},{}]
+        
+        seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
+        pax = $(this).data("pax")
+        weight = $(this).data("_pax").getWeight()
+
+          console.log("Seat: %o",seat)
+          console.log("Pax: %o", pax)
+          console.log("Pax Weight: %o", weight)
+
+        if (seat >= 0){
+          airplane.stations[seat].weight = weight
+        }
         })
+
+
+        console.log("Airplane: %o", airplane)
+        airplane.getWB()
+        console.log("\n\n")
+
     }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time

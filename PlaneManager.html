@@ -45,6 +45,7 @@ PlaneManager.planes references can be changed to this.
   var PlaneManager = {
     planes: {
       list: [],
+      data: [],
       getPlane: function (registration) {
         for (let r in this.list) {
           if (this.list[r].reg == registration) {
@@ -102,7 +103,7 @@ PlaneManager.planes references can be changed to this.
       // Convert [[]] to [{}]
       // Objects key'd by header row labels (lowercased) *** maybe clean more than just lowercasing ***
       //
-      let _planeList = []
+      let _planeList = _this.planes.data
       data.forEach((row,i) => {
         let rowPlane = {}
         if (i>0){
@@ -112,10 +113,6 @@ PlaneManager.planes references can be changed to this.
           _planeList.push(rowPlane)
         }
       })
-      console.log("New PlaneList %o",_planeList)
-
-      console.log("Existing plane list: %o",_this.planes.list)
-
       _planeList.forEach((plane)=>{
         if (!!plane.type){
           let dynamic_class=eval(plane.type)

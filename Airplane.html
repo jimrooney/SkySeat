@@ -81,9 +81,27 @@
     // calculate CG based on load (simple WAM)
     // return [w/cg]
 
-    console.log("GET WB: %o",this.reg)
+    console.log("\n\nGET WB: %o",this.reg)
+    console.log("Stations %o",this.stations)
 
+    this.stations.forEach((station)=>{
+      station.moment = station.weight * station.arm
+    })
+    let planeData = new Station({
+      type:"airplane",
+      weight: this.weight,
+      arm: this.arm
+    })
+    planeData.moment = this.moment
+    this.stations.push(planeData)
 
+    const totalWeight = this.stations.reduce((total,station) => total + parseFloat(station.weight),0)
+    const totalMoment = this.stations.reduce((total,station) => total + parseFloat(station.moment),0)
+    const CG = totalMoment/totalWeight
+
+    console.log("T Weight: %o", totalWeight)
+    console.log({totalMoment})
+    console.log({CG})
   }
   getNextLoadId(){
     // return highest ID in current load + 1
@@ -113,17 +131,17 @@
         CG:[0,1.626]
       }
       this.stations = [
-        new Station({ accpets: ["seat","cargo"], arm: 0.965 }),
-        new Station({ accpets: ["seat","cargo"], arm: 0.965 }),
-        new Station({ accpets: ["seat","cargo"], arm: 1.772 }),
-        new Station({ accpets: ["seat","cargo"], arm: 1.772 }),
-        new Station({ accpets: ["seat","cargo"], arm: 2.523 }),
-        new Station({ accpets: ["seat","cargo"], arm: 2.523 }),
-        new Station({ accpets: ["seat","cargo"], arm: 3.247 }),
-        new Station({ accpets: ["seat","cargo"], arm: 3.247 }),
-        new Station({ accpets: ["fuel"], arm: 1.715, limit: 330}),
-        new Station({ accpets: ["cargo"], arm: 3.763, limit:113 }),
-        new Station({ accpets: ["cargo"], arm: 4.623, limit:22 }),
+        new Station({ type: ["seat","cargo"], arm: 0.965 }),
+        new Station({ type: ["seat","cargo"], arm: 0.965 }),
+        new Station({ type: ["seat","cargo"], arm: 1.772 }),
+        new Station({ type: ["seat","cargo"], arm: 1.772 }),
+        new Station({ type: ["seat","cargo"], arm: 2.523 }),
+        new Station({ type: ["seat","cargo"], arm: 2.523 }),
+        new Station({ type: ["seat","cargo"], arm: 3.247 }),
+        new Station({ type: ["seat","cargo"], arm: 3.247 }),
+        new Station({ type: ["fuel"], arm: 1.715, limit: 330}),
+        new Station({ type: ["cargo"], arm: 3.763, limit:113 }),
+        new Station({ type: ["cargo"], arm: 4.623, limit:22 }),
       ]
     }
   }
