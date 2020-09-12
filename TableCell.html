@@ -43,12 +43,7 @@
         //
         let data = _this.getData()
         if (!!data) {
-          console.log("TableCell data: %o", data)
-
-          let bookings = _this.getOrders(data)
-          console.log("TableCell bookings: %o", bookings)
-
-          $("#Details").data("root").show(bookings, $(this))
+          $("#Details").data("root").show($(this))
           $("#Details").show()
         }
       })
@@ -201,6 +196,9 @@
       //
       // get the CellData Object from the state object
       //
+      return this.board.state.getData(this.$this) // get the CellData Object from the state object
+    }
+    getState(){
       return this.board.state.getData(this.$this) // get the CellData Object from the state object
     }
 

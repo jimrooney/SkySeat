@@ -4,6 +4,7 @@
   // ===============================
   class Details {
     constructor() {
+      this._this = this
       this.bookings = []
       this.$root = $(`<div id="Details" class="detailsDiv">
         <div class="Print">Print</div>
@@ -14,22 +15,20 @@
           </div>
         </div>
       </div>`)
-      // Access this object through $([Selector]).data('root')
-      this.$root.data("root",this)
+      // 
+      this.$root.data("root",this) // Access this object through $([Selector]).data('root')
+      //
+      // ---------------------------
+      // Airplane layout <div> Click 
+      // ---------------------------
       this.$Airplane = this.$root.find(".Airplane")
       this.$Airplane.click(function(){
-        console.log("Airplane Click")
-        console.log("Airplane: %o",this)
-
+        // console.log("Airplane Click")
+        // console.log("Airplane: %o",this)
         $(".station").children().each(function(i,child){
-
-
-
-
-
           console.log("Child: %o",child)
           console.log("Station: %o",$(this).closest(".station").data("seat"))
-          console.log("Child Data: %o",$(this).data("seat"))
+          console.log("Pax: %o",$(this))
         })
 
       })
@@ -166,6 +165,25 @@
       $DropPax.appendTo($(this))
       $DropPax.draggable({ revert: false })
       $DropPax.position({ of: $(this), my: "left top", at: "left top" })
+
+      //
+      //
+      //
+      let _this = $(this).closest(".detailsDiv").data("root").getWB()
+      //
+      //
+      //
+    }
+    getWB(){
+      console.log("getWB()")
+      //this.$Airplane
+      $(".station").children().each(function(i,child){
+          console.log("Child: %o",child)
+          console.log("Station: %o",$(this).closest(".station").data("seat"))
+
+          console.log("Pax: %o",$(this).data("pax"))
+          console.log("Pax Weight: %o",$(this).data("_pax").getWeight())
+        })
     }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time
@@ -173,10 +191,16 @@
     setRevert($obj) {
       $obj.draggable({ revert: true })
     }
-    show(bookings, $cell) {
+    show($TableCell) {
       console.log("Details.show()")
-      console.log("Cell: %o", $cell.prop("id"))
-      console.log("Bookings: %o", bookings)
+      console.log("Cell: %o", $TableCell.prop("id"))
+
+      let _TableCell = $TableCell.data("_script")
+      let bookings = _TableCell.getOrders()
+      let state = _TableCell.getState() // Returns State {CellData}
+
+      console.log("State: %o",state)
+      console.log("TableCell bookings: %o", bookings)
 
       let visible = this.$root.css("display") !== "none"
       let _this = this
@@ -197,6 +221,7 @@
             .data("seat",p)
             .data("booking", key)
             .data("pax", pax.fields)
+            .data("_pax",pax)
             .attr("id", "pax" + p)
             .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
             .addClass("Pax")
