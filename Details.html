@@ -8,6 +8,7 @@
       this.bookings = []
       this.$root = $(`<div id="Details" class="detailsDiv">
         <div class="Print">Print</div>
+        <div class="Report" />
         <div id="detailsContents">
           <div id="content" style="width: 100%; overflow: hidden;">
             <div id="Airplane" class="grid-container Airplane"></div>
@@ -243,9 +244,10 @@
 
 
         console.log("Airplane: %o", airplane)
-        airplane.getWB()
+        let wb = airplane.getWB()
+        console.log("WB: %o",wb)
         console.log("\n\n")
-
+        this.$root.find(".Report").text(`CG: ${wb.roundCG} AUW: ${wb.AUW}`)
     }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time

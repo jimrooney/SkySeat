@@ -83,10 +83,15 @@
 
     console.log("\n\nGET WB: %o",this.reg)
     console.log("Stations %o",this.stations)
-
+    //
+    // Calculate all moments
+    //
     this.stations.forEach((station)=>{
       station.moment = station.weight * station.arm
     })
+    //
+    // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
+    //
     let planeData = new Station({
       type:"airplane",
       weight: this.weight,
@@ -94,14 +99,19 @@
     })
     planeData.moment = this.moment
     this.stations.push(planeData)
-
+    //
+    // Sum all Weights and Moments
+    //
     const totalWeight = this.stations.reduce((total,station) => total + parseFloat(station.weight),0)
     const totalMoment = this.stations.reduce((total,station) => total + parseFloat(station.moment),0)
     const CG = totalMoment/totalWeight
-
-    console.log("T Weight: %o", totalWeight)
-    console.log({totalMoment})
-    console.log({CG})
+    const roundCG = Math.round((CG + Number.EPSILON) * 100) / 100
+    const wb = {
+      AUW : totalWeight,
+      cg : CG,
+      roundCG : roundCG,
+    }
+    return wb
   }
   getNextLoadId(){
     // return highest ID in current load + 1
