@@ -21,13 +21,12 @@
         let data = _this.board.state.getData($this)
         if (!!data) {
           console.log("PlaneCell data: %o", data)
-          // $("#Details").data("root").show(bookings, $(this))
-          // $("#Details").show()
-        }
-				_this.setData({
+          data.planeData = {
 						type: "Plane",
-						reg: "JRR"
-					})
+						reg: "LOR"
+					}
+          _this.saveData(data)
+        }
       })
       // -------------------------------------------
       // Backreference
@@ -41,8 +40,8 @@
 		getData() {
       return this.board.state.getData(this.$this) // get the CellData Object from the state object
     }
-		setData(data){
-			this.board.state.setData(this.$this,data)
+		saveData(data){
+			this.board.state.addData(this.$this,data)
 		}
 	}
 </script>

@@ -117,6 +117,9 @@
       }
     }
     handleDrop(event, ui) {
+      let $root = ui.draggable.closest(".detailsDiv")
+      let _root = $root.data("root")
+      //
       let existingPax
       let DragParent = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
       let $DropPax = ui.draggable.detach()
@@ -177,6 +180,9 @@
     }
     getWB(){
       console.log("getWB()")
+      console.log("This: %o",this)
+      let state = this.$TableCell.data('_script').getState()
+      console.log("TC State: %o",state)
         // Reg
         // Fuel
         // Pilot
@@ -258,6 +264,12 @@
     show($TableCell) {
       console.log("Details.show()")
       console.log("Cell: %o", $TableCell.prop("id"))
+      //
+      // Keep the TableCell object cuz drops lose it.
+      //
+      this.$TableCell = $TableCell
+
+
 
       let _TableCell = $TableCell.data("_script")
       let bookings = _TableCell.getOrders()

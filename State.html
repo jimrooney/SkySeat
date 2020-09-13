@@ -32,23 +32,33 @@
     //
     // Returns a {CellData} object based on the provided id
     //
-    getData($cell){
+    getData($cell) {
       let id = $cell
-      typeof $cell == "string" ? id = $cell : id = $cell.prop("id")
-      let data =  this.data[id]
-      if (!data){
+      typeof $cell == "string" ? (id = $cell) : (id = $cell.prop("id"))
+      let data = this.data[id]
+      if (!data) {
         data = new CellData(id)
       }
       return data
     }
-    setData($cell,data){
+    setData($cell, data) {
       let cell_ID = $cell.prop("id")
       if (!this.data[cell_ID]) {
-          this.data[cell_ID] = new CellData(cell_ID)
-        }
-        if (!!data){
-          console.log("{state}.setData: %o",data)
-        }
+        this.data[cell_ID] = new CellData(cell_ID)
+      }
+      if (!!data) {
+        console.log("{state}.setData: %o", data)
+      }
+    }
+    addData($cell, data) {
+      let cell_ID = $cell.prop("id")
+      if (!this.data[cell_ID]) {
+        this.data[cell_ID] = new CellData(cell_ID)
+      }
+      if (!!data) {
+        // also check that data is an object ****************
+        this.data[cell_ID] = { ...this.data[cell_ID], ...data }
+      }
     }
     // -----------------------------------------------------------------------------------------------------
     add(TableCell, $dropped) {
