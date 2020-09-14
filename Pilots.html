@@ -1,0 +1,41 @@
+<script>
+  var pilots = {
+    list: [],
+    //First","Last","Mobile","Email","Declared Weight
+    matrix: [
+      ["StandardPilot", "StandardPilot", "04-442-2207", "staff@glenorchyair.co.nz", 83],
+      ["James", "Stokes", "021-416-637", "a-v-8-a@hotmail.com", 125],
+      ["William", "Clark", "021-325-400", "ivan.konev@gmail.com", 83],
+      ["Jim", "Rooney", "020-4010-1926", "it@glenorchyair.co.nz", 84],
+      ["Liam", "Anderson", "027-546-8102", "", 75],
+      ["Jackson", "Burdon", "022-186-0133", "", 88],
+      ["Luke", "Petre", "027-502-3388", "petreluke@gmail.com", 77],
+      ["Dan", "Whitmore", "021-0265-2609", "", 76],
+      ["Dom", "Eller", "021-314-730", "", 78],
+      ["Reuben", "Horsley", "021-182-4156", "Reubenhorsley@gmail.com", 115],
+    ],
+    getPilot: function (name) {
+      for (let a in this.matrix) {
+        if (this.matrix[a][0] == name) {
+          return this.matrix[a]
+        }
+      }
+    },
+    loadPilots: function (data) {
+      data.forEach((row, i) => {
+        if (!!row[0]) {
+          let rowData = {}
+          if (i > 0) {
+            row.forEach((element, pos) => {
+              rowData[data[0][pos].toLowerCase()] = element // use header row element as variable name for element value
+            })
+            pilots.list.push(rowData)
+          }
+        }
+      })
+      if (data) {
+        pilots.matrix = data
+      }
+    },
+  }
+</script>

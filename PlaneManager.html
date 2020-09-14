@@ -6,39 +6,22 @@ This still needs work...
 PlaneManager.planes references can be changed to this.
 
 */
-  //
-  // Close details (put in Display?) ****************************************
-  //
-  $(function () {
-    $("#planeDetailsClose").click(function () {
-      $(".planeDetails").hide()
-    })
-  })
-
-  var PilotManager = {
-    loadPilots: function (data) {
-      if (data) {
-        pilots.matrix = data
-      }
-    },
-  }
-
 
   //
   // An array of plane objects... could rather be a key'd object array of plane key'd by reg though ****************
   //
-  var planes = {
-    list: [],
-    // *** Improve me *** (maybe with find()) ***
-    getPlane: function (registration) {
-      for (let r in this.list) {
-        if (this.list[r].reg == registration) {
-          return this.list[r]
-        }
-      }
-      return null
-    },
-  }
+  // var planes = {
+  //   list: [],
+  //   // *** Improve me *** (maybe with find()) ***
+  //   getPlane: function (registration) {
+  //     for (let r in this.list) {
+  //       if (this.list[r].reg == registration) {
+  //         return this.list[r]
+  //       }
+  //     }
+  //     return null
+  //   },
+  // }
   //
   // This could all just be in the root {planes} object ************************
   //

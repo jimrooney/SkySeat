@@ -1,4 +1,9 @@
 <script>
+  $(function () {
+    $("#planeDetailsClose").click(function () {
+      $(".planeDetails").hide()
+    })
+  })
   // ===============================
   // Details Class
   // ===============================
@@ -17,14 +22,19 @@
         </div>
       </div>`)
       this.$PCFSelector = $(
-        `<div class="PCF_Selector">
-          <select class="PCF_Pilot" name="pilot" id="pilot">
-            <option value="standard">Standard</option>
+        `<div class="PCF_Selector" id="PCF_Selector">
+          <select class="Pilot" name="pilot">
+            <option value="1">Standard</option>
+            <option value="2">Saab</option>
+            <option value="3">Opel</option>
+            <option value="4">Audi</option>
+          </select>
+          <select class="CoPilot" name="copilot">
+            <option value="CoPilot">CoPilot</option>
             <option value="saab">Saab</option>
             <option value="opel">Opel</option>
             <option value="audi">Audi</option>
           </select>
-          <input type="text" />
         </div>`
       )
       this.$root.prepend(this.$PCFSelector)
@@ -286,11 +296,11 @@
       //
       //
       //
-      let pilot = this.$PCFSelector.find(":selected").text() // .filter(":selected")
+      let pilot = $("#" + this.$PCFSelector.attr("id") + " > .Pilot")
+      pilot.val(2)
+      let coPilot = this.$PCFSelector.find(".CoPilot").find(":selected").text()
 
-
-      
-      console.log("Selected Pilot: %o",pilot)
+      console.log("Selected Pilot: %o", pilot)
 
       console.log("State: %o", state)
       console.log("TableCell bookings: %o", bookings)

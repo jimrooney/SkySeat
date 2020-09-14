@@ -208,7 +208,7 @@ function loadBoard(date) {
 }
 function loadPilots() {
   var DataID = "1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s" // Company Data Spreadsheet ID
-  var range = SpreadsheetApp.openById(DataID).getSheetByName("Pilots").getRange("A2:E")
+  var range = SpreadsheetApp.openById(DataID).getSheetByName("Pilots").getRange("A:E")
   var data = range.getValues()
   return data
 }

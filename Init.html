@@ -60,7 +60,7 @@
     //
     // Load Pilots
     //
-    google.script.run.withSuccessHandler(PilotManager.loadPilots).loadPilots()
+    google.script.run.withSuccessHandler(pilots.loadPilots).loadPilots()
     //
     // [[ Load Current Day ]]
     // Moved into PlaneManager (fixes a loading error where the day tries to plot before the planes exist)
