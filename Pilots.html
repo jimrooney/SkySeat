@@ -22,6 +22,9 @@
       }
     },
     loadPilots: function (data) {
+			//
+			// Translate Spreadsheet 2D array into array of objects based on header names
+			//
       data.forEach((row, i) => {
         if (!!row[0]) {
           let rowData = {}

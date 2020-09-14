@@ -30,10 +30,10 @@
             <option value="4">Audi</option>
           </select>
           <select class="CoPilot" name="copilot">
-            <option value="CoPilot">CoPilot</option>
-            <option value="saab">Saab</option>
-            <option value="opel">Opel</option>
-            <option value="audi">Audi</option>
+            <option value="1">CoPilot</option>
+            <option value="2">Saab</option>
+            <option value="3">Opel</option>
+            <option value="4">Audi</option>
           </select>
         </div>`
       )
@@ -44,7 +44,8 @@
       // ---------------------------
       // Airplane layout <div> Click
       // ---------------------------
-      this.$Airplane = this.$root.find(".Airplane")
+      //this.$Airplane = this.$root.find(".Airplane")
+        this.$Airplane = $("> .Airplane",this)
       this.$Airplane.click(function () {
         // console.log("Airplane Click")
         // console.log("Airplane: %o",this)
@@ -296,11 +297,18 @@
       //
       //
       //
-      let pilot = $("#" + this.$PCFSelector.attr("id") + " > .Pilot")
+      
+      
+      //let pilot = $("#" + this.$PCFSelector.attr("id") + " > .Pilot")
+      let pilot = $("> .Pilot",this.$PCFSelector)
       pilot.val(2)
-      let coPilot = this.$PCFSelector.find(".CoPilot").find(":selected").text()
+      let coPilot = $("> .CoPilot",this.$PCFSelector)
+      coPilot.val(3)
+      
+//      let coPilot = this.$PCFSelector.find(".CoPilot").find(":selected").text()
 
-      console.log("Selected Pilot: %o", pilot)
+      console.log("Selected Pilot: %o", $("> :selected",pilot).text())
+      console.log("Selected CoPilot: %o",coPilot.find(":selected").text())
 
       console.log("State: %o", state)
       console.log("TableCell bookings: %o", bookings)

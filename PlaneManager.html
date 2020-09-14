@@ -60,7 +60,7 @@ PlaneManager.planes references can be changed to this.
         }
       }
       $(".PlaneCell").each(function () {
-        $("> #hours", this).remove()
+        $("> #hours", this).remove() // removes all "hours" children
         let PCF = $(this).data("PCF")
         let id = PCF[0]
 

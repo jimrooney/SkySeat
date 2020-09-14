@@ -35,6 +35,24 @@ this.constructor.name
 // var colSum = matrix.reduce((a, b) => a.map((x, i) => x + b[i]))
 // -------------------------------------------------------------------------------------------------------------------
 
+Removes all paragraphs that contain "Hello" from the DOM. 
+Analogous to doing $("p").filter(":contains('Hello')").remove().
+
+-------------------------------------------------------------------------------------------------------------------
+==Object/Variable as jQuery Selector==
+
+(pass the object in as a second variable)
+These are equivelant...
+let coPilot = this.$PCFSelector.find(".CoPilot").find(":selected").text()
+let coPilot = $("> .CoPilot :selected",this.$PCFSelector).text()
+
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+==ChildSelectors==
+Selectors like $('strong', this) and $(this).find('strong') are pretty much the same.
+These are the same:
+this.$Airplane = this.$root.find(".Airplane")
+this.$Airplane = $("> .Airplane",this)
 
 -------------------------------------------------------------------------------------------------------------------
 // Nice find syntax for passing a single attribute of an object 
