@@ -16,33 +16,46 @@
           </div>
         </div>
       </div>`)
-      // 
-      this.$root.data("root",this) // Access this object through $([Selector]).data('root')
+      this.$PCFSelector = $(
+        `<div class="PCF_Selector">
+          <select class="PCF_Pilot" name="pilot" id="pilot">
+            <option value="standard">Standard</option>
+            <option value="saab">Saab</option>
+            <option value="opel">Opel</option>
+            <option value="audi">Audi</option>
+          </select>
+          <input type="text" />
+        </div>`
+      )
+      this.$root.prepend(this.$PCFSelector)
+      //
+      this.$root.data("root", this) // Access this object through $([Selector]).data('root')
       //
       // ---------------------------
-      // Airplane layout <div> Click 
+      // Airplane layout <div> Click
       // ---------------------------
       this.$Airplane = this.$root.find(".Airplane")
-      this.$Airplane.click(function(){
+      this.$Airplane.click(function () {
         // console.log("Airplane Click")
         // console.log("Airplane: %o",this)
-        $(".station").children().each(function(i,child){
-          console.log("Child: %o",child)
-          console.log("Station: %o",$(this).closest(".station").data("seat"))
-          console.log("Pax: %o",$(this))
-        })
-
+        $(".station")
+          .children()
+          .each(function (i, child) {
+            console.log("Child: %o", child)
+            console.log("Station: %o", $(this).closest(".station").data("seat"))
+            console.log("Pax: %o", $(this))
+          })
       })
-        // ====================
-        // Details Close Button 
-        // ====================
-        let $pop = $(`<div id="DetailsClose" class="popupCloseButton">X</div>`)
-        let _$root = this.$root 
-        this.$root.append($pop)
-        $pop.click(function () {
-          _$root.hide()
-          console.log("closing details")
-        })
+      // ====================
+      // Details Close Button
+      // ====================
+      let $pop = $(`<div id="DetailsClose" class="popupCloseButton">X</div>`)
+      let _$root = this.$root
+      this.$root.append($pop)
+      $pop.click(function () {
+        _$root.hide()
+        console.log("closing details")
+      })
       return this.$root
     }
     //
@@ -90,7 +103,7 @@
 
       $("<div></div>")
         .data("number", 1)
-        .data("seat",1)
+        .data("seat", 1)
         .appendTo("#Airplane")
         .addClass("grid-item")
         .addClass("station")
@@ -106,17 +119,18 @@
           .addClass("grid-item")
           .addClass("station")
           .addClass("PaxSeat")
-          // .click(function () {
-          //   $(this)
-          //     .children()
-          //     .each(function (index, child) {
-          //       console.log("Child: %o", child)
-          //     })
-          //   console.log("Click This: %o", $(this).data("number"))
-          // })
+        // .click(function () {
+        //   $(this)
+        //     .children()
+        //     .each(function (index, child) {
+        //       console.log("Child: %o", child)
+        //     })
+        //   console.log("Click This: %o", $(this).data("number"))
+        // })
       }
     }
     handleDrop(event, ui) {
+      let _this = $(this).closest(".detailsDiv").data("root") // This Details Object
       let $root = ui.draggable.closest(".detailsDiv")
       let _root = $root.data("root")
       //
@@ -137,20 +151,17 @@
 
       let _pax = new Pax(droppedPax)
       const paxSeat = _pax.fields.find((p) => p.label === "seat")
-      if(!paxSeat){
+      if (!paxSeat) {
         console.log("No Seat")
         let p = {
-          label:"seat",
-          value: seatNumber
+          label: "seat",
+          value: seatNumber,
         }
         droppedPax.push(p)
-      }
-      else {
-        console.log("Changing Seat")
-        console.log("paxSeat: %o",paxSeat)
+      } else {
         paxSeat.value = seatNumber
       }
-      console.log({_pax})
+      console.log({ _pax })
 
       // Swap with any existing seated pax
       if ($(this).children().length > 0) {
@@ -165,38 +176,34 @@
           existingPax.appendTo($("#PassengerList"))
         }
       }
-
       $DropPax.appendTo($(this))
       $DropPax.draggable({ revert: false })
       $DropPax.position({ of: $(this), my: "left top", at: "left top" })
-
       //
       //
       //
-      let _this = $(this).closest(".detailsDiv").data("root").getWB()
+      _root.getWB()
       //
       //
       //
     }
-    getWB(){
-      console.log("getWB()")
-      console.log("This: %o",this)
-      let state = this.$TableCell.data('_script').getState()
-      console.log("TC State: %o",state)
-        // Reg
-        // Fuel
-        // Pilot
-        // CoPilot
+    getWB() {
+      console.log("\n\ngetWB()")
+      let state = this._TableCell.getState() // Returns State {CellData}
+      console.log("TC State: %o", state)
+      // Reg
+      // Fuel
+      // Pilot
+      // CoPilot
 
-        // Pax
-        // Luggage
-        // Modifications (seats/controls/pods)
-        // Baggage
+      // Pax
+      // Luggage
+      // Modifications (seats/controls/pods)
+      // Baggage
 
       //
       //this.$Airplane // ... The Airplane Div
       //
-
 
       /*
         *******************************
@@ -217,43 +224,44 @@
       //
       // convert to Airplane Object
       //
-        if (!!planeData.type){
-          let dynamic_class = eval(planeData.type)
-          airplane = new dynamic_class(planeData)
-        }
-        console.log("\n\nAirplane: %o",airplane)
+      if (!!planeData.type) {
+        let dynamic_class = eval(planeData.type)
+        airplane = new dynamic_class(planeData)
+      }
+      console.log("\n\nAirplane: %o", airplane)
 
-/*
+      /*
         airplane
         .station ... stations will include the pilot and copilot... we'll hardcode them for now *****
 */
-        airplane.stations[0].weight = 83 // hardcoding pilot weight for now *******************
-        airplane.stations[8].weight = fuel * .72 // *******************
+      airplane.stations[0].weight = 83 // hardcoding pilot weight for now *******************
+      airplane.stations[8].weight = fuel * 0.72 // *******************
 
-      $(".station").children().each(function(i,$div){
-        let seat
-        let weight
-        let pax // array of Rezdy labels [{},{}]
-        
-        seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
-        pax = $(this).data("pax")
-        weight = $(this).data("_pax").getWeight()
+      $(".station")
+        .children()
+        .each(function (i, $div) {
+          let seat
+          let weight
+          let pax // array of Rezdy labels [{},{}]
 
-          console.log("Seat: %o",seat)
+          seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
+          pax = $(this).data("pax")
+          weight = $(this).data("_pax").getWeight()
+
+          console.log("Seat: %o", seat)
           console.log("Pax: %o", pax)
           console.log("Pax Weight: %o", weight)
 
-        if (seat >= 0){
-          airplane.stations[seat].weight = weight
-        }
+          if (seat >= 0) {
+            airplane.stations[seat].weight = weight
+          }
         })
 
-
-        console.log("Airplane: %o", airplane)
-        let wb = airplane.getWB()
-        console.log("WB: %o",wb)
-        console.log("\n\n")
-        this.$root.find(".Report").text(`CG: ${wb.roundCG} AUW: ${wb.AUW}`)
+      console.log("Airplane: %o", airplane)
+      let wb = airplane.getWB()
+      console.log("WB: %o", wb)
+      console.log("\n\n")
+      this.$root.find(".Report").text(`CG: ${wb.roundCG} AUW: ${wb.AUW}`)
     }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time
@@ -268,14 +276,23 @@
       // Keep the TableCell object cuz drops lose it.
       //
       this.$TableCell = $TableCell
+      this._TableCell = $TableCell.data("_script")
+      //
+      //
+      //
+      let bookings = this._TableCell.getOrders()
+      let state = this._TableCell.getState() // Returns State {CellData}
+
+      //
+      //
+      //
+      let pilot = this.$PCFSelector.find(":selected").text() // .filter(":selected")
 
 
+      
+      console.log("Selected Pilot: %o",pilot)
 
-      let _TableCell = $TableCell.data("_script")
-      let bookings = _TableCell.getOrders()
-      let state = _TableCell.getState() // Returns State {CellData}
-
-      console.log("State: %o",state)
+      console.log("State: %o", state)
       console.log("TableCell bookings: %o", bookings)
 
       let visible = this.$root.css("display") !== "none"
@@ -294,10 +311,10 @@
             "<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"
           )
             .data("number", p)
-            .data("seat",p)
+            .data("seat", p)
             .data("booking", key)
             .data("pax", pax.fields)
-            .data("_pax",pax)
+            .data("_pax", pax)
             .attr("id", "pax" + p)
             .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
             .addClass("Pax")

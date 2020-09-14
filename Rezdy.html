@@ -23,32 +23,30 @@
         console.log("Rezdy.load: Wrong object")
         return
       }
-      requestedDate.setDate(requestedDate.getDate()-1)
-      requestedDate.setHours(3,0,0,0)
-      console.log("requestedDate: %o",requestedDate)
+      requestedDate.setDate(requestedDate.getDate() - 1)
+      requestedDate.setHours(3, 0, 0, 0)
+      console.log("requestedDate: %o", requestedDate)
       //
       // Call the google script and pass it the Manifest
       //
       let startDate = new Date(requestedDate)
       startDate = startDate.toString()
 
-      console.log("startDate: %o",startDate)
+      console.log("startDate: %o", startDate)
 
       let endDate = new Date(requestedDate)
-      endDate.setDate(endDate.getDate()+1)
+      endDate.setDate(endDate.getDate() + 1)
       endDate = endDate.toString()
-
 
       console.log("endDate: %o", endDate)
 
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
-      google.script.run.withSuccessHandler(this.onLoad).withUserObject(Manifest).loadRezdy(startDate,endDate)
+      google.script.run.withSuccessHandler(this.onLoad).withUserObject(Manifest).loadRezdy(startDate, endDate)
     },
     // Passes Google Script XML return back to the Manifest that called the script
     onLoad: function (ret, Manifest) {
       console.log("Rezdy.onLoad()")
       console.log("Requested URL: %o", ret.url)
-      console.log("Ret %o",ret)
       Manifest.onLoad(ret.json)
     },
     onTripCodeLoad: function (data) {
@@ -76,12 +74,12 @@
         if (!order.orderNumber) {
           continue
         }
-        for (let i in order.items){
+        for (let i in order.items) {
           let key = order.orderNumber
-          if (i>0){
+          if (i > 0) {
             key = key + "-" + i
           }
-          bookings[key] = new Booking(order,i,key)
+          bookings[key] = new Booking(order, i, key)
         }
       }
       return bookings

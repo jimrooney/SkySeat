@@ -122,13 +122,14 @@
       let _dropped = $dropped.data("_script") // {Booking}
       let cellData = this.board.state.getData(this.id) // {CellData} // will return a blank object by default
 
-      console.log("== Drop ==")
-      console.log("This: %o", this) // {TableCell}
-      console.log("CellData %o", cellData) // {CellData}
-      console.log("Bookings: %o", _dropped) // {Booking}
+      // console.log("\n\n== Drop ==")
+      // console.log("This: %o", this) // {TableCell}
+      // console.log("CellData %o", cellData) // {CellData}
+      // console.log("Bookings: %o", _dropped) // {Booking}
 
       cellData.addOrder(_dropped)
-      console.log("New CellData: %o", cellData)
+
+      // console.log("New CellData: %o", cellData)
 
       // Add to {state}
       if (cellData.bookingOrders.length > 0) {
