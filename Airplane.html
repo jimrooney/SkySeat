@@ -138,7 +138,8 @@
       this.type = this.constructor.name // "GA8"
       this.limits = {
         weight: [0,1905],
-        CG:[0,1.626]
+        CG:[0,1.626],
+        fuel:330
       }
       this.stations = [
         new Station({ type: ["seat","cargo"], arm: 0.965 }),
@@ -176,4 +177,31 @@
       ]
     }
   }
+  class C208 extends Airplane {
+    constructor(data) {
+      super(data)
+
+      this.type = this.constructor.name // "GA8"
+      this.limits = {
+        weight: [0,3968.933],
+        CG:[0,5.19],
+        fuel:1270.3842
+      }
+      this.stations = [
+        new Station({ type: ["seat","cargo"], arm: 1.355 }),
+        new Station({ type: ["seat","cargo"], arm: 1.355 }),
+        new Station({ type: ["seat","cargo"], arm: 1.739 }),
+        new Station({ type: ["seat","cargo"], arm: 1.739 }),
+        new Station({ type: ["seat","cargo"], arm: 2.099 }),
+        new Station({ type: ["seat","cargo"], arm: 2.099 }),
+        new Station({ type: ["seat","cargo"], arm: 2.459 }),
+        new Station({ type: ["seat","cargo"], arm: 2.459 }),
+        new Station({ type: ["seat","cargo"], arm: 2.819 }),
+        new Station({ type: ["seat","cargo"], arm: 2.819 }),
+        new Station({ type: ["fuel"], arm: 1.715, limit: 330}),
+        new Station({ type: ["cargo"], arm: 3.44, limit:113 }),
+      ]
+    }
+  }
+
 </script>

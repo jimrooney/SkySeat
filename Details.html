@@ -23,18 +23,10 @@
       </div>`)
       this.$PCFSelector = $(
         `<div class="PCF_Selector" id="PCF_Selector">
-          <select class="Pilot" name="pilot">
-            <option value="1">Standard</option>
-            <option value="2">Saab</option>
-            <option value="3">Opel</option>
-            <option value="4">Audi</option>
-          </select>
-          <select class="CoPilot" name="copilot">
-            <option value="1">CoPilot</option>
-            <option value="2">Saab</option>
-            <option value="3">Opel</option>
-            <option value="4">Audi</option>
-          </select>
+          <select class="Plane" name="plane" />
+          <select class="Pilot" name="pilot" />
+          <select class="CoPilot" name="copilot" />
+          <select class="Fuel" name="fuel" />
         </div>`
       )
       this.$root.prepend(this.$PCFSelector)
@@ -102,6 +94,8 @@
       $DropPax.appendTo($(this))
     }
     reset() {
+      $("> .Pilot",this.$PCFSelector).empty()
+      $("> .CoPilot",this.$PCFSelector).empty()
       $("#PassengerList").html("") // will be able to be removed since we'll just plot all pax in seats (don't need a populated pax list... maybe a holding pen though)
       //
       // *************************************************************
@@ -280,9 +274,21 @@
     setRevert($obj) {
       $obj.draggable({ revert: true })
     }
+    // --------------------------------------
+    // Show
+    // --------------------------------------
     show($TableCell) {
       console.log("Details.show()")
       console.log("Cell: %o", $TableCell.prop("id"))
+      //
+      // Clear the popup
+      //
+      this.reset()
+      //
+      //
+      //
+      let visible = this.$root.css("display") !== "none"
+      let _this = this
       //
       // Keep the TableCell object cuz drops lose it.
       //
@@ -293,30 +299,38 @@
       //
       let bookings = this._TableCell.getOrders()
       let state = this._TableCell.getState() // Returns State {CellData}
-
-      //
-      //
-      //
-      
-      
-      //let pilot = $("#" + this.$PCFSelector.attr("id") + " > .Pilot")
-      let pilot = $("> .Pilot",this.$PCFSelector)
-      pilot.val(2)
-      let coPilot = $("> .CoPilot",this.$PCFSelector)
-      coPilot.val(3)
-      
-//      let coPilot = this.$PCFSelector.find(".CoPilot").find(":selected").text()
-
-      console.log("Selected Pilot: %o", $("> :selected",pilot).text())
-      console.log("Selected CoPilot: %o",coPilot.find(":selected").text())
-
       console.log("State: %o", state)
       console.log("TableCell bookings: %o", bookings)
 
-      let visible = this.$root.css("display") !== "none"
-      let _this = this
+      // ====================================
+      // -------------- PCF -----------------
+      // ====================================
+      let $plane = $("> .Plane",this.$PCFSelector)
+      let $pilot = $("> .Pilot",this.$PCFSelector)
+      let $coPilot = $("> .CoPilot",this.$PCFSelector)
+      let $fuel = $("> .Fuel",this.$PCFSelector)
 
-      this.reset()
+      PlaneManager.planes.data.forEach((plane,i)=>{
+        $plane.append(`<option value="${i}">${plane.reg}</option>`)
+      })
+      pilots.list.forEach((pilot,i)=>{
+        $pilot.append(`<option value="${i}">${pilot.first}</option>`)
+        $coPilot.append(`<option value="${i}">${pilot.first}</option>`)
+      })
+      $fuel.append(`<option value="0">0</option>`)
+      for (let i = 10 ; i<=320; i+=10){
+        $fuel.append(`<option value="${i}">${i}</option>`)
+      }
+      $fuel.change(function(){console.log("fuel was changed")})
+//      Make Fuel List that's determined by the plane's max fuel ***************
+
+      /*
+
+        Set the values to the data stored in State ***************************
+
+      */
+      $coPilot.val(3)
+      $pilot.val(2)
 
       // ===========================================
       // -------------- Passengers -----------------
