@@ -294,6 +294,7 @@
       //
       this.$TableCell = $TableCell
       this._TableCell = $TableCell.data("_script")
+      let _TableCell = this._TableCell
       //
       //
       //
@@ -301,6 +302,8 @@
       let state = this._TableCell.getState() // Returns State {CellData}
       console.log("State: %o", state)
       console.log("TableCell bookings: %o", bookings)
+
+
 
       // ====================================
       // -------------- PCF -----------------
@@ -311,17 +314,19 @@
       let $fuel = $("> .Fuel",this.$PCFSelector)
 
       PlaneManager.planes.data.forEach((plane,i)=>{
-        $plane.append(`<option value="${i}">${plane.reg}</option>`)
+        $plane.append(`<option value="${plane.reg}">${plane.reg}</option>`)
       })
       pilots.list.forEach((pilot,i)=>{
-        $pilot.append(`<option value="${i}">${pilot.first}</option>`)
-        $coPilot.append(`<option value="${i}">${pilot.first}</option>`)
+        $pilot.append(`<option value="${pilot.first}">${pilot.first}</option>`)
+        $coPilot.append(`<option value="${pilot.first}">${pilot.first}</option>`)
       })
       $fuel.append(`<option value="0">0</option>`)
       for (let i = 10 ; i<=320; i+=10){
         $fuel.append(`<option value="${i}">${i}</option>`)
       }
-      $fuel.change(function(){console.log("fuel was changed")})
+      $fuel.change(function(){
+        _TableCell.setData("fuel",this.value)
+        })
 //      Make Fuel List that's determined by the plane's max fuel ***************
 
       /*
@@ -329,8 +334,18 @@
         Set the values to the data stored in State ***************************
 
       */
-      $coPilot.val(3)
-      $pilot.val(2)
+      if(Object.keys(state.planeData).length > 0){
+        console.log("PlaneData: %o",state.planeData)
+        if(!!state.planeData.coPilot){
+          $coPilot.val(state.planeData.coPilot)
+        } else {
+          $coPilot.val("")
+        }
+        $pilot.val(state.planeData.pilot)
+        $fuel.val(state.planeData.fuel)
+        $plane.val(state.planeData.reg)
+      }
+
 
       // ===========================================
       // -------------- Passengers -----------------

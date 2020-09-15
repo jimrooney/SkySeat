@@ -193,6 +193,9 @@
       //
       return this.board.state.getData(this.$this) // get the CellData Object from the state object
     }
+    setData(key,val){
+      console.log("TableCell setData: %o %o",key,val)
+    }
     getState() {
       let state = this.board.state.getData(this.$this) // get the CellData Object from the state object
       // Check for an assigned plane. If none, get from the PlaneCell
