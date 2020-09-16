@@ -37,7 +37,7 @@
       // Airplane layout <div> Click
       // ---------------------------
       //this.$Airplane = this.$root.find(".Airplane")
-        this.$Airplane = $("> .Airplane",this)
+      this.$Airplane = $("> .Airplane", this)
       this.$Airplane.click(function () {
         // console.log("Airplane Click")
         // console.log("Airplane: %o",this)
@@ -94,8 +94,8 @@
       $DropPax.appendTo($(this))
     }
     reset() {
-      $("> .Pilot",this.$PCFSelector).empty()
-      $("> .CoPilot",this.$PCFSelector).empty()
+      $("> .Pilot", this.$PCFSelector).empty()
+      $("> .CoPilot", this.$PCFSelector).empty()
       $("#PassengerList").html("") // will be able to be removed since we'll just plot all pax in seats (don't need a populated pax list... maybe a holding pen though)
       //
       // *************************************************************
@@ -193,80 +193,8 @@
       //
     }
     getWB() {
-      console.log("\n\ngetWB()")
-      let state = this._TableCell.getState() // Returns State {CellData}
-      console.log("TC State: %o", state)
-      // Reg
-      // Fuel
-      // Pilot
-      // CoPilot
-
-      // Pax
-      // Luggage
-      // Modifications (seats/controls/pods)
-      // Baggage
-
-      //
-      //this.$Airplane // ... The Airplane Div
-      //
-
-      /*
-        *******************************
-        For now, we'll use generic airplane data till we start assigning specific planes to cells
-        *******************************
-      */
-
-      let reg = "JRR" //  ********************************* hardcoded for now ***********************
-      let fuel = 150
-      let airplane
-
-      //
-      // Get the airplane raw data
-      //
-      let planeData = PlaneManager.planes.data.find(function (el) {
-        return el.reg == reg
-      })
-      //
-      // convert to Airplane Object
-      //
-      if (!!planeData.type) {
-        let dynamic_class = eval(planeData.type)
-        airplane = new dynamic_class(planeData)
-      }
-      console.log("\n\nAirplane: %o", airplane)
-
-      /*
-        airplane
-        .station ... stations will include the pilot and copilot... we'll hardcode them for now *****
-*/
-      airplane.stations[0].weight = 83 // hardcoding pilot weight for now *******************
-      airplane.stations[8].weight = fuel * 0.72 // *******************
-
-      $(".station")
-        .children()
-        .each(function (i, $div) {
-          let seat
-          let weight
-          let pax // array of Rezdy labels [{},{}]
-
-          seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
-          pax = $(this).data("pax")
-          weight = $(this).data("_pax").getWeight()
-
-          console.log("Seat: %o", seat)
-          console.log("Pax: %o", pax)
-          console.log("Pax Weight: %o", weight)
-
-          if (seat >= 0) {
-            airplane.stations[seat].weight = weight
-          }
-        })
-
-      console.log("Airplane: %o", airplane)
-      let wb = airplane.getWB()
-      console.log("WB: %o", wb)
-      console.log("\n\n")
-      this.$root.find(".Report").text(`CG: ${wb.roundCG} AUW: ${wb.AUW}`)
+      let _wb = this._TableCell.getWB()
+      this.$root.find(".Report").text(`CG: ${_wb.roundCG} AUW: ${_wb.AUW}`)
     }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time
@@ -303,40 +231,47 @@
       console.log("State: %o", state)
       console.log("TableCell bookings: %o", bookings)
 
-
-
       // ====================================
       // -------------- PCF -----------------
       // ====================================
-      let $plane = $("> .Plane",this.$PCFSelector)
-      let $pilot = $("> .Pilot",this.$PCFSelector)
-      let $coPilot = $("> .CoPilot",this.$PCFSelector)
-      let $fuel = $("> .Fuel",this.$PCFSelector)
+      let $plane = $("> .Plane", this.$PCFSelector)
+      let $pilot = $("> .Pilot", this.$PCFSelector)
+      let $coPilot = $("> .CoPilot", this.$PCFSelector)
+      let $fuel = $("> .Fuel", this.$PCFSelector)
 
-      PlaneManager.planes.data.forEach((plane,i)=>{
+      PlaneManager.planes.data.forEach((plane, i) => {
         $plane.append(`<option value="${plane.reg}">${plane.reg}</option>`)
       })
-      pilots.list.forEach((pilot,i)=>{
+      $plane.change(function () {
+        _TableCell.setPlaneData("reg", this.value)
+      })
+      pilots.list.forEach((pilot, i) => {
         $pilot.append(`<option value="${pilot.first}">${pilot.first}</option>`)
         $coPilot.append(`<option value="${pilot.first}">${pilot.first}</option>`)
       })
+      $pilot.change(function () {
+        _TableCell.setPlaneData("pilot", this.value)
+      })
+      $coPilot.change(function () {
+        _TableCell.setPlaneData("copilot", this.value)
+      })
       $fuel.append(`<option value="0">0</option>`)
-      for (let i = 10 ; i<=320; i+=10){
+      for (let i = 10; i <= 320; i += 10) {
         $fuel.append(`<option value="${i}">${i}</option>`)
       }
-      $fuel.change(function(){
-        _TableCell.setData("fuel",this.value)
-        })
-//      Make Fuel List that's determined by the plane's max fuel ***************
+      $fuel.change(function () {
+        _TableCell.setPlaneData("fuel", this.value)
+      })
+      //      Make Fuel List that's determined by the plane's max fuel ***************
 
       /*
 
         Set the values to the data stored in State ***************************
 
       */
-      if(Object.keys(state.planeData).length > 0){
-        console.log("PlaneData: %o",state.planeData)
-        if(!!state.planeData.coPilot){
+      if (Object.keys(state.planeData).length > 0) {
+        console.log("PlaneData: %o", state.planeData)
+        if (!!state.planeData.coPilot) {
           $coPilot.val(state.planeData.coPilot)
         } else {
           $coPilot.val("")
@@ -345,7 +280,6 @@
         $fuel.val(state.planeData.fuel)
         $plane.val(state.planeData.reg)
       }
-
 
       // ===========================================
       // -------------- Passengers -----------------

@@ -193,8 +193,16 @@
       //
       return this.board.state.getData(this.$this) // get the CellData Object from the state object
     }
-    setData(key,val){
-      console.log("TableCell setData: %o %o",key,val)
+    setPlaneData(key, val) {
+      console.log("Set Plane Data, Key: %o Val: %o", key, val)
+      let s = this.getState() // get copy of current State
+      let state = JSON.parse(JSON.stringify(s))
+      state.planeData[key] = val
+      console.log("Set State: %o", state)
+      this.setState(state)
+    }
+    setState(state) {
+      this.board.state.data[state.cellID] = state
     }
     getState() {
       let state = this.board.state.getData(this.$this) // get the CellData Object from the state object
@@ -214,6 +222,70 @@
         return this.getData().leg
       }
       return null
+    }
+    getWB() {
+      // Reg
+      // Fuel
+      // Pilot
+      // CoPilot
+
+      // Pax
+      // Luggage
+      // Modifications (seats/controls/pods)
+      // Baggage
+      let state = this.getState()
+      //
+      // Get the airplane raw data
+      //
+      let planeData = PlaneManager.planes.data.find(function (el) {
+        return el.reg == state.planeData.reg
+      })
+      console.log("PlaneData: %o", planeData)
+      //
+      // convert to Airplane Object
+      //
+      let airplane
+      if (!!planeData.type) {
+        let dynamic_class = eval(planeData.type)
+        airplane = new dynamic_class(planeData)
+      }
+      console.log("\n\nAirplane: %o", airplane)
+      /*
+        airplane
+        .station ... stations will include the pilot and copilot... we'll hardcode them for now *****
+*/
+      console.log("Fuel:%o", state.planeData.fuel)
+      airplane.stations[0].weight = 83 // hardcoding pilot weight for now *******************
+      airplane.stations[8].weight = parseInt(state.planeData.fuel) * 0.72 // *******************
+
+      $(".station")
+        .children()
+        .each(function (i, $div) {
+          let seat
+          let weight
+          let pax // array of Rezdy labels [{},{}]
+
+          seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
+          pax = $(this).data("pax")
+          weight = $(this).data("_pax").getWeight()
+
+          console.log("Seat: %o", seat)
+          console.log("Pax: %o", pax)
+          console.log("Pax Weight: %o", weight)
+
+          if (seat >= 0) {
+            airplane.stations[seat].weight = weight
+          }
+        })
+
+      console.log("Airplane: %o", airplane)
+      let wb = airplane.getWB()
+      console.log("WB: %o", wb)
+      console.log("\n\n")
+      //
+      //
+      //
+      return wb
     }
     // Perhaps "hasOuts()" ************************************
     // This only tells you if the cell contains outs, not the direction of the leg

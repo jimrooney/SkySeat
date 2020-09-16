@@ -14,6 +14,13 @@
         // fuel
       }
     }
+    addData(data){
+      // if(typeof data === "Object"){
+      //   console.log("Adding Data: %o",data)
+      //   let obj = { ...this, ...data }
+      //   console.log("OBJ: %o",obj)
+      // }
+    }
     addOrder(booking) {
       this.leg = booking.getLeg()
       let orderNumber = booking.orderNumber
