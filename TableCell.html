@@ -223,16 +223,7 @@
       }
       return null
     }
-    getWB() {
-      // Reg
-      // Fuel
-      // Pilot
-      // CoPilot
-
-      // Pax
-      // Luggage
-      // Modifications (seats/controls/pods)
-      // Baggage
+    getPlane() {
       let state = this.getState()
       //
       // Get the airplane raw data
@@ -249,14 +240,30 @@
         let dynamic_class = eval(planeData.type)
         airplane = new dynamic_class(planeData)
       }
+
+      let fuelStation = airplane.stations.find((station) => station.type.includes("fuel"))
+      fuelStation.weight = parseInt(state.planeData.fuel) * 0.72 // Adjust for Jet A ********** (.8) ****
+
       console.log("\n\nAirplane: %o", airplane)
+      return airplane
+    }
+    getWB() {
+      // Reg
+      // Fuel
+      // Pilot
+      // CoPilot
+
+      // Pax
+      // Luggage
+      // Modifications (seats/controls/pods)
+      // Baggage
+      let airplane = this.getPlane()
       /*
         airplane
         .station ... stations will include the pilot and copilot... we'll hardcode them for now *****
 */
-      console.log("Fuel:%o", state.planeData.fuel)
+
       airplane.stations[0].weight = 83 // hardcoding pilot weight for now *******************
-      airplane.stations[8].weight = parseInt(state.planeData.fuel) * 0.72 // *******************
 
       $(".station")
         .children()
