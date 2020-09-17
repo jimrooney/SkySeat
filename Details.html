@@ -241,7 +241,10 @@
       let $fuel = $("> .Fuel", this.$PCFSelector)
 
       PlaneManager.planes.data.forEach((plane, i) => {
-        $plane.append(`<option value="${plane.reg}">${plane.reg}</option>`)
+        if (!!plane.weight)
+       { 
+         $plane.append(`<option value="${plane.reg}">${plane.reg}</option>`)
+         }
       })
       $plane.change(function () {
         _TableCell.setPlaneData("reg", this.value)
