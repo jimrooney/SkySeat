@@ -11,6 +11,7 @@
     constructor() {
       this._this = this
       this.bookings = []
+
       this.$root = $(`<div id="Details" class="detailsDiv">
         <div class="Print">Print</div>
         <div class="Report" />
@@ -21,14 +22,14 @@
           </div>
         </div>
       </div>`)
-      this.$PCFSelector = $(
-        `<div class="PCF_Selector" id="PCF_Selector">
+      this.$this = this.$root
+      this.PCFSelectorString = `<div class="PCF_Selector" id="PCF_Selector">
           <select class="Plane" name="plane" />
           <select class="Pilot" name="pilot" />
           <select class="CoPilot" name="copilot" />
           <select class="Fuel" name="fuel" />
         </div>`
-      )
+      this.$PCFSelector = $(this.PCFSelectorString)
       this.$root.prepend(this.$PCFSelector)
       //
       this.$root.data("root", this) // Access this object through $([Selector]).data('root')
@@ -94,8 +95,10 @@
       $DropPax.appendTo($(this))
     }
     reset($TableCell) {
-      $("> .Pilot", this.$PCFSelector).empty()
-      $("> .CoPilot", this.$PCFSelector).empty()
+      this.$PCFSelector.remove()
+      this.$PCFSelector = $(this.PCFSelectorString)
+      this.$root.prepend(this.$PCFSelector)
+
       $("#PassengerList").html("") // will be able to be removed since we'll just plot all pax in seats (don't need a populated pax list... maybe a holding pen though)
       //
       // *************************************************************
@@ -119,8 +122,8 @@
       // *** change to reflect any plane *********************************************
       // probably need to add .click() here. ********************
 
-      let seats = airplane.stations.filter(el => el.type.includes("seat"))
-      console.log("New Array %o",seats)
+      let seats = airplane.stations.filter((el) => el.type.includes("seat"))
+      console.log("New Array %o", seats)
 
       for (var i = 2; i <= seats.length; i++) {
         $("<div></div>")
@@ -242,6 +245,8 @@
       })
       $plane.change(function () {
         _TableCell.setPlaneData("reg", this.value)
+        _this.show(_this.$TableCell)
+        _this.$this.show()
       })
       pilots.list.forEach((pilot, i) => {
         $pilot.append(`<option value="${pilot.first}">${pilot.first}</option>`)
@@ -282,14 +287,21 @@
       // ===========================================
       // -------------- Passengers -----------------
       // ===========================================
+
+      let bgColors = {}
+      let colorNumbers =  Array.from({length: 20}, (_, i) => "hsl(" + (i+1) + 360/(i+1) + ", 50%, 75%)")
+
       for (let key in bookings) {
         for (let p in bookings[key].item.participants) {
           let pax = new Pax({ fields: bookings[key].item.participants[p].fields })
           let firstName = pax.getFirstName()
+          let weight = pax.getWeight()
+          let orderNumber = pax.getOrderNumber()
+
           let $pax = $(
-            "<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"
+            `<div>${firstName}<br><span style="font-size:large;">${weight}</span>`//<br>${orderNumber}</div>`
           )
-            .data("number", p)
+            //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
             .data("seat", p)
             .data("booking", key)
             .data("pax", pax.fields)
@@ -313,6 +325,17 @@
                 }
               },
             })
+
+            let hue
+            if(bgColors[orderNumber]){
+              hue = bgColors[orderNumber]
+            }
+            else{
+              hue = colorNumbers.pop()
+              bgColors[orderNumber] = hue
+            }
+            $pax.css("background-color", hue)
+
           if (firstName.length >= 7) {
             $pax.css("font-size", "8px")
           }
