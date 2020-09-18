@@ -195,7 +195,7 @@
     }
     getWB() {
       let _wb = this._TableCell.getWB()
-      this.$root.find(".Report").text(`CG: ${_wb.roundCG} AUW: ${_wb.AUW}`)
+      this.$root.find(".Report").text(`CG: ${_wb.rounded.cg} AUW: ${_wb.rounded.AUW}`)
     }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time
