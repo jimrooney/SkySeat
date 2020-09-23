@@ -21,16 +21,6 @@
       //   console.log("OBJ: %o",obj)
       // }
     }
-    addOrder(booking) {
-      this.leg = booking.getLeg()
-      let orderNumber = booking.orderNumber
-      let product = booking.itemNumber
-      let key = orderNumber + "_" + product
-      if (!!key && !this.bookingOrders.includes(key)){
-        this.bookingOrders.push(key)
-      }
-      return true
-    }
     removeOrder(booking){
       // removing everythong for now ********************
       // a loop should fix this 

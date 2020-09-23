@@ -104,42 +104,58 @@
     // -------------------------------------------------------------------
     // Record Drop
     // -------------------------------------------------------------------
+    //
+    // Drop is legal, record it.
+    //
     recordDrop($this, $dropped) {
-      //
-      // Drop is legal, record it.
-      //
+      console.log("{TableCell}.recordDrop")
+      console.log("This: %o", this)
+      // $this is the Accepting {TableCell} ... which *should* generally be: this
+      // $dropped is the {TabelCell} or {Booking} that's been dropped.
       // Since this is getting called externally, "this" isn't this obj
-      // So we pass in $this and use the jQuery $(this) to get a pointer to this object
-      //
-      // // This is the magic //
-      //
 
       // This is the call we're pulling up in to this function ************************
-      //this.board.state.add($this, $dropped) // This adds the data to the State object (two dimensional array that mirrors the Board)
+      // this.board.state.add($this, $dropped) // This adds the data to the State object (two dimensional array that mirrors the Board)
 
       // === Update ===
       // this.board.update() // board.update() calls update() on each TableCell.
 
-      let _dropped = $dropped.data("_script") // {Booking}
+      // $dropped = jQuery TableCell or BookingSprite
+      let _dropped = $dropped.data("_script") // {Booking} or {TableCell}
       let cellData = this.board.state.getData(this.id) // {CellData} // will return a blank object by default
 
-      // console.log("\n\n== Drop ==")
-      // console.log("This: %o", this) // {TableCell}
-      // console.log("CellData %o", cellData) // {CellData}
-      // console.log("Bookings: %o", _dropped) // {Booking}
+      console.log("CellData from {State} %o", cellData) // {CellData}
+      console.log("Dropped Bookings: %o", _dropped) // {Booking}
 
-      cellData.addOrder(_dropped)
+      // Pull this logic into here and just write it to State.
+      // ({cellData} shouldn't have functions in it cuz they'll get lost when it's JSON saved)
+      //cellData.addOrder(_dropped)
 
-      // console.log("New CellData: %o", cellData)
+      /*
 
-      // Add to {state}
-      if (cellData.bookingOrders.length > 0) {
-        this.board.state.data[this.id] = cellData
+      Add the bookings to the cellData and then add the cellData to {State}
+
+      *******************************************************
+      Currently no bookingOrders (cuz this is the first drop)
+      *******************************************************
+
+
+      */
+      let StateCellData = this.board.state.getData(this.id)
+      if (!!StateCellData.bookingOrders.length > 0) {
+        console.log("State CellData exists, add orders")
+      } else {
+        console.log("State CellData is empty")
+        // Add to {state}
+        cellData = this.board.state.setData(this.id, _dropped)
       }
+
+      console.log("New CellData: %o", cellData)
 
       // === Update ===
       this.board.update() // board.update() calls update() on each TableCell.
       // *** possibly only update effected cells ************************************
+
       $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
     }
     // -------------------------------------------------------------------
@@ -173,18 +189,26 @@
       // Returns an array of booking objects objects (from State)
       //
       let manifest = this.board.manifest
-      let retArray = []
       let data = this.getData()
-      if (!!data) {
-        data.bookingOrders.forEach((o) => {
-          let s = o.split("_") // orderNumber + "_" + itemNumber
-          let orderNumber = s[0]
-          let itemNumber = parseInt(s[1])
-          let order = manifest.orders.find((x) => x.orderNumber === orderNumber)
+      let retArray = data.bookingOrders.map((o) => {
+        if (!o) {
+          return
+        }
+        let s = o.split("_") // orderNumber + "_" + productCode + "_" + itemNumber
+        let orderNumber = s[0]
+        let itemNumber = parseInt(s[2])
+        console.log("s0 s2 %o %o", s[0], s[2])
+        let order = manifest.orders.find((x) => x.orderNumber === orderNumber)
+        if (!!order) {
           let item = order.items[itemNumber]
-          let booking = new Booking(manifest, order, item)
-          retArray.push(booking)
-        })
+          if (!!item) {
+            let booking = new Booking(manifest, order, item, itemNumber)
+            return booking
+          }
+        }
+      })
+      if (!retArray[0]) {
+        retArray.shift()
       }
       return retArray
     }
@@ -249,12 +273,8 @@
       return airplane
     }
     getWB() {
-
       // if seats aren't assigned, sort by crew, then weight
       // if seats are assigned, check that they fit the plane, then use them.
-
-
-
 
       // Reg
       // Fuel
@@ -266,7 +286,7 @@
       // Modifications (seats/controls/pods)
       // Baggage
       let airplane = this.getPlane()
-      console.log("GetWB, Plane: %o",airplane)
+      console.log("GetWB, Plane: %o", airplane)
       /*
         airplane
         .station ... stations will include the pilot and copilot... we'll hardcode them for now *****
@@ -346,7 +366,7 @@
       // If Data
       // --------
       if (!!cellData && cellData.bookingOrders.length > 0) {
-        debug.log("{TableCell}.update()", cellData)
+        console.log("{TableCell}.update()", cellData)
         //
         // In/Out Chevrons
         //
@@ -377,21 +397,25 @@
         // reach into the manifest and get the Booking Object
         //
         let bookings = this.getOrders() // returns an array of Booking Objects [{Booking},{Booking}]
-        let numPax = bookings.reduce((acc, booking) => {
-          return acc + booking.item.participants.length
-        }, 0)
-        // Use map to extract the GYACode into an array
-        // Use [...new Set()] to eliminate duplicates
-        // (Without the [...] you get objects)
-        let codes = [...new Set(bookings.map((b) => b.product.GYACode))].join("<BR>")
-        $this.html(`(${numPax})  ${codes}`)
-        $this.draggable({
-          //revert: true,
-          helper: "clone",
-          cursorAt: { left: 5, top: 5 },
-        })
-      } else {
-        $this.draggable("disable")
+        if (bookings.length > 0) {
+          console.log("Bookings: %o", bookings.length)
+
+          let numPax = bookings.reduce((acc, booking) => {
+            return acc + booking.item.participants.length
+          }, 0)
+          // Use map to extract the GYACode into an array
+          // Use [...new Set()] to eliminate duplicates
+          // (Without the [...] you get objects)
+          let codes = [...new Set(bookings.map((b) => b.product.GYACode))].join("<BR>")
+          $this.html(`(${numPax})  ${codes}`)
+          $this.draggable({
+            //revert: true,
+            helper: "clone",
+            cursorAt: { left: 5, top: 5 },
+          })
+        } else {
+          $this.draggable("disable")
+        }
       }
     }
   }

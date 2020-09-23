@@ -41,14 +41,12 @@
       }
       return data
     }
-    setData($cell, data) {
-      let cell_ID = $cell.prop("id")
-      if (!this.data[cell_ID]) {
-        this.data[cell_ID] = new CellData(cell_ID)
-      }
-      if (!!data) {
-        console.log("{state}.setData: %o", data)
-      }
+    setData(id, data) {
+      let cell = this.data[id]
+      !cell ? (cell = new CellData(id)) : null
+      cell.bookingOrders.push(data.key)
+      this.data[id] = cell
+      return cell
     }
     addData($cell, data) {
       let cell_ID = $cell.prop("id")
@@ -62,13 +60,13 @@
     }
     // -----------------------------------------------------------------------------------------------------
     add(TableCell, $dropped) {
-      // ({TableCell},{Booking})
+      // The accepting TableCell and $dropped = either {TableCell} or {Booking} dropped onto it.
       //
-      // add dropped object to TableCell it was dropped onto
+      // add {$dropped} object to {TableCell} it was dropped onto
       //
 
       let _dropped = $dropped.data("_script") // ({TableCell} or {Booking}) JS object attached to the Selector
-      let cell_ID = TableCell.prop("id")
+      let cell_ID = TableCell.prop("id") // The accepting TableCell
 
       console.log("$dropped", $dropped)
       $dropped.each(function (index, e) {
@@ -82,6 +80,7 @@
       Hrm.... the {state} is doing the add/don't add logic?
       Shouldn't {state} merely record/delete data?
       *****************************************************
+      All this logic could be moved up and the end result could be calling addOrder()
 
       Record into the state the booking orderNumber... partial bookings will have [orderNumber-participantKey] (maybe the barcode?)
       We can also record the TableCell specific details like pax seat numbers and plane details (if not default)
@@ -96,6 +95,7 @@
       // If a tablecell is dropped, it's multiple bookings *******************
       //
       if (!!_dropped) {
+        // ({TableCell} or {Booking}) JS object attached to the Selector
         //
         // If the CellData Object doesn't exist, create it
         //
@@ -106,20 +106,39 @@
         let cellData = this.data[cell_ID]
         cellData.leg = _dropped.getLeg()
 
+        // ****************************
+        // TableCell / Booking Split
+        //
         // Adding Data ***********************************
+        //
         if (_dropped.constructor.name == "TableCell") {
           console.log("TableCell Drop")
           console.log("_dropped.getOrders(): %o", _dropped.getOrders())
           console.log("getData(): %o", _dropped.getData())
           _dropped.getOrders().forEach((element) => {
             console.log("Add: %o", element)
-            this.data[cell_ID].addOrder(element)
+
+            //this.addOrder(cell_ID,element)
+            // this.data[cell_ID]            .addOrder(element)
           })
         } else {
-          console.log("Add: %o", _dropped)
-          this.data[cell_ID].addOrder(_dropped)
+          console.log("Booking Add: %o", _dropped)
+
+          //this.data[cell_ID].addOrder(_dropped)
         }
       }
+    }
+    addOrder(cell_ID, booking) {
+      let cell = this.data[cell_ID]
+
+      cell.leg = booking.getLeg()
+      let orderNumber = booking.orderNumber
+      let product = booking.itemNumber
+      let key = orderNumber + "_" + product
+      if (!!key && !cell.bookingOrders.includes(key)) {
+        cell.bookingOrders.push(key)
+      }
+      return true
     }
     // -----------------------------------------------------------------------------------------------------
     //
@@ -138,7 +157,7 @@
       }
     }
     getState() {
-      return this.data
+      return this
     }
   }
 </script>

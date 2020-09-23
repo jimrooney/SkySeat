@@ -35,9 +35,9 @@
         // limit:
         // }
       ]
-      this.load =[
+      this.load = [
         // {
-        //   id: // this.getNextLoadId() ... simple counter. 
+        //   id: // this.getNextLoadId() ... simple counter.
         //   station:
         //   type:
         //   weight:
@@ -46,95 +46,95 @@
         // {}
       ]
     }
-    getSeats() { // ******************
+    getSeats() {
+      // ******************
       // analyse stations to see how many seats are installed.
       // default loading of airplane will contain the seats at station
       // will also contain the controls
       // and anything else that we have the data for.
       // we can remove items with negative loads if necessary.
-      const result = this.stations(item => item.type == "seat")
+      const result = this.stations((item) => item.type == "seat")
       return result
     }
 
-// ************************************************************************************************
-    addLoad(load){ // Accepts: {id,station,type,weight} {station}
-    
-    // ************ Need checks **************************
-    // if id exists, make sure it hasn't been used already
-    // if it has, just get a new one .... this.getNextLoadId()
-    // if no id exists, get one.
-    let legal = false
-    if (this.isLegal(load)){
-      load.id = this.getNextLoadId()
-      this.load.push(load)
-      legal = true
-    }
-    return ret
-  }
-  isLegal(load){
-    // check type and limits, return T/F
-  }
-  removeLoad(load){
-    // remove obj by load.id
-  }
-  getWB(){
-    // calculate CG based on load (simple WAM)
-    // return [w/cg]
+    // ************************************************************************************************
+    addLoad(load) {
+      // Accepts: {id,station,type,weight} {station}
 
-    console.log("\n\nGET WB: %o",this.reg)
-    console.log("Stations %o",this.stations)
-    //
-    // Calculate all moments
-    //
-    this.stations.forEach((station)=>{
-      station.moment = station.weight * station.arm
-    })
-    //
-    // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
-    //
-    let planeData = new Station({
-      type:"airplane",
-      weight: this.weight,
-      arm: this.arm
-    })
-    planeData.moment = this.moment
-    this.stations.push(planeData)
-    //
-    // Sum all Weights and Moments
-    //
-    const totalWeight = this.stations.reduce((total,station) => total + parseFloat(station.weight),0)
-    const totalMoment = this.stations.reduce((total,station) => total + parseFloat(station.moment),0)
-    const CG = totalMoment/totalWeight
-    const rCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
-    const rAUW = Math.round((totalWeight + Number.EPSILON) * 100) / 100
-    //const roundCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
-    const wb = {
-      AUW : totalWeight,
-      cg : CG,
-      rounded : {
-        AUW : rAUW,
-        cg : rCG ,
+      // ************ Need checks **************************
+      // if id exists, make sure it hasn't been used already
+      // if it has, just get a new one .... this.getNextLoadId()
+      // if no id exists, get one.
+      let legal = false
+      if (this.isLegal(load)) {
+        load.id = this.getNextLoadId()
+        this.load.push(load)
+        legal = true
       }
+      return ret
     }
-    return wb
-  }
-  getNextLoadId(){
-    // return highest ID in current load + 1
-    let count = 0
-    this.load.forEach(element => {
-      if(element.id >= count){
-        count = element.id + 1
+    isLegal(load) {
+      // check type and limits, return T/F
+    }
+    removeLoad(load) {
+      // remove obj by load.id
+    }
+    getWB() {
+      // calculate CG based on load (simple WAM)
+      // return [w/cg]
+
+      console.log("\n\nGET WB: %o", this.reg)
+      console.log("Stations %o", this.stations)
+      //
+      // Calculate all moments
+      //
+      this.stations.forEach((station) => {
+        station.moment = station.weight * station.arm
+      })
+      //
+      // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
+      //
+      let planeData = new Station({
+        type: "airplane",
+        weight: this.weight,
+        arm: this.arm,
+      })
+      planeData.moment = this.moment
+      this.stations.push(planeData)
+      //
+      // Sum all Weights and Moments
+      //
+      const totalWeight = this.stations.reduce((total, station) => total + parseFloat(station.weight), 0)
+      const totalMoment = this.stations.reduce((total, station) => total + parseFloat(station.moment), 0)
+      const CG = totalMoment / totalWeight
+      const rCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
+      const rAUW = Math.round((totalWeight + Number.EPSILON) * 100) / 100
+      //const roundCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
+      const wb = {
+        AUW: totalWeight,
+        cg: CG,
+        rounded: {
+          AUW: rAUW,
+          cg: rCG,
+        },
       }
-    })
-    return count
-  }
-// ************************************************************************************************
-
-
+      return wb
+    }
+    getNextLoadId() {
+      // return highest ID in current load + 1
+      let count = 0
+      this.load.forEach((element) => {
+        if (element.id >= count) {
+          count = element.id + 1
+        }
+      })
+      return count
+    }
+    // ************************************************************************************************
   }
 
   //
-  // Max weight in cargo area 680kg  
+  // Max weight in cargo area 680kg
   //
   class GA8 extends Airplane {
     constructor(data) {
@@ -142,22 +142,23 @@
 
       this.type = this.constructor.name // "GA8"
       this.limits = {
-        weight: [0,1905],
-        CG:[0,1.626],
-        fuel:330
+        weight: { empty: 0, MAUW: 1905, Landing: 1860 },
+        // fwd1/2 [limit in M ,@ weight in kg]
+        CG: { forward: 0, fwd1: [,], fwd2: [,], aft: 1.626 },
+        fuel: { capacity: 330, type: "100LL" },
       }
       this.stations = [
-        new Station({ type: ["seat","cargo"], arm: 0.965 }),
-        new Station({ type: ["seat","cargo"], arm: 0.965 }),
-        new Station({ type: ["seat","cargo"], arm: 1.772 }),
-        new Station({ type: ["seat","cargo"], arm: 1.772 }),
-        new Station({ type: ["seat","cargo"], arm: 2.523 }),
-        new Station({ type: ["seat","cargo"], arm: 2.523 }),
-        new Station({ type: ["seat","cargo"], arm: 3.247 }),
-        new Station({ type: ["seat","cargo"], arm: 3.247 }),
-        new Station({ type: ["fuel"], arm: 1.715, limit: 330}),
-        new Station({ type: ["cargo"], arm: 3.763, limit:113 }),
-        new Station({ type: ["cargo"], arm: 4.623, limit:22 }),
+        new Station({ type: ["seat", "cargo"], arm: 0.965 }),
+        new Station({ type: ["seat", "cargo"], arm: 0.965 }),
+        new Station({ type: ["seat", "cargo"], arm: 1.772 }),
+        new Station({ type: ["seat", "cargo"], arm: 1.772 }),
+        new Station({ type: ["seat", "cargo"], arm: 2.523 }),
+        new Station({ type: ["seat", "cargo"], arm: 2.523 }),
+        new Station({ type: ["seat", "cargo"], arm: 3.247 }),
+        new Station({ type: ["seat", "cargo"], arm: 3.247 }),
+        new Station({ type: ["fuel"], arm: 1.715, limit: 330 }),
+        new Station({ type: ["cargo"], arm: 3.763, limit: 113 }),
+        new Station({ type: ["cargo"], arm: 4.623, limit: 22 }),
       ]
     }
   }
@@ -168,8 +169,10 @@
 
       this.type = this.constructor.name // "C206"
       this.limits = {
-        weight: [0,1719],
-        CG:[0,125.984]
+        weight: { empty: 0, MAUW: 1719, Landing: 1719 },
+        // fwd1/2 [limit in M ,@ weight in kg]
+        CG: { forward: 0.8382, fwd1: [0.8382, 1133.981], fwd2: [1.0795, 1632.933], aft: 1.26238 },
+        fuel: { capacity: 330, type: "100LL" },
       }
       this.stations = [
         new Station({ type: ["seat"], arm: 93.98 }),
@@ -188,25 +191,30 @@
 
       this.type = this.constructor.name // "GA8"
       this.limits = {
-        weight: [0,3968.933],
-        CG:[0,5.19],
-        fuel:1270.3842
+        weight: [0, 3968.933],
+        CG: [0, 5.19],
+        fuel: 1270.3842,
+      }
+      this.limits = {
+        weight: { empty: 0, MAUW: 1719, Landing: 1860 },
+        // fwd1/2 [limit in M ,@ weight in kg]
+        CG: { forward: 0, fwd1: [,], fwd2: [,], aft: 3968.933 },
+        fuel: { capacity: 1283.3, type: "JetA" },
       }
       this.stations = [
-        new Station({ type: ["seat","cargo"], arm: 1.355 }),
-        new Station({ type: ["seat","cargo"], arm: 1.355 }),
-        new Station({ type: ["seat","cargo"], arm: 1.739 }),
-        new Station({ type: ["seat","cargo"], arm: 1.739 }),
-        new Station({ type: ["seat","cargo"], arm: 2.099 }),
-        new Station({ type: ["seat","cargo"], arm: 2.099 }),
-        new Station({ type: ["seat","cargo"], arm: 2.459 }),
-        new Station({ type: ["seat","cargo"], arm: 2.459 }),
-        new Station({ type: ["seat","cargo"], arm: 2.819 }),
-        new Station({ type: ["seat","cargo"], arm: 2.819 }),
-        new Station({ type: ["fuel"], arm: 1.715, limit: 330}),
-        new Station({ type: ["cargo"], arm: 3.44, limit:113 }),
+        new Station({ type: ["seat", "crew"], arm: 3.556 }),
+        new Station({ type: ["seat", "crew"], arm: 3.556 }),
+        new Station({ type: ["seat", "cargo"], arm: 4.41706 }),
+        new Station({ type: ["seat", "cargo"], arm: 4.41706 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.33146 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.33146 }),
+        new Station({ type: ["seat", "cargo"], arm: 6.24586 }),
+        new Station({ type: ["seat", "cargo"], arm: 6.24586 }),
+        new Station({ type: ["seat", "cargo"], arm: 7.16026 }),
+        new Station({ type: ["seat", "cargo"], arm: 7.16026 }),
+        new Station({ type: ["fuel"], arm: 5.175758 }),
+        new Station({ type: ["cargo"], arm: 3.44, limit: 113 }),
       ]
     }
   }
-
 </script>
