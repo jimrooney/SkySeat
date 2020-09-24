@@ -1,19 +1,19 @@
 <script>
   // =====================================================================================================
-  // Always accessed through getters and setters
-  // Functions aren't saved in JSON, so it keeps the save data to a minimum
+  // No functions.
+  // Functions aren't saved in JSON (and this is what gets saved in JSON format)
   // =====================================================================================================
   class CellData {
     constructor(cellID) {
       this.cellID = cellID
-      this.bookingOrders = []
+      this.bookingOrders = [] // Array of booking keys (orderNumber_product_itemNumbers)
       this.planeData = {
         // reg
         // pilot
         // copilot
         // fuel
       }
-      this.leg // A B C Null
+      this.leg = null // A B C Null
     }
   }
 </script>

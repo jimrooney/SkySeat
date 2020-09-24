@@ -2,24 +2,22 @@
   class Pax {
     constructor(data) {
       // console.log("New Pax: %o",data)
-      if (!!data.fields){
+      if (!!data.fields) {
         this.fields = data.fields || ""
       } else {
         this.fields = data
-      } 
+      }
       this.seat = data.seat || null
       this.barcode = this.getBarcode()
       this.orderNumber = this.getOrderNumber()
     }
-    setSeat(number){
-      
-    }
-    getOrderNumber(){
+    setSeat(number) {}
+    getOrderNumber() {
       let ret = this.barcode || ""
       ret = ret.split("*")[0]
       return ret
     }
-    getBarcode (){
+    getBarcode() {
       let ret = this.fields[2].value || ""
       return ret
     }
@@ -38,7 +36,13 @@
       return _name
     }
     getWeight() {
-      let ret = this.fields[4].value || 0
+      //
+      // Maybe a good place to add standard weights and standard weight addition (4kg)
+      //
+      let ret = 0
+      if (!!this.fields[4]) {
+        ret = this.fields[4].value || 0
+      }
       // Always return KG...
       // Removes KG LBS etc
       ret = wb.getKilos(ret)
@@ -49,7 +53,7 @@
       let ret = this.fields[3].value || -1
       return ret
     }
-    getGroupColor(){
+    getGroupColor() {
       Color.getByBooking()
     }
   }

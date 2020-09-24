@@ -13,51 +13,23 @@ Sunrise flights map to 6pm (Time object needs that switch fixed)
 Once a TableCell is moved, it won't highlight.
 Pax per month starts one day behind (probably a timezone issue)
 
--------------------------------
-Eventually
--------------------------------
-Week View with ability to spawn boards.
-
-Setup Default PlaneCell Data.
-Ability to drag/drop entire columns.
-State needs multi-day setup.
-
-Start saving and loading State
-Look at TableCell pax number display... right now it just totals all the pax... 
-Will want to be able to also show pax-per-product when desired.
-
-Have an option on the "print loadsheet" page to print flight following on trips that don't need it.... 
-Like for Milford when the tower's off.
-
-setProperties()
-getProperties() for google scripts?
-
-Details popup needs to be adjusted to reflect any plane 
-
-Organize the manifest by times (Sort by time and maybe colour by product)
-Filter manifest by current day (Rezdy includes bookings not on the requested day)
-Figure out how to best account for trip time.
-The "endtimelocal" may be of help... it'll be great if we can count on that as the "back in QN" time.
-Maybe make the manifest stackable.
-
-Think about better reporting. Just doing "pax per month" so far... could have an object that holds all the stats.
 
 -------------------------------
 Currently
 -------------------------------
-Dropping and Moving bookings working.
-Need to add in/out colours
-Check for CoPilot in WB calculations (don't think it's there)
-
+Need to be able to remove bookings from the board.
 removeOrder might need to remove one order... it removes everything for now.
 _dropped.board.state.removeOrder($dropped) // List of bookings instead?**************
 
 Setup Default PlaneCell Values
 Add Pending bookings again
 
-
+Check for CoPilot in WB calculations (don't think it's there)
 Save State
 Make multiple states (for different days)
+
+Include Pending bookings (colour them differently)
+Include OnHold bookings (same)
 
 Autoplot pax --->
 When changing planes, all pax reset.... when they start remembering their seats, we can auto plot them.
@@ -71,6 +43,11 @@ Remove legacy planes from List
 maybe make setData() to accept objects and merge them into state rather than interrogating the args
 Still pukes on non-weights (like subloads)
 
+{Pax}.getWeight()
+getWeight() {
+    //
+    // Maybe a good place to add standard weights and standard weight addition (4kg)
+    //
 
 
 
@@ -247,4 +224,35 @@ theBoard.getManifest(row) returns a good manifest.
 need to pass this to Display for the popup. Right now, Display goes to test and test parses the JSON and generates a popup... since we've already parsed the JSON, we can just display it.
 We can save a copy of the current row manifest in Display till the popup is closed.
 
+
+-------------------------------
+Eventually
+-------------------------------
+Week View with ability to spawn boards.
+
+Setup Default PlaneCell Data.
+Ability to drag/drop entire columns.
+State needs multi-day setup.
+
+Start saving and loading State
+Look at TableCell pax number display... right now it just totals all the pax... 
+Will want to be able to also show pax-per-product when desired.
+
+Have an option on the "print loadsheet" page to print flight following on trips that don't need it.... 
+Like for Milford when the tower's off.
+
+setProperties()
+getProperties() for google scripts?
+
+Details popup needs to be adjusted to reflect any plane 
+
+Organize the manifest by times (Sort by time and maybe colour by product)
+Filter manifest by current day (Rezdy includes bookings not on the requested day)
+Figure out how to best account for trip time.
+The "endtimelocal" may be of help... it'll be great if we can count on that as the "back in QN" time.
+Maybe make the manifest stackable.
+
+Think about better reporting. Just doing "pax per month" so far... could have an object that holds all the stats.
+
+The first time you move a TableCell, it doesn't center the cursor... susequently, it does.
 

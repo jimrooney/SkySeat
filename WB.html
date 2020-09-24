@@ -143,6 +143,9 @@
     },
     getKilos: function (string) {
       let factor = 1
+      if (!string) {
+        return
+      }
       if (
         string.toUpperCase().indexOf("LBS") > 0 ||
         string.toUpperCase().indexOf("LB") > 0 ||
