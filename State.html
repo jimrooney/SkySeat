@@ -42,9 +42,10 @@
       return data
     }
     setData(id, data) {
+      console.log("{state}.setData(): %o %o",id,data)
       let cell = this.data[id]
       !cell ? (cell = new CellData(id)) : null
-      cell.bookingOrders.push(data.key)
+      cell.bookingOrders = data
       this.data[id] = cell
       return cell
     }

@@ -340,5 +340,8 @@
         return a[0] > b[0] ? -1 : 1
       }
     },
+    merge(a,b){
+      return a.concat(b.filter((item) => a.indexOf(item) < 0))
+    }
   }
 </script>

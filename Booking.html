@@ -13,6 +13,10 @@
       //
       this.product = this.getProduct(item.productCode)
     }
+    // Returns itself to match TableCell.getOrders which returns an array of Booking Objects from the State
+    getOrders(){
+      return [this]
+    }
     getCode(){
       return this.product.GYACode
     }

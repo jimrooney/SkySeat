@@ -109,19 +109,12 @@
     //
     recordDrop($this, $dropped) {
       console.log("{TableCell}.recordDrop")
-      console.log("This: %o", this)
-      // $this is the Accepting {TableCell} ... which *should* generally be: this
-      // $dropped is the {TabelCell} or {Booking} that's been dropped.
-      // Since this is getting called externally, "this" isn't this obj
-
-      // This is the call we're pulling up in to this function ************************
-      // this.board.state.add($this, $dropped) // This adds the data to the State object (two dimensional array that mirrors the Board)
-
-      // === Update ===
-      // this.board.update() // board.update() calls update() on each TableCell.
-
-      // $dropped = jQuery TableCell or BookingSprite
-      let _dropped = $dropped.data("_script") // {Booking} or {TableCell}
+      /*
+      this ... this script
+      $this ... the Accepting {TableCell}
+      $dropped ... the {TabelCell} or {BookingSprite} that's been dropped.
+      */
+      const _dropped = $dropped.data("_script") // {Booking} or {TableCell}
       let cellData = this.board.state.getData(this.id) // {CellData} // will return a blank object by default
 
       console.log("CellData from {State} %o", cellData) // {CellData}
@@ -129,25 +122,22 @@
 
       // Pull this logic into here and just write it to State.
       // ({cellData} shouldn't have functions in it cuz they'll get lost when it's JSON saved)
-      //cellData.addOrder(_dropped)
+      // cellData.addOrder(_dropped)
 
       /*
-
-      Add the bookings to the cellData and then add the cellData to {State}
-
-      *******************************************************
-      Currently no bookingOrders (cuz this is the first drop)
-      *******************************************************
-
-
+        Add the bookings to the cellData and then add the cellData to {State}
       */
       let StateCellData = this.board.state.getData(this.id)
       if (!!StateCellData.bookingOrders.length > 0) {
-        console.log("State CellData exists, add orders")
+        // Add to existing data (in {state})
+        let existingKeys = cellData.bookingOrders
+        let droppedKeys = _dropped.getOrders().map(a => a.key)
+        let result = arrays.merge(existingKeys,droppedKeys)
+        console.log("Result: %o",result)
+        cellData = this.board.state.setData(this.id, result)
       } else {
-        console.log("State CellData is empty")
         // Add to {state}
-        cellData = this.board.state.setData(this.id, _dropped)
+        cellData = this.board.state.setData(this.id, [_dropped.key])
       }
 
       console.log("New CellData: %o", cellData)
