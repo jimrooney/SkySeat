@@ -151,11 +151,15 @@
       // look in remove function ************
       // Will need reference to originating board on multiboard?... might come with context though ********
 
-      let ret = this.data[$cell.prop("id")].removeOrder()
-      if (ret == 0) {
-        delete this.data[$cell.prop("id")]
-        $cell.data("_script").clear()
-      }
+
+      delete this.data[$cell.prop("id")]
+
+
+      // let ret = this.data[$cell.prop("id")].removeOrder()
+      // if (ret == 0) {
+
+      //   $cell.data("_script").clear()
+      // }
     }
     getState() {
       return this

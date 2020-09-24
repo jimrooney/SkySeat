@@ -44,6 +44,7 @@
         console.log("Hour: %o", _this.hour)
         //
         let data = _this.getData()
+        console.log("Data: %o", data)
         if (!!data) {
           _this.getWB()
           $("#Details").data("root").show($(this))
@@ -72,15 +73,12 @@
         // ====================================================================
         // Drop accepted, record and update.
         _this.recordDrop($(this), $dropped) // recordDrop({TableCell},{Booking})
-
-        // Perhaps causing the error? **************************************************************************
-        // $(this).draggable("enable")
-        // // Centers the cursor
-        // $(this).draggable("option", "cursorAt", {
-        //   left: Math.floor(ui.helper.width() / 2),
-        //   top: Math.floor(ui.helper.height() / 2),
-        // })
-
+        $(this).draggable("enable")
+        // Centers the cursor
+        $(this).draggable("option", "cursorAt", {
+          left: Math.floor(ui.helper.width() / 2),
+          top: Math.floor(ui.helper.height() / 2),
+        })
         _this.removeBookings(ui, _this)
         // ====================================================================
       } else {
@@ -94,6 +92,7 @@
       let _dropped = $dropped.data("_script")
       if (!!_dropped.board) {
         _dropped.board.state.removeOrder($dropped) // List of bookings instead?**************
+        _dropped.update()
       }
     }
     clear() {
@@ -127,6 +126,10 @@
       let droppedKeys = _dropped.getOrders().map((a) => a.key)
       let result = arrays.merge(existingKeys, droppedKeys)
       cellData = this.board.state.setData(this.id, result)
+      //
+      // Brand the cell
+      //
+      !!cellData.leg ? null : (cellData.leg = _dropped.getLeg())
 
       // === Update ===
       this.board.update() // board.update() calls update() on each TableCell.
