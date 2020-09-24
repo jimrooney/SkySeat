@@ -118,29 +118,15 @@
       let cellData = this.board.state.getData(this.id) // {CellData} // will return a blank object by default
 
       console.log("CellData from {State} %o", cellData) // {CellData}
-      console.log("Dropped Bookings: %o", _dropped) // {Booking}
+      console.log("Dropped Bookings: %o", _dropped) // {Booking} or {TableCell}
 
-      // Pull this logic into here and just write it to State.
       // ({cellData} shouldn't have functions in it cuz they'll get lost when it's JSON saved)
-      // cellData.addOrder(_dropped)
 
-      /*
-        Add the bookings to the cellData and then add the cellData to {State}
-      */
-      let StateCellData = this.board.state.getData(this.id)
-      if (!!StateCellData.bookingOrders.length > 0) {
-        // Add to existing data (in {state})
-        let existingKeys = cellData.bookingOrders
-        let droppedKeys = _dropped.getOrders().map(a => a.key)
-        let result = arrays.merge(existingKeys,droppedKeys)
-        console.log("Result: %o",result)
-        cellData = this.board.state.setData(this.id, result)
-      } else {
-        // Add to {state}
-        cellData = this.board.state.setData(this.id, [_dropped.key])
-      }
-
-      console.log("New CellData: %o", cellData)
+      // Merge dropped bookings with existing bookings in {state}
+      let existingKeys = cellData.bookingOrders
+      let droppedKeys = _dropped.getOrders().map((a) => a.key)
+      let result = arrays.merge(existingKeys, droppedKeys)
+      cellData = this.board.state.setData(this.id, result)
 
       // === Update ===
       this.board.update() // board.update() calls update() on each TableCell.

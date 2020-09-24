@@ -16,6 +16,12 @@ Pax per month starts one day behind (probably a timezone issue)
 -------------------------------
 Eventually
 -------------------------------
+Week View with ability to spawn boards.
+
+Setup Default PlaneCell Data.
+Ability to drag/drop entire columns.
+State needs multi-day setup.
+
 Start saving and loading State
 Look at TableCell pax number display... right now it just totals all the pax... 
 Will want to be able to also show pax-per-product when desired.
@@ -39,25 +45,21 @@ Think about better reporting. Just doing "pax per month" so far... could have an
 -------------------------------
 Currently
 -------------------------------
-Dropped Booking Sprites not recording properly. Dropped TableCells either.
-New Booking key _ stuff messing things up.
-Not erroring though.
+Dropping and Moving bookings working.
+Need to add in/out colours
 
+Getting this error after assigning a plane to a specific cell and then trying to move the TableCell...
+this.data[$cell.prop(...)].removeOrder is not a function
+    at State.removeOrder
 
-
-
-
-Move all CellData functions into State so state.data can be JSON.stringify saved/loaded
-... in TableCell... 
-*******************************************************
-Currently no bookingOrders (cuz this is the first drop)
-*******************************************************
+Setup Default PlaneCell Values
 
 
 Add Pending bookings again
 
-Get TableCell drops working again
+
 Save State
+Make multiple states (for different days)
 
 Autoplot pax --->
 When changing planes, all pax reset.... when they start remembering their seats, we can auto plot them.
@@ -69,9 +71,6 @@ MMZ Takes Jet A ... adjust for this in WB
 Remove legacy planes from List
 
 maybe make setData() to accept objects and merge them into state rather than interrogating the args
-
-
-
 Still pukes on non-weights (like subloads)
 
 
