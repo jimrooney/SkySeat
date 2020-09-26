@@ -25,19 +25,20 @@ PlaneManager.planes references can be changed to this.
   //
   // This could all just be in the root {planes} object ************************
   //
-  var PlaneManager = {
-    planes: {
-      list: [],
-      data: [],
-      getPlane: function (registration) {
-        for (let r in this.list) {
-          if (this.list[r].reg == registration) {
-            return this.list[r]
-          }
+  var planes = {
+    rawData: [],
+    data: [],
+    getPlane: function (registration) {
+      for (let r in this.data) {
+        if (this.data[r].reg == registration) {
+          return this.data[r]
         }
-        return null
-      },
+      }
+      return null
     },
+  }
+  var PlaneManager = {
+    planes: planes, // quick cheat to externalize planes object to root {planes}
     //
     // Load in plane hours from spreadsheet
     //
@@ -74,36 +75,42 @@ PlaneManager.planes references can be changed to this.
 
     loadPlanes: function (data) {
       //
-      // Parse loaded two dimensional array into planes object
+      // Parse loaded two dimensional array into root planes object
       //
       console.log("Planemanager.loadPlanes(data)")
-      console.log("Data: %o",data)
+      console.log("Data: %o", data)
       //
       // Because this gets called from a Success Handler (Google), "this" is the Window Object, so we'll make our own "_this"
-      // 
-      let _this = PlaneManager   
+      //
+      let _this = PlaneManager
       //
       // Convert [[]] to [{}]
       // Objects key'd by header row labels (lowercased) *** maybe clean more than just lowercasing ***
       //
-      let _planeList = _this.planes.data
-      data.forEach((row,i) => {
+      let _rawData = planes.rawData // Everything loaded from the spreadsheet
+      let _planeData = planes.data // Excludes non-plane data like "NoJTK"
+      //
+      //
+      //
+      data.forEach((row, i) => {
         let rowPlane = {}
-        if (i>0){
-            row.forEach((element,pos) => {
-              rowPlane[data[0][pos].toLowerCase()] = element // use header row element as variable name for element value
+        if (i > 0) {
+          row.forEach((element, pos) => {
+            rowPlane[data[0][pos].toLowerCase()] = element // use header row element as variable name for element value
           })
-          _planeList.push(rowPlane)
+          _rawData.push(rowPlane)
         }
       })
-      _planeList.forEach((plane)=>{
-        if (!!plane.type){
-          let dynamic_class=eval(plane.type)
-          let instance=new dynamic_class(plane)
-          _this.planes.list.push(instance)
+      //
+      // Convert [{}] object list to [{Class}] Classed objects based on "type" attribute (206/208/GA8)
+      //
+      _rawData.forEach((plane) => {
+        if (!!plane.type) {
+          let dynamic_class = eval(plane.type)
+          let instance = new dynamic_class(plane)
+          _planeData.push(instance)
         }
       })
-      console.log("PlaneList: %o", _this.planes.list)
     },
     planePopup: function (_this) {
       let container = $("#planeDetails")
@@ -155,6 +162,10 @@ PlaneManager.planes references can be changed to this.
         }
       })
     },
+    // ******************** could probably wrap these dropmenu functions into one ****************************
+    //
+    // Plane Dropmenu
+    //
     dropPlane: function (_this) {
       let _drop =
         '<span class="dropdown"><button id="PlaneDrop" class="dropbtn">Plane</button>' +
@@ -179,6 +190,9 @@ PlaneManager.planes references can be changed to this.
         }
       })
     },
+    //
+    // Pilot Dropmenu
+    //
     dropPilot: function (_this) {
       let _drop =
         '<span class="dropdown"><button id="PilotDrop" class="dropbtn">Pilot</button>' +
@@ -203,6 +217,9 @@ PlaneManager.planes references can be changed to this.
         }
       })
     },
+    //
+    // CoPilot Dropmenu
+    //
     dropCoPilot: function (_this) {
       let _drop =
         '<span class="dropdown"><button id="CoPilotDrop" class="dropbtn">CoPilot</button>' +
@@ -229,7 +246,9 @@ PlaneManager.planes references can be changed to this.
         }
       })
     },
-    // ******************** could probably wrap these three functions into one ****************************
+    //
+    // Fuel Dropmenu
+    //
     dropFuel: function (_this) {
       let _drop =
         '<span class="dropdown"><button id="FuelDrop" class="dropbtn">Fuel</button>' +

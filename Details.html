@@ -241,10 +241,9 @@
       let $fuel = $("> .Fuel", this.$PCFSelector)
 
       PlaneManager.planes.data.forEach((plane, i) => {
-        if (!!plane.weight)
-       { 
-         $plane.append(`<option value="${plane.reg}">${plane.reg}</option>`)
-         }
+        if (!!plane.weight) {
+          $plane.append(`<option value="${plane.reg}">${plane.reg}</option>`)
+        }
       })
       $plane.change(function () {
         _TableCell.setPlaneData("reg", this.value)
@@ -292,7 +291,7 @@
       // ===========================================
 
       let bgColors = {}
-      let colorNumbers =  Array.from({length: 20}, (_, i) => "hsl(" + (i+1) + 360/(i+1) + ", 50%, 75%)")
+      let colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
 
       for (let key in bookings) {
         for (let p in bookings[key].item.participants) {
@@ -302,7 +301,7 @@
           let orderNumber = pax.getOrderNumber()
 
           let $pax = $(
-            `<div>${firstName}<br><span style="font-size:large;">${weight}</span>`//<br>${orderNumber}</div>`
+            `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
           )
             //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
             .data("seat", p)
@@ -329,15 +328,14 @@
               },
             })
 
-            let hue
-            if(bgColors[orderNumber]){
-              hue = bgColors[orderNumber]
-            }
-            else{
-              hue = colorNumbers.pop()
-              bgColors[orderNumber] = hue
-            }
-            $pax.css("background-color", hue)
+          let hue
+          if (bgColors[orderNumber]) {
+            hue = bgColors[orderNumber]
+          } else {
+            hue = colorNumbers.pop()
+            bgColors[orderNumber] = hue
+          }
+          $pax.css("background-color", hue)
 
           if (firstName.length >= 7) {
             $pax.css("font-size", "8px")

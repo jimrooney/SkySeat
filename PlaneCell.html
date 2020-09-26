@@ -37,7 +37,20 @@
       this.$this = $this // keep a reference to the jQuery object
 		}
 		update(){
-			this.board.state.setCell(this.$this)
+        const data = this._this.board.state.getData(this.$this)
+        const PCF = data.planeData
+        const $this = this.$this
+
+        const $content = $(`<div class="CellContent" />`)
+        const $pilot = $(`<div class="pilot">${PCF.pilot}</div>`)
+        const $plane =  $(`<div class="plane">${PCF.reg}</div>`)
+        const $fuel =  $(`<div class="fuel">${PCF.fuel}</div>`)
+        $content.append($plane).append($pilot).append($fuel)
+
+        $this.empty()
+        $this.append($content)
+        console.log("Cell: %o", this.id)
+        console.log("PCF: %o",PCF)
 		}
 		getData() {
       return this.board.state.getData(this.$this) // get the CellData Object from the state object
@@ -45,5 +58,16 @@
 		saveData(data){
 			this.board.state.addData(this.$this,data)
 		}
+    setPlaneData(key, val) {
+      console.log("Set Plane Data, Key: %o Val: %o", key, val)
+      let s = this.getState() // get copy of current State
+      let state = JSON.parse(JSON.stringify(s))
+      state.planeData[key] = val
+      console.log("Set State: %o", state)
+      this.setState(state)
+    }
+    getState() {
+      return state = this.board.state.getData(this.$this) // get the CellData Object from the state object
+    }
 	}
 </script>

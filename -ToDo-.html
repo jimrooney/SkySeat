@@ -17,6 +17,9 @@ Pax per month starts one day behind (probably a timezone issue)
 -------------------------------
 Currently
 -------------------------------
+Make it so that the Details board doesn't reset unless you change aircraft type
+Make is so you can remove a co-pilot (check their being included in WB)
+Maybe make the pilot/copilot info to be drag drop icons (that takeup seats)
 Need to be able to remove bookings from the board.
 removeOrder might need to remove one order... it removes everything for now.
 _dropped.board.state.removeOrder($dropped) // List of bookings instead?**************
@@ -225,10 +228,19 @@ need to pass this to Display for the popup. Right now, Display goes to test and 
 We can save a copy of the current row manifest in Display till the popup is closed.
 
 
--------------------------------
+=======================================================================================================
 Eventually
--------------------------------
+=======================================================================================================
 Week View with ability to spawn boards.
+Possibly make the Details popup draggable (just by the top bar)
+
+
+PlaneCell and TableCell could be classed as BoardCells with PC and TC subclasses
+
+// ******************** could probably wrap these dropmenu functions into one ****************************
+//
+// Plane Dropmenu
+//
 
 Setup Default PlaneCell Data.
 Ability to drag/drop entire columns.
