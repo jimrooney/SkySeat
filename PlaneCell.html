@@ -15,10 +15,26 @@
         class: "PlaneCell Row_" + r + " Col_" + c,
         id: this.id,
       }).click(function () {
-        console.log("PlaneCell Click")
-        console.log("ID: %o", $(this).prop("id"))
+        _this.selectorPopup($(this))
+      })
+      $this.css({"position":"relative"})
+      // -------------------------------------------
+      // Backreference
+      // -------------------------------------------
+      $this.data("_script", this._this) // Backreference to JS from jQuery object
+      this.$this = $this // keep a reference to the jQuery object
+		}
+    selectorPopup(){
+      //
+      console.log("PlaneCell Click")
+      //
+      const $this = this.$this
+      const $drop = this.getDrop()
+      $this.append($drop)
+      $drop.css({"position":"absolute", "top":"0px"})
+      console.log("ID: %o", this.id)
         //
-        let data = _this.board.state.getData($this)
+        const data = this.board.state.getData($this)
         if (!!data) {
           console.log("PlaneCell data: %o", data)
           data.planeData = {
@@ -27,15 +43,48 @@
             pilot: "James",
             fuel: 150
 					}
-          _this.saveData(data)
+          this.saveData(data)
+        }
+    }
+    //
+    // Plane Dropmenu
+    //
+    getDrop() {
+      /*
+            This could be build a lot better... and generic (plane/pilot/etc)
+      
+      */
+      const _this = this.$this
+      let _drop =
+        `<span class="dropdown">
+        <button id="PlaneDrop" class="dropbtn">Plane</button>
+        <div id="myPlaneDropdown" class="dropdown-content"></div></span>`
+
+      let drop = $(`<div />`)
+      drop.empty() // clear the old contents
+      drop.append(_drop)
+      $("#PlaneDrop").click(function () {
+        for (let p in PlaneManager.planes.list) {
+          let selected = PlaneManager.planes.list[p].reg
+
+          let menu_row = "<div class='changePlane' id='" + selected + "'>" + selected + "</div>"
+          drop.append(menu_row)
+          /*
+          
+                selection action here **************************
+          
+          
+          */
+          $("#" + selected).click(function () {
+            let PCF = _this.data("PCF")
+            PCF[0] = selected
+
+            drop.empty()
+          })
         }
       })
-      // -------------------------------------------
-      // Backreference
-      // -------------------------------------------
-      $this.data("_script", this._this) // Backreference to JS from jQuery object
-      this.$this = $this // keep a reference to the jQuery object
-		}
+      return drop
+    }
 		update(){
         const data = this._this.board.state.getData(this.$this)
         const PCF = data.planeData
