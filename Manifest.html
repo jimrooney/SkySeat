@@ -11,7 +11,7 @@
     }
     getDate() {
       return this.board.$datepicker.datepicker("getDate")
-      }
+    }
     write() {
       //
       // Manifest Div
@@ -55,8 +55,8 @@
     // ---------------------------------------------------------
     show(date) {
       console.log("Manifest.show()")
-      console.log("Requested Date: %o",date)
-      console.log("JSON: (this.data) %o",this.data)
+      console.log("Requested Date: %o", date)
+      console.log("JSON: (this.data) %o", this.data)
       if (!date) {
         date = this.getDate()
       }
@@ -135,9 +135,9 @@
       // Loop over Manifest Orders and make Booking Objects
       //
       let bookings = []
-      filteredManifest.forEach((order)=>{
-        order.items.forEach((item,i)=>{
-          bookings.push(new Booking(this,order,item,i))
+      filteredManifest.forEach((order) => {
+        order.items.forEach((item, i) => {
+          bookings.push(new Booking(this, order, item, i))
         })
       })
 
@@ -148,12 +148,6 @@
       //     bookings.push(new Booking(this, order, item, i))
       //   }
       // }
-
-
-
-
-
-
 
       //
       // Sort Bookings by Start Time
@@ -171,24 +165,19 @@
 
       // -------------------------------------------------------------------------------------------
       // console.log("Month Total $%o", monthCost)
-      this.$this
-        .find("#Header")
-        .text(
-          "Manifest Pax(" + dayParticipants + ")(" + dayPax + ") " 
-          //"month(P" + monthParticipants + ")(X" + monthPax + ")"
-        )
+      this.$this.find("#Header").text(
+        "Manifest Pax(" + dayParticipants + ")(" + dayPax + ") "
+        //"month(P" + monthParticipants + ")(X" + monthPax + ")"
+      )
       // -------------------------------------------------------------------------------------------
       //
       // Print Sprites
       //
       bookings.forEach((booking) => this.$bookings.append(booking.getSprite()))
       //
+      // Update the board
       //
-      //
-      initializeDraggables() // This should change *************** not be root variable, not be such a hatchet **********
-      //
-      //
-      //
+      this.board.update()
     }
     countPax(arr) {
       return arr.reduce((total, booking) => {
@@ -225,14 +214,16 @@
     filterByDate(orders, date) {
       let _date = date
       return orders
-        .filter((element) => element.items.some((subElement) => {
-          return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
-        }))
+        .filter((element) =>
+          element.items.some((subElement) => {
+            return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
+          })
+        )
         .map((element) => {
           let newElt = Object.assign({}, element) // copies element
           newElt.items = newElt.items.filter((subElement) => {
             return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
-            })
+          })
           return newElt
         })
     }
