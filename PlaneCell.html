@@ -35,8 +35,9 @@
       console.log("ID: %o", this.id)
         //
         const data = this.board.state.getData($this)
-        if (!!data) {
-          console.log("PlaneCell data: %o", data)
+        console.log("PlaneCell data: %o", data)
+
+        if (!data.planeData) {
           data.planeData = {
 						type: "Plane",
 						reg: "LOR",

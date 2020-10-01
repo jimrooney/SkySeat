@@ -1,21 +1,22 @@
 <script>
   class Manifest {
-    constructor($parent) {
+    constructor(parent) {
       let _this = this
+      this.board = parent
+      this.$board = parent.$board // Keep a link to the board jQuery object
       this.json // Placeholder for Rezdy Parsed Data
 
       // **************************************
       // I think this is this.data.bookings now
       // **************************************
       this.bookings // Placeholder... List of Bookings... hash key'd (by orderNumber) from Rezdy load
-
       this.$bookings // Placeholder
+
       this.$this
-      this.$parent = $parent // Keep a link to the parent jQuery object
-      //this.$Bookings = this.$parent.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
+      //this.$Bookings = this.$board.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
     }
     getDate() {
-      return this.parent.$datepicker.datepicker("getDate")
+      return this.board.$datepicker.datepicker("getDate")
       }
     write() {
       //
@@ -31,7 +32,7 @@
            Manifest </div>
           <div class="Bookings" style="float:left;display: inline-block;"></div>
       </div>`)
-      this.$parent.append(this.$this)
+      this.$board.append(this.$this)
       this.$bookings = this.$this.find(".Bookings")
       //
       // Manifest Reload Button
@@ -54,6 +55,10 @@
       this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
       this.show()
+      console.log("\n\nPlanes: %o",planes)
+      for (const p in planes.data){
+        console.log("%o",planes.data[p])
+      }
     }
     // ---------------------------------------------------------
     // Show Manifest
@@ -190,7 +195,7 @@
       //
       //
       //
-      init() // This should change *************** not be root variable, not be such a hatchet **********
+      initializeDraggables() // This should change *************** not be root variable, not be such a hatchet **********
       //
       //
       //

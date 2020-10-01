@@ -83,14 +83,11 @@ PlaneManager.planes references can be changed to this.
       // Because this gets called from a Success Handler (Google), "this" is the Window Object, so we'll make our own "_this"
       //
       let _this = PlaneManager
-      //
-      // Convert [[]] to [{}]
-      // Objects key'd by header row labels (lowercased) *** maybe clean more than just lowercasing ***
-      //
       let _rawData = planes.rawData // Everything loaded from the spreadsheet
       let _planeData = planes.data // Excludes non-plane data like "NoJTK"
       //
-      //
+      // Convert [[]] to [{}]
+      // Objects key'd by header row labels (lowercased) *** maybe clean more than just lowercasing ***
       //
       data.forEach((row, i) => {
         let rowPlane = {}
