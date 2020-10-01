@@ -17,35 +17,35 @@
       }).click(function () {
         _this.selectorPopup($(this))
       })
-      $this.css({"position":"relative"})
+      $this.css({ position: "relative" })
       // -------------------------------------------
       // Backreference
       // -------------------------------------------
       $this.data("_script", this._this) // Backreference to JS from jQuery object
       this.$this = $this // keep a reference to the jQuery object
-		}
-    selectorPopup(){
+    }
+    selectorPopup() {
       //
       console.log("PlaneCell Click")
       //
       const $this = this.$this
       const $drop = this.getDrop()
       $this.append($drop)
-      $drop.css({"position":"absolute", "top":"0px"})
+      $drop.css({ position: "absolute", top: "0px" })
       console.log("ID: %o", this.id)
-        //
-        const data = this.board.state.getData($this)
-        console.log("PlaneCell data: %o", data)
+      //
+      const data = this.board.state.getData($this)
+      console.log("PlaneCell data: %o", data)
 
-        if (!data.planeData) {
-          data.planeData = {
-						type: "Plane",
-						reg: "LOR",
-            pilot: "James",
-            fuel: 150
-					}
-          this.saveData(data)
+      if (!data.planeData) {
+        data.planeData = {
+          type: "Plane",
+          reg: "LOR",
+          pilot: "James",
+          fuel: 150,
         }
+        this.saveData(data)
+      }
     }
     //
     // Plane Dropmenu
@@ -56,8 +56,7 @@
       
       */
       const _this = this.$this
-      let _drop =
-        `<span class="dropdown">
+      let _drop = `<span class="dropdown">
         <button id="PlaneDrop" class="dropbtn">Plane</button>
         <div id="myPlaneDropdown" class="dropdown-content"></div></span>`
 
@@ -86,28 +85,30 @@
       })
       return drop
     }
-		update(){
-        const data = this._this.board.state.getData(this.$this)
-        const PCF = data.planeData
-        const $this = this.$this
+    update() {
+      const data = this._this.board.state.getData(this.$this)
+      const PCF = data.planeData
+      const $this = this.$this
 
+      if (!!PCF) { // quick hack to avoid lack of defaults **********************
         const $content = $(`<div class="CellContent" />`)
         const $pilot = $(`<div class="pilot">${PCF.pilot}</div>`)
-        const $plane =  $(`<div class="plane">${PCF.reg}</div>`)
-        const $fuel =  $(`<div class="fuel">${PCF.fuel}</div>`)
+        const $plane = $(`<div class="plane">${PCF.reg}</div>`)
+        const $fuel = $(`<div class="fuel">${PCF.fuel}</div>`)
         $content.append($plane).append($pilot).append($fuel)
 
         $this.empty()
         $this.append($content)
         console.log("Cell: %o", this.id)
-        console.log("PCF: %o",PCF)
-		}
-		getData() {
+        console.log("PCF: %o", PCF)
+      }
+    }
+    getData() {
       return this.board.state.getData(this.$this) // get the CellData Object from the state object
     }
-		saveData(data){
-			this.board.state.addData(this.$this,data)
-		}
+    saveData(data) {
+      this.board.state.addData(this.$this, data)
+    }
     setPlaneData(key, val) {
       console.log("Set Plane Data, Key: %o Val: %o", key, val)
       let s = this.getState() // get copy of current State
@@ -117,7 +118,7 @@
       this.setState(state)
     }
     getState() {
-      return state = this.board.state.getData(this.$this) // get the CellData Object from the state object
+      return (state = this.board.state.getData(this.$this)) // get the CellData Object from the state object
     }
-	}
+  }
 </script>

@@ -214,7 +214,7 @@ function loadPilots() {
 }
 function loadPlanes() {
   var DataID = "1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s" // Company Data Spreadsheet ID
-  var range = SpreadsheetApp.openById(DataID).getSheetByName("Airplanes").getRange("A:J")
+  var range = SpreadsheetApp.openById(DataID).getSheetByName("Airplanes").getRange("A:K")
   var data = range.getValues()
   return data
 }

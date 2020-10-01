@@ -1,24 +1,9 @@
 <script>
   function test(args) {
 
-
-
     console.log("Pilots %o",pilots)
     console.log("Planes %o",planes)
     console.log("PlaneManager %o",PlaneManager)
-
-    //$(".PlaneCell").each()
-
-    $(".PlaneCell").each(function () {
-        //$("> #hours", this).remove() // removes all "hours" children
-        const _this = $(this).data("_script")
-        _this.update()
-        // let data = _this.board.state.getData($(this))
-        // let PCF = data.planeData
-        // console.log("Cell: %o", $(this).prop("id"))
-        // console.log("PCF: %o",PCF)
-      })
-
 
     return
     google.script.run.withSuccessHandler(done).getState("x")

@@ -98,11 +98,14 @@ PlaneManager.planes references can be changed to this.
           _rawData.push(rowPlane)
         }
       })
+      // ----------------------------
+      // Filter out extraneous planes
+      // ----------------------------
       //
       // Convert [{}] object list to [{Class}] Classed objects based on "type" attribute (206/208/GA8)
       //
       _rawData.forEach((plane) => {
-        if (!!plane.type) {
+        if (!!plane.type && !plane.legacy) {
           let dynamic_class = eval(plane.type)
           let instance = new dynamic_class(plane)
           _planeData.push(instance)

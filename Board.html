@@ -31,6 +31,10 @@
     update() {
       console.log("Board.update()")
       //
+      // Make things Draggable
+      //
+      initializeDraggables()
+      //
       // Updata TableCells
       //
       let $tableCells = this.$board.find(".TableCell")
@@ -40,16 +44,27 @@
         }
       })
       //
-      // Updata PlaneCells
+      // Updata PlaneCells (set defaults)
       //
       console.log("\n\nPlanes: %o", planes)
-      for (const p in planes.data) {
-        console.log("%o", planes.data[p])
+      const planeList = planes.data.slice(0) // this clones the planes.data array
+      $(".PlaneCell").each(function () {
+        const _this = $(this).data("_script")
+        const data = _this.board.state.getData($(this))
+
+      if (!data.planeData) {
+        const plane = planeList.shift()
+        data.planeData = {
+          type: "Plane",
+          reg: plane.reg,
+          pilot: "Standard",
+          fuel: 150,
+        }
+        _this.saveData(data)
       }
-      //
-      // Make things Draggable
-      //
-      initializeDraggables()
+        //$("> #hours", this).remove() // removes all "hours" children ***********************
+        _this.update() // call update against all PlaneCells (maybe use above code to refine that to just this board?)
+      })
     }
 
     /*
