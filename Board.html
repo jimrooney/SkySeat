@@ -30,12 +30,22 @@
     //
     update() {
       console.log("Board.update()")
+      //
+      // Updata TableCells
+      //
       let $tableCells = this.$board.find(".TableCell")
       $tableCells.each(function (index) {
         if (!!$(this).data("_script")) {
           $(this).data("_script").update()
         }
       })
+      //
+      // Updata PlaneCells
+      //
+      console.log("\n\nPlanes: %o", planes)
+      for (const p in planes.data) {
+        console.log("%o", planes.data[p])
+      }
     }
 
     /*
@@ -73,11 +83,11 @@
       // Header Row
       // ----------------------
       let $row = $("<TR />")
-      .append($('<td class="PickupAllCell" id="PH">&#9951;</td>'))
-      .append($('<td class="Label Row_0 Col_0" id="0_0">Time</td>'))
+        .append($('<td class="PickupAllCell" id="PH">&#9951;</td>'))
+        .append($('<td class="Label Row_0 Col_0" id="0_0">Time</td>'))
 
       for (let i = 1; i <= this.numCols; i++) {
-        let planeCell = new PlaneCell(this,0,i) 
+        let planeCell = new PlaneCell(this, 0, i)
         $row.append(planeCell.$this)
       }
       $table.append($row)
@@ -99,9 +109,9 @@
         let $timeTD = $("<TD/>")
         $timeTD.addClass("TimeCell Row_" + thisRow + " Col_0")
         $timeTD.attr("id", thisRow + "_0")
-        $timeTD.data("hour",thisHour)
-        $timeTD.data("row",thisRow)
-        
+        $timeTD.data("hour", thisHour)
+        $timeTD.data("row", thisRow)
+
         let $HS = $("<span />")
           .text(thisHour + ":00")
           .addClass("HourSchedule")

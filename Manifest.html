@@ -5,14 +5,8 @@
       this.board = parent
       this.$board = parent.$board // Keep a link to the board jQuery object
       this.json // Placeholder for Rezdy Parsed Data
-
-      // **************************************
-      // I think this is this.data.bookings now
-      // **************************************
-      this.bookings // Placeholder... List of Bookings... hash key'd (by orderNumber) from Rezdy load
       this.$bookings // Placeholder
-
-      this.$this
+      this.$this // Placeholder
       //this.$Bookings = this.$board.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
     }
     getDate() {
@@ -55,10 +49,6 @@
       this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
       this.show()
-      console.log("\n\nPlanes: %o",planes)
-      for (const p in planes.data){
-        console.log("%o",planes.data[p])
-      }
     }
     // ---------------------------------------------------------
     // Show Manifest
@@ -296,7 +286,7 @@
       //
       // return the matching order objects
       //
-      let data = this.bookings
+      let data = this.data.bookings
       let Orders = []
       if (!!data && Array.isArray(data)) {
         // Loop over the orders and return the matching manifest object
