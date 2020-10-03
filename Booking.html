@@ -1,7 +1,7 @@
 <script>
   class Booking {
     //constructor(item, orderNumber, order) {
-    constructor(manifest,order,item,itemNumber){
+    constructor(manifest, order, item, itemNumber) {
       this.manifest = manifest
       this.order = order
       this.item = item
@@ -14,22 +14,20 @@
       this.product = this.getProduct(item.productCode)
     }
     // Returns itself to match TableCell.getOrders which returns an array of Booking Objects from the State
-    getOrders(){
+    getOrders() {
       return [this]
     }
-    update(){
+    update() {
       // Dummy function to match TableCell.update()
     }
-    getCode(){
+    getCode() {
       return this.product.GYACode
     }
-    getItem(){
+    getItem() {
       let _oNum = this.orderNumber
       return this.order.items.find((x) => x.orderNumber === _oNum)
     }
-    getBookingObject(){
-
-    }
+    getBookingObject() {}
     /*
       Anything that starts with a B is an "out" direction.
       A-B-A : Overhead
@@ -39,10 +37,8 @@
       A-B : Dropoff
     */
 
-
-
-//      this.product = gya.getProduct(code) // returns an object key'd by the header row of the spreadsheet.
-      /*
+    //      this.product = gya.getProduct(code) // returns an object key'd by the header row of the spreadsheet.
+    /*
       Duration: 1
       FlightFollowing: ""
       FlightType: "A-A"
@@ -53,30 +49,29 @@
       Product: "Milford Sound Scenic Flyover"
       RezdyCode: "PSLMYT"
       */
-    getProduct(productCode){
-        return gya.getProduct(productCode)
-      }
-
+    getProduct(productCode) {
+      return gya.getProduct(productCode)
+    }
 
     //
     // Compare Booking data to which cell it's in and determine which leg it's on.
     //
-    getLeg(){
+    getLeg() {
       return this.getDirection()
     }
     getDirection() {
       let type = this.product.FlightType
-      return type.match(/^B/i) ? "B" : "A" 
+      return type.match(/^B/i) ? "B" : "A"
     }
-    isOut(){
+    isOut() {
       return this.getDirection() == "B" ? true : false
     }
-    getTripTimes(TableCell){
+    getTripTimes(TableCell) {
       let cellHour = TableCell.hour
       let stTime = this.item.startTimeLocal //"2020-08-08 10:00:00"
       let startHour = new Date(stTime).getHours()
     }
-    getStartHour(){
+    getStartHour() {
       let stTime = this.item.startTimeLocal //"2020-08-08 10:00:00"
       let startHour = new Date(stTime).getHours()
       return startHour
@@ -91,7 +86,7 @@
       let orderNumber = this.orderNumber
       let $sprite = $("<span class='BookingSprite' />")
       $sprite.data("this", this) // Self Reference (for click)
-      $sprite.data("script",this)
+      $sprite.data("script", this)
       $sprite.data("_script", this)
       $sprite.prop("id", this.orderNumber)
       //
@@ -107,25 +102,32 @@
       // Click
       //
       $sprite.click(function () {
-        let _this = $(this).data("this")
+        let _this = $sprite.data("this")
         console.log("BookingSprite: %o", _this)
-        console.log("StartHour %o",_this.getStartHour())
-        let $row = time.getRowByHour(_this.getStartHour())
-        console.log("$row: %o",$row.data("row"))
+        console.log("StartHour %o", _this.getStartHour())
 
+        let $row = time.getRowByHour(_this.getStartHour())
+
+        console.log("\n\n")
+        console.log("$row: %o", $row) //.data("row"))
+        console.log("\n\n")
       })
       $sprite.hover(
         // On
         function () {
-          let _this = $(this).data("this")
+          let _this = $sprite.data("this")
           let $row = time.getRowByHour(_this.getStartHour())
-          $(".Row_" + $row.data("row")).addClass("highlight")
+          if ($row) {
+            $(".Row_" + $row.data("row")).addClass("highlight")
+          }
         },
         // Off
         function () {
-          let _this = $(this).data("this")
+          let _this = $sprite.data("this")
           let $row = time.getRowByHour(_this.getStartHour())
-          $(".Row_" + $row.data("row")).removeClass("highlight")
+          if ($row) {
+            $(".Row_" + $row.data("row")).removeClass("highlight")
+          }
         }
       )
       return $sprite
@@ -142,7 +144,6 @@
     getPaxOB() {
       // Number of sould on board excluding staff (includes infants)
     }
-
 
     // getETD() {
     //   // Time when the plane leaves
@@ -212,6 +213,5 @@
     // getProductCode() {
     //   return gya.getCode(this.booking.productCode) // row from TripCodes spreadsheet ***** GYA object *****
     // }
-
   }
 </script>

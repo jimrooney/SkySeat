@@ -29,23 +29,23 @@
       return _name
     }
     getFirstName() {
-      let _name = ""
-      if (!!this.fields[0]) {
-        _name = this.fields[0].value
-      }
-      return _name
+      // let _name = ""
+      // if (!!this.fields[0]) {
+      //   _name = this.fields[0].value
+      // }
+
+      let ret = this.fields.find((x) => x.label.match(/First\ Name/i))
+      
+      return ret.value
     }
     getWeight() {
       //
       // Maybe a good place to add standard weights and standard weight addition (4kg)
       //
-      let ret = 0
-      if (!!this.fields[4]) {
-        ret = this.fields[4].value || 0
-      }
+      let ret = this.fields.find((x) => x.label.match(/weight/i))
       // Always return KG...
       // Removes KG LBS etc
-      ret = wb.getKilos(ret)
+      ret = wb.getKilos(ret.value)
 
       return ret
     }

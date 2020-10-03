@@ -1,4 +1,8 @@
 <script>
+  //
+  // Weight in KG
+  // Arm in Meter
+  //
   class Station {
     constructor(data) {
       this.type = data.type || ""
@@ -169,19 +173,19 @@
 
       this.type = this.constructor.name // "C206"
       this.limits = {
-        weight: { empty: 0, MAUW: 1719, Landing: 1719 },
+        weight: { empty: 0, MAUW: 1719, Landing: 1632.933, Ramp: 1726.373, Takeoff: 1718.661 },
         // fwd1/2 [limit in M ,@ weight in kg]
         CG: { forward: 0.8382, fwd1: [0.8382, 1133.981], fwd2: [1.0795, 1632.933], aft: 1.26238 },
         fuel: { capacity: 330, type: "100LL" },
       }
       this.stations = [
-        new Station({ type: ["seat"], arm: 93.98 }),
-        new Station({ type: ["seat"], arm: 93.98 }),
-        new Station({ type: ["seat"], arm: 177.8 }),
-        new Station({ type: ["seat"], arm: 177.8 }),
-        new Station({ type: ["seat"], arm: 254 }),
-        new Station({ type: ["seat"], arm: 254 }),
-        new Station({ type: ["fuel"], arm: 118.11 }),
+        new Station({ type: ["seat"], arm: 0.9398 }),
+        new Station({ type: ["seat"], arm: 0.9398 }),
+        new Station({ type: ["seat"], arm: 1.778 }),
+        new Station({ type: ["seat"], arm: 1.778 }),
+        new Station({ type: ["seat"], arm: 2.54 }),
+        new Station({ type: ["seat"], arm: 2.54 }),
+        new Station({ type: ["fuel"], arm: 1.1811 }),
       ]
     }
   }
@@ -193,7 +197,7 @@
       this.limits = {
         weight: { empty: 0, MAUW: 1719, Landing: 1860 },
         // fwd1/2 [limit in M ,@ weight in kg]
-        CG: { forward: 4.699, fwd1: [4.699,2948.3], fwd2: [4.912,3628.7], aft: 5.19 },
+        CG: { forward: 4.699, fwd1: [4.699, 2948.3], fwd2: [4.912, 3628.7], aft: 5.19 },
         fuel: { capacity: 1283.3, type: "JetA" },
       }
       this.stations = [

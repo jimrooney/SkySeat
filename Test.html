@@ -5,6 +5,29 @@
     console.log("Planes %o",planes)
     console.log("PlaneManager %o",PlaneManager)
 
+
+
+    var all = $(".TimeCell")
+        .map(function () {
+          return this.id
+        })
+        .get()
+        console.log("TimeCell IDs: %o",all)
+
+        $(".TimeCell").each(function(){
+          console.log("TimeCell: %o",$(this))
+        })
+
+
+
+
+
+
+
+
+
+
+
     return
     google.script.run.withSuccessHandler(done).getState("x")
 

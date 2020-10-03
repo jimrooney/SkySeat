@@ -41,7 +41,7 @@
     },
     getRow: function (h) {
       let hour = parseInt(h)
-      if (hour>12){
+      if (hour > 12) {
         hour = hour - 12
       }
       // Array of all TimeCells
@@ -51,13 +51,17 @@
         })
         .get()
       // Match Time to Timecell
-      for (id in all) {
-        let row = $("#" + all[id])
-        let rHour = parseInt(row.data("hour"))
-        if (hour == rHour){
-          return row
+
+      if (hour > 0) {
+        for (id in all) {
+          let row = $("#" + all[id])
+          let rHour = parseInt(row.data("hour"))
+          if (hour == rHour) {
+            return row
+          }
         }
       }
+
       return null
     },
   }
