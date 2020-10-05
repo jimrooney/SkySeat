@@ -11,6 +11,7 @@
     constructor() {
       this._this = this
       this.bookings = []
+      const _this = this
 
       this.$root = $(`<div id="Details" class="detailsDiv">
         <div class="Print">Print</div>
@@ -31,8 +32,16 @@
         </div>`
       this.$PCFSelector = $(this.PCFSelectorString)
       this.$root.prepend(this.$PCFSelector)
-      //
       this.$root.data("root", this) // Access this object through $([Selector]).data('root')
+      // ---------------------------
+      // Print Button
+      // ---------------------------
+      this.$Print = this.$root.find(".Print")
+      this.$Print.click(function () {
+        console.log("Print Click")
+        _this.getWB()
+        $("#Loadsheet").show()
+      })
       //
       // ---------------------------
       // Airplane layout <div> Click
