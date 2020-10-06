@@ -17,6 +17,9 @@ Pax per month starts one day behind (probably a timezone issue)
 -------------------------------
 Currently
 -------------------------------
+Repeat customer 6/10/2020 ... need to fix the items[] number (plots the first booking, not this one)
+In Manifest... I think it's getting the wrong "items[]" number because it's operating on a filtered list.
+Convert everything into Booking Objects and then filter the list of Booking Objects rather than touching the manifest itself.
 
 In TableCell.... airplane.stations[0].weight = 83 // hardcoding pilot weight for now *******************
 
@@ -253,6 +256,7 @@ Eventually
 Week View with ability to spawn boards.
 Possibly make the Details popup draggable (just by the top bar)
 
+delay: 100, // Might not need this now *******************
 
 PlaneCell and TableCell could be classed as BoardCells with PC and TC subclasses
 

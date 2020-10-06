@@ -24,6 +24,7 @@
           <span style="float:right;display: inline-block;"><button id="reload">&#10226;</button></span>
           <span style="float:right;display: inline-block;"><button id="debug">&#937;</button></span>
            Manifest </div>
+          <div id="Totals" />
           <div class="Bookings" style="float:left;display: inline-block;"></div>
       </div>`)
       this.$board.append(this.$this)
@@ -66,66 +67,21 @@
       //
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
       console.log("All Confirmed Orders Returned From Rezdy\n%o", orders) // [{Booking},{Booking},{Booking}]
-      //
-      // Totals
-      //
-      // -------------------------------------------------------------------------------------------
-      /*
-      console.log("\n\n")
-      console.log("--Filtered by Month--")
-      //
-      // Filter by Month
-      //
-      let filteredMonth = this.filterByMonth(orders, date)
-      console.log("filteredMonth: %o", filteredMonth)
-      
-      let monthCost = this.countTripCost(filteredMonth)
-      let md = [] 
-      let monthData = filteredMonth.map((order) => {
-        return {
-          totalAmount: order.totalAmount,
-          orderNumber: order.orderNumber,
-          items: order.items.reduce((total, item) => {
-            return {
-              productName: item.productName,
-              numParticipants: item.participants,
-              totalQuantity: item.totalQuantity,
-            }
-          },{}),
+
+      orders = orders.map( o => {
+        o.items = o.items.map( (item,index) => {
+          item.newKey = "HI" + index
+          return item
         }
-      },[])
-      console.log("monthData %o",monthData)
-      let monthCosts = filteredMonth.reduce((acc,order)=>{
+        )
+        return o
+      })
+      // orders = orders.forEach((order) => {
+      //   order.items.forEach((item, i) => {
+          
+      //   })
+      // })
 
-        let ary = [
-        order.totalAmount,
-        order.orderNumber,
-        order.items.reduce((acc,item)=>(acc + item.productName),""),
-        order.items.reduce((acc,item)=>(acc + item.startTimeLocal),""),
-        ]
-        
-        return acc + ary.join("\t") + "\n"
-      },0)
-      console.log("Month tab'd %o", monthCosts)
-      //
-      // Get List array of {Booking} Objects for each {Order Item}
-      //
-      let monthBookings = []
-      let _this = this
-      filteredMonth.forEach((order) =>
-        order.items.forEach((item) => monthBookings.push(new Booking(_this, order, item)))
-      )
-      console.log("monthBookings: %o", monthBookings.length)
-
-      let monthPax = this.countPax(monthBookings)
-      let monthParticipants = monthBookings.reduce((total, booking) => total + booking.item.participants.length, 0)
-
-      console.log("month pax: %o", monthPax)
-      console.log("monthParticipants %o", monthParticipants)
-
-      console.log("\n\n")
-      // -------------------------------------------------------------------------------------------
-*/
       //
       // Filter by Date
       //
@@ -140,15 +96,6 @@
           bookings.push(new Booking(this, order, item, i))
         })
       })
-
-      // for (let o in filteredManifest) {
-      //   let order = filteredManifest[o]
-      //   for (let i in filteredManifest[o].items) {
-      //     let item = filteredManifest[o].items[i]
-      //     bookings.push(new Booking(this, order, item, i))
-      //   }
-      // }
-
       //
       // Sort Bookings by Start Time
       //
@@ -165,7 +112,7 @@
 
       // -------------------------------------------------------------------------------------------
       // console.log("Month Total $%o", monthCost)
-      this.$this.find("#Header").text(
+      this.$this.find("#Totals").text(
         "Manifest Pax(" + dayParticipants + ")(" + dayPax + ") "
         //"month(P" + monthParticipants + ")(X" + monthPax + ")"
       )

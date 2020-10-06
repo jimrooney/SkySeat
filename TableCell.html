@@ -201,7 +201,7 @@
       console.log("Set Plane Data, Key: %o Val: %o", key, val)
       let s = this.getState() // get copy of current State
       let state = JSON.parse(JSON.stringify(s))
-      state.planeData[key] = val
+      state.loadsheet[key] = val
       console.log("Set State: %o", state)
       this.setState(state)
     }
@@ -211,12 +211,12 @@
     getState() {
       let state = this.board.state.getData(this.$this) // get the CellData Object from the state object
       // Check for an assigned plane. If none, get from the PlaneCell
-      if (!!state.planeData && !!state.planeData.reg) {
+      if (!!state.loadsheet && !!state.loadsheet.reg) {
         return state
       }
       let PCState = this.$PlaneCell.data("_script").getData()
       let data = {
-        planeData: PCState.planeData,
+        loadsheet: PCState.loadsheet,
       }
       state = { ...state, ...data }
       return state
@@ -232,21 +232,21 @@
       //
       // Get the airplane raw data
       //
-      let planeData = PlaneManager.planes.data.find(function (el) {
-        return el.reg == state.planeData.reg
+      let loadsheet = PlaneManager.planes.data.find(function (el) {
+        return el.reg == state.loadsheet.reg
       })
-      console.log("PlaneData: %o", planeData)
+      console.log("PlaneData: %o", loadsheet)
       //
       // convert to Airplane Object
       //
       let airplane
-      if (!!planeData.type) {
-        let dynamic_class = eval(planeData.type)
-        airplane = new dynamic_class(planeData)
+      if (!!loadsheet.type) {
+        let dynamic_class = eval(loadsheet.type)
+        airplane = new dynamic_class(loadsheet)
       }
 
       let fuelStation = airplane.stations.find((station) => station.type.includes("fuel"))
-      fuelStation.weight = parseInt(state.planeData.fuel) * 0.72 // Adjust for Jet A ********** (.8) ****
+      fuelStation.weight = parseInt(state.loadsheet.fuel) * 0.72 // Adjust for Jet A ********** (.8) ****
 
       console.log("\n\nAirplane: %o", airplane)
       return airplane
@@ -318,6 +318,9 @@
       console.log("PCF: %o", state)
     }
     getHour() {}
+    // ----------------------------------------------------------------------------
+    // Update
+    // ----------------------------------------------------------------------------
     update() {
       let cellData = this.getState() // Get the data from the state object
       let $this = this.$this // simplify the reference to the jQuery object

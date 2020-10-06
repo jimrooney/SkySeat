@@ -37,8 +37,8 @@
       const data = this.board.state.getData($this)
       console.log("PlaneCell data: %o", data)
 
-      if (!data.planeData) {
-        data.planeData = {
+      if (!data.loadsheet) {
+        data.loadsheet = {
           type: "Plane",
           reg: "LOR",
           pilot: "James",
@@ -87,7 +87,7 @@
     }
     update() {
       const data = this._this.board.state.getData(this.$this)
-      const PCF = data.planeData
+      const PCF = data.loadsheet
       const $this = this.$this
 
       if (!!PCF) { // quick hack to avoid lack of defaults **********************
@@ -113,7 +113,7 @@
       console.log("Set Plane Data, Key: %o Val: %o", key, val)
       let s = this.getState() // get copy of current State
       let state = JSON.parse(JSON.stringify(s))
-      state.planeData[key] = val
+      state.loadsheet[key] = val
       console.log("Set State: %o", state)
       this.setState(state)
     }

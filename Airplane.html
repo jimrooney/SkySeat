@@ -98,13 +98,13 @@
       //
       // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
       //
-      let planeData = new Station({
+      let loadsheet = new Station({
         type: "airplane",
         weight: this.weight,
         arm: this.arm,
       })
-      planeData.moment = this.moment
-      this.stations.push(planeData)
+      loadsheet.moment = this.moment
+      this.stations.push(loadsheet)
       //
       // Sum all Weights and Moments
       //

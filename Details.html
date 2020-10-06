@@ -283,16 +283,16 @@
         Set the values to the data stored in State ***************************
 
       */
-      if (Object.keys(state.planeData).length > 0) {
-        console.log("PlaneData: %o", state.planeData)
-        if (!!state.planeData.coPilot) {
-          $coPilot.val(state.planeData.coPilot)
+      if (Object.keys(state.loadsheet).length > 0) {
+        console.log("PlaneData: %o", state.loadsheet)
+        if (!!state.loadsheet.coPilot) {
+          $coPilot.val(state.loadsheet.coPilot)
         } else {
           $coPilot.val("")
         }
-        $pilot.val(state.planeData.pilot)
-        $fuel.val(state.planeData.fuel)
-        $plane.val(state.planeData.reg)
+        $pilot.val(state.loadsheet.pilot)
+        $fuel.val(state.loadsheet.fuel)
+        $plane.val(state.loadsheet.reg)
       }
 
       // ===========================================
