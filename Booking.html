@@ -1,13 +1,11 @@
 <script>
   class Booking {
-    //constructor(item, orderNumber, order) {
-    constructor(manifest, order, item, itemNumber) {
+    constructor(manifest, order, item) {
       this.manifest = manifest
       this.order = order
       this.item = item
-      this.itemNumber = itemNumber
       this.orderNumber = order.orderNumber
-      this.key = this.orderNumber + "_" + item.productCode + "_" + itemNumber
+      this.key = this.orderNumber + "_" + item.productCode + "_" + item.index
       //
       // TableCell calls this with just the product code (insead of item) *******
       //

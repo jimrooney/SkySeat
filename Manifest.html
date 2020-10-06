@@ -68,20 +68,16 @@
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
       console.log("All Confirmed Orders Returned From Rezdy\n%o", orders) // [{Booking},{Booking},{Booking}]
 
-      orders = orders.map( o => {
-        o.items = o.items.map( (item,index) => {
-          item.newKey = "HI" + index
+      //
+      // save the items array index in the item
+      //
+      orders = orders.map((o) => {
+        o.items = o.items.map((item, index) => {
+          item.index = index
           return item
-        }
-        )
+        })
         return o
       })
-      // orders = orders.forEach((order) => {
-      //   order.items.forEach((item, i) => {
-          
-      //   })
-      // })
-
       //
       // Filter by Date
       //
