@@ -102,13 +102,6 @@
       $sprite.click(function () {
         let _this = $sprite.data("this")
         console.log("BookingSprite: %o", _this)
-        console.log("StartHour %o", _this.getStartHour())
-
-        let $row = time.getRowByHour(_this.getStartHour())
-
-        console.log("\n\n")
-        console.log("$row: %o", $row) //.data("row"))
-        console.log("\n\n")
       })
       $sprite.hover(
         // On

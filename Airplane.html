@@ -87,8 +87,8 @@
       // calculate CG based on load (simple WAM)
       // return [w/cg]
 
-      console.log("\n\nGET WB: %o", this.reg)
-      console.log("Stations %o", this.stations)
+      // console.log("\n\nGET WB: %o", this.reg)
+      // console.log("Stations %o", this.stations)
       //
       // Calculate all moments
       //
@@ -193,7 +193,7 @@
     constructor(data) {
       super(data)
 
-      this.type = this.constructor.name // "GA8"
+      this.type = this.constructor.name // "C208"
       this.limits = {
         weight: { empty: 0, MAUW: 1719, Landing: 1860 },
         // fwd1/2 [limit in M ,@ weight in kg]

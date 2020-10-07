@@ -49,8 +49,6 @@
       //this.$Airplane = this.$root.find(".Airplane")
       this.$Airplane = $("> .Airplane", this)
       this.$Airplane.click(function () {
-        // console.log("Airplane Click")
-        // console.log("Airplane: %o",this)
         $(".station")
           .children()
           .each(function (i, child) {
@@ -67,7 +65,6 @@
       this.$root.append($pop)
       $pop.click(function () {
         _$root.hide()
-        console.log("closing details")
       })
       return this.$root
     }
@@ -238,9 +235,6 @@
       //
       let bookings = this._TableCell.getOrders()
       let state = this._TableCell.getState() // Returns State {CellData}
-      console.log("State: %o", state)
-      console.log("TableCell bookings: %o", bookings)
-
       // ====================================
       // -------------- PCF -----------------
       // ====================================
@@ -284,7 +278,7 @@
 
       */
       if (Object.keys(state.loadsheet).length > 0) {
-        console.log("PlaneData: %o", state.loadsheet)
+        console.log("{state} Loadsheet Data: %o", state.loadsheet)
         if (!!state.loadsheet.coPilot) {
           $coPilot.val(state.loadsheet.coPilot)
         } else {
