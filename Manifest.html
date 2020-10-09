@@ -47,6 +47,7 @@
     onLoad(json) {
       console.log("Manifest onLoad()")
       this.data = JSON.parse(json) // parse json String data into a json object
+      // to Rezdy, a "booking" is a "booking order" (cuz they couldn't decide which name they preferred)
       this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
       this.show()
@@ -68,12 +69,24 @@
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
       console.log("All Confirmed Orders Returned From Rezdy\n%o", orders) // [{Booking},{Booking},{Booking}]
 
+      // ------------------
+      // Tag each passenger
+      // ------------------
       //
-      // save the items array index in the item
+      // This pulls down the OrderNumber and Array numbers 
+      // so we can find the pax again in the Rezdy data structure from just the pax data
       //
       orders = orders.map((o) => {
+        const orderNumber = o.orderNumber
         o.items = o.items.map((item, index) => {
           item.index = index
+          item.participants = item.participants.map((pax,i) => {
+            pax.fields.push({ label: "itemIndex", value: index })
+            pax.fields.push({ label: "orderNumber", value: orderNumber })
+            pax.fields.push({ label: "paxIndex", value: i })
+            pax.fields.push({ label: "groupID", value: orderNumber + "_" + index })
+            return pax
+          })
           return item
         })
         return o
@@ -84,7 +97,7 @@
       let filteredManifest = this.filterByDate(orders, date)
       console.log("filteredManifest: %o", filteredManifest)
       //
-      // Loop over Manifest Orders and make Booking Objects
+      // Create Booking Objects
       //
       let bookings = []
       filteredManifest.forEach((order) => {

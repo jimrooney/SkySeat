@@ -1,6 +1,7 @@
 <script>
-  class Booking {
+  class Booking extends Plottable {
     constructor(manifest, order, item) {
+      super(item.participants)
       this.manifest = manifest
       this.order = order
       this.item = item
@@ -101,7 +102,7 @@
       //
       $sprite.click(function () {
         let _this = $sprite.data("this")
-        console.log("BookingSprite: %o", _this)
+        _this.show() // inherited function from Plottable
       })
       $sprite.hover(
         // On

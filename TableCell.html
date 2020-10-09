@@ -1,7 +1,8 @@
 <script>
   // Object for TableCells
-  class TableCell {
+  class TableCell extends Plottable {
     constructor(board, r, c) {
+      super()
       let _this = this // reference for inside the click function scope
       this._this = this // keep a reference to this JS object (self reference)
       this.board = board // reference to the instantiating board
@@ -40,6 +41,7 @@
       // -------------------------------------------
       $this.click(function () {
         console.log("TableCell Click")
+        _this.show()
         console.log("ID: %o", $(this).prop("id"))
         console.log("Hour: %o", _this.hour)
         //
@@ -85,6 +87,9 @@
         let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellLeg: " + leg
         utility.error(msg)
       }
+    }
+    addPax(pax){
+      
     }
     removeBookings(ui, _this) {
       $(ui.helper).remove()
