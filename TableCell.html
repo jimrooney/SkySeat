@@ -74,23 +74,43 @@
       if (_this.isLegalDrop(leg, droppedIsOut)) {
         // ====================================================================
         // Drop accepted, record and update.
-        _this.recordDrop($(this), $dropped) // recordDrop({TableCell},{Booking})
+        // ====================================================================
+
+        console.log("Merge Dropped Pax")
+        console.log("cellData passengers: %o",cellData.passengers)
+        console.log("_dropped passengers: %o",_dropped.getPassengers())
+
+        cellData.passengers = [...new Set([...cellData.passengers, ..._dropped.getPassengers()])]
+
+        //
+        // Brand the cell
+        //
+        !!cellData.leg ? null : (cellData.leg = _dropped.getLeg())
+        //
+        _this.board.state.data[this.id] = cellData // record the new data
+        //
+        // Make Draggable
+        //
         $(this).draggable("enable")
+        //
         // Centers the cursor
+        //
         $(this).draggable("option", "cursorAt", {
           left: Math.floor(ui.helper.width() / 2),
           top: Math.floor(ui.helper.height() / 2),
         })
         _this.removeBookings(ui, _this)
-        // ====================================================================
+        // === Update ===
+        _this.board.update() // board.update() calls update() on each TableCell.
+        // *** possibly only update effected cells ************************************
+
+        $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
       } else {
         let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellLeg: " + leg
         utility.error(msg)
       }
     }
-    addPax(pax){
-      
-    }
+    addPax(pax) {}
     removeBookings(ui, _this) {
       $(ui.helper).remove()
       let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
@@ -124,6 +144,10 @@
       console.log("CellData from {State} %o", cellData) // {CellData}
       console.log("Dropped Bookings: %o", _dropped) // {Booking} or {TableCell}
 
+      cellData.passengers = [...new Set([...cellData.passengers, ..._dropped.passengers])]
+      this.board.state.data[this.id] = cellData
+      console.log("New Pax List: %o", cellData.passengers)
+
       // ({cellData} shouldn't have functions in it cuz they'll get lost when it's JSON saved)
 
       // Merge dropped bookings with existing bookings in {state}
@@ -135,12 +159,6 @@
       // Brand the cell
       //
       !!cellData.leg ? null : (cellData.leg = _dropped.getLeg())
-
-      // === Update ===
-      this.board.update() // board.update() calls update() on each TableCell.
-      // *** possibly only update effected cells ************************************
-
-      $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
     }
     // -------------------------------------------------------------------
     // isLegalDrop
@@ -340,7 +358,7 @@
       // --------
       // If Data
       // --------
-      if (!!cellData && cellData.bookingOrders.length > 0) {
+      if (!!cellData && cellData.passengers.length > 0) {
         console.log("{TableCell}.update()", cellData)
         //
         // In/Out Chevrons
@@ -365,32 +383,16 @@
             $this.addClass("outCell")
             break
         }
-        // **********************************************************************************************************
-        // Get the number of pax and which product they're doing
-        // **********************************************************************************************************
-        // We have the orderNumber and item
-        // reach into the manifest and get the Booking Object
-        //
-        let bookings = this.getOrders() // returns an array of Booking Objects [{Booking},{Booking}]
-        if (bookings.length > 0) {
-          console.log("Bookings: %o", bookings.length)
-
-          let numPax = bookings.reduce((acc, booking) => {
-            return acc + booking.item.participants.length
-          }, 0)
-          // Use map to extract the GYACode into an array
-          // Use [...new Set()] to eliminate duplicates
-          // (Without the [...] you get objects)
-          let codes = [...new Set(bookings.map((b) => b.product.GYACode))].join("<BR>")
-          $this.html(`(${numPax})  ${codes}`)
-          $this.draggable({
-            //revert: true,
-            helper: "clone",
-            cursorAt: { left: 5, top: 5 },
-          })
-        } else {
-          $this.draggable("disable")
-        }
+        const numPax = cellData.passengers.length
+        const codes = "TMP"
+        $this.html(`(${numPax})  ${codes}`)
+        $this.draggable({
+          //revert: true,
+          helper: "clone",
+          cursorAt: { left: 5, top: 5 },
+        })
+      } else {
+        $this.draggable("disable")
       }
     }
   }

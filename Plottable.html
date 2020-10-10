@@ -1,10 +1,16 @@
 <script>
-	class Plottable {
-		constructor (passengers){
-			this.passengers = passengers
-		}
-		show(){
-			console.log("Plottable: %o",this)
-		}
-	}
+  class Plottable {
+    constructor(passengers) {
+      this.passengers = passengers
+    }
+    getPassengers() {
+      if (!!this.id) {
+        return this.board.state.data[this.id].passengers
+      }
+      return this.passengers
+    }
+    show() {
+      console.log("Plottable: %o", this)
+    }
+  }
 </script>
