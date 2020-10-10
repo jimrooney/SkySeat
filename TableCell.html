@@ -72,14 +72,18 @@
       let droppedIsOut = _dropped.isOut()
 
       if (_this.isLegalDrop(leg, droppedIsOut)) {
-        // ====================================================================
-        // Drop accepted, record and update.
-        // ====================================================================
+        // ------------
+        // Record Drop
+        // ------------
 
-        console.log("Merge Dropped Pax")
-        console.log("cellData passengers: %o",cellData.passengers)
-        console.log("_dropped passengers: %o",_dropped.getPassengers())
+        /*
+        - Merge Dropped Pax -
+        cellData.passengers 
+        _dropped.getPassengers()
+        [{fields: Array(9)}]
 
+        Merging with Set() removes duplicates
+        */
         cellData.passengers = [...new Set([...cellData.passengers, ..._dropped.getPassengers()])]
 
         //
@@ -100,7 +104,9 @@
           top: Math.floor(ui.helper.height() / 2),
         })
         _this.removeBookings(ui, _this)
+        //
         // === Update ===
+        //
         _this.board.update() // board.update() calls update() on each TableCell.
         // *** possibly only update effected cells ************************************
 
@@ -125,41 +131,7 @@
       this.$this.removeClass("outCell")
       this.update()
     }
-    // -------------------------------------------------------------------
-    // Record Drop
-    // -------------------------------------------------------------------
-    //
-    // Drop is legal, record it.
-    //
-    recordDrop($this, $dropped) {
-      console.log("{TableCell}.recordDrop")
-      /*
-      this ... this script
-      $this ... the Accepting {TableCell}
-      $dropped ... the {TabelCell} or {BookingSprite} that's been dropped.
-      */
-      const _dropped = $dropped.data("_script") // {Booking} or {TableCell}
-      let cellData = this.board.state.getData(this.id) // {CellData} // will return a blank object by default
 
-      console.log("CellData from {State} %o", cellData) // {CellData}
-      console.log("Dropped Bookings: %o", _dropped) // {Booking} or {TableCell}
-
-      cellData.passengers = [...new Set([...cellData.passengers, ..._dropped.passengers])]
-      this.board.state.data[this.id] = cellData
-      console.log("New Pax List: %o", cellData.passengers)
-
-      // ({cellData} shouldn't have functions in it cuz they'll get lost when it's JSON saved)
-
-      // Merge dropped bookings with existing bookings in {state}
-      let existingKeys = cellData.bookingOrders
-      let droppedKeys = _dropped.getOrders().map((a) => a.key)
-      let result = arrays.merge(existingKeys, droppedKeys)
-      cellData = this.board.state.setData(this.id, result)
-      //
-      // Brand the cell
-      //
-      !!cellData.leg ? null : (cellData.leg = _dropped.getLeg())
-    }
     // -------------------------------------------------------------------
     // isLegalDrop
     // -------------------------------------------------------------------
@@ -359,7 +331,8 @@
       // If Data
       // --------
       if (!!cellData && cellData.passengers.length > 0) {
-        console.log("{TableCell}.update()", cellData)
+        console.log("\n{TableCell}.update()")
+        console.log("cellData: %o \n", cellData)
         //
         // In/Out Chevrons
         //
@@ -383,8 +356,17 @@
             $this.addClass("outCell")
             break
         }
+
+        let codes = []
+        for (const a in cellData.passengers) {
+          const pax = cellData.passengers[a].fields
+          const pc = pax.find((item) => item.label === "productCode").value
+          codes = [...new Set([...codes, ...[pc]])]
+        }
+        console.log("\n\nCodes: %o", codes)
+
         const numPax = cellData.passengers.length
-        const codes = "TMP"
+        //const codes = "TMP"
         $this.html(`(${numPax})  ${codes}`)
         $this.draggable({
           //revert: true,

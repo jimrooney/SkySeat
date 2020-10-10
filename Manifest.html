@@ -85,6 +85,7 @@
             pax.fields.push({ label: "orderNumber", value: orderNumber })
             pax.fields.push({ label: "paxIndex", value: i })
             pax.fields.push({ label: "groupID", value: orderNumber + "_" + index })
+            pax.fields.push({ label: "productCode", value: item.productCode })
             return pax
           })
           return item

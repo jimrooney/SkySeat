@@ -5,7 +5,7 @@
     }
     getPassengers() {
       if (!!this.id) {
-        return this.board.state.data[this.id].passengers
+        return this.board.state.data[this.id].passengers // [{fields: Array(9)}]
       }
       return this.passengers
     }
