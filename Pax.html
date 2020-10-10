@@ -7,35 +7,12 @@
         this.fields = data
       }
       this.seat = data.seat || null
-      this.barcode = this.getBarcode()
-      this.orderNumber = this.getOrderNumber()
+      this.barcode = this.getValue("Barcode")
+      this.orderNumber = this.getValue("orderNumber")
     }
-    setSeat(number) {}
-    getOrderNumber() {
-      let ret = this.barcode || ""
-      ret = ret.split("*")[0]
-      return ret
-    }
-    getBarcode() {
-      let ret = this.fields[2].value || ""
-      return ret
-    }
-    getName() {
-      let _name = ""
-      let FN = this.fields[0].value || ""
-      let LN = this.fields[1].value || ""
-      _name = FN + " " + LN
-      return _name
-    }
-    getFirstName() {
-      // let _name = ""
-      // if (!!this.fields[0]) {
-      //   _name = this.fields[0].value
-      // }
-
-      let ret = this.fields.find((x) => x.label.match(/First\ Name/i))
-      
-      return ret.value
+    getValue(label){
+      const rgxp = new RegExp(label, "i");
+      return this.fields.find((x) => x.label.match(label)).value
     }
     getWeight() {
       //
@@ -46,10 +23,6 @@
       // Removes KG LBS etc
       ret = wb.getKilos(ret.value)
 
-      return ret
-    }
-    getAge() {
-      let ret = this.fields[3].value || -1
       return ret
     }
     getGroupColor() {

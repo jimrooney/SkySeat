@@ -233,7 +233,7 @@
       //
       //
       //
-      let bookings = this._TableCell.getOrders()
+      const passengers = this._TableCell.getPassengers()
       let state = this._TableCell.getState() // Returns State {CellData}
       // ====================================
       // -------------- PCF -----------------
@@ -295,66 +295,63 @@
 
       let bgColors = {}
       let colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
+      passengers.forEach((p, index) => {
+        let pax = new Pax(p)
+        const firstName = pax.getValue("First Name") //pax.getFirstName()
+        const weight = pax.getValue("weight") //pax.getWeight()
+        const orderNumber = pax.getValue("orderNumber") ///pax.getOrderNumber()
 
-      for (let key in bookings) {
-        for (let p in bookings[key].item.participants) {
-          let pax = new Pax({ fields: bookings[key].item.participants[p].fields })
-          let firstName = pax.getFirstName()
-          let weight = pax.getWeight()
-          let orderNumber = pax.getOrderNumber()
+        let $pax = $(
+          `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
+        )
+          //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
+          .data("seat", index)
+          .data("booking", orderNumber)
+          .data("pax", pax.fields)
+          .data("_pax", pax)
+          .attr("id", "pax" + index)
+          .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
+          .addClass("Pax")
+          .draggable({
+            containment: "#detailsDiv",
+            stack: "#PassengerList div",
+            cursor: "move",
+            revert: true,
+            start: function (evt, ui) {
+              this.startPos = ui.helper.position()
+            },
+            stop: function (event, ui) {
+              _this.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
+              let $station = $(this).closest(".station")
+              if ($station.length > 0) {
+                ui.helper.position({ of: $station, my: "left top", at: "left top" })
+              }
+            },
+          })
 
-          let $pax = $(
-            `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
-          )
-            //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
-            .data("seat", p)
-            .data("booking", key)
-            .data("pax", pax.fields)
-            .data("_pax", pax)
-            .attr("id", "pax" + p)
-            .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
-            .addClass("Pax")
-            .draggable({
-              containment: "#detailsDiv",
-              stack: "#PassengerList div",
-              cursor: "move",
-              revert: true,
-              start: function (evt, ui) {
-                this.startPos = ui.helper.position()
-              },
-              stop: function (event, ui) {
-                _this.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
-                let $station = $(this).closest(".station")
-                if ($station.length > 0) {
-                  ui.helper.position({ of: $station, my: "left top", at: "left top" })
-                }
-              },
-            })
-
-          let hue
-          if (bgColors[orderNumber]) {
-            hue = bgColors[orderNumber]
-          } else {
-            hue = colorNumbers.pop()
-            bgColors[orderNumber] = hue
-          }
-          $pax.css("background-color", hue)
-
-          if (firstName.length >= 7) {
-            $pax.css("font-size", "8px")
-          }
-
-          this.init() // initialize jQuery drag/drop code
-
-          if (visible) {
-            this.$root.hide()
-          } else {
-            this.$root.css("width", "400px")
-            this.$root.css("heigh", "600px")
-            this.$root.show()
-          }
+        let hue
+        if (bgColors[orderNumber]) {
+          hue = bgColors[orderNumber]
+        } else {
+          hue = colorNumbers.pop()
+          bgColors[orderNumber] = hue
         }
-      }
+        $pax.css("background-color", hue)
+
+        if (firstName.length >= 7) {
+          $pax.css("font-size", "8px")
+        }
+
+        this.init() // initialize jQuery drag/drop code
+
+        if (visible) {
+          this.$root.hide()
+        } else {
+          this.$root.css("width", "400px")
+          this.$root.css("heigh", "600px")
+          this.$root.show()
+        }
+      })
     }
   }
 </script>
