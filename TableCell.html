@@ -365,9 +365,14 @@
         }
         console.log("\n\nCodes: %o", codes)
 
+        const GYACodes = codes.map((c) => gya.getProduct(c).GYACode)
+
+        console.log("\n\nGYACodes: %o", GYACodes)
+
+
         const numPax = cellData.passengers.length
         //const codes = "TMP"
-        $this.html(`(${numPax})  ${codes}`)
+        $this.html(`(${numPax})  ${GYACodes.join("<BR>")}`)
         $this.draggable({
           //revert: true,
           helper: "clone",
