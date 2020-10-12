@@ -40,10 +40,8 @@
       // Click
       // -------------------------------------------
       $this.click(function () {
-        console.log("TableCell Click")
+        console.log("TableCell Click, %o",_this)
         _this.show()
-        console.log("ID: %o", $(this).prop("id"))
-        console.log("Hour: %o", _this.hour)
         //
         let data = _this.getData()
         console.log("Data: %o", data)
@@ -171,7 +169,6 @@
         let s = o.split("_") // orderNumber + "_" + productCode + "_" + itemNumber
         let orderNumber = s[0]
         let itemNumber = parseInt(s[2])
-        console.log("s0 s2 %o %o", s[0], s[2])
         let order = manifest.orders.find((x) => x.orderNumber === orderNumber)
         if (!!order) {
           let item = order.items[itemNumber]
@@ -331,8 +328,6 @@
       // If Data
       // --------
       if (!!cellData && cellData.passengers.length > 0) {
-        console.log("\n{TableCell}.update()")
-        console.log("cellData: %o \n", cellData)
         //
         // In/Out Chevrons
         //
@@ -363,13 +358,7 @@
           const pc = pax.find((item) => item.label === "productCode").value
           codes = [...new Set([...codes, ...[pc]])]
         }
-        console.log("\n\nCodes: %o", codes)
-
         const GYACodes = codes.map((c) => gya.getProduct(c).GYACode)
-
-        console.log("\n\nGYACodes: %o", GYACodes)
-
-
         const numPax = cellData.passengers.length
         //const codes = "TMP"
         $this.html(`(${numPax})  ${GYACodes.join("<BR>")}`)

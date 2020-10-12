@@ -1,30 +1,4 @@
 <script>
-  /*
-
-This still needs work... 
-
-PlaneManager.planes references can be changed to this.
-
-*/
-
-  //
-  // An array of plane objects... could rather be a key'd object array of plane key'd by reg though ****************
-  //
-  // var planes = {
-  //   list: [],
-  //   // *** Improve me *** (maybe with find()) ***
-  //   getPlane: function (registration) {
-  //     for (let r in this.list) {
-  //       if (this.list[r].reg == registration) {
-  //         return this.list[r]
-  //       }
-  //     }
-  //     return null
-  //   },
-  // }
-  //
-  // This could all just be in the root {planes} object ************************
-  //
   var planes = {
     rawData: [],
     data: [],
@@ -37,6 +11,7 @@ PlaneManager.planes references can be changed to this.
       return null
     },
   }
+  root.planes = planes
   var PlaneManager = {
     planes: planes, // quick cheat to externalize planes object to root {planes}
     //
@@ -50,9 +25,6 @@ PlaneManager.planes references can be changed to this.
       for (let a in data[0]) {
         planes[data[0][a]] = data[0][a]
       }
-      //
-      console.log("data %o", data)
-      //
       for (let row in data) {
         for (let col in data[row]) {
           if (data[row][col]) {
@@ -70,15 +42,12 @@ PlaneManager.planes references can be changed to this.
         let span = "<div id='hours' style='font-size:small;'>[hrs: <B>" + hours + "</B>]</div>"
         $(this).prepend(span)
       })
-      console.log("planes %o", planes)
     },
 
     loadPlanes: function (data) {
       //
       // Parse loaded two dimensional array into root planes object
       //
-      console.log("Planemanager.loadPlanes(data)")
-      console.log("Data: %o", data)
       //
       // Because this gets called from a Success Handler (Google), "this" is the Window Object, so we'll make our own "_this"
       //

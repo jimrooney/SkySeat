@@ -11,8 +11,12 @@
       this.orderNumber = this.getValue("orderNumber")
     }
     getValue(label){
-      const rgxp = new RegExp(label, "i");
-      return this.fields.find((x) => x.label.match(label)).value
+      const rgxp = new RegExp(label, "i")
+      const result = this.fields.find((x) => x.label.match(label))
+      if (!!result){
+        return result.value
+      }
+      return
     }
     getWeight() {
       //

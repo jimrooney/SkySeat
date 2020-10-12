@@ -11,7 +11,15 @@ inches (4912 mm) (23.80% MAC) aft of datum at 8000 pounds
 (32.50% MAC) aft of datum at 8807 pounds (3994.7 kg).
 
 
+-------------------------------------------------------------------------------------------------------------------
+Run jQuery in Console.... (paste this into the console first) 
 
+var jqry = document.createElement('script');
+jqry.src = "https://code.jquery.com/jquery-3.3.1.min.js";
+document.getElementsByTagName('head')[0].appendChild(jqry);
+jQuery.noConflict();
+
+-------------------------------------------------------------------------------------------------------------------
 
 DatePicker's onChange (onSelect()) is set in Dates.html {Dates.initPicker()}
 Rezdy.html Rezdy.load({manifest}) is where the range for the selection request is made

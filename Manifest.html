@@ -56,13 +56,13 @@
     // Show Manifest
     // ---------------------------------------------------------
     show(date) {
-      console.log("Manifest.show()")
-      console.log("Requested Date: %o", date)
+      debug.log("Manifest.show()")
+      debug.log("Requested Date:", date)
       console.log("JSON: (this.data) %o", this.data)
       if (!date) {
         date = this.getDate()
       }
-      console.log("Date used: %o", date)
+      debug.log("Date used:", date, {Manifest})
       //
       // Filter by CONFIRMED
       //

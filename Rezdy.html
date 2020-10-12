@@ -25,37 +25,34 @@
       }
       requestedDate.setDate(requestedDate.getDate() - 1)
       requestedDate.setHours(3, 0, 0, 0)
-      console.log("requestedDate: %o", requestedDate)
+      debug.log("requestedDate:", requestedDate , {Rezdy})
       //
       // Call the google script and pass it the Manifest
       //
       let startDate = new Date(requestedDate)
       startDate = startDate.toString()
 
-      console.log("startDate: %o", startDate)
+      debug.log("startDate:", startDate)
 
       let endDate = new Date(requestedDate)
       endDate.setDate(endDate.getDate() + 1)
       endDate = endDate.toString()
 
-      console.log("endDate: %o", endDate)
+      debug.log("endDate:", endDate)
 
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
       google.script.run.withSuccessHandler(this.onLoad).withUserObject(Manifest).loadRezdy(startDate, endDate)
     },
     // Passes Google Script XML return back to the Manifest that called the script
     onLoad: function (ret, Manifest) {
-      console.log("Rezdy.onLoad()")
-      console.log("Requested URL: %o", ret.url)
+      debug.log("Rezdy.onLoad()")
+      debug.log("Requested URL:", ret.url)
       Manifest.onLoad(ret.json)
     },
     onTripCodeLoad: function (data) {
-      console.log("OnTripCodeLoad: %o", data)
+      debug.log("OnTripCodeLoad: %o", data)
       gya.trips = data
       return data
-    },
-    test: function (obj) {
-      console.log("remote test: %o", obj)
     },
     loadTripCodes: function () {
       google.script.run.withSuccessHandler(Rezdy.onTripCodeLoad).loadTripCodes()
