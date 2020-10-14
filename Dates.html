@@ -39,15 +39,20 @@
       d = d.map(x => parseInt(x))
       return new Date([d[2],d[1]+1,d[0]])
     },
-    getNZ: function (d) {
+    getNZ: function (d,short) {
       //if (typeof d === 'undefined') {d = new Date()}
       typeof d === "undefined" ? (d = new Date()) : d.constructor === Date ? d : (d = new Date(d))
 
       var dd = String(d.getDate()).padStart(2, "0")
       var mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
       var yyyy = d.getFullYear()
+      let yy = "" + d.getYear()
+      yy = yy.substr(1) 
 
       d = dd + "/" + mm + "/" + yyyy
+      if (!!short){
+        d = dd + "/" + mm + "/" + yy
+      }
       return d
     },
     getUSA: function (d) {

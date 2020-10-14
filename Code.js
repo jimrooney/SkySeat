@@ -79,7 +79,7 @@ function getState(find) {
       // eliminating all null elements from the array returned using `map`
       return cellData != null
     })
-    return outputArr
+  return outputArr
 }
 function saveBoard(_array) {
   var date = _array[0]
@@ -222,4 +222,37 @@ function loadPlaneData() {
   var DataID = "1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s" // Company Data Spreadsheet ID
   var data = SpreadsheetApp.openById(DataID).getSheetByName("HoursTillCheck").getRange("B:F").getValues()
   return data
+}
+function loadRoster(date) {
+  //https://docs.google.com/spreadsheets/d/1zkA22oiIPbnggme0cosvPnnTkRPCSkkCcc-2mFSclLg/edit#gid=211032400
+  const DataID = "1zkA22oiIPbnggme0cosvPnnTkRPCSkkCcc-2mFSclLg" // Company Data Spreadsheet ID
+  const workbook = SpreadsheetApp.openById(DataID)
+  const sheets = workbook.getSheets()
+  const tabs = sheets.map((x) => {
+    return x.getName()
+  })
+  date = new Date(date)
+  let match = {}
+  const week = tabs.map((s) => {
+    const sheet = workbook.getSheetByName(s)
+    const rangeValues = sheet.getRange("B2:H2").getValues()
+    rangeValues.map((r, ri) => {
+      r.map((c, ci) => {
+        const cd = new Date(c)
+        if (cd.toString() == date.toString()) {
+          match.ci = ci
+          match.sheet = s
+          match.match = true
+        }
+      })
+    })
+  })
+
+  if(match.match){
+  const _sheet = workbook.getSheetByName(match.sheet)
+  const rng = "A4:H17"
+  const rangeValues = _sheet.getRange(rng).getValues()
+  match.values = rangeValues
+      return match
+  }
 }

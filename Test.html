@@ -1,19 +1,31 @@
 <script>
+  var testResults = {
+    handleLoad(args){
+      console.log("Results: %o",args)
+    }
+  }
   function test(args) {
 
-    console.log("Pilots %o",pilots)
-    console.log("Planes %o",planes)
-    console.log("PlaneManager %o",PlaneManager)
+    let  date = $("#AutoBoard").data("root").manifest.getDate()
+      
+      date = date.toString()
+
+      google.script.run.withSuccessHandler(testResults.handleLoad).loadRoster(date)
 
 
-    $("#Loadsheet").show()
 
+     //google.script.run.loadRoster(date)
+
+
+    console.log("done")
 
 
 
 
 
     return
+    $("#Loadsheet").show()
+
 
 
     var all = $(".TimeCell")
