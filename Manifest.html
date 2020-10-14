@@ -21,18 +21,22 @@
       this.$this = $(`<div class="Manifest_Container">
           <div id="Header" class="Header">
           <span class="total" style="float:left;display: inline-block;"></span>
+          <span style="float:right;display: inline-block;"><button id="rr">(R)</button></span>
           <span style="float:right;display: inline-block;"><button id="reload">&#10226;</button></span>
           <span style="float:right;display: inline-block;"><button id="debug">&#937;</button></span>
            Manifest </div>
           <div id="Totals" />
           <div class="Bookings" style="float:left;display: inline-block;"></div>
+          <div class="Roster" />
       </div>`)
       this.$board.append(this.$this)
       this.$bookings = this.$this.find(".Bookings")
       //
       // Manifest Reload Button
       //
-      this.$this.find("button").off("click") // ? **********************************
+      this.$this.find("#rr").click(function () {
+        _this.loadRoster()
+      })
       this.$this.find("#reload").click(function () {
         _this.load()
       })
@@ -40,6 +44,34 @@
         console.log(_this)
       })
     }
+    loadRoster() {
+      const $roster = this.$this.find(".Roster")
+      $roster.empty()
+      $roster.append("<div>Loading</div>")
+      const d = this.getDate("getDate")
+      const date = d.toString()
+      google.script.run.withSuccessHandler(this.handleRosterLoad).withUserObject(this).loadRoster(date)
+    }
+    handleRosterLoad(args,manifest) {
+    const $roster = manifest.$this.find(".Roster")
+    $roster.empty()
+    if (!!args) {
+      let labels = args.values.map((row) => row[0])
+      let results = args.values.map((row) => row[args.ci])
+      let keyVal = args.values.map((row, ri) => {
+        const key = row[0]
+        const val = row[args.ci]
+        const color = args.colors[ri][args.ci]
+        return [key, val, color]
+      })
+      const rosterRows = keyVal.map(
+        (row) => `<div><span style="background-color:${row[2]}">${row[0]} ${row[1]}</span></div>`
+      )
+      const $rosterContent = $("<div />")
+      $rosterContent.append(rosterRows.join(""))
+      $roster.append($rosterContent)
+    }
+  }
     // Call the Google Rezdy loading script, passing this object so the results can be returned into it
     load() {
       Rezdy.load(this)
@@ -62,7 +94,7 @@
       if (!date) {
         date = this.getDate()
       }
-      debug.log("Date used:", date, {Manifest})
+      debug.log("Date used:", date, { Manifest })
       //
       // Filter by CONFIRMED
       //
@@ -73,14 +105,14 @@
       // Tag each passenger
       // ------------------
       //
-      // This pulls down the OrderNumber and Array numbers 
+      // This pulls down the OrderNumber and Array numbers
       // so we can find the pax again in the Rezdy data structure from just the pax data
       //
       orders = orders.map((o) => {
         const orderNumber = o.orderNumber
         o.items = o.items.map((item, index) => {
           item.index = index
-          item.participants = item.participants.map((pax,i) => {
+          item.participants = item.participants.map((pax, i) => {
             pax.fields.push({ label: "itemIndex", value: index })
             pax.fields.push({ label: "orderNumber", value: orderNumber })
             pax.fields.push({ label: "paxIndex", value: i })
