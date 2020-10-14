@@ -1,7 +1,22 @@
 <script>
   var testResults = {
     handleLoad(args){
-      console.log("Results: %o",args)
+      //console.log("Results: %o",args)
+      let labels = args.values.map((row)=>row[0])
+      let results = args.values.map((row)=>row[args.ci])
+      let keyVal = args.values.map((row,ri)=>{
+        const key = row[0]
+        const val = row[args.ci]
+        const color = args.colors[ri][args.ci]
+        return [key,val,color]
+        })
+
+
+      const $roster = $("#Roster")
+        $roster.empty()
+        const rosterRows = keyVal.map((row)=> `<div style="background-color:${row[2]}">${row[0]} ${row[1]}</div>`)
+      $roster.append(rosterRows.join(""))
+      console.log("Results: %o",keyVal)
     }
   }
   function test(args) {

@@ -235,7 +235,7 @@ function loadRoster(date) {
   let match = {}
   const week = tabs.map((s) => {
     const sheet = workbook.getSheetByName(s)
-    const rangeValues = sheet.getRange("B2:H2").getValues()
+    const rangeValues = sheet.getRange("A2:H2").getValues()
     rangeValues.map((r, ri) => {
       r.map((c, ci) => {
         const cd = new Date(c)
@@ -248,11 +248,13 @@ function loadRoster(date) {
     })
   })
 
-  if(match.match){
-  const _sheet = workbook.getSheetByName(match.sheet)
-  const rng = "A4:H17"
-  const rangeValues = _sheet.getRange(rng).getValues()
-  match.values = rangeValues
-      return match
+  if (match.match) {
+    const _sheet = workbook.getSheetByName(match.sheet)
+    const rng = "A4:H17"
+    const rangeValues = _sheet.getRange(rng).getValues()
+    const rangeColors = _sheet.getRange(rng).getBackgrounds()
+    match.values = rangeValues
+    match.colors = rangeColors
+    return match
   }
 }
