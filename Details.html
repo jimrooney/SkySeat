@@ -39,7 +39,10 @@
       this.$Print = this.$root.find(".Print")
       this.$Print.click(function () {
         console.log("Print Click")
-        _this.getWB()
+
+        const _wb = _this.getWB()
+        console.log("WB: %o", _wb)
+        
         $("#Loadsheet").show()
       })
       //
@@ -200,8 +203,10 @@
       //
     }
     getWB() {
-      let _wb = this._TableCell.getWB()
-      this.$root.find(".Report").text(`CG: ${_wb.rounded.cg} AUW: ${_wb.rounded.AUW}`)
+      let loadedPlane = this._TableCell.getAirplaneLoading() // retunrs a loaded airplane object
+      let _wbData = loadedPlane.getWB()
+      this.$root.find(".Report").text(`CG: ${_wbData.rounded.cg} AUW: ${_wbData.rounded.AUW}`)
+      return loadedPlane
     }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time

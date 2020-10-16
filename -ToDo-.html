@@ -17,12 +17,29 @@ Pax per month starts one day behind (probably a timezone issue)
 -------------------------------
 Currently
 -------------------------------
-Convert everything into Booking Objects and then filter the list of Booking Objects rather than touching the manifest itself.
+Working in: 
+Details.getWB()
+$this.click(function ()
+... Started passing a loaded plane object to the Loadsheet popup.
+
+Check to see if handleDrop in Details records seat numbers (and other data)... if not, make it do that.
+Put LoadSheet data in the CellData object
+Then when it pops up (again), it can plot any recorded data first.
+
 
 // hardcoding pilot weight for now *******************
 0.72 // Adjust for Jet A ********** (.8) ****
 
-Put LoadSheet data in the CellData object
+
+Turn Roster load into objects that can be dropped on planes (and have icons like vans and planes, etc)
+handleRosterLoad
+
+
+Convert everything into Booking Objects and then filter the list of Booking Objects rather than touching the manifest itself.
+
+
+
+
 
 PCF Dropmenus
 Plane Defaults.

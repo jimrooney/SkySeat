@@ -46,7 +46,11 @@
         let data = _this.getData()
         console.log("Data: %o", data)
         if (!!data) {
-          _this.getWB()
+
+          // ****************************
+          // Either pass in the wb data to Details, or have Details reach back and call the function
+          //
+          _this.getAirplaneLoading()
           $("#Details").data("root").show($(this))
           $("#Details").show()
         }
@@ -241,7 +245,7 @@
 
       return airplane
     }
-    getWB() {
+    getAirplaneLoading() {
       // if seats aren't assigned, sort by crew, then weight
       // if seats are assigned, check that they fit the plane, then use them.
 
@@ -264,24 +268,18 @@
 
       $(".station")
         .children()
-        .each(function (i, $div) {
+        .each(function(i, $div){
           let seat
           let weight
           let pax // array of Rezdy labels [{},{}]
-
           seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
           pax = $(this).data("pax")
           weight = $(this).data("_pax").getWeight()
-
-          console.log("Seat: %o", seat)
-          console.log("Pax: %o", pax)
-          console.log("Pax Weight: %o", weight)
-
           if (seat >= 0) {
             airplane.stations[seat].weight = weight
           }
         })
-      return airplane.getWB()
+      return airplane
     }
     // Perhaps "hasOuts()" ************************************
     // This only tells you if the cell contains outs, not the direction of the leg
