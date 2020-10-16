@@ -72,10 +72,15 @@
   </head>
   <body>
     <div id="HoverBar" style="float: top; width: 100%; text-align: center; background: #737373; color: white">
-      [[ 2.4 ]] [ New Debug ]
+      [[ 2.4.1 ]] [ ]
     </div>
 
     <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
+    <script>
+      $(document).ready(function () {
+        var loadsheet = new Loadsheet($("#Loadsheet"))
+      })
+    </script>
     <div id="PickupList" class="pickupDetails">
       <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
     </div>
