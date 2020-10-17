@@ -41,9 +41,12 @@
         console.log("Print Click")
 
         const _wb = _this.getWB()
-        console.log("WB: %o", _wb)
-        
-        $("#Loadsheet").show()
+        console.log("WB: %o", _wb.stations)
+        let seats = _wb.stations.filter((station)=>{
+          return station.type.includes("seat") && parseInt(station.weight) > 0
+        })
+        console.log("seats: %o",seats)
+        loadsheet.show()
       })
       //
       // ---------------------------

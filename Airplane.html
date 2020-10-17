@@ -96,7 +96,7 @@
       // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
       //
       let loadsheet = new Station({
-        type: "airplane",
+        type: ["airplane"],
         weight: this.weight,
         arm: this.arm,
       })

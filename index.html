@@ -5,6 +5,8 @@
   // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
   var testBoard
   // var Bookings is created when Bookings gets imported
+  var loadsheet
+  // Placeholder for the loadsheet object
 </script>
 <html>
   <head>
@@ -78,7 +80,7 @@
     <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
     <script>
       $(document).ready(function () {
-        var loadsheet = new Loadsheet($("#Loadsheet"))
+        loadsheet = new Loadsheet($("#Loadsheet"))
       })
     </script>
     <div id="PickupList" class="pickupDetails">
