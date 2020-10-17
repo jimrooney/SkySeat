@@ -1,20 +1,48 @@
 <div id="printLoadsheetClose" class="popupCloseButton">X</div>
 <script>
   class Loadsheet {
-    constructor ($this){
+    constructor($this) {
       const _this = this
       this._this = this
       this.$this = $this
       $this.data("object", this)
     }
-    print(){
+    print() {
       return "HI"
     }
-    show(){
+    show(_TableCell) {
+      let WB = _TableCell.getAirplaneLoading()
+      console.log("{Details}.show() WB: ", WB)
+      let seats = _TableCell.getSeats()
+      console.log("{Details} seats:", seats)
+
+      $(".reg").css("background-color", "Blue")
+      $("._plane_pilot").html("Zapp Brannigan")
+      //
+      // Clear out old values
+      //
+      for (let i = 0; i < 11; i++) {
+        $("._paxList-" + i + "-fullName").html("")
+        $("._paxList-" + i + "-weight").html("")
+      }
+      let paxNum = 0
+      seats.map((station) => {
+        if (!!station.pax) {
+          const fullName = station.pax.find((px) => px.label == "First Name").value
+          $("._paxList-" + paxNum + "-fullName").html(fullName)
+          paxNum++
+        }
+      })
+      // Flatten PaxList
+      // for (let i in _paxList) {
+      //   for (let o in _paxList[i]) {
+      //     $("._paxList-" + i + "-" + o).html(_paxList[i][o])
+      //   }
+      // }
+
       this.$this.show()
     }
   }
-
 </script>
 <script>
   $(function () {
@@ -64,8 +92,7 @@
     if (loadsheetData._cruiseCount > 0) {
       _trip.cruiseCount = "Total Cruising Pax: " + loadsheetData._cruiseCount
       if (loadsheetData._infantCount > 0) {
-        _trip.cruiseCount =
-          _trip.cruiseCount + " (infant:" + loadsheetData._infantCount + ")"
+        _trip.cruiseCount = _trip.cruiseCount + " (infant:" + loadsheetData._infantCount + ")"
       }
     }
 
@@ -184,11 +211,7 @@
         ) {
           pax.pickup = "GY"
         }
-        if (
-          pax.productCode &&
-          pax.productCode[2] &&
-          pax.productCode[2].match(/\-DR/gi)
-        ) {
+        if (pax.productCode && pax.productCode[2] && pax.productCode[2].match(/\-DR/gi)) {
           pax.pickup = "<span style='font-size:x-small'>DropGY</span>"
         }
 
@@ -216,8 +239,7 @@
         // Copilot
         if (a > 0) {
           if (typeof data[1] == "string") {
-            let cp =
-              "<span style='font-size:small'> (copilot: " + data[1] + ")</span>"
+            let cp = "<span style='font-size:small'> (copilot: " + data[1] + ")</span>"
             _plane.copilot = data[1]
             _plane.copilotSpan = cp
             _plane.crewWeight += data[0]
@@ -377,24 +399,18 @@
     <table
       width="100%"
       border="1"
-      style="
-        border-collapse: collapse;
-        border-color: rgb(136, 136, 136);
-        border-width: 1px;
-      "
+      style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
     >
       <tr>
         <td height="1">
           <!-- The print button also calls the log function which submits the flight data to the data spreadsheet -->
-          <button onclick="javascript: theBoard.printLoadsheet()" id="opener">
-            Print
-          </button>
+          <button onclick="javascript: theBoard.printLoadsheet()" id="opener">Print</button>
         </td>
         <td colspan="5" height="2">
           <img
             src="https://sites.google.com/a/glenorchyair.co.nz/resources/web/images/logo/GlenorchyAir_RGB_Full_kea-red-200.png?attredirects=0"
             height="40"
-            style="float: left;"
+            style="float: left"
           />
           <div align="center">
             <b>LoadSheet </b
@@ -408,14 +424,9 @@
           <!--[ETD]-->
           <font size="6"
             ><center>
-              <b
-                ><!-- [Trip Time] --><span class="_trip_time"></span
-              ></b></center></font
+              <b><!-- [Trip Time] --><span class="_trip_time"></span></b></center></font
           ><br />
-          <!-- [Cruise Count] --><span
-            style="font-size: x-small;"
-            class="_trip_cruiseCount"
-          ></span>
+          <!-- [Cruise Count] --><span style="font-size: x-small" class="_trip_cruiseCount"></span>
         </td>
       </tr>
       <tr>
@@ -496,8 +507,8 @@
         <td colspan="2" class="pax1">
           <!--[Pax1]-->
           <span class="_paxList-0-fullName"></span>
-          <span class="_paxList-0-product" style="background: yellow;"></span>
-          <span class="_paxList-0-pickup" style="background: yellow;"></span>
+          <span class="_paxList-0-product" style="background: yellow"></span>
+          <span class="_paxList-0-pickup" style="background: yellow"></span>
         </td>
         <td width="7%" class="pax1">
           <!--[Pax1Weight]-->
@@ -516,8 +527,8 @@
         <td colspan="2" class="pax2">
           <!--[Pax2]-->
           <span class="_paxList-1-fullName"></span>
-          <span class="_paxList-1-product" style="background: yellow;"></span>
-          <span class="_paxList-1-pickup" style="background: yellow;"></span>
+          <span class="_paxList-1-product" style="background: yellow"></span>
+          <span class="_paxList-1-pickup" style="background: yellow"></span>
         </td>
         <td width="7%" class="pax2">
           <!--[Pax2Weight]-->
@@ -536,8 +547,8 @@
         <td colspan="2" class="pax3">
           <!--[Pax3]-->
           <span class="_paxList-2-fullName"></span>
-          <span class="_paxList-2-product" style="background: yellow;"></span>
-          <span class="_paxList-2-pickup" style="background: yellow;"></span>
+          <span class="_paxList-2-product" style="background: yellow"></span>
+          <span class="_paxList-2-pickup" style="background: yellow"></span>
         </td>
         <td width="7%" class="pax3">
           <!--[Pax3Weight]-->
@@ -556,8 +567,8 @@
         <td colspan="2" class="pax4">
           <!--[Pax4]-->
           <span class="_paxList-3-fullName"></span>
-          <span class="_paxList-3-product" style="background: yellow;"></span>
-          <span class="_paxList-3-pickup" style="background: yellow;"></span>
+          <span class="_paxList-3-product" style="background: yellow"></span>
+          <span class="_paxList-3-pickup" style="background: yellow"></span>
         </td>
         <td width="7%" class="pax4">
           <!--[Pax4Weight]-->
@@ -576,8 +587,8 @@
         <td colspan="2" class="pax5">
           <!--[Pax5]-->
           <span class="_paxList-4-fullName"></span>
-          <span class="_paxList-4-product" style="background: yellow;"></span>
-          <span class="_paxList-4-pickup" style="background: yellow;"></span>
+          <span class="_paxList-4-product" style="background: yellow"></span>
+          <span class="_paxList-4-pickup" style="background: yellow"></span>
         </td>
         <td width="7%" class="pax5">
           <!--[Pax5Weight]-->
@@ -596,8 +607,8 @@
         <td colspan="2" class="pax6">
           <!--[Pax6]-->
           <span class="_paxList-5-fullName"></span>
-          <span class="_paxList-5-product" style="background: yellow;"></span>
-          <span class="_paxList-5-pickup" style="background: yellow;"></span>
+          <span class="_paxList-5-product" style="background: yellow"></span>
+          <span class="_paxList-5-pickup" style="background: yellow"></span>
         </td>
         <td width="7%" class="pax6">
           <!--[Pax6Weight]-->
@@ -616,8 +627,8 @@
         <td colspan="2" class="pax7">
           <!--[Pax7]-->
           <span class="_paxList-6-fullName"></span>
-          <span class="_paxList-6-product" style="background: yellow;"></span>
-          <span class="_paxList-6-pickup" style="background: yellow;"></span>
+          <span class="_paxList-6-product" style="background: yellow"></span>
+          <span class="_paxList-6-pickup" style="background: yellow"></span>
         </td>
         <td width="7%" class="pax7">
           <!--[Pax7Weight]-->
@@ -673,10 +684,7 @@
       </tr>
       <tr>
         <td colspan="8">
-          <div align="center">
-            I HEREBY CERTIFY that the particulars recorded on the above load
-            sheet are correct
-          </div>
+          <div align="center">I HEREBY CERTIFY that the particulars recorded on the above load sheet are correct</div>
         </td>
       </tr>
       <tr>
@@ -691,9 +699,7 @@
     <br />
     <p></p>
     <hr />
-    <p>
-      &nbsp;
-    </p>
+    <p>&nbsp;</p>
 
     <p>
       <!------------------------------------------------ Duplicate Loadsheet ------------------------------------------------------>
@@ -702,11 +708,7 @@
     <table
       width="100%"
       border="1"
-      style="
-        border-collapse: collapse;
-        border-color: rgb(136, 136, 136);
-        border-width: 1px;
-      "
+      style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
     >
       <tr>
         <td height="1">&nbsp;</td>
@@ -725,10 +727,7 @@
             ><center>
               <b><!--[Trip Time]--><span class="_trip_time"></span></b></center
           ></font>
-          <!-- [Cruise Count] --><span
-            style="font-size: x-small;"
-            class="_trip_cruiseCount"
-          ></span>
+          <!-- [Cruise Count] --><span style="font-size: x-small" class="_trip_cruiseCount"></span>
         </td>
       </tr>
       <tr>
@@ -809,8 +808,8 @@
         <td colspan="2" class="pax1">
           <!--[Pax1]-->
           <span class="_paxList-0-fullName"></span>
-          <span class="_paxList-0-product" style="background: yellow;"></span>
-          <span class="_paxList-0-pickup" style="background: yellow;"></span>
+          <span class="_paxList-0-product" style="background: yellow"></span>
+          <span class="_paxList-0-pickup" style="background: yellow"></span>
           <span class="_paxList-0-extraDetails"></span>
         </td>
         <td width="7%" class="pax1">
@@ -830,8 +829,8 @@
         <td colspan="2" class="pax2">
           <!--[Pax2]-->
           <span class="_paxList-1-fullName"></span>
-          <span class="_paxList-1-product" style="background: yellow;"></span>
-          <span class="_paxList-1-pickup" style="background: yellow;"></span>
+          <span class="_paxList-1-product" style="background: yellow"></span>
+          <span class="_paxList-1-pickup" style="background: yellow"></span>
           <span class="_paxList-1-extraDetails"></span>
         </td>
         <td width="7%" class="pax2">
@@ -851,8 +850,8 @@
         <td colspan="2" class="pax3">
           <!--[Pax3]-->
           <span class="_paxList-2-fullName"></span>
-          <span class="_paxList-2-product" style="background: yellow;"></span>
-          <span class="_paxList-2-pickup" style="background: yellow;"></span>
+          <span class="_paxList-2-product" style="background: yellow"></span>
+          <span class="_paxList-2-pickup" style="background: yellow"></span>
           <span class="_paxList-2-extraDetails"></span>
         </td>
         <td width="7%" class="pax3">
@@ -872,8 +871,8 @@
         <td colspan="2" class="pax4">
           <!--[Pax4]-->
           <span class="_paxList-3-fullName"></span>
-          <span class="_paxList-3-product" style="background: yellow;"></span>
-          <span class="_paxList-3-pickup" style="background: yellow;"></span>
+          <span class="_paxList-3-product" style="background: yellow"></span>
+          <span class="_paxList-3-pickup" style="background: yellow"></span>
           <span class="_paxList-3-extraDetails"></span>
         </td>
         <td width="7%" class="pax4">
@@ -893,8 +892,8 @@
         <td colspan="2" class="pax5">
           <!--[Pax5]-->
           <span class="_paxList-4-fullName"></span>
-          <span class="_paxList-4-product" style="background: yellow;"></span>
-          <span class="_paxList-4-pickup" style="background: yellow;"></span>
+          <span class="_paxList-4-product" style="background: yellow"></span>
+          <span class="_paxList-4-pickup" style="background: yellow"></span>
           <span class="_paxList-4-extraDetails"></span>
         </td>
         <td width="7%" class="pax5">
@@ -914,8 +913,8 @@
         <td colspan="2" class="pax6">
           <!--[Pax6]-->
           <span class="_paxList-5-fullName"></span>
-          <span class="_paxList-5-product" style="background: yellow;"></span>
-          <span class="_paxList-5-pickup" style="background: yellow;"></span>
+          <span class="_paxList-5-product" style="background: yellow"></span>
+          <span class="_paxList-5-pickup" style="background: yellow"></span>
           <span class="_paxList-5-extraDetails"></span>
         </td>
         <td width="7%" class="pax6">
@@ -935,8 +934,8 @@
         <td colspan="2" class="pax7">
           <!--[Pax7]-->
           <span class="_paxList-6-fullName"></span>
-          <span class="_paxList-6-product" style="background: yellow;"></span>
-          <span class="_paxList-6-pickup" style="background: yellow;"></span>
+          <span class="_paxList-6-product" style="background: yellow"></span>
+          <span class="_paxList-6-pickup" style="background: yellow"></span>
           <span class="_paxList-6-extraDetails"></span>
         </td>
         <td width="7%" class="pax7">
@@ -993,10 +992,7 @@
       </tr>
       <tr>
         <td colspan="8">
-          <div align="center">
-            I HEREBY CERTIFY that the particulars recorded on the above load
-            sheet are correct
-          </div>
+          <div align="center">I HEREBY CERTIFY that the particulars recorded on the above load sheet are correct</div>
         </td>
       </tr>
       <tr>
@@ -1018,7 +1014,7 @@
         <center>
           <img
             src="https://sites.google.com/a/glenorchyair.co.nz/resources/web/images/logo/GlenorchyAir_RGB_Full_kea-red-200.png?attredirects=0"
-            style="float: center;"
+            style="float: center"
           />
           <br />
 
@@ -1026,36 +1022,32 @@
             border="1"
             bordercolor="#888"
             cellspacing="0"
-            style="
-              border-collapse: collapse;
-              border-color: rgb(136, 136, 136);
-              border-width: 1px;
-            "
+            style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
           >
             <tbody>
               <tr>
-                <td style="width: 485px; height: 40px;">Print Customer Name</td>
+                <td style="width: 485px; height: 40px">Print Customer Name</td>
               </tr>
               <tr>
-                <td style="width: 485px; height: 40px;">&nbsp;</td>
+                <td style="width: 485px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 485px; height: 40px;">&nbsp;</td>
+                <td style="width: 485px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 485px; height: 40px;">&nbsp;</td>
+                <td style="width: 485px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 485px; height: 40px;">&nbsp;</td>
+                <td style="width: 485px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 485px; height: 40px;">&nbsp;</td>
+                <td style="width: 485px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 485px; height: 40px;">&nbsp;</td>
+                <td style="width: 485px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 485px; height: 40px;">&nbsp;</td>
+                <td style="width: 485px; height: 40px">&nbsp;</td>
               </tr>
             </tbody>
           </table>
@@ -1068,25 +1060,18 @@
           border="1"
           bordercolor="#888"
           cellspacing="0"
-          style="
-            border-collapse: collapse;
-            border-color: rgb(136, 136, 136);
-            border-width: 1px;
-          "
+          style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
         >
           <tbody>
             <tr>
-              <td style="width: 90px; height: 40px;">
-                <span style="font-weight: bold; font-size: 20pt;"
-                  ><!--[Time]--><!--[Trip Time]--><span
-                    class="_trip_time"
-                  ></span></span
+              <td style="width: 90px; height: 40px">
+                <span style="font-weight: bold; font-size: 20pt"
+                  ><!--[Time]--><!--[Trip Time]--><span class="_trip_time"></span></span
                 ><br />
 
                 <br />
                 <br />
-                <!--[Pilot]--><span class="_plane_pilot"></span>
-                <span class="_plane_copilotSpan"></span><br />
+                <!--[Pilot]--><span class="_plane_pilot"></span> <span class="_plane_copilotSpan"></span><br />
                 <!--[Date]--><span class="_tripDate"></span><br />
                 <!--[REG]--><span class="_plane_reg"></span><br />
               </td>
@@ -1107,43 +1092,39 @@
         <td>
           <img
             src="https://sites.google.com/a/glenorchyair.co.nz/resources/web/images/logo/GlenorchyAir_RGB_Full_kea-red-200.png?attredirects=0"
-            style="float: center;"
+            style="float: center"
           />
           <br />
           <table
             border="1"
             bordercolor="#888"
             cellspacing="0"
-            style="
-              border-collapse: collapse;
-              border-color: rgb(136, 136, 136);
-              border-width: 1px;
-            "
+            style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
           >
             <tbody>
               <tr>
-                <td style="width: 242px; height: 40px;">Print Customer Name</td>
+                <td style="width: 242px; height: 40px">Print Customer Name</td>
               </tr>
               <tr>
-                <td style="width: 242px; height: 40px;">&nbsp;</td>
+                <td style="width: 242px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 242px; height: 40px;">&nbsp;</td>
+                <td style="width: 242px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 242px; height: 40px;">&nbsp;</td>
+                <td style="width: 242px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 242px; height: 40px;">&nbsp;</td>
+                <td style="width: 242px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 242px; height: 40px;">&nbsp;</td>
+                <td style="width: 242px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 242px; height: 40px;">&nbsp;</td>
+                <td style="width: 242px; height: 40px">&nbsp;</td>
               </tr>
               <tr>
-                <td style="width: 242px; height: 40px;">&nbsp;</td>
+                <td style="width: 242px; height: 40px">&nbsp;</td>
               </tr>
             </tbody>
           </table>
@@ -1154,86 +1135,61 @@
             border="1"
             bordercolor="#888"
             cellspacing="0"
-            style="
-              border-collapse: collapse;
-              border-color: rgb(136, 136, 136);
-              border-width: 1px;
-            "
+            style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
           >
             <tbody>
               <tr>
-                <td style="width: 500px; height: 40px;">
+                <td style="width: 500px; height: 40px">
                   Trip Time:
                   <!--[Trip Time]--><span class="_trip_time"></span>
                 </td>
               </tr>
               <tr>
-                <td style="width: 500px; height: 40px;">
+                <td style="width: 500px; height: 40px">
                   <span class="_paxList-0-fullName"></span>
-                  <span
-                    class="_paxList-0-product"
-                    style="background: yellow;"
-                  ></span>
+                  <span class="_paxList-0-product" style="background: yellow"></span>
                   <span id="data[8][9]"></span> <span id="extraData[0]"></span>
                 </td>
               </tr>
               <tr>
-                <td style="width: 500px; height: 40px;">
+                <td style="width: 500px; height: 40px">
                   <span class="_paxList-1-fullName"></span>
-                  <span
-                    class="_paxList-1-product"
-                    style="background: yellow;"
-                  ></span>
+                  <span class="_paxList-1-product" style="background: yellow"></span>
                   <span id="data[9][9]"></span> <span id="extraData[1]"></span>
                 </td>
               </tr>
               <tr>
-                <td style="width: 500px; height: 40px;">
+                <td style="width: 500px; height: 40px">
                   <span class="_paxList-2-fullName"></span>
-                  <span
-                    class="_paxList-2-product"
-                    style="background: yellow;"
-                  ></span>
+                  <span class="_paxList-2-product" style="background: yellow"></span>
                   <span id="data[10][9]"></span> <span id="extraData[2]"></span>
                 </td>
               </tr>
               <tr>
-                <td style="width: 500px; height: 40px;">
+                <td style="width: 500px; height: 40px">
                   <span class="_paxList-3-fullName"></span>
-                  <span
-                    class="_paxList-3-product"
-                    style="background: yellow;"
-                  ></span>
+                  <span class="_paxList-3-product" style="background: yellow"></span>
                   <span id="data[11][9]"></span> <span id="extraData[3]"></span>
                 </td>
               </tr>
               <tr>
-                <td style="width: 500px; height: 40px;">
+                <td style="width: 500px; height: 40px">
                   <span class="_paxList-4-fullName"></span>
-                  <span
-                    class="_paxList-4-product"
-                    style="background: yellow;"
-                  ></span>
+                  <span class="_paxList-4-product" style="background: yellow"></span>
                   <span id="data[12][9]"></span> <span id="extraData[4]"></span>
                 </td>
               </tr>
               <tr>
-                <td style="width: 500px; height: 40px;">
+                <td style="width: 500px; height: 40px">
                   <span class="_paxList-5-fullName"></span>
-                  <span
-                    class="_paxList-5-product"
-                    style="background: yellow;"
-                  ></span>
+                  <span class="_paxList-5-product" style="background: yellow"></span>
                   <span id="data[13][9]"></span> <span id="extraData[5]"></span>
                 </td>
               </tr>
               <tr>
-                <td style="width: 500px; height: 40px;">
+                <td style="width: 500px; height: 40px">
                   <span class="_paxList-6-fullName"></span>
-                  <span
-                    class="_paxList-6-product"
-                    style="background: yellow;"
-                  ></span>
+                  <span class="_paxList-6-product" style="background: yellow"></span>
                   <span id="data[14][9]"></span> <span id="extraData[6]"></span>
                 </td>
               </tr>
@@ -1255,7 +1211,7 @@
           <img
             src="https://sites.google.com/a/glenorchyair.co.nz/resources/web/images/logo/GlenorchyAir_RGB_Full_kea-red-200.png?attredirects=0"
             height="40"
-            style="float: center;"
+            style="float: center"
           />
         </td>
         <td>
@@ -1275,15 +1231,12 @@
         <td><b>Date:</b> <span class="_tripDate"></span></td>
       </tr>
       <tr>
-        <td colspan="3">
-          <b>Route Details</b> <span class="_trip_route"></span>
-        </td>
+        <td colspan="3"><b>Route Details</b> <span class="_trip_route"></span></td>
       </tr>
       <tr>
         <td><b>Fuel:</b> <span class="_plane_fuel"></span> Litres</td>
         <td>
-          <b>Fuel Endurance:</b> Hours
-          <span class="plane_Endurance_hour"></span>____ Minutes
+          <b>Fuel Endurance:</b> Hours <span class="plane_Endurance_hour"></span>____ Minutes
           <span class="plane_Endurance_min"></span>____
         </td>
         <td>&nbsp;</td>
@@ -1307,8 +1260,8 @@
         <td colspan="3">
           <div align="center">
             ETD:
-            <!--[Trip Time]--><span class="_trip_time"></span> ETA ________ Time
-            Pilot will call: ________ INITIAL SARTIME ________
+            <!--[Trip Time]--><span class="_trip_time"></span> ETA ________ Time Pilot will call: ________ INITIAL
+            SARTIME ________
           </div>
         </td>
       </tr>

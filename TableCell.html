@@ -245,6 +245,13 @@
 
       return airplane
     }
+    getSeats(){
+      const _wb = this.getAirplaneLoading()
+        let seats = _wb.stations.filter((station)=>{
+          return station.type.includes("seat") && parseInt(station.weight) > 0
+        })
+        return seats
+    }
     getAirplaneLoading() {
       // if seats aren't assigned, sort by crew, then weight
       // if seats are assigned, check that they fit the plane, then use them.
@@ -277,6 +284,7 @@
           weight = $(this).data("_pax").getWeight()
           if (seat >= 0) {
             airplane.stations[seat].weight = weight
+            airplane.stations[seat].pax = pax
           }
         })
       return airplane

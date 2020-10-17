@@ -12,6 +12,7 @@
       this._this = this
       this.bookings = []
       const _this = this
+      this._TableCell = ""
 
       this.$root = $(`<div id="Details" class="detailsDiv">
         <div class="Print">Print</div>
@@ -39,14 +40,7 @@
       this.$Print = this.$root.find(".Print")
       this.$Print.click(function () {
         console.log("Print Click")
-
-        const _wb = _this.getWB()
-        console.log("WB: %o", _wb.stations)
-        let seats = _wb.stations.filter((station)=>{
-          return station.type.includes("seat") && parseInt(station.weight) > 0
-        })
-        console.log("seats: %o",seats)
-        loadsheet.show()
+        loadsheet.show(_this._TableCell)
       })
       //
       // ---------------------------
