@@ -28,8 +28,12 @@
       let paxNum = 0
       seats.map((station) => {
         if (!!station.pax) {
-          const fullName = station.pax.find((px) => px.label == "First Name").value
-          $("._paxList-" + paxNum + "-fullName").html(fullName)
+          const firstName = station.pax.find((px) => px.label == "First Name").value
+          const lastName = station.pax.find((px) => px.label == "Last Name").value
+          const regex = new RegExp("Passenger\ weight", "gi")
+          const weight = station.pax.find((px) => px.label.match(regex)).value
+          $("._paxList-" + paxNum + "-fullName").html(firstName + " " + lastName)
+          $("._paxList-" + paxNum + "-weight").html(weight)
           paxNum++
         }
       })
