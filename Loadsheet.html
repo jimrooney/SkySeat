@@ -11,13 +11,16 @@
       return "HI"
     }
     show(_TableCell) {
-      let WB = _TableCell.getAirplaneLoading()
-      console.log("{Details}.show() WB: ", WB)
+      let LoadedPlane = _TableCell.getLoadedAirplane()
+      console.log("{Loadsheet}.show() LoadedPlane: ", LoadedPlane)
+      const LoadedWB = LoadedPlane.getWB()
+      console.log("LoadedWB",LoadedWB)
       let seats = _TableCell.getSeats()
-      console.log("{Details} seats:", seats)
+      console.log("{Loadsheet} seats:", seats)
 
+      //$("#FlightFollowing").hide()
       $(".reg").css("background-color", "Blue")
-      $("._plane_pilot").html("Zapp Brannigan")
+
       //
       // Clear out old values
       //
@@ -25,16 +28,32 @@
         $("._paxList-" + i + "-fullName").html("")
         $("._paxList-" + i + "-weight").html("")
       }
-      let paxNum = 0
+
+      // Adjust seatNum if there's co-pilots *********************
+      let seatNum = 0
       seats.map((station) => {
         if (!!station.pax) {
           const firstName = station.pax.find((px) => px.label == "First Name").value
           const lastName = station.pax.find((px) => px.label == "Last Name").value
-          const regex = new RegExp("Passenger\ weight", "gi")
+          const regex = new RegExp("weight", "gi")
           const weight = station.pax.find((px) => px.label.match(regex)).value
-          $("._paxList-" + paxNum + "-fullName").html(firstName + " " + lastName)
-          $("._paxList-" + paxNum + "-weight").html(weight)
-          paxNum++
+
+          const role = station.pax.find((px) => px.label == "Role")
+          if (!!role) {
+            switch (role.value) {
+              case "PIC":
+                $("._plane_pilot").html(firstName + " " + lastName)
+                break
+              case "SIC":
+                $("._plane_copilotSpan").html(firstName + " " + lastName)
+                break
+            }
+            return
+          } else {
+            $("._paxList-" + seatNum + "-fullName").html(firstName + " " + lastName)
+            $("._paxList-" + seatNum + "-weight").html(weight)
+          }
+          seatNum++
         }
       })
       // Flatten PaxList
@@ -49,9 +68,6 @@
   }
 </script>
 <script>
-  $(function () {
-    $("#FlightFollowing").hide()
-  })
   // ******************************************************************
   // (remove this) Object to hold loadsheet data (was sloppily used to quickly make loadsheet functions)
   // ******************************************************************

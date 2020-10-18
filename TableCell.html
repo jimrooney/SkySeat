@@ -40,17 +40,16 @@
       // Click
       // -------------------------------------------
       $this.click(function () {
-        console.log("TableCell Click, %o",_this)
+        console.log("TableCell Click, %o", _this)
         _this.show()
         //
         let data = _this.getData()
         console.log("Data: %o", data)
         if (!!data) {
-
           // ****************************
           // Either pass in the wb data to Details, or have Details reach back and call the function
           //
-          _this.getAirplaneLoading()
+          _this.getLoadedAirplane()
           $("#Details").data("root").show($(this))
           $("#Details").show()
         }
@@ -245,14 +244,14 @@
 
       return airplane
     }
-    getSeats(){
-      const _wb = this.getAirplaneLoading()
-        let seats = _wb.stations.filter((station)=>{
-          return station.type.includes("seat") && parseInt(station.weight) > 0
-        })
-        return seats
+    getSeats() {
+      const _wb = this.getLoadedAirplane()
+      let seats = _wb.stations.filter((station) => {
+        return station.type.includes("seat") && parseInt(station.weight) > 0
+      })
+      return seats
     }
-    getAirplaneLoading() {
+    getLoadedAirplane() {
       // if seats aren't assigned, sort by crew, then weight
       // if seats are assigned, check that they fit the plane, then use them.
 
@@ -272,10 +271,16 @@
         *********************************************************************************************
       */
       airplane.stations[0].weight = 83 // hardcoding pilot weight for now *******************
-
+      airplane.stations[0].pax = [
+        { label: "Role", value: "PIC" },
+        { label: "First Name", value: "Zapp" },
+        { label: "Last Name", value: "Brannigan" },
+        { label: "Full Name", value: "Zapp Brannigan" },
+        { label: "Weight", value: 79 },
+      ]
       $(".station")
         .children()
-        .each(function(i, $div){
+        .each(function (i, $div) {
           let seat
           let weight
           let pax // array of Rezdy labels [{},{}]

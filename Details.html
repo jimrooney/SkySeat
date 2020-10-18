@@ -1,6 +1,6 @@
 <script>
-  $(function () {
-    $("#planeDetailsClose").click(function () {
+  $(() => {
+    $("#planeDetailsClose").click(() => {
       $(".planeDetails").hide()
     })
   })
@@ -200,7 +200,7 @@
       //
     }
     getWB() {
-      let loadedPlane = this._TableCell.getAirplaneLoading() // retunrs a loaded airplane object
+      let loadedPlane = this._TableCell.getLoadedAirplane() // retunrs a loaded airplane object
       let _wbData = loadedPlane.getWB()
       this.$root.find(".Report").text(`CG: ${_wbData.rounded.cg} AUW: ${_wbData.rounded.AUW}`)
       return loadedPlane

@@ -166,3 +166,44 @@ jQuery.fn.update = function () {
   //ui.draggable.empty()// clears manifest icon
 
   let $details = $("<span class='tooltip' />")
+
+
+
+
+  <!DOCTYPE html>
+<html>
+<body>
+
+<p>Click the button to display the tangent of the number 1.</p>
+
+<button onclick="myFunction()">Try it</button>
+
+<p id="demo"></p>
+
+<script>
+function myFunction() {
+
+	const pi = Math.PI
+    
+	const opposite = 300
+    const adjacent = 400
+    
+    const A = 40 * (pi/180)
+    const a = 9.192533317427737
+    const o = 7.713451316238471
+    const h = 12
+    
+    let result
+    result = h * Math.sin( A )
+    //result = h * Math.cos( A )
+    //result = h * Math.tan( A )
+    
+    
+	const rad = Math.atan(opposite/adjacent) * 180/Math.PI
+        
+  document.getElementById("demo").innerHTML = result;
+}
+</script>
+
+</body>
+</html>
