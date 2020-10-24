@@ -278,6 +278,14 @@
         { label: "Full Name", value: "Zapp Brannigan" },
         { label: "Weight", value: 79 },
       ]
+      airplane.stations[1].weight = 46 // hardcoding pilot weight for now *******************
+      airplane.stations[1].pax = [
+        { label: "Role", value: "SIC" },
+        { label: "First Name", value: "Kif" },
+        { label: "Last Name", value: "Kroker" },
+        { label: "Full Name", value: "Kif Kroker" },
+        { label: "Weight", value: 42 },
+      ]
       $(".station")
         .children()
         .each(function (i, $div) {

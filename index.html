@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <script>
-  var root = {} // list of root variables (so they're easier to find in debug)
+  var root = {
+    boards: [],
+  } // list of root variables (so they're easier to find in debug)
   // testBoard needs to exist before writeboard is called (so it has somewhere to write to)
   // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
   var testBoard
   // var Bookings is created when Bookings gets imported
   var loadsheet
-  // Placeholder for the loadsheet object
+  // Placeholder for the loadsheet object *** This should go in {root}
 </script>
 <html>
   <head>
@@ -76,7 +78,6 @@
     <div id="HoverBar" style="float: top; width: 100%; text-align: center; background: #737373; color: white">
       [[ 2.4.1 ]] [ ]
     </div>
-
     <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
     <script>
       $(document).ready(function () {
@@ -86,14 +87,29 @@
     <div id="PickupList" class="pickupDetails">
       <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
     </div>
+    <div>
+      <span id="BoardMakerButton" class="roundButton MobileButton">+</span>
+      <script>
+        $(() => {
+          $("#BoardMakerButton").click(function () {
+            const boardName = "AutoBoard" // + root.boards.length
+            let $this = $("<div />", {
+              class: "root",
+              id: boardName,
+            })
 
-    <div id="AutoBoard" class="root" style="display: inline-block"></div>
+            $this.data("root", new Board($this))
+            $("#Boards").append($this)
+            $this.data("root").writeBoard()
+          })
+        })
+      </script>
+    </div>
+
+    <div id="Boards" />
 
     <script>
       $(document).ready(function () {
-        $("#AutoBoard").data("root", new Board($("#AutoBoard")))
-        $("#AutoBoard").data("root").writeBoard()
-
         $("body").append(new Details())
       })
 

@@ -14,12 +14,11 @@
       let LoadedPlane = _TableCell.getLoadedAirplane()
       console.log("{Loadsheet}.show() LoadedPlane: ", LoadedPlane)
       const LoadedWB = LoadedPlane.getWB()
-      console.log("LoadedWB",LoadedWB)
+      console.log("LoadedWB", LoadedWB)
       let seats = _TableCell.getSeats()
       console.log("{Loadsheet} seats:", seats)
 
       //$("#FlightFollowing").hide()
-      $(".reg").css("background-color", "Blue")
 
       //
       // Clear out old values
@@ -28,7 +27,37 @@
         $("._paxList-" + i + "-fullName").html("")
         $("._paxList-" + i + "-weight").html("")
       }
+      const _plane = {
+        pilot: "[Pilot]",
+        reg: "[REG]",
+        type: "[GA8]",
+        regColor: "white",
+        fuel: "[75]", // Liters
+        AEW: "",
+        ZFW: "",
+        fuelWeight: "[100]",
+        MCTOW: 0,
+        TOW: 0,
+        Burnoff: "",
+        LandingWeight: "",
+        CGLimit: 0,
+        CG: 0,
+        OutOfLimits: "",
+        crewWeight: 0,
+        KGLBS: "[KG]",
+        totalPaxWeight: 0,
+        totalFreightWeight: "",
+        totalBagWeight: "",
+      }
 
+      // *********** Merge the two objects instead of copying the same names over? *************
+      _plane.reg = LoadedPlane.reg
+      _plane.regcolor = LoadedPlane.regcolor
+      _plane.type = LoadedPlane.type
+
+      $(".reg").css("background-color", LoadedPlane.regcolor)
+
+      
       // Adjust seatNum if there's co-pilots *********************
       let seatNum = 0
       seats.map((station) => {
@@ -40,12 +69,17 @@
 
           const role = station.pax.find((px) => px.label == "Role")
           if (!!role) {
+                          let _crew
             switch (role.value) {
               case "PIC":
-                $("._plane_pilot").html(firstName + " " + lastName)
+                _crew = firstName + " " + lastName
+                _plane.pilot = _crew
+                //$("._plane_pilot").html(_crew)
                 break
               case "SIC":
-                $("._plane_copilotSpan").html(firstName + " " + lastName)
+                _crew = " / " + firstName + " " + lastName
+                _plane.copilot = _crew
+                //$("._plane_copilot").html(_crew)
                 break
             }
             return
@@ -62,6 +96,24 @@
       //     $("._paxList-" + i + "-" + o).html(_paxList[i][o])
       //   }
       // }
+      
+
+      //LoadedPlane //
+      //
+      // Load _plane object into classes
+      //
+      for (let i in _plane) {
+        $("._plane_" + i).html(_plane[i])
+      }
+
+      let FF = true
+      if (FF == true) {
+        console.log("Seats: %o", seats.length)
+        $(".POB").html(seats.length)
+        // $(".plane_Endurance_hour").html(_plane.Endurance.hour)
+        // $(".plane_Endurance_min").html(_plane.Endurance.min)
+        $("#FlightFollowing").show()
+      }
 
       this.$this.show()
     }
@@ -83,6 +135,7 @@
   $("#printLoadsheetClose").click(function () {
     $("#Loadsheet").hide()
   })
+
   // ===============================
   // printLoadsheet()
   // ===============================
@@ -124,7 +177,7 @@
     _trip.paxW = []
 
     _plane.copilot = ""
-    _plane.copilotSpan = ""
+    _plane.copilot = ""
     _plane.reg = WB.reg
     _plane.regColor = WB.regColor
     _plane.type = WB.type
@@ -261,13 +314,42 @@
           if (typeof data[1] == "string") {
             let cp = "<span style='font-size:small'> (copilot: " + data[1] + ")</span>"
             _plane.copilot = data[1]
-            _plane.copilotSpan = cp
+            _plane.copilot = cp
             _plane.crewWeight += data[0]
           } else {
             _plane.copilot = ""
           }
         }
       }
+
+      /*
+
+
+
+
+
+
+
+
+
+
+      Below are the functions that turn the data structure into CSS Classes for display
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
+
       // ------------------------------------------------------------------------------
       // Put objects into variables for display
       // ------------------------------------------------------------------------------
@@ -483,7 +565,7 @@
         <td colspan="3" class="reg">
           <!--[Pilot]-->
           <span class="_plane_pilot"></span>
-          <span class="_plane_copilotSpan"></span>
+          <span class="_plane_copilot"></span>
         </td>
       </tr>
       <tr>
@@ -784,7 +866,7 @@
         <td colspan="3" class="reg">
           <!--[Pilot]-->
           <span class="_plane_pilot"></span>
-          <span class="_plane_copilotSpan"></span>
+          <span class="_plane_copilot"></span>
         </td>
       </tr>
       <tr>
@@ -1091,7 +1173,7 @@
 
                 <br />
                 <br />
-                <!--[Pilot]--><span class="_plane_pilot"></span> <span class="_plane_copilotSpan"></span><br />
+                <!--[Pilot]--><span class="_plane_pilot"></span> <span class="_plane_copilot"></span><br />
                 <!--[Date]--><span class="_tripDate"></span><br />
                 <!--[REG]--><span class="_plane_reg"></span><br />
               </td>
@@ -1246,7 +1328,7 @@
         </td>
         <td>
           <b>Pilot:</b> <span class="_plane_pilot"></span>
-          <span class="_plane_copilotSpan"></span>
+          <span class="_plane_copilot"></span>
         </td>
         <td><b>Date:</b> <span class="_tripDate"></span></td>
       </tr>
