@@ -92,7 +92,7 @@
       <script>
         $(() => {
           $("#BoardMakerButton").click(function () {
-            const boardName = "AutoBoard" // + root.boards.length
+            const boardName = "AutoBoard" + root.boards.length
             let $this = $("<div />", {
               class: "root",
               id: boardName,
@@ -101,6 +101,8 @@
             $this.data("root", new Board($this))
             $("#Boards").append($this)
             $this.data("root").writeBoard()
+            $this.append("<P>")
+            root.boards.push($this)
           })
         })
       </script>

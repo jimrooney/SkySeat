@@ -47,6 +47,7 @@
     onLoad: function (ret, Manifest) {
       debug.log("Rezdy.onLoad()")
       debug.log("Requested URL:", ret.url)
+      console.log(`Manifest: ${Manifest.board.$board.prop("id")}`)
       Manifest.onLoad(ret.json)
     },
     onTripCodeLoad: function (data) {

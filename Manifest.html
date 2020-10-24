@@ -1,9 +1,9 @@
 <script>
   class Manifest {
-    constructor(parent) {
+    constructor(Board) {
       let _this = this
-      this.board = parent
-      this.$board = parent.$board // Keep a link to the board jQuery object
+      this.board = Board
+      this.$board = Board.$board // Keep a link to the board jQuery object
       this.json // Placeholder for Rezdy Parsed Data
       this.$bookings // Placeholder
       this.$this // Placeholder
@@ -24,7 +24,7 @@
           <span style="float:right;display: inline-block;"><button id="rr">(R)</button></span>
           <span style="float:right;display: inline-block;"><button id="reload">&#10226;</button></span>
           <span style="float:right;display: inline-block;"><button id="debug">&#937;</button></span>
-           Manifest </div>
+          ${_this.board.$board.prop("id")} Manifest </div>
           <div id="Totals" />
           <div class="Bookings"></div>
           <div class="Roster" />
@@ -77,7 +77,7 @@
       Rezdy.load(this)
     }
     onLoad(json) {
-      console.log("Manifest onLoad()")
+      console.log(`${this.board.$board.prop("id")} Manifest onLoad()`)
       this.data = JSON.parse(json) // parse json String data into a json object
       // to Rezdy, a "booking" is a "booking order" (cuz they couldn't decide which name they preferred)
       this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects

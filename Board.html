@@ -20,6 +20,7 @@
     }
 
     load() {
+      console.log(`${this.$board.prop("id")} .load()`)
       this.state.clear()
       this.manifest.load()
     }
@@ -165,7 +166,7 @@
       this.$board
         .find(".Manifest_Container")
         .prepend(
-          '<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8" id="MyDatePicker"/></div>'
+          `<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8"/></div>`
         )
       this.$datepicker = $("#" + this.$board.prop("id") + " .datepicker")
       Dates.initPicker(this.$datepicker, this)
