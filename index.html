@@ -96,19 +96,19 @@
             let $this = $("<div />", {
               class: "root",
               id: boardName,
+              style: "display:inline-block",
             })
 
             $this.data("root", new Board($this))
             $("#Boards").append($this)
             $this.data("root").writeBoard()
-            $this.append("<P>")
             root.boards.push($this)
           })
         })
       </script>
     </div>
 
-    <div id="Boards" />
+    <div id="Boards"></div>
 
     <script>
       $(document).ready(function () {
