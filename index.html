@@ -6,7 +6,6 @@
   // testBoard needs to exist before writeboard is called (so it has somewhere to write to)
   // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
   var testBoard
-  // var Bookings is created when Bookings gets imported
   var loadsheet
   // Placeholder for the loadsheet object *** This should go in {root}
 
@@ -18,9 +17,8 @@
       {loadsheet}
       {gya}
       {debug}
-      {Bookings} ... Possibly not used? Possibly not necessary?
       {colors}
-      {CSS} ... Possibly not used? Possibly not necessary?
+      {CSS} ... for CSS utility functions. Not currently used.
       {date}
       {display}
       {Events}
@@ -65,7 +63,6 @@
     <?!= include('TableCell'); ?>
     <?!= include('PlaneCell'); ?>
     <?!= include('State'); ?>
-    <?!= include('Bookings'); ?>
     <?!= include('GYA'); ?>
     <?!= include('Test'); ?>
     <?!= include('Init'); ?>

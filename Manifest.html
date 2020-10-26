@@ -43,6 +43,19 @@
       this.$this.find("#debug").click(function () {
         console.log(_this)
       })
+
+            //
+      // Show State Button
+      //
+      let _board = this.board
+      let $_s = $("<button class='Dark Debug'>").append("<BR>").text("State")
+        this.$this.prepend($_s)
+      $_s.on("click", function () {
+        console.log("{state}.getState(): %o", _board.state.getState())
+      })
+
+
+
     }
     loadRoster() {
       const $roster = this.$this.find(".Roster")

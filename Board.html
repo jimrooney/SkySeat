@@ -185,16 +185,6 @@
       $(".HalfHourSchedule").hide()
 
       this.init() // Initalize the board
-
-      //
-      // Show State Button
-      //
-      let _this = this
-      let $_s = $("<button class='Dark Debug'>").append("<BR>").text("State")
-      this.$board.prepend($_s)
-      $_s.on("click", function () {
-        console.log("{state}.getState(): %o", _this.state.getState())
-      })
     }
   }
 </script>
