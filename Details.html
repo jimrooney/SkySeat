@@ -131,7 +131,7 @@
       let seats = airplane.stations.filter((el) => el.type.includes("seat"))
       console.log("New Array %o", seats)
 
-      for (var i = 2; i <= seats.length; i++) {
+      for (let i = 2; i <= seats.length; i++) {
         $("<div></div>")
           .data("number", i)
           .data("seat", i)

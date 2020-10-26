@@ -1,16 +1,16 @@
 <script>
   Date.prototype.addDays = function (days) {
-    var date = new Date(this.valueOf())
+    let date = new Date(this.valueOf())
     date.setDate(date.getDate() + days)
     return date
   }
 
   //-------------------------------------------
   // Quick and dirty version:
-  //var d1 = new Date(dateList[i][0]);
-  //var d2 = new Date(values[v][0]);
-  //var same = d1.getTime() === d2.getTime();
-  //var notSame = d1.getTime() !== d2.getTime();
+  //let d1 = new Date(dateList[i][0]);
+  //let d2 = new Date(values[v][0]);
+  //let same = d1.getTime() === d2.getTime();
+  //let notSame = d1.getTime() !== d2.getTime();
   //--------------------------------------------
 
   var Dates = {
@@ -43,9 +43,9 @@
       //if (typeof d === 'undefined') {d = new Date()}
       typeof d === "undefined" ? (d = new Date()) : d.constructor === Date ? d : (d = new Date(d))
 
-      var dd = String(d.getDate()).padStart(2, "0")
-      var mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
-      var yyyy = d.getFullYear()
+      let dd = String(d.getDate()).padStart(2, "0")
+      let mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
+      let yyyy = d.getFullYear()
       let yy = "" + d.getYear()
       yy = yy.substr(1) 
 
@@ -59,9 +59,9 @@
       //if (typeof d === 'undefined') {d = new Date()}
       typeof d === "undefined" ? (d = new Date()) : d.constructor === Date ? d : (d = new Date(d))
 
-      var dd = String(d.getDate()).padStart(2, "0")
-      var mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
-      var yyyy = d.getFullYear()
+      let dd = String(d.getDate()).padStart(2, "0")
+      let mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
+      let yyyy = d.getFullYear()
 
       d = mm + "/" + dd + "/" + yyyy
       return d
@@ -70,9 +70,9 @@
       // Right now, this is just a copy of getNZ() *************************
       // Convert a date object to a String with just dd/mm/yyyy
       typeof d === "undefined" ? (d = new Date()) : d.constructor === Date ? d : (d = new Date(d))
-      var dd = String(d.getDate()).padStart(2, "0")
-      var mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
-      var yyyy = d.getFullYear()
+      let dd = String(d.getDate()).padStart(2, "0")
+      let mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
+      let yyyy = d.getFullYear()
       d = dd + "/" + mm + "/" + yyyy
       return d
     },

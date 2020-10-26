@@ -1,5 +1,35 @@
 [[[[[[[[[[[[[[[[[[[[[[[ Random bits of magic that make this all work ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
 
+-------------------------------------------------------------------------------------------------------------------
+[Trig]
+https://www.w3schools.com/code/tryit.asp?filename=GJTHETE7QPCF
+
+  /|
+h/ | o
+/__|
+  a
+o = weight
+h = slope
+a = CG
+
+const rad = Math.atan(o/a)
+First use trig to calculate the "rad" (angle.. in radians)
+
+h = o / Math.sin(rad)
+Use trig again to calculate the hypotenuse for any given "o" (opposite length... the weight in this case)
+
+Once I have the opposite and hypotenuse, I can use the Pythagorean Theorem to calculate the "a" length (the CG limit in this case)
+
+a = Math.sqrt(h*h - o*o) // Adjacent
+
+getForwardLimit(weight){
+  ** o1 and a1 come from the plane's limit chart **
+  const rad = Math.atan(o1/a1)
+  const h = weight / Math.sin(rad)
+  const limit = Math.sqrt(h*h - weight*weight)
+  return limit
+}
+-------------------------------------------------------------------------------------------------------------------
 
 
 

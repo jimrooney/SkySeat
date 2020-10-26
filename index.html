@@ -9,6 +9,44 @@
   // var Bookings is created when Bookings gets imported
   var loadsheet
   // Placeholder for the loadsheet object *** This should go in {root}
+
+
+  /*
+      ___________root objects______________
+      {root}
+      {testBoard}
+      {loadsheet}
+      {gya}
+      {debug}
+      {Bookings} ... Possibly not used? Possibly not necessary?
+      {colors}
+      {CSS} ... Possibly not used? Possibly not necessary?
+      {date}
+      {display}
+      {Events}
+      {pilots}
+      {planes}
+      {PlaneManager}
+      {time}
+      {utility}
+      {arrays}
+      {wb}
+      
+
+      __________root vars_______________
+      in Global.html...
+      isLive
+      isMobile
+      style
+      isDevMode
+
+  ==== Necessary? ====
+  {_plane} In Loadsheet.html... necessary?
+  var {_trip}
+  var _paxList = []
+  var _loadsheetData = []
+
+  */
 </script>
 <html>
   <head>
@@ -99,10 +137,11 @@
               style: "display:inline-block",
             })
 
-            $this.data("root", new Board($this))
+            let _board = new Board($this)
+            $this.data("root", _board)
             $("#Boards").append($this)
             $this.data("root").writeBoard()
-            root.boards.push($this)
+            root.boards.push(_board)
           })
         })
       </script>

@@ -28,9 +28,9 @@
   }
 
   function createArray(d1, d2) {
-    var x = new Array(d1)
+    let x = new Array(d1)
 
-    for (var i = 0; i < x.length; i++) {
+    for (let i = 0; i < x.length; i++) {
       x[i] = new Array(d2)
     }
     return x
@@ -100,7 +100,7 @@
         ret[2] > 0 ? (code += ret[2] + "I") : code
         let seats = ret[0] + ret[1]
 
-        var pax = {
+        let pax = {
           adult: ret[0],
           child: ret[1],
           infant: ret[2],
@@ -200,7 +200,7 @@
         //
         // Array of all TimeCells
         //
-        var all = $(".TimeCell")
+        let all = $(".TimeCell")
           .map(function () {
             return this.id
           })
@@ -301,27 +301,27 @@
 
   var arrays = {
     average: function (ary) {
-      var sum = 0
-      for (var i = 0; i < ary.length; i++) {
+      let sum = 0
+      for (let i = 0; i < ary.length; i++) {
         sum += parseInt(ary[i], 10) //don't forget to add the base
       }
-      var avg = sum / ary.length
+      let avg = sum / ary.length
       return avg
     },
     sum: function (ary, maxCol) {
-      var col = ary.length
+      let col = ary.length
       if (typeof maxCol !== "undefined") {
         col = maxCol
       }
-      var sum = 0
-      for (var i = 0; i < col; i++) {
+      let sum = 0
+      for (let i = 0; i < col; i++) {
         sum += parseInt(ary[i], 10) //don't forget to add the base
       }
       return sum
     },
     colSum: function (a, b) {
       let matrix = [a, b]
-      var colSum = matrix.reduce((a, b) => a.map((x, i) => x + b[i]))
+      let colSum = matrix.reduce((a, b) => a.map((x, i) => x + b[i]))
       return colSum
     },
     sumArray: function (arry) {

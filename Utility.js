@@ -3,8 +3,8 @@
 // -------------------------
 function time12 (time) {
   time = time.split(':')
-  var hour = parseInt(time[0],10)
-  var PM = hour>12 ? true : false
+  let hour = parseInt(time[0],10)
+  let PM = hour>12 ? true : false
   if (PM) {
     hour = hour - 12
   }
