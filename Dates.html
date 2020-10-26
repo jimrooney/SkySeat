@@ -14,6 +14,9 @@
   //--------------------------------------------
 
   var Dates = {
+    //
+    // **** Maybe move this into Board.html? ****
+    //
     initPicker: function ($picker, _board) {
       //
       // DatePicker
@@ -24,8 +27,7 @@
         dateFormat: "dd/mm/yy",
         firstDay: 1,
         onSelect: function (dateText) {
-          _board.load(this)
-          $(this).blur()
+          _board.handleDatePickerSelect(this)
         },
       })
       $picker.datepicker("setDate", "today")

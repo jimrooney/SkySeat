@@ -18,6 +18,10 @@
       this.state = new State(this)
       // this.$datepicker ... created in writeBoard()
     }
+    handleDatePickerSelect($picker){
+      $picker.blur()
+      this.load()
+    }
 
     load() {
       console.log(`${this.$board.prop("id")} .load()`)
@@ -178,7 +182,7 @@
       // -----------------------------------------
       // Set Winter/Summer **********************************************
       // -----------------------------------------
-      $(".HourSchedule").hide()
+      $(".HalfHourSchedule").hide()
 
       this.init() // Initalize the board
 
