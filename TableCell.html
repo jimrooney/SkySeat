@@ -264,27 +264,6 @@
       // Modifications (seats/controls/pods)
       // Baggage
       let airplane = this.getPlane()
-      /* ********************************************************************************************
-        airplane
-        .station ... stations will include the pilot and copilot... we'll hardcode them for now *****
-        *********************************************************************************************
-      */
-      airplane.stations[0].weight = 83 // hardcoding pilot weight for now *******************
-      airplane.stations[0].pax = [
-        { label: "Role", value: "PIC" },
-        { label: "First Name", value: "Zapp" },
-        { label: "Last Name", value: "Brannigan" },
-        { label: "Full Name", value: "Zapp Brannigan" },
-        { label: "Weight", value: 79 },
-      ]
-      airplane.stations[1].weight = 46 // hardcoding pilot weight for now *******************
-      airplane.stations[1].pax = [
-        { label: "Role", value: "SIC" },
-        { label: "First Name", value: "Kif" },
-        { label: "Last Name", value: "Kroker" },
-        { label: "Full Name", value: "Kif Kroker" },
-        { label: "Weight", value: 42 },
-      ]
       $(".station")
         .children()
         .each(function (i, $div) {

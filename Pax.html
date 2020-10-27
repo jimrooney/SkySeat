@@ -9,6 +9,9 @@
       this.seat = data.seat || null
       this.barcode = this.getValue("Barcode")
       this.orderNumber = this.getValue("orderNumber")
+      this.firstName = this.getValue("First Name")
+      this.lastName = this.getValue("Last Name")
+      this.weight = this.getValue("Weight")
     }
     getValue(label){
       const rgxp = new RegExp(label, "i")

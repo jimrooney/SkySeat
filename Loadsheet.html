@@ -10,6 +10,9 @@
     print() {
       return "HI"
     }
+    // ---------------------------
+    // Show
+    // ---------------------------
     show(_TableCell) {
       let LoadedPlane = _TableCell.getLoadedAirplane()
       console.log("{Loadsheet}.show() LoadedPlane: ", LoadedPlane)
@@ -23,10 +26,13 @@
       //
       // Clear out old values
       //
+      $("._plane_pilot").html("")
+      $("._plane_copilot").html("")
       for (let i = 0; i < 11; i++) {
         $("._paxList-" + i + "-fullName").html("")
         $("._paxList-" + i + "-weight").html("")
       }
+
       const _plane = {
         pilot: "[Pilot]",
         reg: "[REG]",
@@ -74,12 +80,10 @@
               case "PIC":
                 _crew = firstName + " " + lastName
                 _plane.pilot = _crew
-                //$("._plane_pilot").html(_crew)
                 break
               case "SIC":
                 _crew = " / " + firstName + " " + lastName
                 _plane.copilot = _crew
-                //$("._plane_copilot").html(_crew)
                 break
             }
             return

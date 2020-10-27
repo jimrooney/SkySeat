@@ -17,22 +17,33 @@ Pax per month starts one day behind (probably a timezone issue)
 -------------------------------
 Currently
 -------------------------------
-When bookings get moved to different days, we'll need to be able to look them up in the manifest (which will be on a different board)
-Move the state button into Manifest (GUI)
-Each AutoBoard needs a close button (should destroy the jQuery object and data as well)
+
+Need a Pilots Div in Details
+Figure out Pilot/CoPilot by seat number, not array number.
+Allow crew to be pax if they're sitting in back.
+
 Finish filling out the Loadsheet:
+Pilots now get dropped into seats... so make sure the WB calculation is ignoring the drop menus.
+Remove those drop menus.
+Add pilot sprites that can be dropped onto TableCells and in Details.
+// Change this to Sprites so pilots can be dropped rather than a dropmenu *****
+
+
+working in Loadsheet.show() and TableCell.getLoadedAirplane()
 // *********** Merge the two objects instead of copying the same names over? *************
 
 Display CG data on Loadsheet screen.
 Reflect airplane colour on Loadsheet screen.
 The Loadsheet needs to know things about the TableCell (like trip times)
-Show/Hide Flight Following 
+Button to Show/Hide Flight Following 
 
 Finish forward cg limits 
 Think about calculating burnoff CG... can use ZFW CG for a start.
 
+Each AutoBoard needs a close button (should destroy the jQuery object and data as well)
+When bookings get moved to different days, we'll need to be able to look them up in the manifest (which will be on a different board)
 
-
+{wb}.getKilos() can change to handle numbers instead of strings (although we should always get strings because JSON)
 
 
 // **** Maybe move this into Board.html? ****

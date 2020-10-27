@@ -173,8 +173,6 @@
       } else {
         paxSeat.value = seatNumber
       }
-      console.log({ _pax })
-
       // Swap with any existing seated pax
       if ($(this).children().length > 0) {
         // Detach pax from seat
@@ -255,6 +253,9 @@
         _this.show(_this.$TableCell)
         _this.$this.show()
       })
+      //
+      // Change this to Sprites so pilots can be dropped rather than a dropmenu *****
+      //
       pilots.list.forEach((pilot, i) => {
         $pilot.append(`<option value="${pilot.first}">${pilot.first}</option>`)
         $coPilot.append(`<option value="${pilot.first}">${pilot.first}</option>`)
@@ -290,6 +291,97 @@
         $fuel.val(state.loadsheet.fuel)
         $plane.val(state.loadsheet.reg)
       }
+
+
+      const _crew = []
+      pilots.list.forEach((pilot, i) => {
+        _crew.push({
+          fields:[
+            { label: "Role", value: "PIC" },
+            { label: "First Name", value: pilot.first },
+            { label: "Last Name", value: pilot.last },
+            { label: "Weight", value: pilot["declared weight"].toString() },
+          ]
+        })
+      })
+
+
+      // const _crew = [
+      //   {
+      //     fields: [
+      //       { label: "Role", value: "PIC" },
+      //       { label: "First Name", value: "Zapps" },
+      //       { label: "Last Name", value: "Brannigan" },
+      //       { label: "Full Name", value: "Zapp Brannigan" },
+      //       { label: "Weight", value: "79" },
+      //     ],
+      //   },
+      //   {
+      //     fields: [
+      //       { label: "Role", value: "SIC" },
+      //       { label: "First Name", value: "Kif" },
+      //       { label: "Last Name", value: "Kroker" },
+      //       { label: "Full Name", value: "Kif Kroker" },
+      //       { label: "Weight", value: "42" },
+      //     ],
+      //   },
+      // ]
+
+      // ===========================================
+      // -------------- Crew -----------------
+      // ===========================================
+      //
+      //  This can be merged into the Passenger function below
+      //
+      _crew.forEach((crew, index) => {
+        let pax = new Pax(crew)
+        const firstName = pax.firstName
+        const weight = pax.weight
+
+        let $pax = $(
+          `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
+        )
+          //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
+          .data("seat", index)
+          .attr("id", "pax" + index)
+          .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
+          .addClass("Pax")
+          .data("_pax", pax)
+          .data("pax", crew.fields)
+          .draggable({
+            containment: "#detailsDiv",
+            stack: "#PassengerList div",
+            cursor: "move",
+            revert: true,
+            start: function (evt, ui) {
+              this.startPos = ui.helper.position()
+            },
+            stop: function (event, ui) {
+              _this.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
+              let $station = $(this).closest(".station")
+              if ($station.length > 0) {
+                ui.helper.position({ of: $station, my: "left top", at: "left top" })
+              }
+            },
+          })
+
+        let hue = "lightblue"
+        $pax.css("background-color", hue)
+
+        if (firstName.length >= 7) {
+          $pax.css("font-size", "8px")
+        }
+
+        this.init() // initialize jQuery drag/drop code
+
+        if (visible) {
+          this.$root.hide()
+        } else {
+          this.$root.css("width", "400px")
+          this.$root.css("heigh", "600px")
+          this.$root.show()
+        }
+      })
 
       // ===========================================
       // -------------- Passengers -----------------
