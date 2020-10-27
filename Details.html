@@ -21,6 +21,7 @@
           <div id="content" style="width: 100%; overflow: hidden;">
             <div id="Airplane" class="grid-container Airplane"></div>
             <div id="PassengerList" class="PassengerList"></div>
+            <div id="CrewList" class="PassengerList"></div>
           </div>
         </div>
       </div>`)
@@ -85,9 +86,17 @@
         hoverClass: "hovered",
         drop: this.removePax,
       })
+      $(".CrewList").droppable({
+        accept: ".Crew",
+        hoverClass: "hovered",
+        drop: this.removePax,
+      })
       $("body").droppable({
         accept: ".Pax",
         drop: function (e, ui) {
+          //
+          // ***** probably have to switch for CrewList too **************
+          //
           _this.removePax(e, ui, $(".PassengerList"))
         },
       })
@@ -106,6 +115,7 @@
       this.$root.prepend(this.$PCFSelector)
 
       $("#PassengerList").html("") // will be able to be removed since we'll just plot all pax in seats (don't need a populated pax list... maybe a holding pen though)
+      $("#CrewList").html("")
       //
       // *************************************************************
       // Tweak for different plane types
@@ -344,13 +354,14 @@
           //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
           .data("seat", index)
           .attr("id", "pax" + index)
-          .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
+          .appendTo("#CrewList") // This places the object... can swap #PassengerList for an assigned seat **********
           .addClass("Pax")
+          .addClass("Crew")
           .data("_pax", pax)
           .data("pax", crew.fields)
           .draggable({
             containment: "#detailsDiv",
-            stack: "#PassengerList div",
+            stack: "#CrewList div",
             cursor: "move",
             revert: true,
             start: function (evt, ui) {
