@@ -102,9 +102,34 @@
       })
       loadsheet.moment = this.moment
       this.stations.push(loadsheet)
+      console.log("Stations: \n%o", this.stations)
       //
       // Sum all Weights and Moments
       //
+      const ZFW = this.stations.filter((station) => !station.type.includes("fuel"))
+      const POB = this.stations.filter((station) => station.type.includes("seat") && station.weight > 0)
+
+      console.log("POB:", POB)
+      const CREW = POB.filter((station) =>
+        station.pax.find(
+          (pax) => pax.label == "Role" // only return pax with Roles (crew)
+        )
+      )
+      const PAX = POB.filter(x => !CREW.includes(x))
+
+
+
+      console.log("CREW:", CREW)
+      console.log("PAX:",PAX)
+
+
+
+
+
+      const POB_Weight = POB.reduce((total, station) => +parseFloat(station.weight), 0)
+      const CREW_Weight = CREW.reduce((total, station) => +parseFloat(station.weight), 0)
+      const PAX_Weight = POB_Weight - CREW_Weight
+
       const totalWeight = this.stations.reduce((total, station) => total + parseFloat(station.weight), 0)
       const totalMoment = this.stations.reduce((total, station) => total + parseFloat(station.moment), 0)
       const CG = totalMoment / totalWeight
@@ -113,7 +138,11 @@
       //const roundCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
       const wb = {
         AUW: totalWeight,
+        TotalMoment: totalMoment,
         cg: CG,
+        CREW_Weight: CREW_Weight,
+        POB_Weight: POB_Weight,
+        PAX_Weight: PAX_Weight,
         rounded: {
           AUW: rAUW,
           cg: rCG,

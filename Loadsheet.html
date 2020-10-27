@@ -15,11 +15,11 @@
     // ---------------------------
     show(_TableCell) {
       let LoadedPlane = _TableCell.getLoadedAirplane()
-      console.log("{Loadsheet}.show() LoadedPlane: ", LoadedPlane)
+      console.log("{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
       const LoadedWB = LoadedPlane.getWB()
       console.log("LoadedWB", LoadedWB)
       let seats = _TableCell.getSeats()
-      console.log("{Loadsheet} seats:", seats)
+      console.log("{Loadsheet}\nseats:", seats)
 
       //$("#FlightFollowing").hide()
 
@@ -94,15 +94,8 @@
           seatNum++
         }
       })
-      // Flatten PaxList
-      // for (let i in _paxList) {
-      //   for (let o in _paxList[i]) {
-      //     $("._paxList-" + i + "-" + o).html(_paxList[i][o])
-      //   }
-      // }
-      
-
-      //LoadedPlane //
+      //
+      //LoadedPlane
       //
       // Load _plane object into classes
       //
