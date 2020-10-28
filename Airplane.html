@@ -106,29 +106,25 @@
       //
       // Sum all Weights and Moments
       //
-      const ZFW = this.stations.filter((station) => !station.type.includes("fuel"))
-      const POB = this.stations.filter((station) => station.type.includes("seat") && station.weight > 0)
-
-      console.log("POB:", POB)
+      const ZFW = this.stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
+      const fuel = this.stations.filter((station) => station.type.includes("fuel"))
+      const POB = this.stations.filter((station) => station.type.includes("seat") && station.weight > 0) // only occupied seats
       const CREW = POB.filter((station) =>
         station.pax.find(
           (pax) => pax.label == "Role" // only return pax with Roles (crew)
         )
       )
-      const PAX = POB.filter(x => !CREW.includes(x))
+      const PAX = POB.filter((x) => !CREW.includes(x)) // Filter out Crew
 
-
-
+      console.log("POB:", POB)
       console.log("CREW:", CREW)
-      console.log("PAX:",PAX)
-
-
-
-
-
-      const POB_Weight = POB.reduce((total, station) => +parseFloat(station.weight), 0)
-      const CREW_Weight = CREW.reduce((total, station) => +parseFloat(station.weight), 0)
+      console.log("PAX:", PAX)
+      console.log("Fuel:",fuel)
+      
+      const POB_Weight = POB.reduce((total, station) => total + parseFloat(station.weight), 0)
+      const CREW_Weight = CREW.reduce((total, station) => total + parseFloat(station.weight), 0)
       const PAX_Weight = POB_Weight - CREW_Weight
+      const ZFW_Weight = ZFW.reduce((total, station) => total + parseFloat(station.weight), 0)
 
       const totalWeight = this.stations.reduce((total, station) => total + parseFloat(station.weight), 0)
       const totalMoment = this.stations.reduce((total, station) => total + parseFloat(station.moment), 0)
@@ -137,15 +133,21 @@
       const rAUW = Math.round((totalWeight + Number.EPSILON) * 100) / 100
       //const roundCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
       const wb = {
+        stations: this.stations,
         AUW: totalWeight,
         TotalMoment: totalMoment,
-        cg: CG,
-        CREW_Weight: CREW_Weight,
-        POB_Weight: POB_Weight,
-        PAX_Weight: PAX_Weight,
+        CG: CG,
+        CREW: CREW_Weight,
+        POB: POB_Weight,
+        PAX: PAX_Weight,
+        ZFW: ZFW_Weight,
+        fuel: {
+          liters: 0,
+          kg: 0,
+        },
         rounded: {
           AUW: rAUW,
-          cg: rCG,
+          CG: rCG,
         },
       }
       return wb
@@ -175,8 +177,8 @@
         weight: { empty: 0, MAUW: 1905, Landing: 1860 },
         // fwd1/2 [limit in M ,@ weight in kg]
         CG: { forward: 0, fwd1: [,], fwd2: [,], aft: 1.626 },
-        fuel: { capacity: 330, type: "100LL" },
       }
+      this.fuel = { capacity: 330, type: "100LL", factor: 0.72 }
       this.stations = [
         new Station({ type: ["seat", "cargo"], arm: 0.965 }),
         new Station({ type: ["seat", "cargo"], arm: 0.965 }),
@@ -202,8 +204,8 @@
         weight: { empty: 0, MAUW: 1719, Landing: 1632.933, Ramp: 1726.373, Takeoff: 1718.661 },
         // fwd1/2 [limit in M ,@ weight in kg]
         CG: { forward: 0.8382, fwd1: [0.8382, 1133.981], fwd2: [1.0795, 1632.933], aft: 1.26238 },
-        fuel: { capacity: 330, type: "100LL" },
       }
+      this.fuel = { capacity: 330, type: "100LL" }
       this.stations = [
         new Station({ type: ["seat"], arm: 0.9398 }),
         new Station({ type: ["seat"], arm: 0.9398 }),
@@ -224,8 +226,8 @@
         weight: { empty: 0, MAUW: 1719, Landing: 1860 },
         // fwd1/2 [limit in M ,@ weight in kg]
         CG: { forward: 4.699, fwd1: [4.699, 2948.3], fwd2: [4.912, 3628.7], aft: 5.19 },
-        fuel: { capacity: 1283.3, type: "JetA" },
       }
+      this.fuel = { capacity: 1283.3, type: "JetA", factor: 0.8 }
       this.stations = [
         new Station({ type: ["seat", "crew"], arm: 3.556 }),
         new Station({ type: ["seat", "crew"], arm: 3.556 }),

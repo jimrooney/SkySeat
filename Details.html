@@ -210,7 +210,7 @@
     getWB() {
       let loadedPlane = this._TableCell.getLoadedAirplane() // retunrs a loaded airplane object
       let _wbData = loadedPlane.getWB()
-      this.$root.find(".Report").text(`CG: ${_wbData.rounded.cg} AUW: ${_wbData.rounded.AUW}`)
+      this.$root.find(".Report").text(`CG: ${_wbData.rounded.CG} AUW: ${_wbData.rounded.AUW}`)
       return loadedPlane
     }
     // =============== Workaround for that stupid position bug ========================

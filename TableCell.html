@@ -240,6 +240,7 @@
 
       let fuelStation = airplane.stations.find((station) => station.type.includes("fuel"))
       fuelStation.weight = parseInt(state.loadsheet.fuel) * 0.72 // Adjust for Jet A ********** (.8) ****
+      fuelStation.quantity = state.loadsheet.fuel
 
       return airplane
     }

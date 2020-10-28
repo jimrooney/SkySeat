@@ -16,8 +16,8 @@
     show(_TableCell) {
       let LoadedPlane = _TableCell.getLoadedAirplane()
       console.log("{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
-      const LoadedWB = LoadedPlane.getWB()
-      console.log("LoadedWB", LoadedWB)
+      const WB = LoadedPlane.getWB()
+      console.log("Loaded WB", WB)
       let seats = _TableCell.getSeats()
       console.log("{Loadsheet}\nseats:", seats)
 
@@ -39,19 +39,19 @@
         type: "[GA8]",
         regColor: "white",
         fuel: "[75]", // Liters
-        AEW: "",
-        ZFW: "",
+        AUW: "",
+        ZFW:  Math.round((WB.ZFW + Number.EPSILON) * 100) / 100,
         fuelWeight: "[100]",
         MCTOW: 0,
         TOW: 0,
         Burnoff: "",
         LandingWeight: "",
         CGLimit: 0,
-        CG: 0,
+        CG: WB.rounded.CG,
         OutOfLimits: "",
-        crewWeight: 0,
+        CREW: WB.CREW,
         KGLBS: "[KG]",
-        totalPaxWeight: 0,
+        totalPaxWeight: WB.PAX,
         totalFreightWeight: "",
         totalBagWeight: "",
       }
@@ -63,7 +63,9 @@
 
       $(".reg").css("background-color", LoadedPlane.regcolor)
 
-      
+      // ****************************************
+      // Replace with Airplane (CG) style filters
+      // ****************************************
       // Adjust seatNum if there's co-pilots *********************
       let seatNum = 0
       seats.map((station) => {
