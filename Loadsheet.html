@@ -13,12 +13,18 @@
     // ---------------------------
     // Show
     // ---------------------------
-    show(_TableCell) {
-      let LoadedPlane = _TableCell.getLoadedAirplane()
+    show(TableCell) {
+      console.log("{Loadsheet}.show()")
+      let airplane = TableCell.getPlane()
+      console.log("Airplane:",airplane)
+
+
+
+      let LoadedPlane = TableCell.getLoadedAirplane()
       console.log("{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
       const WB = LoadedPlane.getWB()
       console.log("Loaded WB", WB)
-      let seats = _TableCell.getSeats()
+      let seats = TableCell.getSeats()
       console.log("{Loadsheet}\nseats:", seats)
 
       //$("#FlightFollowing").hide()

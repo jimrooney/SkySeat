@@ -41,7 +41,7 @@
       this.$Print = this.$root.find(".Print")
       this.$Print.click(function () {
         console.log("Print Click")
-        loadsheet.show(_this._TableCell)
+        LOADSHEET.show(_this._TableCell)
       })
       //
       // ---------------------------
@@ -290,16 +290,15 @@
         Set the values to the data stored in State ***************************
 
       */
-      if (Object.keys(state.loadsheet).length > 0) {
-        console.log("{state} Loadsheet Data: %o", state.loadsheet)
-        if (!!state.loadsheet.coPilot) {
-          $coPilot.val(state.loadsheet.coPilot)
+      if (Object.keys(state.PCF).length > 0) {
+        if (!!state.PCF.coPilot) {
+          $coPilot.val(state.PCF.coPilot)
         } else {
           $coPilot.val("")
         }
-        $pilot.val(state.loadsheet.pilot)
-        $fuel.val(state.loadsheet.fuel)
-        $plane.val(state.loadsheet.reg)
+        $pilot.val(state.PCF.pilot)
+        $fuel.val(state.PCF.fuel)
+        $plane.val(state.PCF.reg)
       }
 
 

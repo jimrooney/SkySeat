@@ -20,6 +20,8 @@
       this.weight = data.weight
       this.arm = data.arm
       this.moment = data.moment
+      this.type = this.constructor.name
+
       this.burn = {
         // climb:
         // cruise:
@@ -49,6 +51,7 @@
         // {},
         // {}
       ]
+      this.fuel = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight() }
     }
     getSeats() {
       // ******************
@@ -60,7 +63,14 @@
       const result = this.stations((item) => item.type == "seat")
       return result
     }
-
+    getFuelWeight() {
+      let ret
+      const stations = this.stations.find((station) => station.type.includes("fuel"))
+      if (!!stations) {
+        ret = stations.reduce((total, station) => total + parseFloat(station.weight), 0)
+      }
+      return ret
+    }
     // ************************************************************************************************
     addLoad(load) {
       // Accepts: {id,station,type,weight} {station}
@@ -95,14 +105,13 @@
       //
       // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
       //
-      let loadsheet = new Station({
+      let station = new Station({
         type: ["airplane"],
         weight: this.weight,
         arm: this.arm,
       })
-      loadsheet.moment = this.moment
-      this.stations.push(loadsheet)
-      console.log("Stations: \n%o", this.stations)
+      station.moment = this.moment
+      this.stations.push(station)
       //
       // Sum all Weights and Moments
       //
@@ -116,11 +125,12 @@
       )
       const PAX = POB.filter((x) => !CREW.includes(x)) // Filter out Crew
 
+      console.log("Type:", this.type)
       console.log("POB:", POB)
       console.log("CREW:", CREW)
       console.log("PAX:", PAX)
-      console.log("Fuel:",fuel)
-      
+      console.log("Fuel:", fuel)
+
       const POB_Weight = POB.reduce((total, station) => total + parseFloat(station.weight), 0)
       const CREW_Weight = CREW.reduce((total, station) => total + parseFloat(station.weight), 0)
       const PAX_Weight = POB_Weight - CREW_Weight
@@ -178,20 +188,20 @@
         // fwd1/2 [limit in M ,@ weight in kg]
         CG: { forward: 0, fwd1: [,], fwd2: [,], aft: 1.626 },
       }
-      this.fuel = { capacity: 330, type: "100LL", factor: 0.72 }
-      this.stations = [
-        new Station({ type: ["seat", "cargo"], arm: 0.965 }),
-        new Station({ type: ["seat", "cargo"], arm: 0.965 }),
-        new Station({ type: ["seat", "cargo"], arm: 1.772 }),
-        new Station({ type: ["seat", "cargo"], arm: 1.772 }),
-        new Station({ type: ["seat", "cargo"], arm: 2.523 }),
-        new Station({ type: ["seat", "cargo"], arm: 2.523 }),
-        new Station({ type: ["seat", "cargo"], arm: 3.247 }),
-        new Station({ type: ["seat", "cargo"], arm: 3.247 }),
-        new Station({ type: ["fuel"], arm: 1.715, limit: 330 }),
-        new Station({ type: ["cargo"], arm: 3.763, limit: 113 }),
-        new Station({ type: ["cargo"], arm: 4.623, limit: 22 }),
-      ]
+      ;(this.fuel.capacity = 330),
+        (this.stations = [
+          new Station({ type: ["seat", "cargo"], arm: 0.965 }),
+          new Station({ type: ["seat", "cargo"], arm: 0.965 }),
+          new Station({ type: ["seat", "cargo"], arm: 1.772 }),
+          new Station({ type: ["seat", "cargo"], arm: 1.772 }),
+          new Station({ type: ["seat", "cargo"], arm: 2.523 }),
+          new Station({ type: ["seat", "cargo"], arm: 2.523 }),
+          new Station({ type: ["seat", "cargo"], arm: 3.247 }),
+          new Station({ type: ["seat", "cargo"], arm: 3.247 }),
+          new Station({ type: ["fuel"], arm: 1.715, limit: 330 }),
+          new Station({ type: ["cargo"], arm: 3.763, limit: 113 }),
+          new Station({ type: ["cargo"], arm: 4.623, limit: 22 }),
+        ])
     }
   }
 
@@ -205,16 +215,16 @@
         // fwd1/2 [limit in M ,@ weight in kg]
         CG: { forward: 0.8382, fwd1: [0.8382, 1133.981], fwd2: [1.0795, 1632.933], aft: 1.26238 },
       }
-      this.fuel = { capacity: 330, type: "100LL" }
-      this.stations = [
-        new Station({ type: ["seat"], arm: 0.9398 }),
-        new Station({ type: ["seat"], arm: 0.9398 }),
-        new Station({ type: ["seat"], arm: 1.778 }),
-        new Station({ type: ["seat"], arm: 1.778 }),
-        new Station({ type: ["seat"], arm: 2.54 }),
-        new Station({ type: ["seat"], arm: 2.54 }),
-        new Station({ type: ["fuel"], arm: 1.1811 }),
-      ]
+      ;(this.fuel.capacity = 330),
+        (this.stations = [
+          new Station({ type: ["seat"], arm: 0.9398 }),
+          new Station({ type: ["seat"], arm: 0.9398 }),
+          new Station({ type: ["seat"], arm: 1.778 }),
+          new Station({ type: ["seat"], arm: 1.778 }),
+          new Station({ type: ["seat"], arm: 2.54 }),
+          new Station({ type: ["seat"], arm: 2.54 }),
+          new Station({ type: ["fuel"], arm: 1.1811 }),
+        ])
     }
   }
   class C208 extends Airplane {

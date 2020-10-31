@@ -56,9 +56,9 @@
         const _this = $(this).data("_script")
         const data = _this.board.state.getData($(this))
 
-      if (!data.loadsheet) {
+      if (!data.PCF) {
         const plane = planeList.shift()
-        data.loadsheet = {
+        data.PCF = {
           type: "Plane",
           reg: plane.reg,
           pilot: "Standard",

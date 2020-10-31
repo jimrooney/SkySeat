@@ -195,7 +195,7 @@
       console.log("Set Plane Data, Key: %o Val: %o", key, val)
       let s = this.getState() // get copy of current State
       let state = JSON.parse(JSON.stringify(s))
-      state.loadsheet[key] = val
+      state.PCF[key] = val
       console.log("Set State: %o", state)
       this.setState(state)
     }
@@ -205,12 +205,12 @@
     getState() {
       let state = this.board.state.getData(this.$this) // get the CellData Object from the state object
       // Check for an assigned plane. If none, get from the PlaneCell
-      if (!!state.loadsheet && !!state.loadsheet.reg) {
+      if (!!state.PCF && !!state.PCF.reg) {
         return state
       }
-      let PCState = this.$PlaneCell.data("_script").getData()
-      let data = {
-        loadsheet: PCState.loadsheet,
+      const PlaneCellState = this.$PlaneCell.data("_script").getData()
+      const data = {
+        PCF: PlaneCellState.PCF,
       }
       state = { ...state, ...data }
       return state
@@ -226,21 +226,22 @@
       //
       // Get the airplane raw data
       //
-      let loadsheet = PlaneManager.planes.data.find(function (el) {
-        return el.reg == state.loadsheet.reg
+      console.log("{TableCell}.getState()",state)
+      let PCF = PlaneManager.planes.data.find(function (element) {
+        return element.reg == state.PCF.reg
       })
       //
       // convert to Airplane Object
       //
       let airplane
-      if (!!loadsheet.type) {
-        let dynamic_class = eval(loadsheet.type)
-        airplane = new dynamic_class(loadsheet)
+      if (!!PCF.type) {
+        let dynamic_class = eval(PCF.type)
+        airplane = new dynamic_class(PCF)
       }
 
       let fuelStation = airplane.stations.find((station) => station.type.includes("fuel"))
-      fuelStation.weight = parseInt(state.loadsheet.fuel) * 0.72 // Adjust for Jet A ********** (.8) ****
-      fuelStation.quantity = state.loadsheet.fuel
+      fuelStation.weight = parseInt(state.PCF.fuel) * 0.72 // Adjust for Jet A ********** (.8) ****
+      fuelStation.quantity = state.PCF.fuel
 
       return airplane
     }
@@ -265,6 +266,9 @@
       // Modifications (seats/controls/pods)
       // Baggage
       let airplane = this.getPlane()
+      //
+      // Loop over stations and record them in stations[]
+      //
       $(".station")
         .children()
         .each(function (i, $div) {
