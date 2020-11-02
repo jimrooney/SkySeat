@@ -9,7 +9,6 @@
   var LOADSHEET
   // Placeholder for the LOADSHEET object *** This should go in {root}
 
-
   /*
       ___________root objects______________
       {root}
@@ -111,7 +110,7 @@
   </head>
   <body>
     <div id="HoverBar" style="float: top; width: 100%; text-align: center; background: #737373; color: white">
-      [[ 2.4.3 ]] [ Plottable Pilots ]
+      [[ 2.4.4 ]] [ Multi-Boards ]
     </div>
     <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
     <script>
@@ -123,21 +122,34 @@
       <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
     </div>
     <div>
-      <span id="BoardMakerButton" class="roundButton MobileButton">+</span>
+      <span id="NewBoardButton" class="roundButton MobileButton">+</span>
       <script>
         $(() => {
-          $("#BoardMakerButton").click(function () {
+          $("#NewBoardButton").click(function () {
             const boardName = "AutoBoard" + root.boards.length
-            let $this = $("<div />", {
+            const lastBoard = root.boards[root.boards.length - 1]
+            const lastDate = !!lastBoard ? lastBoard.getDate() : null
+
+            const $this = $("<div />", {
               class: "root",
               id: boardName,
               style: "display:inline-block",
             })
 
-            let _board = new Board($this)
+            const _board = new Board($this)
+
             $this.data("root", _board)
             $("#Boards").append($this)
             $this.data("root").writeBoard()
+            //
+            // Set to next day
+            //
+            if (!!lastDate) {
+              let tomorrow = new Date(lastDate)
+              tomorrow.setDate(tomorrow.getDate() + 1)
+              _board.setDate(tomorrow)
+              _board.load() // Load Rezdy
+            }
             root.boards.push(_board)
           })
         })

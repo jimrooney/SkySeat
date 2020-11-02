@@ -12,6 +12,9 @@
     getDate() {
       return this.board.$datepicker.datepicker("getDate")
     }
+    setDate(date){
+      this.board.$datepicker.datepicker("setDate", new Date(date) )
+    }
     write() {
       //
       // Manifest Div

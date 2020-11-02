@@ -22,11 +22,19 @@
       $picker.blur()
       this.load()
     }
-
     load() {
       console.log(`${this.$board.prop("id")} .load()`)
       this.state.clear()
       this.manifest.load()
+    }
+    //
+    // Get the date for this board (from the datepicker)
+    //
+    getDate(){
+      return this.manifest.getDate()
+    }
+    setDate(date){
+      this.manifest.setDate(date)
     }
     // --------------------------------
     // Update
