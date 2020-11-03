@@ -5,6 +5,7 @@
       const _this = this
       this._this = this
       this.$this = $this
+      this.plane = null
       $this.data("object", this)
     }
     print() {
@@ -14,6 +15,8 @@
     // Show
     // ---------------------------
     show(TableCell) {
+
+      let plane = this.plane
       console.log("{Loadsheet}.show()")
       let airplane = TableCell.getPlane()
       console.log("Airplane:",airplane)
@@ -39,7 +42,7 @@
         $("._paxList-" + i + "-weight").html("")
       }
 
-      const _plane = {
+      this.plane = {
         pilot: "[Pilot]",
         reg: "[REG]",
         type: "[GA8]",
@@ -63,9 +66,9 @@
       }
 
       // *********** Merge the two objects instead of copying the same names over? *************
-      _plane.reg = LoadedPlane.reg
-      _plane.regcolor = LoadedPlane.regcolor
-      _plane.type = LoadedPlane.type
+      this.plane.reg = LoadedPlane.reg
+      this.plane.regcolor = LoadedPlane.regcolor
+      this.plane.type = LoadedPlane.type
 
       $(".reg").css("background-color", LoadedPlane.regcolor)
 
@@ -87,11 +90,11 @@
             switch (role.value) {
               case "PIC":
                 _crew = firstName + " " + lastName
-                _plane.pilot = _crew
+                this.plane.pilot = _crew
                 break
               case "SIC":
                 _crew = " / " + firstName + " " + lastName
-                _plane.copilot = _crew
+                this.plane.copilot = _crew
                 break
             }
             return
@@ -107,16 +110,16 @@
       //
       // Load _plane object into classes
       //
-      for (let i in _plane) {
-        $("._plane_" + i).html(_plane[i])
+      for (let i in plane) {
+        $("._plane_" + i).html(plane[i])
       }
 
       let FF = true
       if (FF == true) {
         console.log("Seats: %o", seats.length)
         $(".POB").html(seats.length)
-        // $(".plane_Endurance_hour").html(_plane.Endurance.hour)
-        // $(".plane_Endurance_min").html(_plane.Endurance.min)
+        // $(".plane_Endurance_hour").html(this.plane.Endurance.hour)
+        // $(".plane_Endurance_min").html(this.plane.Endurance.min)
         $("#FlightFollowing").show()
       }
 
@@ -156,10 +159,10 @@
     console.log("Plane: %o", _plane)
 
     let endurance = WB.fuel / WB.Burn
-    _plane.Endurance = {}
-    _plane.Endurance.hour = Math.floor(Math.abs(endurance))
-    _plane.Endurance.min = Math.floor((Math.abs(endurance) * 60) % 60)
-    _plane.Endurance.decimal = endurance
+    this.plane.Endurance = {}
+    this.plane.Endurance.hour = Math.floor(Math.abs(endurance))
+    this.plane.Endurance.min = Math.floor((Math.abs(endurance) * 60) % 60)
+    this.plane.Endurance.decimal = endurance
 
     // ****************************************************************************************
     // Clear out the old data
@@ -181,25 +184,25 @@
     _trip.pax = []
     _trip.paxW = []
 
-    _plane.copilot = ""
-    _plane.copilot = ""
-    _plane.reg = WB.reg
-    _plane.regColor = WB.regColor
-    _plane.type = WB.type
-    _plane.fuel = Math.round(WB.fuel)
-    _plane.AEW = Math.round(WB.wam[0][0])
-    _plane.ZFW = Math.round(WB.ZFW)
-    _plane.fuelWeight = Math.round(WB.fuelWeight)
-    _plane.MCTOW = WB.MCTOW
-    _plane.TOW = Math.round(WB.TOW)
-    _plane.CGLimit = WB.maxCG[1] // Just aft for now **********************
+    this.plane.copilot = ""
+    this.plane.copilot = ""
+    this.plane.reg = WB.reg
+    this.plane.regColor = WB.regColor
+    this.plane.type = WB.type
+    this.plane.fuel = Math.round(WB.fuel)
+    this.plane.AEW = Math.round(WB.wam[0][0])
+    this.plane.ZFW = Math.round(WB.ZFW)
+    this.plane.fuelWeight = Math.round(WB.fuelWeight)
+    this.plane.MCTOW = WB.MCTOW
+    this.plane.TOW = Math.round(WB.TOW)
+    this.plane.CGLimit = WB.maxCG[1] // Just aft for now **********************
 
-    _plane.CG = Math.round(WB.getCG() * 100) / 100
-    _plane.totalPaxWeight = WB.tPaxW
+    this.plane.CG = Math.round(WB.getCG() * 100) / 100
+    this.plane.totalPaxWeight = WB.tPaxW
 
-    _plane.std = "Weights Standard"
+    this.plane.std = "Weights Standard"
     if (WB.all_weights) {
-      _plane.std = "Weight Declared"
+      this.plane.std = "Weight Declared"
     }
     // Trip Time
     _trip.date = $("#datepicker").val()
@@ -311,18 +314,18 @@
       //
       if (data && data.length > 0 && typeof data[1] == "string") {
         if (a == 0) {
-          _plane.pilot = data[1]
-          _plane.crewWeight = data[0]
+          this.plane.pilot = data[1]
+          this.plane.crewWeight = data[0]
         }
         // Copilot
         if (a > 0) {
           if (typeof data[1] == "string") {
             let cp = "<span style='font-size:small'> (copilot: " + data[1] + ")</span>"
-            _plane.copilot = data[1]
-            _plane.copilot = cp
-            _plane.crewWeight += data[0]
+            this.plane.copilot = data[1]
+            this.plane.copilot = cp
+            this.plane.crewWeight += data[0]
           } else {
-            _plane.copilot = ""
+            this.plane.copilot = ""
           }
         }
       }
@@ -358,8 +361,8 @@
       // ------------------------------------------------------------------------------
       // Put objects into variables for display
       // ------------------------------------------------------------------------------
-      $(".reg").css("background-color", _plane.regColor)
-      $("._plane_pilot").html(_plane.pilot)
+      $(".reg").css("background-color", this.plane.regColor)
+      $("._plane_pilot").html(this.plane.pilot)
       //
       // Pilot Info (for FF)
       //
@@ -367,7 +370,7 @@
       let pilotData = ""
       for (let a in pilots.matrix) {
         let p = pilots.matrix[a]
-        let re = new RegExp(_plane.pilot, "ig")
+        let re = new RegExp(this.plane.pilot, "ig")
         if (p[0] && p[0].match(re)) {
           pilotData = p
         }
@@ -391,8 +394,8 @@
     //
     // Load _plane object into classes
     //
-    for (let i in _plane) {
-      $("._plane_" + i).html(_plane[i])
+    for (let i in this.plane) {
+      $("._plane_" + i).html(this.plane[i])
     }
 
     // Display Pax (Will need update for Caravan) ******************************************
@@ -426,30 +429,30 @@
     _Loadsheet = {
       date: _trip.date,
       time: _trip.time,
-      pilot: _plane.pilot,
-      reg: _plane.reg,
-      fuel: _plane.fuel,
+      pilot: this.plane.pilot,
+      reg: this.plane.reg,
+      fuel: this.plane.fuel,
       routes: _trip.routes,
       paxNames: _trip.paxNames,
       paxWeights: _trip.paxWeights,
-      crewWeight: _plane.crewWeight,
-      TOW: _plane.TOW,
-      CG: _plane.CG,
+      crewWeight: this.plane.crewWeight,
+      TOW: this.plane.TOW,
+      CG: this.plane.CG,
       numPax: WB.numPax,
-      copilot: _plane.copilot,
+      copilot: this.plane.copilot,
     }
     _loadsheetData = [
       _trip.date,
       _trip.time,
-      _plane.pilot,
-      _plane.reg,
-      _plane.fuel,
+      this.plane.pilot,
+      this.plane.reg,
+      this.plane.fuel,
       _trip.routes,
       _trip.paxNames,
       _trip.paxWeights,
-      _plane.crewWeight,
-      _plane.TOW,
-      _plane.CG,
+      this.plane.crewWeight,
+      this.plane.TOW,
+      this.plane.CG,
       WB.numPax,
     ]
     $("#details").hide()
@@ -460,15 +463,15 @@
     if (FF == true) {
       console.log("Seats: %o", WB.seats.length)
       $(".POB").html(WB.seats.length)
-      $(".plane_Endurance_hour").html(_plane.Endurance.hour)
-      $(".plane_Endurance_min").html(_plane.Endurance.min)
+      $(".plane_Endurance_hour").html(this.plane.Endurance.hour)
+      $(".plane_Endurance_min").html(this.plane.Endurance.min)
       $("#FlightFollowing").show()
     }
   }
 
   //var FF = true
   // some placeholder variables
-  var _plane = {
+    this.plane = {
     pilot: "[Pilot]",
     reg: "[REG]",
     type: "[GA8]",
