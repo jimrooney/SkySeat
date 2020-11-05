@@ -56,9 +56,6 @@
       $_s.on("click", function () {
         console.log("{state}.getState(): %o", _board.state.getState())
       })
-
-
-
     }
     loadRoster() {
       const $roster = this.$this.find(".Roster")
@@ -99,6 +96,7 @@
       this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
       this.show()
+      this.loadRoster() // auto load the roster too.
     }
     // ---------------------------------------------------------
     // Show Manifest

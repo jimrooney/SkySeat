@@ -20,6 +20,9 @@ Currently
 
 Weight and balanace stuff starts at the TableCell data level
 
+I think the multi-load issues are because each function clears out the DIV before writing to it... 
+So if two returns happen around the same time, they can step on each other... 
+Maybe check to see if the roster clears the Manifest div?
 
 -------------------------------
 All this (and below it ) can and should be removed (after we start printing loadsheets again)
