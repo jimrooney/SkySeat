@@ -19,8 +19,8 @@
       // this.$datepicker ... created in writeBoard()
     }
     handleDatePickerSelect($picker){
-      $picker.blur()
       this.load()
+      this.manifest.showTitle()
     }
     load() {
       console.log(`${this.$board.prop("id")} .load()`)
@@ -43,6 +43,7 @@
     //
     update() {
       console.log("Board.update()")
+      this.manifest.showTitle()
       //
       // Make things Draggable
       //

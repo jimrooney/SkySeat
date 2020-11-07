@@ -14,6 +14,7 @@
     }
     setDate(date){
       this.board.$datepicker.datepicker("setDate", new Date(date) )
+      this.showTitle()
     }
     write() {
       //
@@ -23,6 +24,7 @@
 
       this.$this = $(`<div class="Manifest_Container">
           <div id="Header" class="Header">
+          <div id="Title">HI</div>
           <span class="total" style="float:left;display: inline-block;"></span>
           <span style="float:right;display: inline-block;"><button id="rr">(R)</button></span>
           <span style="float:right;display: inline-block;"><button id="reload">&#10226;</button></span>
@@ -56,6 +58,9 @@
       $_s.on("click", function () {
         console.log("{state}.getState(): %o", _board.state.getState())
       })
+    }
+    showTitle(){
+      this.$this.find("#Title").html(this.getDate().toLocaleString('en-us', {  weekday: 'long' }))
     }
     loadRoster() {
       const $roster = this.$this.find(".Roster")
@@ -96,7 +101,7 @@
       this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
       this.show()
-      this.loadRoster() // auto load the roster too.
+      //this.loadRoster() // auto load the roster too.
     }
     // ---------------------------------------------------------
     // Show Manifest

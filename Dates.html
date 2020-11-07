@@ -27,7 +27,8 @@
         dateFormat: "dd/mm/yy",
         firstDay: 1,
         onSelect: function (dateText) {
-          _board.handleDatePickerSelect(this)
+          _board.handleDatePickerSelect($picker)
+          this.blur()
         },
       })
       $picker.datepicker("setDate", "today")
