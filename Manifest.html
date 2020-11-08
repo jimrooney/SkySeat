@@ -23,6 +23,7 @@
       let _this = this // _this instead of this because this is the calling button right now.
 
       this.$this = $(`<div class="Manifest_Container">
+        <div>
           <div id="Header" class="Header">
           <div id="Title">HI</div>
           <span class="total" style="float:left;display: inline-block;"></span>
@@ -32,8 +33,15 @@
           ${_this.board.$board.prop("id")} Manifest </div>
           <div id="Totals" />
           <div class="Bookings"></div>
-          <div class="Roster" />
-      </div>`)
+          </div>
+          <div class="Roster" >Roster</div>
+      </div>
+      `)
+      
+      // this.$roster = $(``)
+      // this.$board.append(this.$roster)
+      this.$roster = this.$this.find(".Roster")
+
       this.$board.append(this.$this)
       this.$bookings = this.$this.find(".Bookings")
       //
@@ -53,17 +61,25 @@
       // Show State Button
       //
       let _board = this.board
-      let $_s = $("<button class='Dark Debug'>").append("<BR>").text("State")
+      let $_s = $("<button class='Dark Debug'>").text("State")
         this.$this.prepend($_s)
       $_s.on("click", function () {
         console.log("{state}.getState(): %o", _board.state.getState())
       })
+
+      let $_r = $("<button class='Dark Debug'>").append("<BR>").text("R")
+        this.$this.prepend($_r)
+      $_r.on("click", function () {
+        $(".Roster").toggle()
+      })
+
+
     }
     showTitle(){
       this.$this.find("#Title").html(this.getDate().toLocaleString('en-us', {  weekday: 'long' }))
     }
     loadRoster() {
-      const $roster = this.$this.find(".Roster")
+      const $roster = this.$roster
       $roster.empty()
       $roster.append("<div>Loading</div>")
       const d = this.getDate("getDate")
@@ -101,7 +117,8 @@
       this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
       this.show()
-      //this.loadRoster() // auto load the roster too.
+      this.loadRoster() // auto load the roster too.
+      $(".Roster").hide()
     }
     // ---------------------------------------------------------
     // Show Manifest
