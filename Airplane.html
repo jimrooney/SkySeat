@@ -144,13 +144,16 @@
       //const roundCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
       const wb = {
         stations: this.stations,
-        AUW: totalWeight,
+        TotalWeight: totalWeight,
         TotalMoment: totalMoment,
         CG: CG,
-        CREW: CREW_Weight,
-        POB: POB_Weight,
-        PAX: PAX_Weight,
-        ZFW: ZFW_Weight,
+        weights: {
+          crew: CREW_Weight,
+          pob: POB_Weight,
+          pax: PAX_Weight,
+          zfw: ZFW_Weight,
+          auw: totalWeight
+        },
         fuel: {
           liters: 0,
           kg: 0,
