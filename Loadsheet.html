@@ -15,16 +15,9 @@
     // Show
     // ---------------------------
     show(TableCell) {
-
-      let plane = this.plane
-      console.log("{Loadsheet}.show()")
-      let airplane = TableCell.getPlane()
-      console.log("Airplane:",airplane)
-
-
-
-      let LoadedPlane = TableCell.getLoadedAirplane()
+      let LoadedPlane = TableCell.getPlane()
       console.log("{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
+
       const WB = LoadedPlane.getWB()
       console.log("Loaded WB", WB)
       let seats = TableCell.getSeats()

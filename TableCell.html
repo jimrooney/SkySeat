@@ -49,7 +49,7 @@
           // ****************************
           // Either pass in the wb data to Details, or have Details reach back and call the function
           //
-          _this.getLoadedAirplane()
+          _this.getPlane()
           $("#Details").data("root").show($(this))
           $("#Details").show()
         }
@@ -243,16 +243,6 @@
       fuelStation.weight = parseInt(state.PCF.fuel) * 0.72 // Adjust for Jet A ********** (.8) ****
       fuelStation.quantity = state.PCF.fuel
 
-      return airplane
-    }
-    getSeats() {
-      const _wb = this.getLoadedAirplane()
-      let seats = _wb.stations.filter((station) => {
-        return station.type.includes("seat") && parseInt(station.weight) > 0
-      })
-      return seats
-    }
-    getLoadedAirplane() {
       // if seats aren't assigned, sort by crew, then weight
       // if seats are assigned, check that they fit the plane, then use them.
 
@@ -265,10 +255,7 @@
       // Luggage
       // Modifications (seats/controls/pods)
       // Baggage
-      let airplane = this.getPlane()
-      //
-      // Loop over stations and record them in stations[]
-      //
+
       $(".station")
         .children()
         .each(function (i, $div) {
@@ -283,7 +270,15 @@
             airplane.stations[seat].pax = pax
           }
         })
+
       return airplane
+    }
+    getSeats() {
+      const _wb = this.getPlane()
+      let seats = _wb.stations.filter((station) => {
+        return station.type.includes("seat") && parseInt(station.weight) > 0
+      })
+      return seats
     }
     // Perhaps "hasOuts()" ************************************
     // This only tells you if the cell contains outs, not the direction of the leg
