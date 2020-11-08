@@ -22,11 +22,13 @@
       console.log("{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
 
       const WB = LoadedPlane.getWB()
-      console.log("Loaded WB", WB)
+      console.log("WB", WB)
       let seats = TableCell.getSeats()
       console.log("{Loadsheet}\nseats:", seats)
 
-      //$("#FlightFollowing").hide()
+      //$("#FlightFollowing").hide() **************************************************
+
+
 
       //
       // Clear out old values
@@ -38,25 +40,26 @@
         $("._paxList-" + i + "-weight").html("")
       }
 
+      const pic = WB.crew.pic.pax[1].value + " " + WB.crew.pic.pax[2].value
       this.plane = {
-        pilot: "[Pilot]",
-        reg: "[REG]",
-        type: "[GA8]",
-        regColor: "white",
-        fuel: "[75]", // Liters
-        AUW: "",
-        ZFW:  Math.round((WB.ZFW + Number.EPSILON) * 100) / 100,
-        fuelWeight: "[100]",
-        MCTOW: 0,
+        pilot: pic,
+        reg: LoadedPlane.reg,
+        type: LoadedPlane.type,
+        regColor: LoadedPlane.regcolor,
+        fuel: WB.fuel.liters, // Liters
+        AUW: Math.round((WB.weights.auw + Number.EPSILON) * 100) / 100,
+        ZFW:  Math.round((WB.weights.zfw + Number.EPSILON) * 100) / 100,
+        fuelWeight:  Math.round((WB.weights.fuel + Number.EPSILON) * 100) / 100,
+        MCTOW: LoadedPlane.limits.weight.MAUW,
         TOW: 0,
         Burnoff: "",
         LandingWeight: "",
-        CGLimit: 0,
-        CG: WB.rounded.CG,
+        CGLimit: LoadedPlane.limits.CG.aft, // Needs to be forward and aft *************
+        CG: Math.round((WB.CG + Number.EPSILON) * 100) / 100,
         OutOfLimits: "",
-        CREW: WB.CREW,
+        CREW: "CREW",
         KGLBS: "[KG]",
-        totalPaxWeight: WB.PAX,
+        totalPaxWeight: WB.weights.pax,
         totalFreightWeight: "",
         totalBagWeight: "",
       }
@@ -106,8 +109,8 @@
       //
       // Load _plane object into classes
       //
-      for (let i in plane) {
-        $("._plane_" + i).html(plane[i])
+      for (let i in this.plane) {
+        $("._plane_" + i).html(this.plane[i])
       }
 
       let FF = true
@@ -467,28 +470,28 @@
 
   //var FF = true
   // some placeholder variables
-    this.plane = {
-    pilot: "[Pilot]",
-    reg: "[REG]",
-    type: "[GA8]",
-    regColor: "white",
-    fuel: "[75]", // Liters
-    AEW: "",
-    ZFW: "",
-    fuelWeight: "[100]",
-    MCTOW: 0,
-    TOW: 0,
-    Burnoff: "",
-    LandingWeight: "",
-    CGLimit: 0,
-    CG: 0,
-    OutOfLimits: "",
-    crewWeight: 0,
-    KGLBS: "[KG]",
-    totalPaxWeight: 0,
-    totalFreightWeight: "",
-    totalBagWeight: "",
-  }
+  //   this.plane = {
+  //   pilot: "[Pilot]",
+  //   reg: "[REG]",
+  //   type: "[GA8]",
+  //   regColor: "white",
+  //   fuel: "[75]", // Liters
+  //   AEW: "",
+  //   ZFW: "",
+  //   fuelWeight: "[100]",
+  //   MCTOW: 0,
+  //   TOW: 0,
+  //   Burnoff: "",
+  //   LandingWeight: "",
+  //   CGLimit: 0,
+  //   CG: 0,
+  //   OutOfLimits: "",
+  //   crewWeight: 0,
+  //   KGLBS: "[KG]",
+  //   totalPaxWeight: 0,
+  //   totalFreightWeight: "",
+  //   totalBagWeight: "",
+  // }
   var _trip = {
     date: "1/12/2019",
     time: "08:00",
