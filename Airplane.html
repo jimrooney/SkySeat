@@ -127,11 +127,7 @@
       //
       // Find the PIC (Flies Left Seat, so find works, but could also search by matching seat number) ****
       //
-      const PIC = CREW.find((station) =>
-        station.pax.find(
-          (pax) => pax.label == "Role" && pax.value == "PIC"
-        )
-      )
+      const PIC = CREW.find((station) => station.pax.find((pax) => pax.label == "Role" && pax.value == "PIC"))
       const PAX = POB.filter((x) => !CREW.includes(x)) // Filter out Crew
       const POB_Weight = POB.reduce((total, station) => total + parseFloat(station.weight), 0)
       const CREW_Weight = CREW.reduce((total, station) => total + parseFloat(station.weight), 0)
@@ -142,6 +138,9 @@
       const CG = totalMoment / totalWeight
       const rCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
       const rAUW = Math.round((totalWeight + Number.EPSILON) * 100) / 100
+
+      const cgLimits = this.getCGLimit(totalWeight)
+      const cgBalanced = CG <= cgLimits[1] && CG >= cgLimits[0] ? true : false
       //
       // Build {wb} Object
       //
@@ -150,9 +149,14 @@
         crew: {
           stations: CREW,
           pic: PIC,
-          },
+        },
         TotalWeight: totalWeight,
         TotalMoment: totalMoment,
+        cg: {
+          position: CG,
+          limits: cgLimits,
+          balanced: cgBalanced,
+        },
         CG: CG,
         weights: {
           crew: CREW_Weight,
@@ -182,6 +186,19 @@
         }
       })
       return count
+    }
+    getForwardCGLimit() {
+      // trig here
+
+      // *************** placeholder ***************
+      return this.limits.CG.forward
+    }
+    getCGLimit(weight) {
+      // returns [foward,aft] limits for a given weight
+      // Defaults to simple [forward,aft] limits unless overridden with more complex calculations.
+      let forward = this.getForwardCGLimit()
+      let aft = this.limits.CG.aft
+      return [forward, aft]
     }
   }
 
@@ -249,16 +266,17 @@
       }
       this.fuel = { capacity: 1283.3, type: "JetA", factor: 0.8 }
       this.stations = [
-        new Station({ type: ["seat", "crew"], arm: 3.556 }),
-        new Station({ type: ["seat", "crew"], arm: 3.556 }),
-        new Station({ type: ["seat", "cargo"], arm: 4.41706 }),
-        new Station({ type: ["seat", "cargo"], arm: 4.41706 }),
-        new Station({ type: ["seat", "cargo"], arm: 5.33146 }),
-        new Station({ type: ["seat", "cargo"], arm: 5.33146 }),
-        new Station({ type: ["seat", "cargo"], arm: 6.24586 }),
-        new Station({ type: ["seat", "cargo"], arm: 6.24586 }),
-        new Station({ type: ["seat", "cargo"], arm: 7.16026 }),
-        new Station({ type: ["seat", "cargo"], arm: 7.16026 }),
+        new Station({ type: ["seat", "crew"], arm: 3.4417 }),
+        new Station({ type: ["seat", "crew"], arm: 3.4417 }),
+        new Station({ type: ["seat", "cargo"], arm: 4.3307 }),
+        new Station({ type: ["seat", "cargo"], arm: 4.3307 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.0927 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.0927 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.8547 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.8547 }),
+        new Station({ type: ["seat", "cargo"], arm: 6.6167 }),
+        new Station({ type: ["seat", "cargo"], arm: 6.6167 }),
+        new Station({ type: ["seat", "cargo"], arm: 7.3787 }),
         new Station({ type: ["fuel"], arm: 5.175758 }),
         new Station({ type: ["cargo"], arm: 3.44, limit: 113 }),
       ]

@@ -39,8 +39,11 @@
         $("._paxList-" + i + "-fullName").html("")
         $("._paxList-" + i + "-weight").html("")
       }
-
-      const pic = WB.crew.pic.pax[1].value + " " + WB.crew.pic.pax[2].value
+      let pic
+      if (!!WB.crew && !!WB.crew.pic){
+        pic = WB.crew.pic.pax[1].value + " " + WB.crew.pic.pax[2].value
+      }
+      
       this.plane = {
         pilot: pic,
         reg: LoadedPlane.reg,
@@ -469,29 +472,7 @@
   }
 
   //var FF = true
-  // some placeholder variables
-  //   this.plane = {
-  //   pilot: "[Pilot]",
-  //   reg: "[REG]",
-  //   type: "[GA8]",
-  //   regColor: "white",
-  //   fuel: "[75]", // Liters
-  //   AEW: "",
-  //   ZFW: "",
-  //   fuelWeight: "[100]",
-  //   MCTOW: 0,
-  //   TOW: 0,
-  //   Burnoff: "",
-  //   LandingWeight: "",
-  //   CGLimit: 0,
-  //   CG: 0,
-  //   OutOfLimits: "",
-  //   crewWeight: 0,
-  //   KGLBS: "[KG]",
-  //   totalPaxWeight: 0,
-  //   totalFreightWeight: "",
-  //   totalBagWeight: "",
-  // }
+
   var _trip = {
     date: "1/12/2019",
     time: "08:00",
