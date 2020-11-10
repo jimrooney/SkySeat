@@ -187,16 +187,34 @@
       })
       return count
     }
-    getForwardCGLimit() {
-      // trig here
 
-      // *************** placeholder ***************
-      return this.limits.CG.forward
+    getForwardCGLimit(weight) {
+      // Need parseInt and check weight is valid before anything
+
+      // ************************
+      // This needs to be changed to be airplane specific (this is basic Airvan)
+      // ************************
+      const fwd1 = 1219
+      const fwd2 = 1422
+      const weight1 = 1089
+      const weight2 = 1814
+
+      const a = fwd2 - fwd1
+      const o = weight2 - weight1
+      const rad = Math.atan(o / a)
+
+      const o2 = weight1 - weight // (problem weight)
+      const h2 = o2 / Math.sin(rad)
+
+      const a2 = Math.sqrt(h2 * h2 - o2 * o2)
+      const limit = (fwd1 + a2) / 1000
+
+      return limit
     }
     getCGLimit(weight) {
       // returns [foward,aft] limits for a given weight
       // Defaults to simple [forward,aft] limits unless overridden with more complex calculations.
-      let forward = this.getForwardCGLimit()
+      let forward = this.getForwardCGLimit(weight)
       let aft = this.limits.CG.aft
       return [forward, aft]
     }
