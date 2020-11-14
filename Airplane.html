@@ -227,11 +227,22 @@
     constructor(data) {
       super(data)
 
+      /*
+
+1219 mm (48 in) aft of datum at 1089 kg (2400 lb) and below;
+1448 mm (57 in) aft of datum at 1905 kg (4200 lb), linear variation
+between these points.
+
+*/
       this.type = this.constructor.name // "GA8"
       this.limits = {
-        weight: { empty: 0, MAUW: 1905, Landing: 1860 },
+        weight: { empty: 0, MAUW: 1905, ramp: 1905, Landing: 1860 },
         // fwd1/2 [limit in M ,@ weight in kg]
-        CG: { forward: 0, fwd1: [,], fwd2: [,], aft: 1.626 },
+        CG: {
+          forward: 1.219,
+          aft: 1.626,
+          bounds: [{ fwd1: [1.219, 1089], fwd2: [1.448, 1905] }],
+        },
       }
       ;(this.fuel.capacity = 330),
         (this.stations = [
@@ -258,7 +269,13 @@
       this.limits = {
         weight: { empty: 0, MAUW: 1719, Landing: 1632.933, Ramp: 1726.373, Takeoff: 1718.661 },
         // fwd1/2 [limit in M ,@ weight in kg]
-        CG: { forward: 0.8382, fwd1: [0.8382, 1133.981], fwd2: [1.0795, 1632.933], aft: 1.26238 },
+        CG: {
+          forward: .8382,
+          aft: 1.26492,
+          bounds: [
+            { fwd1: [.8382, 1133.981], fwd2: [1.07188, 1632.933] },
+          ],
+        },
       }
       ;(this.fuel.capacity = 330),
         (this.stations = [
@@ -278,23 +295,30 @@
 
       this.type = this.constructor.name // "C208"
       this.limits = {
-        weight: { empty: 0, MAUW: 1719, Landing: 1860 },
+        weight: { empty: 0, MAUW: 3994.7, ramp: 4010, Landing: 3855.5 },
         // fwd1/2 [limit in M ,@ weight in kg]
-        CG: { forward: 4.699, fwd1: [4.699, 2948.3], fwd2: [4.912, 3628.7], aft: 5.19 },
+        CG: {
+          forward: 4.699,
+          aft: 5.18922,
+          bounds: [
+            { fwd1: [4.699, 2948.35], fwd2: [4.149, 3628.739] },
+            { fwd1: [4.149, 3628.739], fwd2: [5.05968, 3992.066] },
+          ],
+        },
       }
       this.fuel = { capacity: 1283.3, type: "JetA", factor: 0.8 }
       this.stations = [
         new Station({ type: ["seat", "crew"], arm: 3.4417 }),
         new Station({ type: ["seat", "crew"], arm: 3.4417 }),
-        new Station({ type: ["seat", "cargo"], arm: 4.3307 }),
-        new Station({ type: ["seat", "cargo"], arm: 4.3307 }),
-        new Station({ type: ["seat", "cargo"], arm: 5.0927 }),
-        new Station({ type: ["seat", "cargo"], arm: 5.0927 }),
-        new Station({ type: ["seat", "cargo"], arm: 5.8547 }),
-        new Station({ type: ["seat", "cargo"], arm: 5.8547 }),
-        new Station({ type: ["seat", "cargo"], arm: 6.6167 }),
-        new Station({ type: ["seat", "cargo"], arm: 6.6167 }),
-        new Station({ type: ["seat", "cargo"], arm: 7.3787 }),
+        new Station({ type: ["seat", "cargo"], arm: 4.2926 }),
+        new Station({ type: ["seat", "cargo"], arm: 4.2926 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.0038 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.1054 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.8166 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.9182 }),
+        new Station({ type: ["seat", "cargo"], arm: 6.6548 }),
+        new Station({ type: ["seat", "cargo"], arm: 6.7818 }),
+        new Station({ type: ["seat", "cargo"], arm: 7.3914 }),
         new Station({ type: ["fuel"], arm: 5.175758 }),
         new Station({ type: ["cargo"], arm: 3.44, limit: 113 }),
       ]
