@@ -209,8 +209,17 @@
     }
     getWB() {
       let loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
-      let _wbData = loadedPlane.getWB()
-      this.$root.find(".Report").text(`CG: ${_wbData.rounded.CG} AUW: ${_wbData.rounded.AUW}`)
+      let WB = loadedPlane.getWB()
+
+      console.log("{getWB}",WB)
+
+      const report = this.$root.find(".Report")
+
+      report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
+
+      const color = WB.cg.balanced ? "blue" : "red"
+      report.css("background-color", color)
+
       return loadedPlane
     }
     // =============== Workaround for that stupid position bug ========================

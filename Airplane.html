@@ -141,11 +141,8 @@
 
       let cgLimits //= this.getCGLimit(totalWeight)
 
-      this.isBalanced(totalWeight, CG)
-
-      let cgBalanced //= CG <= cgLimits[1] && CG >= cgLimits[0] ? true : false
-
-      const isBalanced = this.isBalanced(totalWeight, CG)
+      let isBalanced = this.isBalanced(totalWeight, CG)
+      console.log("IsBalanced", isBalanced)
       //
       // Build {wb} Object
       //
@@ -157,12 +154,16 @@
         },
         TotalWeight: totalWeight,
         TotalMoment: totalMoment,
+        CG: CG,
         cg: {
           position: CG,
           limits: cgLimits,
-          balanced: cgBalanced,
+          balanced: isBalanced,
+          imperial: {
+            TotalWeight: totalWeight * 2.2,
+            CG: CG * 39.3701,
+          },
         },
-        CG: CG,
         weights: {
           crew: CREW_Weight,
           pob: POB_Weight,
@@ -195,7 +196,7 @@
 
     getForwardCGLimit(weight, bounds) {
       // Need parseInt and check weight is valid before anything
-      const fwd1 = bounds.fwd1[0] || 1219
+      const fwd1 = bounds.fwd1[0] //|| 1219
       const fwd2 = bounds.fwd2[0] // 1422
       const weight1 = bounds.fwd1[1] // 1089
       const weight2 = bounds.fwd2[1] // 1814
@@ -223,35 +224,31 @@
       return [forward, aft]
     }
     isBalanced(totalWeight, CG) {
-      console.log("\n\nIs Balanced -----------")
       const bounds = this.limits.CG.bounds // [{[],[]}] of bounds *** Ugly ***
-      /*
-                bounds: [
-            { fwd1: [4.699, 2948.35], fwd2: [4.149, 3628.739] },
-            { fwd1: [4.149, 3628.739], fwd2: [5.05968, 3992.066] },
-          ],
-      */
-
-      // Need to analyse weight vs bounds for multiple bounds
-      // return true if above fwd CG limit... all bounds should return true.
-
+      //
+      // Check extreme bounds
+      //
+      let balanced = true
+      if (CG > this.limits.CG.aft || CG < this.limits.CG.forward) {
+        console.log("Out of Balance {at any weight}")
+        balanced = false
+      }
+      //
+      // Check forward bounds
+      //
       bounds.forEach((bound) => {
         const limit = this.getForwardCGLimit(totalWeight, bound)
-        const wLower = bound.fwd1[1]
-        const wUpper = bound.fwd2[1]
-
-        console.log("\ntotalWeight KG %o LBS %o", totalWeight, totalWeight * 2.2)
-        console.log("wLower KG %o LBS %o", wLower, wLower * 2.2)
-        console.log("wUpper KG %o LBS %o", wUpper, wUpper * 2.2)
-        console.log("\n")
+        const wLower = bound.fwd1[1] // Lower Bound weight
+        const wUpper = bound.fwd2[1] // Upper Bound weight
 
         if (totalWeight <= wUpper && totalWeight >= wLower) {
-          console.log("limit m %o in %o", limit, limit * 39.37)
-          console.log("CG m %o in %o", CG, CG * 39.37)
+          console.log("limit m %o in %o", limit, limit * 39.371)
+          console.log("CG m %o in %o", CG, CG * 39.371)
           console.log("Balanced: ", CG > limit)
+          balanced = CG > limit
         }
       })
-      console.log("/IsBalanced ---------")
+      return balanced
     }
   }
 
