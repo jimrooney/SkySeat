@@ -139,8 +139,13 @@
       const rCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
       const rAUW = Math.round((totalWeight + Number.EPSILON) * 100) / 100
 
-      const cgLimits = this.getCGLimit(totalWeight)
-      const cgBalanced = CG <= cgLimits[1] && CG >= cgLimits[0] ? true : false
+      let cgLimits //= this.getCGLimit(totalWeight)
+
+      this.isBalanced(totalWeight, CG)
+
+      let cgBalanced //= CG <= cgLimits[1] && CG >= cgLimits[0] ? true : false
+
+      const isBalanced = this.isBalanced(totalWeight, CG)
       //
       // Build {wb} Object
       //
@@ -188,16 +193,12 @@
       return count
     }
 
-    getForwardCGLimit(weight) {
+    getForwardCGLimit(weight, bounds) {
       // Need parseInt and check weight is valid before anything
-
-      // ************************
-      // This needs to be changed to be airplane specific (this is basic Airvan)
-      // ************************
-      const fwd1 = 1219
-      const fwd2 = 1422
-      const weight1 = 1089
-      const weight2 = 1814
+      const fwd1 = bounds.fwd1[0] || 1219
+      const fwd2 = bounds.fwd2[0] // 1422
+      const weight1 = bounds.fwd1[1] // 1089
+      const weight2 = bounds.fwd2[1] // 1814
 
       const a = fwd2 - fwd1
       const o = weight2 - weight1
@@ -207,9 +208,12 @@
       const h2 = o2 / Math.sin(rad)
 
       const a2 = Math.sqrt(h2 * h2 - o2 * o2)
-      const limit = (fwd1 + a2) / 1000
+      const limit = fwd1 + a2 // 1000
 
       return limit
+    }
+    getAftCGLimit(weight) {
+      return this.limits.CG.aft // *** For now. will make more complex if needed ***
     }
     getCGLimit(weight) {
       // returns [foward,aft] limits for a given weight
@@ -217,6 +221,37 @@
       let forward = this.getForwardCGLimit(weight)
       let aft = this.limits.CG.aft
       return [forward, aft]
+    }
+    isBalanced(totalWeight, CG) {
+      console.log("\n\nIs Balanced -----------")
+      const bounds = this.limits.CG.bounds // [{[],[]}] of bounds *** Ugly ***
+      /*
+                bounds: [
+            { fwd1: [4.699, 2948.35], fwd2: [4.149, 3628.739] },
+            { fwd1: [4.149, 3628.739], fwd2: [5.05968, 3992.066] },
+          ],
+      */
+
+      // Need to analyse weight vs bounds for multiple bounds
+      // return true if above fwd CG limit... all bounds should return true.
+
+      bounds.forEach((bound) => {
+        const limit = this.getForwardCGLimit(totalWeight, bound)
+        const wLower = bound.fwd1[1]
+        const wUpper = bound.fwd2[1]
+
+        console.log("\ntotalWeight KG %o LBS %o", totalWeight, totalWeight * 2.2)
+        console.log("wLower KG %o LBS %o", wLower, wLower * 2.2)
+        console.log("wUpper KG %o LBS %o", wUpper, wUpper * 2.2)
+        console.log("\n")
+
+        if (totalWeight <= wUpper && totalWeight >= wLower) {
+          console.log("limit", limit)
+          console.log("CG m %o in %o", CG, CG * 39.37)
+          console.log("Balanced: ", CG > limit)
+        }
+      })
+      console.log("/IsBalanced ---------")
     }
   }
 
@@ -270,11 +305,9 @@ between these points.
         weight: { empty: 0, MAUW: 1719, Landing: 1632.933, Ramp: 1726.373, Takeoff: 1718.661 },
         // fwd1/2 [limit in M ,@ weight in kg]
         CG: {
-          forward: .8382,
+          forward: 0.8382,
           aft: 1.26492,
-          bounds: [
-            { fwd1: [.8382, 1133.981], fwd2: [1.07188, 1632.933] },
-          ],
+          bounds: [{ fwd1: [0.8382, 1133.981], fwd2: [1.07188, 1632.933] }],
         },
       }
       ;(this.fuel.capacity = 330),
