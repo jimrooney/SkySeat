@@ -35,8 +35,23 @@
       console.log("Balanced: ", WB.cg.balanced)
       console.log("{Loadsheet}\nseats:", seats)
 
-      //$("#FlightFollowing").hide() **************************************************
-
+      // Find PIC
+      let PIC = seats.filter((station)=>{
+        return station.pax.find((el)=>el.label == "seat" && el.value == 1)
+      })
+      if(!PIC.length){ 
+        PIC = null
+        window.alert(
+          "No PIC"
+        )
+        return
+        // If no PIC... this should all fail (and throw an error)
+        }
+      const SIC = seats.filter((station)=>{
+        return station.pax.find((el)=>el.label == "seat" && el.value == 2)
+      })
+      let CREW = PIC[0].pax.find((el)=>el.label == "First Name").value + " " + PIC[0].pax.find((el)=>el.label == "Last Name").value
+      console.log("CREW: ",CREW)
       //
       // Clear out old values
       //
@@ -52,7 +67,7 @@
       }
 
       this.plane = {
-        pilot: pic,
+        pilot: CREW,
         reg: LoadedPlane.reg,
         type: LoadedPlane.type,
         regColor: LoadedPlane.regcolor,
