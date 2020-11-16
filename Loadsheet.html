@@ -1,5 +1,12 @@
 <div id="printLoadsheetClose" class="popupCloseButton">X</div>
+<div id="FFToggle" class="roundButton">FF</div>
 <script>
+  $(() => {
+    $("#FFToggle").click(function () {
+      $("#FlightFollowing").toggle()
+    })
+  })
+
   class Loadsheet {
     constructor($this) {
       const _this = this
@@ -25,12 +32,10 @@
       console.log("WB", WB)
       let seats = TableCell.getSeats()
 
-      console.log("Balanced: ",WB.cg.balanced)
+      console.log("Balanced: ", WB.cg.balanced)
       console.log("{Loadsheet}\nseats:", seats)
 
       //$("#FlightFollowing").hide() **************************************************
-
-
 
       //
       // Clear out old values
@@ -42,10 +47,10 @@
         $("._paxList-" + i + "-weight").html("")
       }
       let pic
-      if (!!WB.crew && !!WB.crew.pic){
+      if (!!WB.crew && !!WB.crew.pic) {
         pic = WB.crew.pic.pax[1].value + " " + WB.crew.pic.pax[2].value
       }
-      
+
       this.plane = {
         pilot: pic,
         reg: LoadedPlane.reg,
@@ -53,8 +58,8 @@
         regColor: LoadedPlane.regcolor,
         fuel: WB.fuel.liters, // Liters
         AUW: Math.round((WB.weights.auw + Number.EPSILON) * 100) / 100,
-        ZFW:  Math.round((WB.weights.zfw + Number.EPSILON) * 100) / 100,
-        fuelWeight:  Math.round((WB.weights.fuel + Number.EPSILON) * 100) / 100,
+        ZFW: Math.round((WB.weights.zfw + Number.EPSILON) * 100) / 100,
+        fuelWeight: Math.round((WB.weights.fuel + Number.EPSILON) * 100) / 100,
         MCTOW: LoadedPlane.limits.weight.MAUW,
         TOW: 0,
         Burnoff: "",
@@ -90,7 +95,7 @@
 
           const role = station.pax.find((px) => px.label == "Role")
           if (!!role) {
-                          let _crew
+            let _crew
             switch (role.value) {
               case "PIC":
                 _crew = firstName + " " + lastName
