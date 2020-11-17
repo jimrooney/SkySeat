@@ -1,6 +1,17 @@
 <div id="printLoadsheetClose" class="popupCloseButton">X</div>
 <div id="FFToggle" class="roundButton">FF</div>
 <script>
+  // ===============================
+  // Loadsheet Close Button onClick
+  // ===============================
+  $(() => {
+    $("#printLoadsheetClose").click(function () {
+      $("#Loadsheet").hide()
+    })
+  })
+</script>
+<script>
+  //
   $(() => {
     $("#FFToggle").click(function () {
       $("#FlightFollowing").toggle()
@@ -16,42 +27,27 @@
       $this.data("object", this)
     }
     print() {
-      return "HI"
+      console.log("printLoadsheet()")
+      // let data = _Loadsheet
+      // console.log("_Loadsheet Data: %o",data)
+      // let pilot = data.pilot
+      // let fullPilot = pilots.getPilot(pilot)
+      // data.pilot = fullPilot[0] + " " + fullPilot[1]
+      // console.log("Record Data: %o",data)
+      // date,time,pilot,plane,fuel,route,pax,paxWeights,pilotWeight,TOW,CG,numPax
+      // google.script.run.withSuccessHandler(utility.alert).saveLoadsheet(data)
+      $("#SaveButton").css({ background: "green" })
+      $("#A4").focus()
+      window.print()
     }
     // ---------------------------
     // Show
     // ---------------------------
     show(TableCell) {
       //
-      // Get a plane object, then calculate the {WB}
+      // Hide flight following by default
       //
-      let LoadedPlane = TableCell.getPlane()
-      console.log("{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
-
-      const WB = LoadedPlane.getWB()
-      console.log("WB", WB)
-      let seats = TableCell.getSeats()
-
-      console.log("Balanced: ", WB.cg.balanced)
-      console.log("{Loadsheet}\nseats:", seats)
-
-      // Find PIC
-      let PIC = seats.filter((station)=>{
-        return station.pax.find((el)=>el.label == "seat" && el.value == 1)
-      })
-      if(!PIC.length){ 
-        PIC = null
-        window.alert(
-          "No PIC"
-        )
-        return
-        // If no PIC... this should all fail (and throw an error)
-        }
-      const SIC = seats.filter((station)=>{
-        return station.pax.find((el)=>el.label == "seat" && el.value == 2)
-      })
-      let CREW = PIC[0].pax.find((el)=>el.label == "First Name").value + " " + PIC[0].pax.find((el)=>el.label == "Last Name").value
-      console.log("CREW: ",CREW)
+      $("#FlightFollowing").hide()
       //
       // Clear out old values
       //
@@ -61,13 +57,64 @@
         $("._paxList-" + i + "-fullName").html("")
         $("._paxList-" + i + "-weight").html("")
       }
-      let pic
-      if (!!WB.crew && !!WB.crew.pic) {
-        pic = WB.crew.pic.pax[1].value + " " + WB.crew.pic.pax[2].value
+      //
+      // Time and Date
+      //
+      const date = TableCell.getDate()
+      const options = {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
       }
+      const dateSTR = date.toLocaleDateString("en-NZ", options)
+      $("._tripDate").html(dateSTR)
+      $("._trip_time").html(TableCell.getTime())
 
+      // ------------------
+      // Get the plane data
+      // ------------------
+      let LoadedPlane = TableCell.getPlane()
+      console.log("{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
+
+      const WB = LoadedPlane.getWB()
+      console.log("WB", WB)
+      let seats = TableCell.getSeats()
+
+      console.log("Balanced: ", WB.cg.balanced)
+      console.log("{Loadsheet}\nseats:", seats)
+      //
+      // Find PIC
+      //
+      let PIC = seats.filter((station) => {
+        return station.pax.find((el) => el.label == "seat" && el.value == 1)
+      })
+      if (!PIC.length) {
+        PIC = null
+        window.alert("No PIC")
+        return
+        // If no PIC... this should all fail (and throw an error)
+      }
+      const SIC = seats.filter((station) => {
+        return station.pax.find((el) => el.label == "seat" && el.value == 2)
+      })
+      const CREW = [...PIC, ...SIC]
+      let CrewNames =
+        PIC[0].pax.find((el) => el.label == "First Name").value +
+        " " +
+        PIC[0].pax.find((el) => el.label == "Last Name").value
+
+      console.log("Crew:", CREW)
+      console.log("CrewNames: ", CrewNames)
+
+      let notCrew = seats.filter((x) => !PIC.includes(x)) // Difference
+      console.log("NotCrew: ", notCrew)
+
+      //
+      // Make plane variable... names mapped to class names
+      //
       this.plane = {
-        pilot: CREW,
+        pilot: CrewNames,
         reg: LoadedPlane.reg,
         type: LoadedPlane.type,
         regColor: LoadedPlane.regcolor,
@@ -88,284 +135,34 @@
         totalFreightWeight: "",
         totalBagWeight: "",
       }
-
-      // *********** Merge the two objects instead of copying the same names over? *************
-      this.plane.reg = LoadedPlane.reg
-      this.plane.regcolor = LoadedPlane.regcolor
-      this.plane.type = LoadedPlane.type
-
-      $(".reg").css("background-color", LoadedPlane.regcolor)
-
-      // ****************************************
-      // Replace with Airplane (CG) style filters
-      // ****************************************
-      // Adjust seatNum if there's co-pilots *********************
-      let seatNum = 0
-      seats.map((station) => {
+      $(".reg").css("background-color", this.plane.regColor)
+      //
+      // Map _plane object into classes
+      //
+      Object.keys(this.plane).map((key, index) => {
+        $("._plane_" + key).html(this.plane[key])
+      })
+      //
+      // Map the passenger data to _paxList- classes
+      //
+      notCrew.map((station, index) => {
         if (!!station.pax) {
           const firstName = station.pax.find((px) => px.label == "First Name").value
           const lastName = station.pax.find((px) => px.label == "Last Name").value
+          const seatNum = station.pax.find((px) => px.label == "seat").value
           const regex = new RegExp("weight", "gi")
           const weight = station.pax.find((px) => px.label.match(regex)).value
-
-          const role = station.pax.find((px) => px.label == "Role")
-          if (!!role) {
-            let _crew
-            switch (role.value) {
-              case "PIC":
-                _crew = firstName + " " + lastName
-                this.plane.pilot = _crew
-                break
-              case "SIC":
-                _crew = " / " + firstName + " " + lastName
-                this.plane.copilot = _crew
-                break
-            }
-            return
-          } else {
-            $("._paxList-" + seatNum + "-fullName").html(firstName + " " + lastName)
-            $("._paxList-" + seatNum + "-weight").html(weight)
-          }
-          seatNum++
+          //
+          $("._paxList-" + seatNum + "-fullName").html(`(${seatNum}) ${firstName} ${lastName}`)
+          $("._paxList-" + seatNum + "-weight").html(weight)
+          //
         }
       })
-      //
-      //LoadedPlane
-      //
-      // Load _plane object into classes
-      //
-      for (let i in this.plane) {
-        $("._plane_" + i).html(this.plane[i])
-      }
-
-      let FF = true
-      if (FF == true) {
-        console.log("Seats: %o", seats.length)
-        $(".POB").html(seats.length)
-        // $(".plane_Endurance_hour").html(this.plane.Endurance.hour)
-        // $(".plane_Endurance_min").html(this.plane.Endurance.min)
-        $("#FlightFollowing").show()
-      }
-
       this.$this.show()
     }
   }
 </script>
-<script>
-  // ******************************************************************
-  // (remove this) Object to hold loadsheet data (was sloppily used to quickly make loadsheet functions)
-  // ******************************************************************
-  let loadsheetData = {
-    WB: null,
-    _json: null,
-    _this: null,
-  }
-
-  // ===============================
-  // Loadsheet Close Button onClick
-  // ===============================
-  $("#printLoadsheetClose").click(function () {
-    $("#Loadsheet").hide()
-  })
-
-  // ===============================
-  // printLoadsheet()
-  // ===============================
-  function printLoadsheet() {
-    let WB = loadsheetData.WB
-    let JSON = loadsheetData._json
-    let _this = loadsheetData._this
-
-    console.log("PrintLoadsheet()")
-    console.log("WB %o", WB)
-    console.log("JSON %o", JSON)
-    console.log("This %o", _this)
-    console.log("Plane: %o", _plane)
-
-    let endurance = WB.fuel / WB.Burn
-    this.plane.Endurance = {}
-    this.plane.Endurance.hour = Math.floor(Math.abs(endurance))
-    this.plane.Endurance.min = Math.floor((Math.abs(endurance) * 60) % 60)
-    this.plane.Endurance.decimal = endurance
-
-    // ****************************************************************************************
-    // Clear out the old data
-    // ****************************************************************************************
-    _trip.route = null
-    _trip.routes = null
-    _trip.cruiseCount = null
-    if (loadsheetData._cruiseCount > 0) {
-      _trip.cruiseCount = "Total Cruising Pax: " + loadsheetData._cruiseCount
-      if (loadsheetData._infantCount > 0) {
-        _trip.cruiseCount = _trip.cruiseCount + " (infant:" + loadsheetData._infantCount + ")"
-      }
-    }
-
-    _paxList = []
-    //      _loadsheetData = []
-    _Loadsheet = {}
-    FF = false
-    _trip.pax = []
-    _trip.paxW = []
-
-    this.plane.copilot = ""
-    this.plane.copilot = ""
-    this.plane.reg = WB.reg
-    this.plane.regColor = WB.regColor
-    this.plane.type = WB.type
-    this.plane.fuel = Math.round(WB.fuel)
-    this.plane.AEW = Math.round(WB.wam[0][0])
-    this.plane.ZFW = Math.round(WB.ZFW)
-    this.plane.fuelWeight = Math.round(WB.fuelWeight)
-    this.plane.MCTOW = WB.MCTOW
-    this.plane.TOW = Math.round(WB.TOW)
-    this.plane.CGLimit = WB.maxCG[1] // Just aft for now **********************
-
-    this.plane.CG = Math.round(WB.getCG() * 100) / 100
-    this.plane.totalPaxWeight = WB.tPaxW
-
-    this.plane.std = "Weights Standard"
-    if (WB.all_weights) {
-      this.plane.std = "Weight Declared"
-    }
-    // Trip Time
-    _trip.date = $("#datepicker").val()
-    $("._tripDate").html(_trip.date)
-    let tripTime = theBoard.get4DigitTime(_this) // 02:00
-    $("._trip_time").html(theBoard.getTripTime(_this))
-    _trip.time = tripTime
-
-    //
-    //
-    //
-
-    //
-    // Product Codes
-    //
-    // ******************** distinguish in or out code *********************************
-    let productCodes = {}
-    for (let b in JSON) {
-      for (let pc in JSON[b].productCode) {
-        // product code row from spreadsheet
-        let code = JSON[b].productCode
-        if (!productCodes[code[4]]) {
-          // match the code
-          productCodes[code[4]] = code[4]
-        }
-        if (code[6] && code[6].match(/Yes/gi)) {
-          FF = true
-        }
-      }
-    }
-    // ********** Need to rename these productCodes to route codes as they're not productCodes *******************
-    let _pc = []
-    let _count = 0
-    for (let p in productCodes) {
-      let code = productCodes[p]
-      if (_count > 0) {
-        code = " <span style='font-size:x-small'>[" + code + "]</span>"
-      }
-      _pc.push(code)
-      _count++
-    }
-    _trip.route = _pc.join(" ")
-    _trip.routes = Object.keys(productCodes).join(" ")
-    $("._trip_route").html(_trip.route)
-    $("._trip_cruiseCount").html(_trip.cruiseCount)
-    //
-    // This could all be done earlier, maybe in parse rezdy **********************
-    //
-    for (let a in WB.seats) {
-      // seats: [weight,{seatobj}]
-      let data = WB.seats[a] // [weight, {pax}]
-
-      // skip crew, process pax
-      //
-      // Crew will only be [weight, name] rather than [weight, {}]
-      //
-      if (data && data.length > 0 && typeof data[1] != "string") {
-        let w = data[0]
-        let pax = data[1]
-
-        let FN = "(" + a + ") " + pax.firstName
-        let LN = pax.lastName
-
-        let extra = ""
-        if (pax.extra) {
-          let _extra = pax.extra.name
-          if (_extra) {
-            _extra = _extra.split("(")[0]
-            extra = " [ " + _extra + " ] "
-          }
-        }
-        let FULLN = FN + " " + LN + extra
-
-        // GY Airstrip
-        pax.pickup = "" // Blank otherwise it persists between Loadsheets
-        if (
-          pax.pickupLocation &&
-          pax.pickupLocation.locationName &&
-          pax.pickupLocation.locationName.match(/Glenorchy Airstrip/gi)
-        ) {
-          pax.pickup = "GY"
-        }
-        if (
-          pax.pickupLocation &&
-          pax.pickupLocation.locationName &&
-          pax.pickupLocation.locationName.match(/Blanket/gi)
-        ) {
-          pax.pickup = "GY"
-        }
-        if (pax.productCode && pax.productCode[2] && pax.productCode[2].match(/\-DR/gi)) {
-          pax.pickup = "<span style='font-size:x-small'>DropGY</span>"
-        }
-
-        _paxList.push({
-          bgColor: "white",
-          firstName: FN,
-          lastName: LN,
-          fullName: FULLN,
-          weight: w,
-          product: pax.product,
-          productCode: pax.productCode,
-          pickupLocation: pax.pickupLocation,
-          pickup: pax.pickup,
-        })
-      }
-
-      //
-      // Need the pilot and copilot to process first in the stack ******************************
-      //
-      if (data && data.length > 0 && typeof data[1] == "string") {
-        if (a == 0) {
-          this.plane.pilot = data[1]
-          this.plane.crewWeight = data[0]
-        }
-        // Copilot
-        if (a > 0) {
-          if (typeof data[1] == "string") {
-            let cp = "<span style='font-size:small'> (copilot: " + data[1] + ")</span>"
-            this.plane.copilot = data[1]
-            this.plane.copilot = cp
-            this.plane.crewWeight += data[0]
-          } else {
-            this.plane.copilot = ""
-          }
-        }
-      }
-
-      /*
-
-
-
-
-
-
-
-
-
-
-      Below are the functions that turn the data structure into CSS Classes for display
+<!--
 
 
 
@@ -379,135 +176,11 @@
 
 
 
+-->
+<!-- ------------------------------------- HTML ---------------------------------------- -->
 
-*/
-
-      // ------------------------------------------------------------------------------
-      // Put objects into variables for display
-      // ------------------------------------------------------------------------------
-      $(".reg").css("background-color", this.plane.regColor)
-      $("._plane_pilot").html(this.plane.pilot)
-      //
-      // Pilot Info (for FF)
-      //
-      //console.log("Matrix: %o", pilots.matrix)
-      let pilotData = ""
-      for (let a in pilots.matrix) {
-        let p = pilots.matrix[a]
-        let re = new RegExp(this.plane.pilot, "ig")
-        if (p[0] && p[0].match(re)) {
-          pilotData = p
-        }
-      }
-      if (pilotData && pilotData.length > 2) {
-        $(".PIC_Phone").html(pilotData[2])
-      }
-      /*
-          Burnoff : 75,
-          LandingWeight : 1800,
-          OutOfLimits : "",
-          KGLBS:"KG",
-          totalPaxWeight:166,
-          totalFreightWeight:0,
-          totalBagWeight:0
-          */
-    }
-    // Display Pilot and Plane
-    $("#pilot_name").html(WB.seats[0][1])
-
-    //
-    // Load _plane object into classes
-    //
-    for (let i in this.plane) {
-      $("._plane_" + i).html(this.plane[i])
-    }
-
-    // Display Pax (Will need update for Caravan) ******************************************
-
-    //
-    // Clear out old values
-    //
-    for (let i = 0; i < 7; i++) {
-      $("._paxList-" + i + "-fullName").html("")
-      $("._paxList-" + i + "-weight").html("")
-      $("._paxList-" + i + "-product").html("")
-      $("._paxList-" + i + "-pickup").html("")
-    }
-    // Flatten PaxList
-    for (let i in _paxList) {
-      for (let o in _paxList[i]) {
-        $("._paxList-" + i + "-" + o).html(_paxList[i][o])
-      }
-    }
-    // Flight Data V1 format:
-    // date,time,pilot,plane,fuel,route,pax,paxWeights,pilotWeight,TOW,CG,numPax
-    for (let px in _paxList) {
-      let tis = _paxList[px].firstName + " " + _paxList[px].lastName
-      let tat = _paxList[px].weight
-      _trip.pax.push(tis)
-      _trip.paxW.push(tat)
-    }
-    _trip.paxNames = _trip.pax.join(",")
-    _trip.paxWeights = _trip.paxW.join(",")
-    // Populate loadsheet data for printing
-    _Loadsheet = {
-      date: _trip.date,
-      time: _trip.time,
-      pilot: this.plane.pilot,
-      reg: this.plane.reg,
-      fuel: this.plane.fuel,
-      routes: _trip.routes,
-      paxNames: _trip.paxNames,
-      paxWeights: _trip.paxWeights,
-      crewWeight: this.plane.crewWeight,
-      TOW: this.plane.TOW,
-      CG: this.plane.CG,
-      numPax: WB.numPax,
-      copilot: this.plane.copilot,
-    }
-    _loadsheetData = [
-      _trip.date,
-      _trip.time,
-      this.plane.pilot,
-      this.plane.reg,
-      this.plane.fuel,
-      _trip.routes,
-      _trip.paxNames,
-      _trip.paxWeights,
-      this.plane.crewWeight,
-      this.plane.TOW,
-      this.plane.CG,
-      WB.numPax,
-    ]
-    $("#details").hide()
-    $("#planeDetails").hide()
-    $("#Loadsheet").show()
-
-    $("#FlightFollowing").hide()
-    if (FF == true) {
-      console.log("Seats: %o", WB.seats.length)
-      $(".POB").html(WB.seats.length)
-      $(".plane_Endurance_hour").html(this.plane.Endurance.hour)
-      $(".plane_Endurance_min").html(this.plane.Endurance.min)
-      $("#FlightFollowing").show()
-    }
-  }
-
-  //var FF = true
-
-  var _trip = {
-    date: "1/12/2019",
-    time: "08:00",
-    route: "",
-    pax: [],
-    paxW: [],
-  }
-  var _paxList = []
-  var _loadsheetData = []
-</script>
-<div class="A4">
+<div id="A4" class="A4">
   <div class="vcontainer">
-    <!-- ------------------------------------- HTML ---------------------------------------- -->
     <table
       width="100%"
       border="1"
@@ -516,7 +189,7 @@
       <tr>
         <td height="1">
           <!-- The print button also calls the log function which submits the flight data to the data spreadsheet -->
-          <button onclick="javascript: theBoard.printLoadsheet()" id="opener">Print</button>
+          <button onclick="javascript: LOADSHEET.print()" id="LoadsheetPrintButton">Print</button>
         </td>
         <td colspan="5" height="2">
           <img

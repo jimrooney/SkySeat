@@ -516,23 +516,6 @@ var theBoard = {
       return ret
     }
   },
-  //
-  // Print Loadsheet
-  //
-  printLoadsheet: function(){
-    console.log("printLoadsheet()")
-    let data = _Loadsheet
-    console.log("_Loadsheet Data: %o",data)
-    let pilot = data.pilot
-    let fullPilot = pilots.getPilot(pilot)
-    data.pilot = fullPilot[0] + " " + fullPilot[1]
-    console.log("Record Data: %o",data)
-    // date,time,pilot,plane,fuel,route,pax,paxWeights,pilotWeight,TOW,CG,numPax
-    google.script.run.withSuccessHandler(utility.alert).saveLoadsheet(data)
-    $("#SaveButton").css({"background": "green",})
-    $('#Loadsheet').focus()
-      window.print()
-  },
   printPickupList:function(){
       $('#PickupList').focus()
       window.print()

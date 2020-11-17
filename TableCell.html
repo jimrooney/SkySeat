@@ -46,14 +46,16 @@
         let data = _this.getData()
         console.log("Data: %o", data)
         if (!!data) {
-          // ****************************
-          // Either pass in the wb data to Details, or have Details reach back and call the function
-          //
-          _this.getPlane()
           $("#Details").data("root").show($(this))
           $("#Details").show()
         }
       })
+    }
+    getDate(){
+      return this.board.manifest.getDate()
+    }
+    getTime() {
+      return $(".TimeCell.Row_" + this.row).data("hour")
     }
     // -------------------------------------------
     // Drop
@@ -284,9 +286,6 @@
     // This only tells you if the cell contains outs, not the direction of the leg
     isOut() {
       return this.getOrders().some((x) => x.isOut() == true)
-    }
-    getTime() {
-      // Maybe make the row's time a class? **************************************
     }
     //
     // get Plane Crew Fuel
