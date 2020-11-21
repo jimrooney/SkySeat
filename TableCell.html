@@ -228,7 +228,6 @@
       //
       // Get the airplane raw data
       //
-      console.log("{TableCell}.getState()",state)
       let PCF = PlaneManager.planes.data.find(function (element) {
         return element.reg == state.PCF.reg
       })
@@ -242,7 +241,7 @@
       }
 
       let fuelStation = airplane.stations.find((station) => station.type.includes("fuel"))
-      fuelStation.weight = parseInt(state.PCF.fuel) * 0.72 // Adjust for Jet A ********** (.8) ****
+      fuelStation.weight = parseInt(state.PCF.fuel) * airplane.fuel.factor
       fuelStation.quantity = state.PCF.fuel
 
       // if seats aren't assigned, sort by crew, then weight

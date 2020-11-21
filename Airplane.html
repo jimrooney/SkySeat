@@ -118,6 +118,7 @@
       //
       const ZFW = this.stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
       const fuel = this.stations.filter((station) => station.type.includes("fuel"))
+      const fuelQuantity = fuel.reduce((acc, station)=>station.quantity,0)
       const POB = this.stations.filter((station) => station.type.includes("seat") && station.weight > 0) // only occupied seats
       const CREW = POB.filter((station) =>
         station.pax.find(
@@ -136,13 +137,9 @@
       const totalWeight = this.stations.reduce((total, station) => total + parseFloat(station.weight), 0)
       const totalMoment = this.stations.reduce((total, station) => total + parseFloat(station.moment), 0)
       const CG = totalMoment / totalWeight
-      const rCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
-      const rAUW = Math.round((totalWeight + Number.EPSILON) * 100) / 100
-
-      let cgLimits //= this.getCGLimit(totalWeight)
-
+      const roundCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
+      const roundAUW = Math.round((totalWeight + Number.EPSILON) * 100) / 100
       let isBalanced = this.isBalanced(totalWeight, CG)
-      console.log("IsBalanced", isBalanced)
       //
       // Build {wb} Object
       //
@@ -157,7 +154,6 @@
         CG: CG,
         cg: {
           position: CG,
-          limits: cgLimits,
           balanced: isBalanced,
           imperial: {
             TotalWeight: totalWeight * 2.2,
@@ -173,12 +169,12 @@
           fuel: totalWeight - ZFW_Weight,
         },
         fuel: {
-          liters: 0,
+          liters: fuelQuantity,
           kg: 0,
         },
         rounded: {
-          AUW: rAUW,
-          CG: rCG,
+          AUW: roundAUW,
+          CG: roundCG,
         },
       }
       return wb
@@ -195,7 +191,11 @@
     }
 
     getForwardCGLimit(weight, bounds) {
+      //
       // Need parseInt and check weight is valid before anything
+      //
+      // bounds [limit,weight] (coordinates on the plotted WB chart)
+      //
       const fwd1 = bounds.fwd1[0] //|| 1219
       const fwd2 = bounds.fwd2[0] // 1422
       const weight1 = bounds.fwd1[1] // 1089

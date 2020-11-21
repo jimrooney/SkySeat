@@ -75,14 +75,10 @@
       // Get the plane data
       // ------------------
       let LoadedPlane = TableCell.getPlane()
-      console.log("{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
-
+      console.log("\n\n{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
       const WB = LoadedPlane.getWB()
       console.log("WB", WB)
       let seats = TableCell.getSeats()
-
-      console.log("Balanced: ", WB.cg.balanced)
-      console.log("{Loadsheet}\nseats:", seats)
       //
       // Find PIC
       //
@@ -103,15 +99,12 @@
         PIC[0].pax.find((el) => el.label == "First Name").value +
         " " +
         PIC[0].pax.find((el) => el.label == "Last Name").value
-
-      console.log("Crew:", CREW)
-      console.log("CrewNames: ", CrewNames)
-
       let notCrew = seats.filter((x) => !PIC.includes(x)) // Difference
-      console.log("NotCrew: ", notCrew)
-
       //
       // Make plane variable... names mapped to class names
+      //
+      // For some reason, this needs to be set as a const before putting into this.plane ? *
+      const _displayLimits = LoadedPlane.limits.CG.aft + "" + LoadedPlane.limits.CG.forward
       //
       this.plane = {
         pilot: CrewNames,
@@ -123,10 +116,10 @@
         ZFW: Math.round((WB.weights.zfw + Number.EPSILON) * 100) / 100,
         fuelWeight: Math.round((WB.weights.fuel + Number.EPSILON) * 100) / 100,
         MCTOW: LoadedPlane.limits.weight.MAUW,
-        TOW: 0,
+        TOW: Math.round((WB.TotalWeight + Number.EPSILON) * 100) / 100,
         Burnoff: "",
         LandingWeight: "",
-        CGLimit: LoadedPlane.limits.CG.aft, // Needs to be forward and aft *************
+        CGLimit: "", //_displayLimits,
         CG: Math.round((WB.CG + Number.EPSILON) * 100) / 100,
         OutOfLimits: "",
         CREW: "CREW",
@@ -139,12 +132,6 @@
       //
       // Map _plane object into classes
       //
-
-        this.plane = {
-        type: "Starship",
-        regColor: "Green",
-        fuel: "10", // Liters
-        }
       const keys = Object.keys(this.plane)
       keys.map((key) => {
         $("._plane_" + key).html(this.plane[key])
