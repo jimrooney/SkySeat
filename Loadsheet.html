@@ -37,7 +37,7 @@
       // date,time,pilot,plane,fuel,route,pax,paxWeights,pilotWeight,TOW,CG,numPax
       // google.script.run.withSuccessHandler(utility.alert).saveLoadsheet(data)
       $("#SaveButton").css({ background: "green" })
-      $("#A4").focus()
+      $("#Loadsheet").focus()
       window.print()
     }
     // ---------------------------
@@ -139,7 +139,14 @@
       //
       // Map _plane object into classes
       //
-      Object.keys(this.plane).map((key, index) => {
+
+        this.plane = {
+        type: "Starship",
+        regColor: "Green",
+        fuel: "10", // Liters
+        }
+      const keys = Object.keys(this.plane)
+      keys.map((key) => {
         $("._plane_" + key).html(this.plane[key])
       })
       //
@@ -179,7 +186,7 @@
 -->
 <!-- ------------------------------------- HTML ---------------------------------------- -->
 
-<div id="A4" class="A4">
+<div class="A4">
   <div class="vcontainer">
     <table
       width="100%"

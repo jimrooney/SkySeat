@@ -230,8 +230,7 @@
       //
       let balanced = true
       if (CG > this.limits.CG.aft || CG < this.limits.CG.forward) {
-        console.log("Out of Balance {at any weight}")
-        balanced = false
+        return false
       }
       //
       // Check forward bounds
@@ -242,9 +241,6 @@
         const wUpper = bound.fwd2[1] // Upper Bound weight
 
         if (totalWeight <= wUpper && totalWeight >= wLower) {
-          console.log("limit m %o in %o", limit, limit * 39.371)
-          console.log("CG m %o in %o", CG, CG * 39.371)
-          console.log("Balanced: ", CG > limit)
           balanced = CG > limit
         }
       })
