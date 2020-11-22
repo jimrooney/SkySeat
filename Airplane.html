@@ -92,7 +92,9 @@
     removeLoad(load) {
       // remove obj by load.id
     }
-    getWB() {
+    getWB(SAD) {
+      // Standard Actual Declared
+
       //---------------------------------------
       // calculate CG based on load (simple WAM)
       // returns {wb} Object
@@ -118,8 +120,18 @@
       //
       const ZFW = this.stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
       const fuel = this.stations.filter((station) => station.type.includes("fuel"))
-      const fuelQuantity = fuel.reduce((acc, station)=>station.quantity,0)
-      const POB = this.stations.filter((station) => station.type.includes("seat") && station.weight > 0) // only occupied seats
+      const fuelQuantity = fuel.reduce((acc, station) => station.quantity, 0)
+
+      const pob = this.stations.filter((station) => station.type.includes("seat") && station.weight > 0) // only occupied seats
+      let POB = pob
+
+      if (SAD == "Declared") {
+        POB = pob.map((station) => {
+          station.weight = Number(station.weight) + 4
+          return station
+        })
+      }
+
       const CREW = POB.filter((station) =>
         station.pax.find(
           (pax) => pax.label == "Role" // only return pax with Roles (crew)
@@ -134,8 +146,13 @@
       const CREW_Weight = CREW.reduce((total, station) => total + parseFloat(station.weight), 0)
       const PAX_Weight = POB_Weight - CREW_Weight
       const ZFW_Weight = ZFW.reduce((total, station) => total + parseFloat(station.weight), 0)
+
+      // needs tweaking for Declared Weights ***
+
       const totalWeight = this.stations.reduce((total, station) => total + parseFloat(station.weight), 0)
       const totalMoment = this.stations.reduce((total, station) => total + parseFloat(station.moment), 0)
+
+      //
       const CG = totalMoment / totalWeight
       const roundCG = Math.round((CG + Number.EPSILON) * 1000) / 1000
       const roundAUW = Math.round((totalWeight + Number.EPSILON) * 100) / 100

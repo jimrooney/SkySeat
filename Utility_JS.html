@@ -54,7 +54,11 @@
     //    seats: seats,
     //    code: code,
     //    ACI: ACI,
-
+    round(num,decimalPlaces){
+      // decimalPlaces... not used, but could be handy ***
+      num = Number(num)
+      return Math.round((num + Number.EPSILON) * 100) / 100
+    },
     // -----------------------------------------------------------------------------
     // Get passenger numbers. If quantities are by product and not pax, return false
     // -----------------------------------------------------------------------------

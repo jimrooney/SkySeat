@@ -18,10 +18,8 @@ Pax per month starts one day behind (probably a timezone issue)
 Currently
 -------------------------------
 
-Only MMZ not printing right... 
-Something about the _plane_ mapped values in this.plane
-Currently swapping out values to figure out which one is screwing things up.
-
+In Airplane.html, add in Standard Weight code.
+// needs tweaking for Declared Weights ***
 
 Saving of loadsheet prints is disabled in TheBoard_JS... 
 printLoadsheet: function(){
@@ -35,6 +33,12 @@ Second Board picks up wrong planes (need to reset the counter)
 I think the multi-load issues are because each function clears out the DIV before writing to it... 
 So if two returns happen around the same time, they can step on each other... 
 Maybe check to see if the roster clears the Manifest div?
+
+
+$("._trip_time").html(TableCell.getTime() + ":00") // ******** (just using the summer :00 for now... needs winter :30)
+
+
+
 
 -------------------------------
 All this (and below it ) can and should be removed (after we start printing loadsheets again)
