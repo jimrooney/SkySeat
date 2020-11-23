@@ -20,16 +20,15 @@
         <div id="detailsContents">
           <div id="content" style="width: 100%; overflow: hidden;">
             <div id="Airplane" class="grid-container Airplane"></div>
+            <div id="Pod">POD</div>
             <div id="PassengerList" class="PassengerList"></div>
-            <div id="CrewList" class="CrewList"></div>
           </div>
+          <div id="CrewList" class="CrewList"></div>
         </div>
       </div>`)
       this.$this = this.$root
       this.PCFSelectorString = `<div class="PCF_Selector" id="PCF_Selector">
           <select class="Plane" name="plane" />
-          <select class="Pilot" name="pilot" />
-          <select class="CoPilot" name="copilot" />
           <select class="Fuel" name="fuel" />
         </div>`
       this.$PCFSelector = $(this.PCFSelectorString)
@@ -113,43 +112,50 @@
       this.$PCFSelector.remove()
       this.$PCFSelector = $(this.PCFSelectorString)
       this.$root.prepend(this.$PCFSelector)
-
-      $("#PassengerList").html("") // will be able to be removed since we'll just plot all pax in seats (don't need a populated pax list... maybe a holding pen though)
+      $("#PassengerList").html("")
       $("#CrewList").html("")
       //
-      // *************************************************************
-      // Tweak for different plane types
-      // *************************************************************
-      //
-      // Setup type
-      // We'll need to clear this jQuery object with each plane loaded.. *******************
+      // -------------------------
+      // Setup Airplane
+      // -------------------------
       $("#Airplane").empty()
       let airplane = $TableCell.data("_script").getPlane()
-
+      // ------------
+      // Pilot's seat
+      // ------------
       $("<div></div>")
         .data("number", 1)
         .data("seat", 1)
+        .addClass("SeatNumber1")
         .appendTo("#Airplane")
         .addClass("grid-item")
         .addClass("station")
         .addClass("PilotSeat")
         .addClass("Crew")
-
-      // *** change to reflect any plane *********************************************
-      // probably need to add .click() here. ********************
-
-      let seats = airplane.stations.filter((el) => el.type.includes("seat"))
-      console.log("New Array %o", seats)
-
-      for (let i = 2; i <= seats.length; i++) {
+      // -----
+      // Seats
+      // -----
+      // slice(1) skips the pilot's seat
+      airplane.stations.slice(1).filter((el) => el.type.includes("seat"))
+      .forEach((seat,i)=>{
+        const index = i + 2 // Skipping the Pilot seat and using 1 based counting.
         $("<div></div>")
-          .data("number", i)
-          .data("seat", i)
+          .data("number", index)
+          .data("seat", index)
           .appendTo("#Airplane")
+          .addClass("SeatNumber" + index)
           .addClass("grid-item")
           .addClass("station")
           .addClass("PaxSeat")
-      }
+      })
+      // -----------
+      // Baggage Pod
+      // -----------
+
+
+
+
+
     }
     handleDrop(event, ui) {
       let _this = $(this).closest(".detailsDiv").data("root") // This Details Object
@@ -271,19 +277,6 @@
         _TableCell.setPlaneData("reg", this.value)
         _this.show(_this.$TableCell)
         _this.$this.show()
-      })
-      //
-      // Change this to Sprites so pilots can be dropped rather than a dropmenu *****
-      //
-      pilots.list.forEach((pilot, i) => {
-        $pilot.append(`<option value="${pilot.first}">${pilot.first}</option>`)
-        $coPilot.append(`<option value="${pilot.first}">${pilot.first}</option>`)
-      })
-      $pilot.change(function () {
-        _TableCell.setPlaneData("pilot", this.value)
-      })
-      $coPilot.change(function () {
-        _TableCell.setPlaneData("copilot", this.value)
       })
       $fuel.append(`<option value="0">0</option>`)
       for (let i = 10; i <= 1260; i += 10) {
