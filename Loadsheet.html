@@ -37,8 +37,10 @@
       // date,time,pilot,plane,fuel,route,pax,paxWeights,pilotWeight,TOW,CG,numPax
       // google.script.run.withSuccessHandler(utility.alert).saveLoadsheet(data)
       $("#SaveButton").css({ background: "green" })
+      $("#Boards").hide()
       $("#Loadsheet").focus()
       window.print()
+      $("#Boards").show()
     }
     // ---------------------------
     // Show
