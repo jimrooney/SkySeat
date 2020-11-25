@@ -108,6 +108,7 @@
       // For some reason, this needs to be set as a const before putting into this.plane ? *
       const _displayLimits = LoadedPlane.limits.CG.aft + "" + LoadedPlane.limits.CG.forward
       //
+      const fuelWeight = utility.round(WB.weights.fuel) + " (" + utility.round(WB.cg.imperial.fuelWeight) + ")lbs"
       this.plane = {
         pilot: CrewNames,
         reg: LoadedPlane.reg,
@@ -117,7 +118,7 @@
         EmptyWeight: utility.round(LoadedPlane.weight),
         AUW: utility.round(WB.weights.auw),
         ZFW: utility.round(WB.weights.zfw),
-        fuelWeight: utility.round(WB.weights.fuel),
+        fuelWeight: fuelWeight,
         TOW: utility.round(WB.TotalWeight),
         MCTOW: LoadedPlane.limits.weight.MAUW,
         Burnoff: "",
