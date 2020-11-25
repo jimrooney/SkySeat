@@ -136,9 +136,15 @@
       // Seats
       // -----
       // slice(1) skips the pilot's seat
-      airplane.stations.slice(1).filter((el) => el.type.includes("seat"))
-      .forEach((seat,i)=>{
-        const index = i + 2 // Skipping the Pilot seat and using 1 based counting.
+      let index = 2 // Skipping the Pilot seat and using 1 based counting.
+      airplane.stations.slice(1).filter((el) => el.type.includes("seat") || el.type.includes("placeholder"))
+      .forEach((seat)=>{
+        if (seat.type.includes("placeholder")){
+          $("<div></div>")
+          .appendTo("#Airplane")
+          .addClass("grid-placeholder")
+          //.text("Placeholder")
+        } else {
         $("<div></div>")
           .data("number", index)
           .data("seat", index)
@@ -147,6 +153,9 @@
           .addClass("grid-item")
           .addClass("station")
           .addClass("PaxSeat")
+          index++ 
+        }
+
       })
       // -----------
       // Baggage Pod
@@ -166,7 +175,7 @@
       let DragParent = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
       let $DropPax = ui.draggable.detach()
       let droppedPax = $DropPax.data("pax")
-      let seatNumber = $(this).data("number")
+      let seatNumber = $(this).data("seat")
       //
       // Victory is mine :)
       //
@@ -180,7 +189,6 @@
       let _pax = new Pax(droppedPax)
       const paxSeat = _pax.fields.find((p) => p.label === "seat")
       if (!paxSeat) {
-        console.log("No Seat")
         let p = {
           label: "seat",
           value: seatNumber,
@@ -189,6 +197,7 @@
       } else {
         paxSeat.value = seatNumber
       }
+      console.log("Seat: %o", seatNumber)
       // Swap with any existing seated pax
       if ($(this).children().length > 0) {
         // Detach pax from seat

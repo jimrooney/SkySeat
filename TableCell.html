@@ -239,8 +239,8 @@
         let dynamic_class = eval(PCF.type)
         airplane = new dynamic_class(PCF)
       }
-
-      let fuelStation = airplane.stations.find((station) => station.type.includes("fuel"))
+      const seats = airplane.stations.filter(station=>station.type.includes("seat"))
+      const fuelStation = airplane.stations.find((station) => station.type.includes("fuel"))
       fuelStation.weight = parseInt(state.PCF.fuel) * airplane.fuel.factor
       fuelStation.quantity = state.PCF.fuel
 
@@ -267,8 +267,8 @@
           pax = $(this).data("pax")
           weight = $(this).data("_pax").getWeight()
           if (seat >= 0) {
-            airplane.stations[seat].weight = weight
-            airplane.stations[seat].pax = pax
+            seats[seat].weight = weight
+            seats[seat].pax = pax
           }
         })
 

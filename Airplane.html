@@ -125,6 +125,7 @@
       const pob = this.stations.filter((station) => station.type.includes("seat") && station.weight > 0) // only occupied seats
       let POB = pob
 
+      // If Declared Weights, add 4 kg to POB list ***
       if (SAD == "Declared") {
         POB = pob.map((station) => {
           station.weight = Number(station.weight) + 4
@@ -353,15 +354,16 @@ between these points.
       this.stations = [
         new Station({ type: ["seat", "crew"], arm: 3.4417 }),
         new Station({ type: ["seat", "crew"], arm: 3.4417 }),
-        new Station({ type: ["seat", "cargo"], arm: 4.2926 }),
-        new Station({ type: ["seat", "cargo"], arm: 4.2926 }),
-        new Station({ type: ["seat", "cargo"], arm: 5.0038 }),
-        new Station({ type: ["seat", "cargo"], arm: 5.1054 }),
-        new Station({ type: ["seat", "cargo"], arm: 5.8166 }),
-        new Station({ type: ["seat", "cargo"], arm: 5.9182 }),
-        new Station({ type: ["seat", "cargo"], arm: 6.6548 }),
-        new Station({ type: ["seat", "cargo"], arm: 6.7818 }),
-        new Station({ type: ["seat", "cargo"], arm: 7.3914 }),
+        new Station({ type: ["seat", "cargo"], arm: 4.43992 }),
+        new Station({ type: ["seat", "cargo"], arm: 4.43992 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.55752 }),
+        new Station({ type: ["seat", "cargo"], arm: 5.55752 }),
+        new Station({ type: ["seat", "cargo"], arm: 6.42112 }),
+        new Station({ type: ["seat", "cargo"], arm: 6.60146 }),
+        new Station({ type: ["seat", "cargo"], arm: 7.21106 }),
+        new Station({ type: ["placeholder"], arm: 0 }),
+        new Station({ type: ["seat", "cargo"], arm: 8.69696 }),
+        new Station({ type: ["seat", "cargo"], arm: 8.69696 }),
         new Station({ type: ["fuel"], arm: 5.175758 }),
         new Station({ type: ["cargo"], arm: 3.44, limit: 113 }),
       ]
