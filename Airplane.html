@@ -125,13 +125,24 @@
       const pob = this.stations.filter((station) => station.type.includes("seat") && station.weight > 0) // only occupied seats
       let POB = pob
 
-      // If Declared Weights, add 4 kg to POB list ***
-      if (SAD == "Declared") {
-        POB = pob.map((station) => {
+
+  switch( SAD ) {
+    case "Actual":
+      POB = pob.map( (station) =>  station ) // copy the array... maybe use Set instead?
+      break;
+    case "Standard":
+    POB = pob.map((station) => {
+          station.weight = 83 // Everyone's an adult for now ******
+          return station
+        })
+      break;
+      // Assume Declared
+    default:
+    POB = pob.map((station) => {
           station.weight = Number(station.weight) + 4
           return station
         })
-      }
+  }
 
       const CREW = POB.filter((station) =>
         station.pax.find(
