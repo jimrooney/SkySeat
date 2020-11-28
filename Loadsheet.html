@@ -80,7 +80,7 @@
       console.log("\n\n{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
       const WB = LoadedPlane.getWB()
       console.log("WB", WB)
-      let seats = TableCell.getSeats()
+      let seats = WB.POB
       //
       // Find PIC
       //
@@ -94,14 +94,39 @@
         // If no PIC... this should all fail (and throw an error)
       }
       const SIC = seats.filter((station) => {
-        return station.pax.find((el) => el.label == "seat" && el.value == 2)
+        const isCrew = station.pax.find((el) => el.label == "Role")
+        if (!!isCrew){
+          return station.pax.find((el) => el.label == "seat" && el.value == 2)
+        }
       })
       const CREW = [...PIC, ...SIC]
-      let CrewNames =
-        PIC[0].pax.find((el) => el.label == "First Name").value +
-        " " +
-        PIC[0].pax.find((el) => el.label == "Last Name").value
-      let notCrew = seats.filter((x) => !PIC.includes(x)) // Difference
+      let CrewNames = `
+      ${ PIC[0].pax.find((el) => el.label == "First Name").value }
+      ${ PIC[0].pax.find((el) => el.label == "Last Name").value }
+      ${ PIC[0].weight }
+      `
+      if (SIC.length>0){
+        CrewNames += `
+        <span style="font-size: xx-small;">/ (
+      ${ SIC[0].pax.find((el) => el.label == "First Name").value }
+      ${ SIC[0].pax.find((el) => el.label == "Last Name").value }
+      )</span>
+      `
+      }
+
+        // PIC[0].pax.find((el) => el.label == "First Name").value +
+        // " " +
+        // PIC[0].pax.find((el) => el.label == "Last Name").value + 
+        // ""
+        // " / " +
+        // SIC[0].pax.find((el) => el.label == "First Name").value +
+        // " " +
+        // SIC[0].pax.find((el) => el.label == "Last Name").value  
+
+
+
+
+
       //
       // Make plane variable... names mapped to class names
       //
@@ -144,14 +169,14 @@
       //
       // Map the passenger data to _paxList- classes
       //
-      notCrew.map((station, index) => {
+      seats.map((station, index) => {
         if (!!station.pax) {
           const firstName = station.pax.find((px) => px.label == "First Name").value
           const lastName = station.pax.find((px) => px.label == "Last Name").value
           let seatNum = station.pax.find((px) => px.label == "seat").value
           seatNum = Number(seatNum) - 1
           const regex = new RegExp("weight", "gi")
-          const weight = station.pax.find((px) => px.label.match(regex)).value
+          const weight = station.weight
           //
           $("._paxList-" + seatNum + "-fullName").html(`<span style="font-size:x-small">(${seatNum})</span> ${firstName} ${lastName}`)
           $("._paxList-" + seatNum + "-weight").html(weight)

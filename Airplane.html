@@ -143,6 +143,12 @@
           return station
         })
   }
+        //
+      // ReCalculate POB moments
+      //
+      POB.forEach((station) => {
+        station.moment = station.weight * station.arm
+      })
 
       const CREW = POB.filter((station) =>
         station.pax.find(
@@ -174,6 +180,7 @@
       //
       const wb = {
         stations: this.stations,
+        POB: POB,
         crew: {
           stations: CREW,
           pic: PIC,
