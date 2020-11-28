@@ -17,7 +17,7 @@ function add_months(dt, n) {
 //         Load TripCodes
 // =======================================================
 function loadTripCodes() {
-  var data = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("TripCodes").getRange("A:I").getValues()
+  var data = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("TripCodes").getRange("A:Z").getValues()
   return data
 }
 // =======================================================

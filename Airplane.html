@@ -54,14 +54,7 @@
       this.fuel = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight() }
     }
     getSeats() {
-      // ******************
-      // analyse stations to see how many seats are installed.
-      // default loading of airplane will contain the seats at station
-      // will also contain the controls
-      // and anything else that we have the data for.
-      // we can remove items with negative loads if necessary.
-      const result = this.stations((item) => item.type == "seat")
-      return result
+      return this.stations((item) => item.type.includes("seat"))
     }
     getFuelWeight() {
       let ret
@@ -125,25 +118,24 @@
       const pob = this.stations.filter((station) => station.type.includes("seat") && station.weight > 0) // only occupied seats
       let POB = pob
 
-
-  switch( SAD ) {
-    case "Actual":
-      POB = pob.map( (station) =>  station ) // copy the array... maybe use Set instead?
-      break;
-    case "Standard":
-    POB = pob.map((station) => {
-          station.weight = 83 // Everyone's an adult for now ******
-          return station
-        })
-      break;
-      // Assume Declared
-    default:
-    POB = pob.map((station) => {
-          station.weight = Number(station.weight) + 4
-          return station
-        })
-  }
-        //
+      switch (SAD) {
+        case "Actual":
+          POB = pob.map((station) => station) // copy the array... maybe use Set instead?
+          break
+        case "Standard":
+          POB = pob.map((station) => {
+            station.weight = 83 // Everyone's an adult for now ******
+            return station
+          })
+          break
+        // Assume Declared
+        default:
+          POB = pob.map((station) => {
+            station.weight = Number(station.weight) + 4
+            return station
+          })
+      }
+      //
       // ReCalculate POB moments
       //
       POB.forEach((station) => {

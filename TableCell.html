@@ -257,6 +257,9 @@
       // Modifications (seats/controls/pods)
       // Baggage
 
+      //
+      // Load pax from .station sprites (in Details)
+      //
       $(".station")
         .children()
         .each(function (i, $div) {
@@ -275,11 +278,9 @@
       return airplane
     }
     getSeats() {
-      const _wb = this.getPlane()
-      let seats = _wb.stations.filter((station) => {
+      return this.getPlane().getSeats().filter((station) => {
         return station.type.includes("seat") && parseInt(station.weight) > 0
       })
-      return seats
     }
     // Perhaps "hasOuts()" ************************************
     // This only tells you if the cell contains outs, not the direction of the leg
