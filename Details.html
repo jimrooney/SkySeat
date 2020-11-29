@@ -104,12 +104,12 @@
       })
     }
     removePax(event, ui, $source) {
-      let $DropPax = ui.draggable.detach()
+      let $newPax = ui.draggable.detach()
       if (!!$source) {
-        $DropPax.appendTo($source)
+        $newPax.appendTo($source)
         return
       }
-      $DropPax.appendTo($(this))
+      $newPax.appendTo($(this))
     }
     reset($TableCell) {
       this.$PCFSelector.remove()
@@ -155,7 +155,7 @@
           .addClass("SeatNumber" + index)
           .addClass("grid-item")
           .addClass("station")
-          .addClass("PaxSeat")
+          .addClass("newPaxSeat")
           index++ 
         }
 
@@ -174,12 +174,12 @@
       const $root = ui.draggable.closest(".detailsDiv")
       const _root = $root.data("root")
       //
-      let $existingPax
-      const OriginStation = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
+      let $thisPax
+      const DroppedStation = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
  
-      let $DropPax = ui.draggable.detach()
-      let droppedPaxFields = $DropPax.data("pax")// array of Rezdy fields
-      let paxSeat = droppedPaxFields.find((p) => p.label === "seat")
+      let $newPax = ui.draggable.detach()
+      let newPaxFields = $newPax.data("pax")// array of Rezdy fields
+      let newPaxSeat = newPaxFields.find((p) => p.label === "seat")
 
       let thisSeat = {
           label: "seat",
@@ -190,13 +190,18 @@
       // Capture old seat
       //
       let oldSeat
-      if (!paxSeat) {
+      if (!newPaxSeat) {
+        //
         // In not from a seat, just assign it this one.
-        droppedPaxFields.push(thisSeat)  // *************************************************
+        newPaxFields.push(thisSeat)
+        //
       } else {
+        //
         // Capture it's last seat before assigning it this one.
-        oldSeat = JSON.parse(JSON.stringify(paxSeat))
-        paxSeat = thisSeat
+        oldSeat = JSON.parse(JSON.stringify(newPaxSeat))
+        // Could also be done by filtering out any seats before adding the new one ***
+        newPaxFields = newPaxFields.filter(x => JSON.stringify(x) != JSON.stringify(oldSeat))
+        newPaxFields.push(thisSeat)
       }
       console.log("thisSeat: %o", thisSeat)
       console.log("oldSeat: %o", oldSeat)
@@ -205,37 +210,40 @@
       //
       if ($(this).children().length > 0) {
         // Detach pax from seat
-        $existingPax = $(this).children(".Pax").detach()
-        // Two pax, both seated, swap seats
-        if (OriginStation.length > 0) {
-          $existingPax.appendTo(OriginStation)
-          $existingPax.position({ of: OriginStation, my: "left top", at: "left top" })
-
-
-          let existingFields = $existingPax.data("pax")
+        $thisPax = $(this).children(".Pax").detach()
+        //
+        // == Two pax ==, both seated, swap seats
+        //
+        if (DroppedStation.length > 0) {
+          //
+          // Move the existing pax to the old station
+          //
+          $thisPax.appendTo(DroppedStation)
+          $thisPax.position({ of: DroppedStation, my: "left top", at: "left top" })
+          //
+          // Remove the source seat field and rebrand with the old seat
+          //
+          let thisPaxFields = $thisPax.data("pax")
+          //
           // Filter out the current seat
-
-          console.log("thisSeat: %o",thisSeat)
-          console.log("Existing Fields: %o",existingFields)
-
           // Remove seat field
-          existingFields = existingFields.filter(x => JSON.stringify(x) != JSON.stringify(thisSeat))
-
-          console.log("existingFields Filtered: %o",existingFields)
-
-
-
-          $existingPax.data("pax",existingFields)
-
-
+          // 
+          thisPaxFields = thisPaxFields.filter(x => JSON.stringify(x) != JSON.stringify(thisSeat))
+          thisPaxFields.push(oldSeat)
+          //
+          // Save
+          //
+          $thisPax.data("pax",thisPaxFields)
+          //
         } else {
           // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
-          $existingPax.appendTo($("#PassengerList"))
+          $thisPax.appendTo($("#PassengerList"))
         }
       }
-      $DropPax.appendTo($(this))
-      $DropPax.draggable({ revert: false })
-      $DropPax.position({ of: $(this), my: "left top", at: "left top" })
+      $newPax.appendTo($(this))
+      $newPax.draggable({ revert: false })
+      $newPax.position({ of: $(this), my: "left top", at: "left top" })
+      $newPax.data("pax",newPaxFields)
       //
       //
       //
