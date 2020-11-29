@@ -2,9 +2,38 @@
 <script>
   var root = {
     boards: [],
+    makeNewBoard: function() {
+            const boardName = "AutoBoard" + root.boards.length
+            const lastBoard = root.boards[root.boards.length - 1]
+            const lastDate = !!lastBoard ? lastBoard.getDate() : null
+
+            const $this = $("<div />", {
+              class: "root",
+              id: boardName,
+              style: "display:inline-block;vertical-align:top",
+            })
+
+            const _board = new Board($this)
+
+            $this.data("root", _board)
+            $("#Boards").append($this)
+            $this.data("root").writeBoard()
+            //
+            // Set to next day
+            //
+            if (!!lastDate) {
+              let tomorrow = new Date(lastDate)
+              tomorrow.setDate(tomorrow.getDate() + 1)
+              _board.setDate(tomorrow)
+              _board.load() // Load Rezdy
+            }
+            this.boards.push(_board)
+    }
   } // list of root variables (so they're easier to find in debug)
   // testBoard needs to exist before writeboard is called (so it has somewhere to write to)
   // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
+
+  
   var testBoard
   var LOADSHEET
   // Placeholder for the LOADSHEET object *** This should go in {root}
@@ -111,11 +140,12 @@
   </head>
   <body>
     <div id="HoverBar" style="float: top; width: 100%; text-align: center; background: #737373; color: white">
-      [[ 2.4.6 ]] [ Carvan Loadsheets ]
+      [[ 2.4.7 ]] [ Carvan Loadsheets ]
     </div>
     <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
     <script>
       $(document).ready(function () {
+        root.makeNewBoard()
         LOADSHEET = new Loadsheet($("#Loadsheet"))
         root.loadsheet = LOADSHEET
       })
@@ -127,32 +157,8 @@
       <span id="NewBoardButton" class="roundButton MobileButton">+</span>
       <script>
         $(() => {
-          $("#NewBoardButton").click(function () {
-            const boardName = "AutoBoard" + root.boards.length
-            const lastBoard = root.boards[root.boards.length - 1]
-            const lastDate = !!lastBoard ? lastBoard.getDate() : null
-
-            const $this = $("<div />", {
-              class: "root",
-              id: boardName,
-              style: "display:inline-block;vertical-align:top",
-            })
-
-            const _board = new Board($this)
-
-            $this.data("root", _board)
-            $("#Boards").append($this)
-            $this.data("root").writeBoard()
-            //
-            // Set to next day
-            //
-            if (!!lastDate) {
-              let tomorrow = new Date(lastDate)
-              tomorrow.setDate(tomorrow.getDate() + 1)
-              _board.setDate(tomorrow)
-              _board.load() // Load Rezdy
-            }
-            root.boards.push(_board)
+          $("#NewBoardButton").click(() => {
+            root.makeNewBoard()
           })
         })
       </script>

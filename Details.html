@@ -17,10 +17,10 @@
       this.$root = $(`<div id="Details" class="detailsDiv">
         <div class="Print">Print</div>
         <div class="Report" />
-        <div id="detailsContents">
+        <div id="detailsContents" class="detailsContents">
           <div id="content" style="width: 100%; overflow: hidden;">
             <div id="Airplane" class="grid-container Airplane"></div>
-            <div id="Pod">POD</div>
+            <div id="Pod" class="BaggagePod">POD</div>
             <div id="PassengerList" class="PassengerList"></div>
           </div>
           <div id="CrewList" class="CrewList"></div>
@@ -46,9 +46,9 @@
       // ---------------------------
       // Airplane layout <div> Click
       // ---------------------------
-      //this.$Airplane = this.$root.find(".Airplane")
-      this.$Airplane = $("> .Airplane", this)
-      this.$Airplane.click(function () {
+      this.$Airplane = this.$root.find(".Airplane")
+      this.$Airplane.click(() => {
+        console.log("AirplaneClick")
         $(".station")
           .children()
           .each(function (i, child) {
@@ -56,6 +56,7 @@
             console.log("Station: %o", $(this).closest(".station").data("seat"))
             console.log("Pax: %o", $(this))
           })
+          _this.update()
       })
       // ====================
       // Details Close Button
@@ -68,7 +69,7 @@
       })
       return this.$root
     }
-    update(){
+    update() {
       this.getWB()
     }
     //
@@ -96,14 +97,19 @@
       $("body").droppable({
         accept: ".Pax",
         drop: function (e, ui) {
-          //
-          // ***** probably have to switch for CrewList too **************
-          //
-          _this.removePax(e, ui, $(".PassengerList"))
+          _this.removePax(e, ui)
+          _this.update()
         },
       })
     }
-    removePax(event, ui, $source) {
+    removePax(event, ui) {
+      //
+      // Add baggage removal code here ***
+      //
+      let $source = $(".PassengerList")
+      if (ui.draggable.attr("class").includes("Crew")){
+        $source = $(".CrewList")
+      }
       let $newPax = ui.draggable.detach()
       if (!!$source) {
         $newPax.appendTo($source)
@@ -140,34 +146,28 @@
       // -----
       // slice(1) skips the pilot's seat
       let index = 2 // Skipping the Pilot seat and using 1 based counting.
-      airplane.stations.slice(1).filter((el) => el.type.includes("seat") || el.type.includes("placeholder"))
-      .forEach((seat)=>{
-        if (seat.type.includes("placeholder")){
-          $("<div></div>")
-          .appendTo("#Airplane")
-          .addClass("grid-placeholder")
-          //.text("Placeholder")
-        } else {
-        $("<div></div>")
-          .data("number", index)
-          .data("seat", index)
-          .appendTo("#Airplane")
-          .addClass("SeatNumber" + index)
-          .addClass("grid-item")
-          .addClass("station")
-          .addClass("newPaxSeat")
-          index++ 
-        }
-
-      })
+      airplane.stations
+        .slice(1)
+        .filter((el) => el.type.includes("seat") || el.type.includes("placeholder"))
+        .forEach((seat) => {
+          if (seat.type.includes("placeholder")) {
+            $("<div></div>").appendTo("#Airplane").addClass("grid-placeholder")
+            //.text("Placeholder")
+          } else {
+            $("<div></div>")
+              .data("number", index)
+              .data("seat", index)
+              .appendTo("#Airplane")
+              .addClass("SeatNumber" + index)
+              .addClass("grid-item")
+              .addClass("station")
+              .addClass("newPaxSeat")
+            index++
+          }
+        })
       // -----------
       // Baggage Pod
       // -----------
-
-
-
-
-
     }
     handleDrop(event, ui) {
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
@@ -176,15 +176,15 @@
       //
       let $thisPax
       const DroppedStation = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
- 
+
       let $newPax = ui.draggable.detach()
-      let newPaxFields = $newPax.data("pax")// array of Rezdy fields
+      let newPaxFields = $newPax.data("pax") // array of Rezdy fields
       let newPaxSeat = newPaxFields.find((p) => p.label === "seat")
 
       let thisSeat = {
-          label: "seat",
-          value: $(this).data("seat"),
-        }
+        label: "seat",
+        value: $(this).data("seat"),
+      }
 
       //
       // Capture old seat
@@ -200,7 +200,7 @@
         // Capture it's last seat before assigning it this one.
         oldSeat = JSON.parse(JSON.stringify(newPaxSeat))
         // Could also be done by filtering out any seats before adding the new one ***
-        newPaxFields = newPaxFields.filter(x => JSON.stringify(x) != JSON.stringify(oldSeat))
+        newPaxFields = newPaxFields.filter((x) => JSON.stringify(x) != JSON.stringify(oldSeat))
         newPaxFields.push(thisSeat)
       }
       console.log("thisSeat: %o", thisSeat)
@@ -227,13 +227,13 @@
           //
           // Filter out the current seat
           // Remove seat field
-          // 
-          thisPaxFields = thisPaxFields.filter(x => JSON.stringify(x) != JSON.stringify(thisSeat))
+          //
+          thisPaxFields = thisPaxFields.filter((x) => JSON.stringify(x) != JSON.stringify(thisSeat))
           thisPaxFields.push(oldSeat)
           //
           // Save
           //
-          $thisPax.data("pax",thisPaxFields)
+          $thisPax.data("pax", thisPaxFields)
           //
         } else {
           // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
@@ -243,7 +243,7 @@
       $newPax.appendTo($(this))
       $newPax.draggable({ revert: false })
       $newPax.position({ of: $(this), my: "left top", at: "left top" })
-      $newPax.data("pax",newPaxFields)
+      $newPax.data("pax", newPaxFields)
       //
       //
       //
@@ -252,15 +252,13 @@
     getWB() {
       let loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
       let WB = loadedPlane.getWB()
-
-      console.log("{getWB}",WB)
+      console.log("{getWB}", WB)
 
       const report = this.$root.find(".Report")
-
-      report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
-
       const color = WB.cg.balanced ? "blue" : "red"
+
       report.css("background-color", color)
+      report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
 
       return loadedPlane
     }
@@ -284,7 +282,7 @@
       //
       //
       let visible = this.$root.css("display") !== "none"
-      let _this = this
+      const _this = this
       //
       // Keep the TableCell object cuz drops lose it.
       //
@@ -320,6 +318,7 @@
       }
       $fuel.change(function () {
         _TableCell.setPlaneData("fuel", this.value)
+        _this.update()
       })
       //      Make Fuel List that's determined by the plane's max fuel ***************
 
@@ -339,19 +338,17 @@
         $plane.val(state.PCF.reg)
       }
 
-
       const _crew = []
       pilots.list.forEach((pilot, i) => {
         _crew.push({
-          fields:[
+          fields: [
             { label: "Role", value: "PIC" },
             { label: "First Name", value: pilot.first },
             { label: "Last Name", value: pilot.last },
             { label: "Weight", value: pilot["declared weight"].toString() },
-          ]
+          ],
         })
       })
-
 
       // const _crew = [
       //   {
@@ -422,13 +419,6 @@
 
         this.init() // initialize jQuery drag/drop code
 
-        if (visible) {
-          this.$root.hide()
-        } else {
-          this.$root.css("width", "400px")
-          this.$root.css("heigh", "600px")
-          this.$root.show()
-        }
       })
 
       // ===========================================
@@ -484,16 +474,15 @@
           $pax.css("font-size", "8px")
         }
 
-        this.init() // initialize jQuery drag/drop code
 
-        if (visible) {
+      })
+      if (visible) {
           this.$root.hide()
         } else {
-          this.$root.css("width", "400px")
+          this.$root.css("width", "800px")
           this.$root.css("heigh", "600px")
           this.$root.show()
         }
-      })
     }
   }
 </script>
