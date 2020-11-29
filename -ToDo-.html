@@ -5,47 +5,35 @@ Rezdy's messed up data structure...
 A "Complete booking object" (for doing Rezdy writes) is actually an Order object.
 ---------------------------------------------------------------------------------
 
-//      Make Fuel List that's determined by the plane's max fuel ***************
-// Add baggage removal code here ***
-
 -------------------------------
 Glitch
 -------------------------------
-Sunrise flights map to 6pm (Time object needs that switch fixed)
 Once a TableCell is moved, it won't highlight.
 Pax per month starts one day behind (probably a timezone issue)
 
+-------------------------------
+Other
+-------------------------------
+Second Board picks up wrong planes (need to reset the counter)
+  I think the multi-load issues are because each function clears out the DIV before writing to it... 
+  So if two returns happen around the same time, they can step on each other... 
+  Maybe check to see if the roster clears the Manifest div?
+
+$("._trip_time").html(TableCell.getTime() + ":00") // ******** (just using the summer :00 for now... needs winter :30)
+Sunrise flights map to 6pm (Time object needs that switch fixed)
+
+//      Make Fuel List that's determined by the plane's max fuel ***************
+// Add baggage removal code here ***
+// Check to see if the plane has a baggage pod. ***
+Everything's Declared Weights right now
+Saving of loadsheet prints is disabled in TheBoard_JS... 
+printLoadsheet: function(){
+Loadsheet.show() calls TableCell.getPlane() ... look into it loading the right data or not.
 
 -------------------------------
 Currently
 -------------------------------
-Call this on pax removal and on fuel change... 
-In Details.html, _root.getWB() needs to be called more (to recalculate)
-
-To translate header labeled spreadsheet to objects... look at this function (in Pilots.html)...
-loadPilots: function (data) {
-
-
-When swapping copilot and pax, the loadsheet loses the third seat... dragging and dropping anything fixes this
-station.weight = 83 // Everyone's an adult for now ******
-
-In Airplane.html, add in Standard Weight code.
-// needs tweaking for Declared Weights ***
-// If Declared Weights, add 4 kg to POB list ***
-
-Saving of loadsheet prints is disabled in TheBoard_JS... 
-printLoadsheet: function(){
-
-Loadsheet.show() calls TableCell.getPlane() ... look into it loading the right data or not.
-const limit = (fwd1 + a2) / 1000 // Comes up a bit too far aft???? ************
-
-Second Board picks up wrong planes (need to reset the counter)
-I think the multi-load issues are because each function clears out the DIV before writing to it... 
-So if two returns happen around the same time, they can step on each other... 
-Maybe check to see if the roster clears the Manifest div?
-
-
-$("._trip_time").html(TableCell.getTime() + ":00") // ******** (just using the summer :00 for now... needs winter :30)
+Baggage Pod 
 
 
 

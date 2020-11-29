@@ -20,7 +20,7 @@
         <div id="detailsContents" class="detailsContents">
           <div id="content" style="width: 100%; overflow: hidden;">
             <div id="Airplane" class="grid-container Airplane"></div>
-            <div id="Pod" class="BaggagePod">POD</div>
+            <div id="BaggagePod" class="BaggagePod">POD</div>
             <div id="PassengerList" class="PassengerList"></div>
           </div>
           <div id="CrewList" class="CrewList"></div>
@@ -101,6 +101,12 @@
           _this.update()
         },
       })
+      $(".BaggagePod").droppable({
+        greedy: true,
+        accept: ".Crew",
+        hoverClass: "hovered",
+        drop: this.handleDrop,
+      })
     }
     removePax(event, ui) {
       //
@@ -168,6 +174,10 @@
       // -----------
       // Baggage Pod
       // -----------
+      // Check to see if the plane has a baggage pod. ***
+      // in ZEA's case, add the pod to the WB if attached (need a POD/NOPOD button at the top)
+      //
+      $("#BaggagePod").empty()
     }
     handleDrop(event, ui) {
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
@@ -203,8 +213,6 @@
         newPaxFields = newPaxFields.filter((x) => JSON.stringify(x) != JSON.stringify(oldSeat))
         newPaxFields.push(thisSeat)
       }
-      console.log("thisSeat: %o", thisSeat)
-      console.log("oldSeat: %o", oldSeat)
       //
       // Swap with any existing seated pax
       //
@@ -236,7 +244,9 @@
           $thisPax.data("pax", thisPaxFields)
           //
         } else {
+          //
           // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
+          //
           $thisPax.appendTo($("#PassengerList"))
         }
       }
