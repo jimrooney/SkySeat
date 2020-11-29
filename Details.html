@@ -68,6 +68,9 @@
       })
       return this.$root
     }
+    update(){
+      this.getWB()
+    }
     //
     // .stations are tagged in their data with seat number ... .data("number", i)
     // numbered 1 - 8 (1=pilot)
@@ -167,48 +170,67 @@
 
     }
     handleDrop(event, ui) {
-      let _this = $(this).closest(".detailsDiv").data("root") // This Details Object
-      let $root = ui.draggable.closest(".detailsDiv")
-      let _root = $root.data("root")
+      const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
+      const $root = ui.draggable.closest(".detailsDiv")
+      const _root = $root.data("root")
       //
-      let existingPax
-      let DragParent = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
+      let $existingPax
+      const OriginStation = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
+ 
       let $DropPax = ui.draggable.detach()
-      let droppedPax = $DropPax.data("pax")
-      let seatNumber = $(this).data("seat")
-      //
-      // Victory is mine :)
-      //
-      // **************************************************************************************************
-      // Assign sets ... this just keeps adding seat numbers... needs to add maybe objects and overwrite old seat assignments,
-      // but it modifiest the source object (by copy, not reference), so it retains the seat assignment.
-      // This might need to moce into the "flight" object for state saving
-      //
-      // **************************************************************************************************
+      let droppedPaxFields = $DropPax.data("pax")// array of Rezdy fields
+      let paxSeat = droppedPaxFields.find((p) => p.label === "seat")
 
-      let _pax = new Pax(droppedPax)
-      const paxSeat = _pax.fields.find((p) => p.label === "seat")
-      if (!paxSeat) {
-        let p = {
+      let thisSeat = {
           label: "seat",
-          value: seatNumber,
+          value: $(this).data("seat"),
         }
-        droppedPax.push(p)
+
+      //
+      // Capture old seat
+      //
+      let oldSeat
+      if (!paxSeat) {
+        // In not from a seat, just assign it this one.
+        droppedPaxFields.push(thisSeat)  // *************************************************
       } else {
-        paxSeat.value = seatNumber
+        // Capture it's last seat before assigning it this one.
+        oldSeat = JSON.parse(JSON.stringify(paxSeat))
+        paxSeat = thisSeat
       }
-      console.log("Seat: %o", seatNumber)
+      console.log("thisSeat: %o", thisSeat)
+      console.log("oldSeat: %o", oldSeat)
+      //
       // Swap with any existing seated pax
+      //
       if ($(this).children().length > 0) {
         // Detach pax from seat
-        existingPax = $(this).children(".Pax").detach()
+        $existingPax = $(this).children(".Pax").detach()
         // Two pax, both seated, swap seats
-        if (DragParent.length > 0) {
-          existingPax.appendTo(DragParent)
-          existingPax.position({ of: DragParent, my: "left top", at: "left top" })
+        if (OriginStation.length > 0) {
+          $existingPax.appendTo(OriginStation)
+          $existingPax.position({ of: OriginStation, my: "left top", at: "left top" })
+
+
+          let existingFields = $existingPax.data("pax")
+          // Filter out the current seat
+
+          console.log("thisSeat: %o",thisSeat)
+          console.log("Existing Fields: %o",existingFields)
+
+          // Remove seat field
+          existingFields = existingFields.filter(x => JSON.stringify(x) != JSON.stringify(thisSeat))
+
+          console.log("existingFields Filtered: %o",existingFields)
+
+
+
+          $existingPax.data("pax",existingFields)
+
+
         } else {
           // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
-          existingPax.appendTo($("#PassengerList"))
+          $existingPax.appendTo($("#PassengerList"))
         }
       }
       $DropPax.appendTo($(this))
@@ -217,10 +239,7 @@
       //
       //
       //
-      _root.getWB()
-      //
-      //
-      //
+      _this.update()
     }
     getWB() {
       let loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object

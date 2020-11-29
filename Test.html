@@ -21,19 +21,9 @@
   }
   function test(args) {
 
-    let  date = $("#AutoBoard").data("root").manifest.getDate()
-      
-      date = date.toString()
-
-      google.script.run.withSuccessHandler(testResults.handleLoad).loadRoster(date)
-
-
-
-     //google.script.run.loadRoster(date)
-
-
-    console.log("done")
-
+    const WB = $(".detailsDiv").data("root").update()
+    console.log("WB %o",WB)
+    
 
 
 
