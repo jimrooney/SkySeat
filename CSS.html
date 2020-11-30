@@ -6,19 +6,25 @@
   }
 </script>
 <style>
-  html { -webkit-print-color-adjust: exact; }
+  html {
+    -webkit-print-color-adjust: exact;
+  }
   :root {
     --main-bg-color: rgb(214, 215, 216);
     --in: rgb(100, 83, 83);
     --out: rgb(90, 90, 133);
     --main-border-color: #999999;
   }
-  .Bookings{
+  .PrintHider{
+    height:1px; 
+    display:none;
+  }
+  .Bookings {
     background: rgba(71, 88, 115, 1);
   }
-  .Roster{
+  .Roster {
     background-color: rgba(71, 88, 115, 1);
-    vertical-align:bottom;
+    vertical-align: bottom;
     vertical-align: text-bottom;
   }
   .inMarker {
@@ -131,24 +137,31 @@
     padding: 5px 15px 5px 15px;
   }
 
-  .noBorder {
+  .thinBorder {
     border-collapse: collapse;
-    border-color: rgb(119, 26, 26);
+    border-color: black;
     border-width: 1px;
   }
   .A4 {
     height: 1000px;
-    /*   background:rgba(71,88,115,1); */
     text-align: center; /* align the inline(-block) elements horizontally */
-    font: 0/0 a; /* remove the gap between inline(-block) elements */
+    /* font: 0/0 a; remove the gap between inline(-block) elements */
+    /* margin-top: 5px;
+    margin-bottom: 10px; */
+    /* margin-right: 150px;
+    margin-left: 80px; */
   }
 
-  .A4:before {
-    /* create a full-height inline block pseudo-element */
-    content: " ";
+  .HalfA4{
+    height: 500px;
+    border-style: dashed;
     display: inline-block;
-    vertical-align: middle; /* vertical alignment of the inline element */
-    height: 100%;
+    vertical-align: top; /* vertical alignment of the inline element */
+
+    /* margin-top: 5px;
+    margin-bottom: 10px; */
+    /* margin-right: 150px;
+    margin-left: 80px; */
   }
 
   .vcontainer {
@@ -236,7 +249,7 @@
     height: 40px;
     z-index: 5;
   }
-  .detailsContents{
+  .detailsContents {
     width: auto;
     background: rgb(211, 211, 211);
     color: #fff;
@@ -244,7 +257,7 @@
     padding: 5px 15px 5px 15px;
     border-radius: 6px;
   }
-  .roundButton{
+  .roundButton {
     color: #ccc;
     background-color: #fff;
     border: 3px solid #999;
@@ -487,7 +500,7 @@
     z-index: 1;
   }
   .highlight {
-    border: .5px solid #ff0000;
+    border: 0.5px solid #ff0000;
     background-color: #1e6330;
   }
 </style>

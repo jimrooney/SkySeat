@@ -8,7 +8,7 @@
             const lastDate = !!lastBoard ? lastBoard.getDate() : null
 
             const $this = $("<div />", {
-              class: "root",
+              class: "root NoPrint",
               id: boardName,
               style: "display:inline-block;vertical-align:top",
             })
@@ -139,9 +139,6 @@
     <base target="_top" />
   </head>
   <body>
-    <div id="HoverBar" style="float: top; width: 100%; text-align: center; background: #737373; color: white">
-      [[ 2.4.7 ]] [ Carvan Loadsheets ]
-    </div>
     <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
     <script>
       $(document).ready(function () {
@@ -150,10 +147,18 @@
         root.loadsheet = LOADSHEET
       })
     </script>
-    <div id="PickupList" class="pickupDetails">
+
+    <!-- <div id="HoverBar" class="NoPrint" style="float: top; width: 100%; text-align: center; background: #737373; color: white">
+      [[ 2.4.7 ]] [ Carvan Loadsheets ]
+    </div> -->
+
+
+
+
+    <div id="PickupList" class="pickupDetails NoPrint">
       <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
     </div>
-    <div>
+    <div class="NoPrint">
       <span id="NewBoardButton" class="roundButton MobileButton">+</span>
       <script>
         $(() => {
@@ -164,7 +169,7 @@
       </script>
     </div>
 
-    <div id="Boards"></div>
+    <div id="Boards" class="NoPrint"></div>
 
     <script>
       $(document).ready(function () {
@@ -186,9 +191,9 @@
     theBoard.load()
     */
     </script>
-
-    <p></p>
-    <div id="TheBoard" style="float: none; margin: 10px">
+    <div class="NoPrint">
+    <div id="TheBoard" class="NoPrint" style="float: none; margin: 10px">
+      <div>
       <div>
         <button class="Nav Dev" onClick="utility.close()">Close</button>
         <button class="Dark" onClick="test()">Test</button>
@@ -200,9 +205,6 @@
         <button class="Dark" onClick="theBoard.print()">Print Board</button>
         <button class="Dark" onClick="PlaneManager.loadHours()">Load Hours</button>
         <button class="Dark" onClick="showHidePerPax()">PerPax</button>
-        <!-- Should be in display **************** -->
-
-        <!--    <span class="MobileBreak"></span> -->
         <br />
 
         <div id="planeDetails" class="planeDetails">
@@ -210,7 +212,7 @@
           <span id="pd_Pilot" class="PCF"></span>
           <span id="pd_CoPilot" class="PCF"></span>
           <span id="pd_Fuel" class="PCF"></span>
-          <span id="planeDetailsClose" class="popupCloseButton exteriorButton">X</span>
+          <span id="planeDetailsClose" class="popupCloseButton exteriorButton NoPrint">X</span>
         </div>
         <br />
         <div id="Alert"></div>
@@ -233,14 +235,12 @@
         </div>
       </span>
     </div>
-
-    <p></p>
     <div>
       <button onClick="display.clearBoard()">Clear Board</button> <button onClick="theBoard.load()">&#10226;</button
       ><br />
       <div class="Trash">&#9851;</div>
     </div>
-
+  </div>
     <!-- Popups -->
     <div id="Roster"></div>
     <div id="messagediv"></div>
@@ -254,6 +254,8 @@
 
     <?!= include('Draggable'); ?>
     <a name="bottom"></a>
+
+  </div>
   </body>
 </html>
 <script>
