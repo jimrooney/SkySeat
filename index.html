@@ -2,38 +2,41 @@
 <script>
   var root = {
     boards: [],
-    makeNewBoard: function() {
-            const boardName = "AutoBoard" + root.boards.length
-            const lastBoard = root.boards[root.boards.length - 1]
-            const lastDate = !!lastBoard ? lastBoard.getDate() : null
+    // --------------------------------- Load TripCodes ----------------------------------------------
+    loadTripCodes: function () {
+      google.script.run.withSuccessHandler(gya.onTripCodeLoad).loadTripCodes()
+    },
+    makeNewBoard: function () {
+      const boardName = "AutoBoard" + root.boards.length
+      const lastBoard = root.boards[root.boards.length - 1]
+      const lastDate = !!lastBoard ? lastBoard.getDate() : null
 
-            const $this = $("<div />", {
-              class: "root NoPrint",
-              id: boardName,
-              style: "display:inline-block;vertical-align:top",
-            })
+      const $this = $("<div />", {
+        class: "root NoPrint",
+        id: boardName,
+        style: "display:inline-block;vertical-align:top",
+      })
 
-            const _board = new Board($this)
+      const _board = new Board($this)
 
-            $this.data("root", _board)
-            $("#Boards").append($this)
-            $this.data("root").writeBoard()
-            //
-            // Set to next day
-            //
-            if (!!lastDate) {
-              let tomorrow = new Date(lastDate)
-              tomorrow.setDate(tomorrow.getDate() + 1)
-              _board.setDate(tomorrow)
-              _board.load() // Load Rezdy
-            }
-            this.boards.push(_board)
-    }
+      $this.data("root", _board)
+      $("#Boards").append($this)
+      $this.data("root").writeBoard()
+      //
+      // Set to next day
+      //
+      if (!!lastDate) {
+        let tomorrow = new Date(lastDate)
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        _board.setDate(tomorrow)
+        _board.load() // Load Rezdy
+      }
+      this.boards.push(_board)
+    },
   } // list of root variables (so they're easier to find in debug)
   // testBoard needs to exist before writeboard is called (so it has somewhere to write to)
   // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
 
-  
   var testBoard
   var LOADSHEET
   // Placeholder for the LOADSHEET object *** This should go in {root}
@@ -148,14 +151,15 @@
       })
     </script>
 
-    <!-- <div id="HoverBar" class="NoPrint" style="float: top; width: 100%; text-align: center; background: #737373; color: white">
+    <div
+      id="HoverBar"
+      class="NoPrint"
+      style="float: top; width: 100%; text-align: center; background: #737373; color: white"
+    >
       [[ 2.4.7 ]] [ Carvan Loadsheets ]
-    </div> -->
+    </div>
 
-
-
-
-    <div id="PickupList" class="pickupDetails NoPrint">
+    <div id="PickupList" class="pickupDetails">
       <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
     </div>
     <div class="NoPrint">
@@ -179,10 +183,6 @@
       // --------------------------------- OnLoad --------------------------------------------------
       // (Moved to INIT)
 
-      // --------------------------------- Load TripCodes ----------------------------------------------
-      function loadTripCodes() {
-        google.script.run.withSuccessHandler(gya.onTripCodeLoad).loadTripCodes()
-      }
 
       /*
   These functions are first called in planemanager ->
@@ -192,93 +192,90 @@
     */
     </script>
     <div class="NoPrint">
-    <div id="TheBoard" class="NoPrint" style="float: none; margin: 10px">
-      <div>
-      <div>
-        <button class="Nav Dev" onClick="utility.close()">Close</button>
-        <button class="Dark" onClick="test()">Test</button>
-        <button class="Nav" id="SaveButton" onClick="saveBoard()">Save</button>
-        <button class="Nav" onClick="theBoard.timeStamp.checkRemote()">Check</button>
-        <button class="Nav" onClick="theBoard.load()">&#10226;</button>
-
-        <button class="Dark" onClick="showDay()">Scratch</button>
-        <button class="Dark" onClick="theBoard.print()">Print Board</button>
-        <button class="Dark" onClick="PlaneManager.loadHours()">Load Hours</button>
-        <button class="Dark" onClick="showHidePerPax()">PerPax</button>
-        <br />
-
-        <div id="planeDetails" class="planeDetails">
-          <span id="pd_Plane" class="PCF"></span>
-          <span id="pd_Pilot" class="PCF"></span>
-          <span id="pd_CoPilot" class="PCF"></span>
-          <span id="pd_Fuel" class="PCF"></span>
-          <span id="planeDetailsClose" class="popupCloseButton exteriorButton NoPrint">X</span>
-        </div>
-        <br />
-        <div id="Alert"></div>
-        <div id="Error"></div>
-      </div>
-      <span style="display: inline-block"></span>
-    </div>
-    <div style="float: left; margin: 10px">
-      <!--  Putting all the extra buttons in Day2 cuz we hide Day2 by default -->
-      <span id="Day2" style="display: inline-block">
+      <div id="TheBoard" class="NoPrint" style="float: none; margin: 10px">
         <div>
-          <button class="Dark" onClick="theBoard.highlightFerryLegs()">Ferry Legs</button>
-          <button class="Dark" onClick="Rezdy.load()">Load Rezdy</button>
-          <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(-1,false)"><</button>
-          <button class="Dark" onClick="theBoard.load()">Load Saved Board</button>
-          <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(1,false)">></button>
+          <div>
+            <button class="Nav Dev" onClick="utility.close()">Close</button>
+            <button class="Dark" onClick="test()">Test</button>
+            <button class="Nav" id="SaveButton" onClick="saveBoard()">Save</button>
+            <button class="Nav" onClick="theBoard.timeStamp.checkRemote()">Check</button>
+            <button class="Nav" onClick="theBoard.load()">&#10226;</button>
 
-          <a href="https://sites.google.com/a/glenorchyair.co.nz/staff/tracking/logreports">Flight Data</a>
-          <a href="https://sites.google.com/a/glenorchyair.co.nz/staff/opera/roster">Roster</a>
+            <button class="Dark" onClick="showDay()">Scratch</button>
+            <button class="Dark" onClick="theBoard.print()">Print Board</button>
+            <button class="Dark" onClick="PlaneManager.loadHours()">Load Hours</button>
+            <button class="Dark" onClick="showHidePerPax()">PerPax</button>
+            <br />
+
+            <div id="planeDetails" class="planeDetails">
+              <span id="pd_Plane" class="PCF"></span>
+              <span id="pd_Pilot" class="PCF"></span>
+              <span id="pd_CoPilot" class="PCF"></span>
+              <span id="pd_Fuel" class="PCF"></span>
+              <span id="planeDetailsClose" class="popupCloseButton exteriorButton NoPrint">X</span>
+            </div>
+            <br />
+            <div id="Alert"></div>
+            <div id="Error"></div>
+          </div>
+          <span style="display: inline-block"></span>
         </div>
-      </span>
-    </div>
-    <div>
-      <button onClick="display.clearBoard()">Clear Board</button> <button onClick="theBoard.load()">&#10226;</button
-      ><br />
-      <div class="Trash">&#9851;</div>
-    </div>
-  </div>
-    <!-- Popups -->
-    <div id="Roster"></div>
-    <div id="messagediv"></div>
-    <div id="divPopupMessage"></div>
-    <p>
+        <div style="float: left; margin: 10px">
+          <!--  Putting all the extra buttons in Day2 cuz we hide Day2 by default -->
+          <span id="Day2" style="display: inline-block">
+            <div>
+              <button class="Dark" onClick="theBoard.highlightFerryLegs()">Ferry Legs</button>
+              <button class="Dark" onClick="Rezdy.load()">Load Rezdy</button>
+              <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(-1,false)"><</button>
+              <button class="Dark" onClick="theBoard.load()">Load Saved Board</button>
+              <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(1,false)">></button>
+
+              <a href="https://sites.google.com/a/glenorchyair.co.nz/staff/tracking/logreports">Flight Data</a>
+              <a href="https://sites.google.com/a/glenorchyair.co.nz/staff/opera/roster">Roster</a>
+            </div>
+          </span>
+        </div>
+        <div>
+          <button onClick="display.clearBoard()">Clear Board</button> <button onClick="theBoard.load()">&#10226;</button
+          ><br />
+          <div class="Trash">&#9851;</div>
+        </div>
+      </div>
+      <!-- Popups -->
+      <div id="Roster"></div>
+      <div id="messagediv"></div>
+      <div id="divPopupMessage"></div>
+      <p>
+        <!-- jQuery  -->
+      </p>
+
+      <div id="dialog-message"></div>
       <!-- jQuery  -->
-    </p>
 
-    <div id="dialog-message"></div>
-    <!-- jQuery  -->
-
-    <?!= include('Draggable'); ?>
-    <a name="bottom"></a>
-
-  </div>
+      <?!= include('Draggable'); ?>
+      <a name="bottom"></a>
+    </div>
   </body>
 </html>
 <script>
-
-
-root.vars = {
-      testBoard:testBoard,
-      LOADSHEET:LOADSHEET,
-      gya:gya,
-      debug:debug,
-      colors:colors,
-      // CSS,
-      // date,
-      display:display,
-      Events:Events,
-      pilots:pilots,
-      planes:planes,
-      PlaneManager:PlaneManager,
-      time:time,
-      utility:utility,
-      arrays:arrays,
-      wb:wb,
-}
+  root.vars = {
+    testBoard: testBoard,
+    LOADSHEET: LOADSHEET,
+    gya: gya,
+    debug: debug,
+    colors: colors,
+    // CSS,
+    // date,
+    display: display,
+    Events: Events,
+    pilots: pilots,
+    planes: planes,
+    PlaneManager: PlaneManager,
+    time: time,
+    utility: utility,
+    arrays: arrays,
+    wb: wb,
+  }
 
   /*
         ___________root objects______________
