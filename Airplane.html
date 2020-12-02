@@ -86,6 +86,7 @@
       // remove obj by load.id
     }
     getWB(SAD) {
+      console.log("GetWB Stations: %o",this.stations)
       // Standard Actual Declared
 
       //---------------------------------------
@@ -141,11 +142,12 @@
       POB.forEach((station) => {
         station.moment = station.weight * station.arm
       })
-
-      const CREW = POB.filter((station) =>
-        station.pax.find(
-          (pax) => pax.label == "Role" // only return pax with Roles (crew)
-        )
+      const CREW = POB.filter((station) => {
+          if (!!station.pax)
+          {station.pax.find(
+            (pax) => pax.label == "Role" // only return pax with Roles (crew)
+          )}
+        }
       )
       //
       // Find the PIC (Flies Left Seat, so find works, but could also search by matching seat number) ****
@@ -377,6 +379,12 @@ between these points.
         new Station({ type: ["seat", "cargo"], arm: 8.69696 }),
         new Station({ type: ["fuel"], arm: 5.175758 }),
         new Station({ type: ["cargo"], arm: 3.44, limit: 113 }),
+        new Station({ type: ["podBay"], arm: 4.62534 }),
+        new Station({ type: ["podBay"], arm: 5.92836 }),
+        new Station({ type: ["podBay"], arm: 3.36296 }),
+        new Station({ type: ["podBay"], arm: 7.30504 }),
+        
+
       ]
     }
   }

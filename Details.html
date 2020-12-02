@@ -13,6 +13,7 @@
       this.bookings = []
       const _this = this
       this._TableCell = ""
+      this.airplane // placholder (gets built in reset())
 
       this.$root = $(`<div id="Details" class="detailsDiv NoPrint">
         <div class="Print">Print</div>
@@ -21,7 +22,7 @@
           <div id="content" style="width: 100%; overflow: hidden;">
             <div id="Airplane" class="grid-container Airplane"></div>
             <div id="PassengerList" class="PassengerList"></div>
-            <div id="BaggagePod" class="BaggagePod">POD</div>
+            <div id="CargoPod" class="CargoPod">POD</div>
           </div>
           <div id="CrewList" class="CrewList"></div>
         </div>
@@ -56,7 +57,7 @@
             console.log("Station: %o", $(this).closest(".station").data("seat"))
             console.log("Pax: %o", $(this))
           })
-          _this.update()
+        _this.update()
       })
       // ====================
       // Details Close Button
@@ -101,7 +102,7 @@
           _this.update()
         },
       })
-      $(".BaggagePod").droppable({
+      $(".CargoPod").droppable({
         greedy: true,
         accept: ".Crew",
         hoverClass: "hovered",
@@ -113,7 +114,7 @@
       // Add baggage removal code here ***
       //
       let $source = $(".PassengerList")
-      if (ui.draggable.attr("class").includes("Crew")){
+      if (ui.draggable.attr("class").includes("Crew")) {
         $source = $(".CrewList")
       }
       let $newPax = ui.draggable.detach()
@@ -124,17 +125,20 @@
       $newPax.appendTo($(this))
     }
     reset($TableCell) {
+      this.airplane = $TableCell.data("_script").getPlane()
+      const _this = this
+      console.log("Reset TableCell")
       this.$PCFSelector.remove()
       this.$PCFSelector = $(this.PCFSelectorString)
       this.$root.prepend(this.$PCFSelector)
       $("#PassengerList").html("")
       $("#CrewList").html("")
+      $("#CargoPod").html("")
       //
       // -------------------------
       // Setup Airplane
       // -------------------------
       $("#Airplane").empty()
-      let airplane = $TableCell.data("_script").getPlane()
       // ------------
       // Pilot's seat
       // ------------
@@ -152,7 +156,7 @@
       // -----
       // slice(1) skips the pilot's seat
       let index = 2 // Skipping the Pilot seat and using 1 based counting.
-      airplane.stations
+      this.airplane.stations
         .slice(1)
         .filter((el) => el.type.includes("seat") || el.type.includes("placeholder"))
         .forEach((seat) => {
@@ -177,7 +181,59 @@
       // Check to see if the plane has a baggage pod. ***
       // in ZEA's case, add the pod to the WB if attached (need a POD/NOPOD button at the top)
       //
-      $("#BaggagePod").empty()
+      const podBays = this.airplane.stations.map((station)=>{
+        if (station.type.includes("podBay")){
+          const $bay = $("<div></div>")
+            .appendTo("#CargoPod")
+            .addClass("grid-placeholder")
+            //.text(station.arm)
+
+            const $selector = $("<select />")
+              .appendTo($bay)
+              .data("station", station)
+              .append(`<option value="0">0</option>`)
+
+            const _station = station
+            // Limit the selector by the max limit of the pod bay ********
+            for (let i = 10; i <= 500; i += 10) {
+              $selector.append(`<option value="${i}">${i}</option>`)
+            }
+            $selector.change(function () {
+              station.weight = this.value
+              console.log("Change: %o %o", station.weight, this.value)
+              _this.update()
+            })
+        }
+      })
+      console.log("Airplane Stations: %o",this.airplane.stations)
+
+
+        // .filter((station) => station.type.includes("podBay"))
+        // .sort((a, b) => (a.arm > b.arm ? 1 : -1))
+        // .map((station) => {
+        //     const $bay = $("<div></div>")
+        //     .appendTo("#CargoPod")
+        //     .addClass("grid-placeholder")
+        //     //.text(station.arm)
+
+        //     const $selector = $("<select />")
+        //       .appendTo($bay)
+        //       .data("station", station)
+        //       .append(`<option value="0">0</option>`)
+
+        //     const _station = station
+        //     // Limit the selector by the max limit of the pod bay ********
+        //     for (let i = 10; i <= 500; i += 10) {
+        //       $selector.append(`<option value="${i}">${i}</option>`)
+        //     }
+        //     $selector.change(function () {
+        //       station.weight = this.value
+        //       _this.update()
+        //     })
+        //     return station
+        // })
+
+        // console.log("\n\nAirplane Stations: %o",airplane.stations)
     }
     handleDrop(event, ui) {
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
@@ -260,7 +316,7 @@
       _this.update()
     }
     getWB() {
-      let loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
+      let loadedPlane = this.airplane// this._TableCell.getPlane() // retunrs a loaded airplane object
       let WB = loadedPlane.getWB()
       console.log("{getWB}", WB)
 
@@ -283,7 +339,6 @@
     // --------------------------------------
     show($TableCell) {
       console.log("Details.show()")
-      console.log("Cell: %o", $TableCell.prop("id"))
       //
       // Clear the popup
       //
@@ -428,7 +483,6 @@
         }
 
         this.init() // initialize jQuery drag/drop code
-
       })
 
       // ===========================================
@@ -483,16 +537,14 @@
         if (firstName.length >= 7) {
           $pax.css("font-size", "8px")
         }
-
-
       })
       if (visible) {
-          this.$root.hide()
-        } else {
-          this.$root.css("width", "800px")
-          this.$root.css("heigh", "600px")
-          this.$root.show()
-        }
+        this.$root.hide()
+      } else {
+        this.$root.css("width", "800px")
+        this.$root.css("heigh", "600px")
+        this.$root.show()
+      }
     }
   }
 </script>
