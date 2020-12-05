@@ -86,7 +86,7 @@
       // remove obj by load.id
     }
     getWB(SAD) {
-      console.log("GetWB Stations: %o",this.stations)
+      console.log("\n\nGetWB Stations: %o",this.stations)
       // Standard Actual Declared
 
       //---------------------------------------
@@ -100,15 +100,22 @@
         station.moment = station.weight * station.arm
       })
       //
-      // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
+      // If plane's station doesn't exist yet, create it.
       //
-      let station = new Station({
-        type: ["airplane"],
-        weight: this.weight,
-        arm: this.arm,
-      })
-      station.moment = this.moment
-      this.stations.push(station)
+      const plane = this.stations.filter( station => station.type.includes("airplane"))
+      if (plane.length<=0)
+      {
+        //
+        // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
+        //
+        let station = new Station({
+          type: ["airplane"],
+          weight: this.weight,
+          arm: this.arm,
+        })
+        station.moment = this.moment
+        this.stations.push(station)
+      }
       //
       // Sum all Weights and Moments
       //
@@ -208,6 +215,7 @@
           CG: roundCG,
         },
       }
+      console.log("GetWB WB: %o",wb)
       return wb
     }
     getNextLoadId() {

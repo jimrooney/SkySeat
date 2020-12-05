@@ -149,6 +149,7 @@
         .appendTo("#Airplane")
         .addClass("grid-item")
         .addClass("station")
+        .addClass("Seat")
         .addClass("PilotSeat")
         .addClass("Crew")
       // -----
@@ -171,6 +172,7 @@
               .addClass("SeatNumber" + index)
               .addClass("grid-item")
               .addClass("station")
+              .addClass("Seat")
               .addClass("newPaxSeat")
             index++
           }
@@ -186,6 +188,9 @@
           const $bay = $("<div></div>")
             .appendTo("#CargoPod")
             .addClass("grid-placeholder")
+            .addClass("station")
+            .addClass("Baggage")
+            .data("station", station)
             //.text(station.arm)
 
             const $selector = $("<select />")
@@ -240,18 +245,17 @@
       const $root = ui.draggable.closest(".detailsDiv")
       const _root = $root.data("root")
       //
+      // this.airplane.stations updates via getWB which searches the .station classes
+      //
       let $thisPax
       const DroppedStation = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
-
       let $newPax = ui.draggable.detach()
       let newPaxFields = $newPax.data("pax") // array of Rezdy fields
       let newPaxSeat = newPaxFields.find((p) => p.label === "seat")
-
       let thisSeat = {
         label: "seat",
         value: $(this).data("seat"),
       }
-
       //
       // Capture old seat
       //
@@ -270,9 +274,12 @@
         newPaxFields.push(thisSeat)
       }
       //
-      // Swap with any existing seated pax
+      // Pax exists
       //
       if ($(this).children().length > 0) {
+      //
+      // Swap with any existing seated pax
+      //
         // Detach pax from seat
         $thisPax = $(this).children(".Pax").detach()
         //
@@ -311,12 +318,13 @@
       $newPax.position({ of: $(this), my: "left top", at: "left top" })
       $newPax.data("pax", newPaxFields)
       //
-      //
-      //
       _this.update()
     }
     getWB() {
-      let loadedPlane = this.airplane// this._TableCell.getPlane() // retunrs a loaded airplane object
+      //
+      // Loads plane based on Details ".station" classes
+      //
+      let loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
       let WB = loadedPlane.getWB()
       console.log("{getWB}", WB)
 
