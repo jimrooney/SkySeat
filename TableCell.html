@@ -264,16 +264,28 @@
               seats[seat].pax = pax
             }
           }
-
           if ($station.hasClass("Baggage")) {
-            airplane.stations.push($(this).data("station"))
+
+            // for (let a in airplane.stations){
+            //   if (a.id == $station.data("station").id){
+            //     a = $station.data("station")
+            //   }
+            // }
+
+
+            airplane.stations.forEach((station,index) => {
+              if (!!station.id && station.id == $station.data("station").id) {
+                airplane.stations[index] = $station.data("station")
+              }
+            },airplane)
+
+
+            //airplane.stations.push($(this).data("station"))
+
+
           }
-
-
         })
-      //
-      // Load Bags
-      //
+        console.log("\n\nAirplane Stations: %o",airplane.stations)
       return airplane
     }
     getSeats() {

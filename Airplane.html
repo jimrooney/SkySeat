@@ -9,6 +9,7 @@
       this.weight = data.weight || 0
       this.arm = data.arm || 0
       this.moment = this.weight * this.arm
+      this.id = data.id
     }
   }
 
@@ -387,10 +388,10 @@ between these points.
         new Station({ type: ["seat", "cargo"], arm: 8.69696 }),
         new Station({ type: ["fuel"], arm: 5.175758 }),
         new Station({ type: ["cargo"], arm: 3.44, limit: 113 }),
-        new Station({ type: ["podBay"], arm: 4.62534 }),
-        new Station({ type: ["podBay"], arm: 5.92836 }),
-        new Station({ type: ["podBay"], arm: 3.36296 }),
-        new Station({ type: ["podBay"], arm: 7.30504 }),
+        new Station({ type: ["podBay"], arm: 4.62534, id:"bay1" }),
+        new Station({ type: ["podBay"], arm: 5.92836, id: "bay2"}),
+        new Station({ type: ["podBay"], arm: 3.36296, id: "bay3" }),
+        new Station({ type: ["podBay"], arm: 7.30504, id: "bay4" }),
         
 
       ]

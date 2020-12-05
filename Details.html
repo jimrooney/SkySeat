@@ -127,13 +127,12 @@
     reset($TableCell) {
       this.airplane = $TableCell.data("_script").getPlane()
       const _this = this
-      console.log("Reset TableCell")
       this.$PCFSelector.remove()
       this.$PCFSelector = $(this.PCFSelectorString)
       this.$root.prepend(this.$PCFSelector)
-      $("#PassengerList").html("")
-      $("#CrewList").html("")
-      $("#CargoPod").html("")
+      $("#PassengerList").empty()
+      $("#CrewList").empty()
+      $("#CargoPod").empty()
       //
       // -------------------------
       // Setup Airplane
@@ -183,7 +182,7 @@
       // Check to see if the plane has a baggage pod. ***
       // in ZEA's case, add the pod to the WB if attached (need a POD/NOPOD button at the top)
       //
-      const podBays = this.airplane.stations.map((station)=>{
+      const podBays = this.airplane.stations.forEach((station)=>{
         if (station.type.includes("podBay")){
           const $bay = $("<div></div>")
             .appendTo("#CargoPod")
@@ -192,12 +191,10 @@
             .addClass("Baggage")
             .data("station", station)
             //.text(station.arm)
-
             const $selector = $("<select />")
               .appendTo($bay)
               .data("station", station)
               .append(`<option value="0">0</option>`)
-
             const _station = station
             // Limit the selector by the max limit of the pod bay ********
             for (let i = 10; i <= 500; i += 10) {
@@ -205,40 +202,11 @@
             }
             $selector.change(function () {
               station.weight = this.value
-              console.log("Change: %o %o", station.weight, this.value)
               _this.update()
             })
         }
       })
       console.log("Airplane Stations: %o",this.airplane.stations)
-
-
-        // .filter((station) => station.type.includes("podBay"))
-        // .sort((a, b) => (a.arm > b.arm ? 1 : -1))
-        // .map((station) => {
-        //     const $bay = $("<div></div>")
-        //     .appendTo("#CargoPod")
-        //     .addClass("grid-placeholder")
-        //     //.text(station.arm)
-
-        //     const $selector = $("<select />")
-        //       .appendTo($bay)
-        //       .data("station", station)
-        //       .append(`<option value="0">0</option>`)
-
-        //     const _station = station
-        //     // Limit the selector by the max limit of the pod bay ********
-        //     for (let i = 10; i <= 500; i += 10) {
-        //       $selector.append(`<option value="${i}">${i}</option>`)
-        //     }
-        //     $selector.change(function () {
-        //       station.weight = this.value
-        //       _this.update()
-        //     })
-        //     return station
-        // })
-
-        // console.log("\n\nAirplane Stations: %o",airplane.stations)
     }
     handleDrop(event, ui) {
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
