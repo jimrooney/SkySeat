@@ -133,7 +133,10 @@
       ${utility.round(WB.weights.fuel)} 
       <span style="font-size:x-small">( ${utility.round(WB.cg.imperial.fuelWeight)} )lbs</font>
       `
-
+        const cargoW = WB.stations.filter(station => station.type.includes("cargo")).reduce((accumulator,station) =>{
+            return accumulator + Number(station.weight)
+        },0)
+        
       this.plane = {
         pilot: CrewNames,
         reg: LoadedPlane.reg,
@@ -156,7 +159,7 @@
         pobWeight: WB.weights.pob,
         totalPaxWeight: WB.weights.pax,
         totalFreightWeight: "",
-        totalBagWeight: "",
+        totalBagWeight: utility.round(cargoW),
       }
       $(".reg").css("background-color", this.plane.regColor)
       //
