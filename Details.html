@@ -182,7 +182,7 @@
       // Check to see if the plane has a baggage pod. ***
       // in ZEA's case, add the pod to the WB if attached (need a POD/NOPOD button at the top)
       //
-      const podBays = this.airplane.stations.forEach((station)=>{
+      const podBays = _this.airplane.stations.forEach((station)=>{
         if (station.type.includes("podBay")){
           const $bay = $("<div></div>")
             .appendTo("#CargoPod")
@@ -198,7 +198,13 @@
             const _station = station
             // Limit the selector by the max limit of the pod bay ********
             for (let i = 10; i <= 500; i += 10) {
-              $selector.append(`<option value="${i}">${i}</option>`)
+              let selected = ""
+              
+              if (_station.weight == i.toString()){
+                selected = " selected"
+              }
+
+              $selector.append(`<option value="${i}" ${selected}>${i}</option>`)
             }
             $selector.change(function () {
               station.weight = this.value
