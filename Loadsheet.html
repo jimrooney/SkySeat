@@ -1,5 +1,5 @@
-<div id="printLoadsheetClose" class="popupCloseButton NoPrint">X</div>
-<div id="FFToggle" class="roundButton NoPrint">FF</div>
+<div id="printLoadsheetClose" class="popupCloseButton MobileButton NoPrint">X</div>
+<div class="MenuButton FlightFollowing MobileButton NoPrint">FlightFollowing</div>
 <script>
   // ===============================
   // Loadsheet Close Button onClick
@@ -8,16 +8,15 @@
     $("#printLoadsheetClose").click(function () {
       $("#Loadsheet").hide()
     })
-  })
-</script>
-<script>
-  //
-  $(() => {
-    $("#FFToggle").click(function () {
+    $(".FlightFollowing").click(function () {
       $("#FlightFollowing").toggle()
     })
   })
-
+</script>
+<script>
+  // ================
+  // Loadsheet Object
+  // ================
   class Loadsheet {
     constructor($this) {
       const _this = this
@@ -28,14 +27,6 @@
     }
     print() {
       console.log("printLoadsheet()")
-      // let data = _Loadsheet
-      // console.log("_Loadsheet Data: %o",data)
-      // let pilot = data.pilot
-      // let fullPilot = pilots.getPilot(pilot)
-      // data.pilot = fullPilot[0] + " " + fullPilot[1]
-      // console.log("Record Data: %o",data)
-      // date,time,pilot,plane,fuel,route,pax,paxWeights,pilotWeight,TOW,CG,numPax
-      // google.script.run.withSuccessHandler(utility.alert).saveLoadsheet(data)
       $("#SaveButton").css({ background: "green" })
       $(".NoPrint").hide()
       $("#LoadsheetPrint").focus()
@@ -89,7 +80,7 @@
       })
       if (!PIC.length) {
         PIC = null
-        window.alert("No PIC")
+        utility.alert("No PIC",$("#Details > .Print"))
         return
         // If no PIC... this should all fail (and throw an error)
       }
@@ -194,6 +185,7 @@
       notes.push(`AUW in LBS: ${WB.cg.imperial.TotalWeight}`)
       notes = notes.join("<BR>")
       $(".Notes").html(notes)
+      Events.init() // for Mobile Click
       this.$this.show()
     }
   }
@@ -1018,6 +1010,7 @@
           </tr>
         </table>
         <div width="100%" class="noBorder Notes"></div>
+        <div class="MenuButton FlightFollowing NoPrint">FlightFollowing</div>
       </center>
     </div>
   </div>

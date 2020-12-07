@@ -257,6 +257,7 @@
       targetObject = targetObject || "#Alert"
       $('<div class="alert">' + message + "</div>")
         .insertAfter(targetObject)
+        .css("z-index",10)
         .delay(3000)
         .fadeOut(function () {
           $(this).remove()

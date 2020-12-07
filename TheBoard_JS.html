@@ -42,7 +42,7 @@ var theBoard = {
     saveLocal:function(TimeStamp){
       let d = new Date(TimeStamp)
       let date = Dates.getNZ(d)
-      utility.alert(date)
+      console.log(date + " saved")
       theBoard.timeStamp.value = TimeStamp
     },
     checkRemote:function(){

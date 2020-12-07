@@ -1,34 +1,28 @@
 <script>
-  /*
-    Will need to go back to Init.html and change all the other drop event handlers (and other event handlers too I guess)
-
-    Maybe make Events.drop polymorphic?
-
-*/
-
   // Mobile Events (could use a rethink) ***********************************
   // mouse is in Global
   function _mouseOverEvent(event, ui) {
     if (isMobile) {
+      console.log("MouseOver")
       mouse.setOver(event.pageX, event.pageY)
     }
   }
   function _mouseOutEvent(event, ui) {
     if (isMobile) {
+      console.log("MouseOut")
       let click = mouse.isClick(event.pageX, event.pageY)
       if (click) {
         if ($(this).hasClass("TableCell")) {
+          $(this).click()
         }
         if ($(this).hasClass("popupCloseButton")) {
-          $("#details").hide()
+          $("#Details").hide()
         }
         if ($(this).hasClass("popupCloseButtonSmall")) {
-          console.log("Pickup Close")
           $("#PickupList").hide()
         }
         if ($(this).hasClass("Print")) {
-          printLoadsheet()
-          $("#details").hide()
+          LOADSHEET.show($("#Details").data("root")._TableCell)
         }
         if ($(this).is("a, a *")) {
           window.open($(this).attr("href"), "_blank")
@@ -39,46 +33,49 @@
   // On jQuery load...
   $(document).ready(function () {
     // For Mobile Click
-    $(".TableCell, .Print, .popupCloseButton, .MobileButton").mouseenter(_mouseOverEvent).mouseleave(_mouseOutEvent)
+    Events.init()
   })
   // -----------------------------------------------------------------------------------------------------------------------
   // Events Object
   // -----------------------------------------------------------------------------------------------------------------------
   var Events = {
+    init: () => {
+      $(".MobileButton").mouseenter(_mouseOverEvent).mouseleave(_mouseOutEvent)
+    },
     highlight: function (Selector) {
       Selector.addClass("highlight")
     },
     lowlight: function (Selector) {
       Selector.removeClass("highlight")
     },
-    tableCell: {
-      handleDrop: function (event, ui) {
-        // $(this) is the TD
-        let _thisObject = Events // Necessary _thisObject hardcoded link for Object Literal sytax
-        // ***********************************************************************************
-        // We'll need to handle drops from other boards here
-        // ***********************************************************************************
-        //
-        // First thing's first: is it a legal drop (in/out)
-        // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
-        //
-        console.log("TableCell Drop")
-        let $Board = $(this).closest(".root") // jQuery root
-        let board = $Board.data("root") // JavaScript root
-        let dragged = ui.draggable // ui.draggable : The dropped sprite
-        let manifest = board.manifest
-        //
-        // Color the manifest object
-        //
-        dragged.css("background-color","var(--main-bg-color)")
-        // -------------------------------------------------------------------
-        // Record Drop
-        // -------------------------------------------------------------------
-        board.state.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
-        board.update()
-        //console.log("State: %o", board.state.data)
-        //_thisObject.update($(this),booking)
-      },
-    },
+    // tableCell: {
+    //   handleDrop: function (event, ui) {
+    //     // $(this) is the TD
+    //     let _thisObject = Events // Necessary _thisObject hardcoded link for Object Literal sytax
+    //     // ***********************************************************************************
+    //     // We'll need to handle drops from other boards here
+    //     // ***********************************************************************************
+    //     //
+    //     // First thing's first: is it a legal drop (in/out)
+    //     // Other than that, I don't know that there's much that needs to happen on a drop... probably check the outcell too maybe? *******************
+    //     //
+    //     console.log("TableCell Drop")
+    //     let $Board = $(this).closest(".root") // jQuery root
+    //     let board = $Board.data("root") // JavaScript root
+    //     let dragged = ui.draggable // ui.draggable : The dropped sprite
+    //     let manifest = board.manifest
+    //     //
+    //     // Color the manifest object
+    //     //
+    //     dragged.css("background-color","var(--main-bg-color)")
+    //     // -------------------------------------------------------------------
+    //     // Record Drop
+    //     // -------------------------------------------------------------------
+    //     board.state.add($(this), dragged) // This is the magic // This adds the data to the State object (two dimensional array that mirrors the Board)
+    //     board.update()
+    //     //console.log("State: %o", board.state.data)
+    //     //_thisObject.update($(this),booking)
+    //   },
+    // },
   }
 </script>

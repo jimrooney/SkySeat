@@ -16,7 +16,7 @@
       this.airplane // placholder (gets built in reset())
 
       this.$root = $(`<div id="Details" class="detailsDiv NoPrint">
-        <div class="Print">Print</div>
+        <div class="MenuButton MobileButton Print">Print</div>
         <div class="Report" />
         <div id="detailsContents" class="detailsContents">
           <div id="content" style="width: 100%; overflow: hidden;">
@@ -62,7 +62,7 @@
       // ====================
       // Details Close Button
       // ====================
-      let $pop = $(`<div id="DetailsClose" class="popupCloseButton">X</div>`)
+      let $pop = $(`<div id="DetailsClose" class="popupCloseButton MobileButton">X</div>`)
       let _$root = this.$root
       this.$root.append($pop)
       $pop.click(function () {

@@ -16,7 +16,6 @@
     //
     init() {
       this.state = new State(this)
-      // this.$datepicker ... created in writeBoard()
     }
     handleDatePickerSelect($picker){
       this.load()
@@ -78,6 +77,7 @@
         //$("> #hours", this).remove() // removes all "hours" children ***********************
         _this.update() // call update against all PlaneCells (maybe use above code to refine that to just this board?)
       })
+      $(".MobileButton").mouseenter(_mouseOverEvent).mouseleave(_mouseOutEvent)
     }
 
     /*
