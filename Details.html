@@ -339,7 +339,7 @@
       //
       //
       //
-      const passengers = this._TableCell.getPassengers()
+      const passengers = this._TableCell.getPassengers() || []
       let state = this._TableCell.getState() // Returns State {CellData}
       // ====================================
       // -------------- PCF -----------------
@@ -473,6 +473,8 @@
 
       let bgColors = {}
       let colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
+      
+      
       passengers.forEach((p, index) => {
         let pax = new Pax(p)
         const firstName = pax.getValue("First Name") //pax.getFirstName()
@@ -520,6 +522,12 @@
           $pax.css("font-size", "8px")
         }
       })
+
+
+
+
+
+
       if (visible) {
         this.$root.hide()
       } else {

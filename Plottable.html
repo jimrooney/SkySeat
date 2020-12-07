@@ -7,7 +7,7 @@
       if (!!this.id && !!this.board.state.data[this.id]) {
         return this.board.state.data[this.id].passengers // [{fields: Array(9)}]
       }
-      return []
+      return this.passengers
     }
     show() {
       console.log("Plottable: %o", this)
