@@ -4,10 +4,10 @@
       this.passengers = passengers
     }
     getPassengers() {
-      if (!!this.id) {
+      if (!!this.id && !!this.board.state.data[this.id]) {
         return this.board.state.data[this.id].passengers // [{fields: Array(9)}]
       }
-      return this.passengers
+      return []
     }
     show() {
       console.log("Plottable: %o", this)
