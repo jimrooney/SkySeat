@@ -7,12 +7,23 @@
     loadTripCodes: function () {
       google.script.run.withSuccessHandler(gya.onTripCodeLoad).loadTripCodes()
     },
+    getBoards: function() {
+      return $(".Board").map((i,board) => $(board).data("root"))
+    },
+    //
+    // Example function, changes all boards to today.
+    //
+    changeBoards: function() {
+      $(".Board").each( (i,board) => {
+        $(board).data("root").manifest.setDate(new Date())
+      })
+    },
     makeNewBoard: function () {
       const boardName = "AutoBoard" + root.boards.length
       const lastBoard = root.boards[root.boards.length - 1]
       const lastDate = !!lastBoard ? lastBoard.getDate() : null
       const $this = $("<div />", {
-        class: "root NoPrint",
+        class: "root NoPrint Board",
         id: boardName,
         style: "display:inline-block;vertical-align:top",
       })
