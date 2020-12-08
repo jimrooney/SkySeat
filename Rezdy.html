@@ -25,33 +25,40 @@
       }
       requestedDate.setDate(requestedDate.getDate() - 1)
       requestedDate.setHours(3, 0, 0, 0)
-      debug.log("requestedDate:", requestedDate , {Rezdy})
+
+      if (root.vars.isIOS) {
+        //   *****************************************
+        utility.alert("Date: " + requestedDate)
+        // ********************************* working on Crapple fix (wrong dates)
+      }
+
+      root.debug.log("requestedDate:", requestedDate, { Rezdy })
       //
       // Call the google script and pass it the Manifest
       //
       let startDate = new Date(requestedDate)
       startDate = startDate.toString()
 
-      debug.log("startDate:", startDate)
+      root.debug.log("startDate:", startDate)
 
       let endDate = new Date(requestedDate)
       endDate.setDate(endDate.getDate() + 1)
       endDate = endDate.toString()
 
-      debug.log("endDate:", endDate)
+      root.debug.log("endDate:", endDate)
 
       $(".Manifest_Container .Manifest").css("background-color", "#ccc")
       google.script.run.withSuccessHandler(this.onLoad).withUserObject(Manifest).loadRezdy(startDate, endDate)
     },
     // Passes Google Script XML return back to the Manifest that called the script
     onLoad: function (ret, Manifest) {
-      debug.log("Rezdy.onLoad()")
-      debug.log("Requested URL:", ret.url)
+      root.debug.log("Rezdy.onLoad()")
+      root.debug.log("Requested URL:", ret.url)
       console.log(`Manifest: ${Manifest.board.$board.prop("id")}`)
       Manifest.onLoad(ret.json)
     },
     onTripCodeLoad: function (data) {
-      debug.log("OnTripCodeLoad: %o", data)
+      root.debug.log("OnTripCodeLoad: %o", data)
       gya.trips = data
       return data
     },

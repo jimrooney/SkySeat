@@ -22,7 +22,7 @@
       this.manifest.showTitle()
     }
     load() {
-      console.log(`${this.$board.prop("id")} .load()`)
+      console.log(`${this.$board.prop("id")}.load()`)
       this.state.clear()
       this.manifest.load()
     }
@@ -41,7 +41,6 @@
     // Calls update() on each TableCell
     //
     update() {
-      console.log("Board.update()")
       this.manifest.showTitle()
       //
       // Make things Draggable

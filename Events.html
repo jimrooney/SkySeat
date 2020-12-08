@@ -3,13 +3,11 @@
   // mouse is in Global
   function _mouseOverEvent(event, ui) {
     if (isMobile) {
-      console.log("MouseOver")
       mouse.setOver(event.pageX, event.pageY)
     }
   }
   function _mouseOutEvent(event, ui) {
     if (isMobile) {
-      console.log("MouseOut")
       let click = mouse.isClick(event.pageX, event.pageY)
       if (click) {
         if ($(this).hasClass("TableCell")) {

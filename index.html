@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <script>
-  var root = {
+  let debug = {}
+  let root = {
     boards: [],
     // --------------------------------- Load TripCodes ----------------------------------------------
     loadTripCodes: function () {
@@ -10,15 +11,12 @@
       const boardName = "AutoBoard" + root.boards.length
       const lastBoard = root.boards[root.boards.length - 1]
       const lastDate = !!lastBoard ? lastBoard.getDate() : null
-
       const $this = $("<div />", {
         class: "root NoPrint",
         id: boardName,
         style: "display:inline-block;vertical-align:top",
       })
-
       const _board = new Board($this)
-
       $this.data("root", _board)
       $("#Boards").append($this)
       $this.data("root").writeBoard()
@@ -33,14 +31,41 @@
       }
       this.boards.push(_board)
     },
-  } // list of root variables (so they're easier to find in debug)
+    debug: {
+      logs:[],
+      log: function (...msg) {
+        if(this.show){
+          console.log("{Debug} %o",msg)
+        }
+        this.logs.push(msg)
+      },
+      clear: function () {
+        this.logs = []
+        return "Logs Cleared"
+      },
+      show:false,
+    }
+  }
+  
+  // list of root variables (so they're easier to find in debug)
   // testBoard needs to exist before writeboard is called (so it has somewhere to write to)
   // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
 
   var testBoard
   var LOADSHEET
   // Placeholder for the LOADSHEET object *** This should go in {root}
-
+      //
+      // Some Debug Stuff
+      //
+      console.clear()
+      //
+      // root object to attach debug info to so it's easy to find in console.
+      //
+      console.log(`To see the debug object, change the Javascript Context to userFrame(blank) and type debug`)
+      // To use:
+      // Change the "Javascript: context" at the top of the debug console to "userFrame(blank)Iframe"
+      // and type "debug" into the console.
+      //
   /*
       ___________root objects______________
       {root}
@@ -110,35 +135,15 @@
     <?!= include('Details'); ?>
     <?!= include('Details_CSS'); ?>
     <?!= include('Click'); ?>
-    <script>
-      //
-      // Some Debug Stuff
-      //
-      console.clear()
-      //
-      // root object to attach debug info to so it's easy to find in console.
-      //
-      console.log(`To see the debug object, change the Javascript Context to userFrame(blank) and type debug`)
-      // To use:
-      // Change the "Javascript: context" at the top of the debug console to "userFrame(blank)Iframe"
-      // and type "debug" into the console.
-      //
-      var debug = {
-        logs: [],
-        log: function (...msg) {
-          this.logs.push(msg)
-        },
-      }
-      root.debug = debug
+
+<script>
       //
       $(document).ready(function () {
-        // Display the window object
-        console.log("DOM: %o\n\n", this)
+        // Put the DOM into debug
+        root.debug.DOM = this
       })
-      function done(msg) {
-        window.alert("done " + msg)
-      }
-    </script>
+      //
+</script>
     <base target="_top" />
   </head>
   <body>
@@ -259,6 +264,7 @@
   </body>
 </html>
 <script>
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
   root.vars = {
     testBoard: testBoard,
     LOADSHEET: LOADSHEET,
@@ -276,6 +282,7 @@
     utility: utility,
     arrays: arrays,
     wb: wb,
+    isIOS: isIOS,
   }
 
   /*

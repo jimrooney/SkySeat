@@ -124,18 +124,18 @@
     // Show Manifest
     // ---------------------------------------------------------
     show(date) {
-      debug.log("Manifest.show()")
-      debug.log("Requested Date:", date)
-      console.log("JSON: (this.data) %o", this.data)
+      root.debug.log("Manifest.show()")
+      root.debug.log("Requested Date:", date)
+      root.debug.log("JSON: (this.data) %o", this.data)
       if (!date) {
         date = this.getDate()
       }
-      debug.log("Date used:", date, { Manifest })
+      root.debug.log("Date used:", date, { Manifest })
       //
       // Filter by CONFIRMED
       //
       let orders = this.orders.filter((order) => order.status == "CONFIRMED")
-      console.log("All Confirmed Orders Returned From Rezdy\n%o", orders) // [{Booking},{Booking},{Booking}]
+      root.debug.log("All Confirmed Orders Returned From Rezdy\n%o", orders) // [{Booking},{Booking},{Booking}]
 
       // ------------------
       // Tag each passenger
@@ -164,7 +164,6 @@
       // Filter by Date
       //
       let filteredManifest = this.filterByDate(orders, date)
-      console.log("filteredManifest: %o", filteredManifest)
       //
       // Create Booking Objects
       //
@@ -178,7 +177,6 @@
       // Sort Bookings by Start Time
       //
       bookings.sort((a, b) => (time.getHour(a.item.startTimeLocal) > time.getHour(b.item.startTimeLocal) ? 1 : -1))
-      console.log("Sorted Bookings: %o", bookings)
       //
       // Totals
       //

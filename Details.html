@@ -62,12 +62,12 @@
       // ====================
       // Details Close Button
       // ====================
-      let $pop = $(`<div id="DetailsClose" class="popupCloseButton MobileButton">X</div>`)
-      let _$root = this.$root
-      this.$root.append($pop)
-      $pop.click(function () {
-        _$root.hide()
-      })
+      const $pop = $(`<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`)
+      const $popLeft = $(`<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`)
+      const _$root = this.$root
+      this.$root.append($pop).append($popLeft)
+      $pop.click(() => _$root.hide())
+      $popLeft.click(() => _$root.hide())
       return this.$root
     }
     update() {
@@ -182,37 +182,37 @@
       // Check to see if the plane has a baggage pod. ***
       // in ZEA's case, add the pod to the WB if attached (need a POD/NOPOD button at the top)
       //
-      const podBays = _this.airplane.stations.forEach((station)=>{
-        if (station.type.includes("podBay")){
+      const podBays = _this.airplane.stations.forEach((station) => {
+        if (station.type.includes("podBay")) {
           const $bay = $("<div></div>")
             .appendTo("#CargoPod")
             .addClass("grid-placeholder")
             .addClass("station")
             .addClass("Baggage")
             .data("station", station)
-            //.text(station.arm)
-            const $selector = $("<select />")
-              .appendTo($bay)
-              .data("station", station)
-              .append(`<option value="0">0</option>`)
-            const _station = station
-            // Limit the selector by the max limit of the pod bay ********
-            for (let i = 10; i <= 500; i += 10) {
-              let selected = ""
-              
-              if (_station.weight == i.toString()){
-                selected = " selected"
-              }
+          //.text(station.arm)
+          const $selector = $("<select />")
+            .appendTo($bay)
+            .data("station", station)
+            .append(`<option value="0">0</option>`)
+          const _station = station
+          // Limit the selector by the max limit of the pod bay ********
+          for (let i = 10; i <= 500; i += 10) {
+            let selected = ""
 
-              $selector.append(`<option value="${i}" ${selected}>${i}</option>`)
+            if (_station.weight == i.toString()) {
+              selected = " selected"
             }
-            $selector.change(function () {
-              station.weight = this.value
-              _this.update()
-            })
+
+            $selector.append(`<option value="${i}" ${selected}>${i}</option>`)
+          }
+          $selector.change(function () {
+            station.weight = this.value
+            _this.update()
+          })
         }
       })
-      console.log("Airplane Stations: %o",this.airplane.stations)
+      console.log("Airplane Stations: %o", this.airplane.stations)
     }
     handleDrop(event, ui) {
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
@@ -251,9 +251,9 @@
       // Pax exists
       //
       if ($(this).children().length > 0) {
-      //
-      // Swap with any existing seated pax
-      //
+        //
+        // Swap with any existing seated pax
+        //
         // Detach pax from seat
         $thisPax = $(this).children(".Pax").detach()
         //
@@ -473,8 +473,7 @@
 
       let bgColors = {}
       let colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
-      
-      
+
       passengers.forEach((p, index) => {
         let pax = new Pax(p)
         const firstName = pax.getValue("First Name") //pax.getFirstName()
@@ -522,11 +521,6 @@
           $pax.css("font-size", "8px")
         }
       })
-
-
-
-
-
 
       if (visible) {
         this.$root.hide()
