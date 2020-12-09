@@ -1,889 +1,915 @@
 <script>
-//==================================================================================================
-// theBoard
-//==================================================================================================
-var theBoard = {
-  state:{},
-  clean: function(){
-    $(".TableCell").each(function(){
-      $(this).update()
-    })
-  },
-  print: function(){
-      $('#TheBoard').focus()
-      window.print()
-  },
-  timeStamp:{
-    value:null,
-    compare:function(remoteValue){
-      let localValue = theBoard.timeStamp.value
-
-      let match = false
-      let msg = ""
-      if (localValue == remoteValue){
-        msg = "match"
-        match = true
-      } else {
-        msg = "no match"
-      }
-      
-      if (match){
-        $("#SaveButton").css({"background": "green",})
-        setTimeout(function(){ $("#SaveButton").css({"background": "blue",}) }, 2000)
-      } else {
-        $("#SaveButton").css({"background": "red",})
-        setTimeout(function(){ $("#SaveButton").css({"background": "blue",}) }, 2000)
-      }
-      utility.alert(msg)
-    },
-    saveRemote:function(date){
-      // This is already saved with each save to the board data
-    },
-    saveLocal:function(TimeStamp){
-      let d = new Date(TimeStamp)
-      let date = Dates.getNZ(d)
-      console.log(date + " saved")
-      theBoard.timeStamp.value = TimeStamp
-    },
-    checkRemote:function(){
-      google.script.run.withSuccessHandler(theBoard.timeStamp.compare).getLastSave()
-    },
-    getRemote:function(){
-     // google.script.run.withSuccessHandler(theBoard.timeStamp.compare).getLastSave()
-    },
-    getLocal:function(){
-      return theBoard.timeStamp.value
-    },
-    loadRemote:function(){
-      google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).getLastSave()
-    },
-  },
-  showPickups: function(){
-    $(".PickupCell").each(function(){
-      let row = $(this).prop('id')
-      let numPickups = theBoard.getManifest(row).pickups.total
-      if (numPickups){
-        $(this).html(numPickups)
-      } else {
-        $(this).html('<span style="color:white">00</span>')
-      }
-    })
-  },
-  showManifest:function(Data){
-    console.log("showManifest Data: %o",Data)
-    //
-    // Clear old list
-    //
-    let pickupList = $("#PickupList")
-    $("#PickupContents").remove()
-    pickupList.append("<div id='PickupContents'>PickupContents</div>")
-    //
-    // Navbar
-    //
-    let _nav = "<div style='float:right; width: 100%; display: block; position: absolute; top: 0;'>" + 
-    "<button id='OnGroundManifestToggle' onClick=''>On-Ground Manifest</button><button onClick='utility.printPickup()'>Print</button>"+
-    "</div><P>"
-    $("#PickupContents").append(_nav)
-    
-    
-    // ----------------------------------------------------------------------------------------------------------------------------------
-    if (!Data.length){    
-    //
-    // On Ground Manifest
-    //
-    $("#PickupContents").append("<div id='OnGroundManifest'></div>")
-    if (Data.onGround.Milford.length>0){
-      $("#OnGroundManifest").append("<B>Milford On Ground:</B><br>")
-      let count = 1
-      for (let b in Data.onGround.Milford){
-        let _booking = Data.onGround.Milford[b]
-          for (let p in _booking.pax){
-            let _pax = _booking.pax[p]
-            $("#OnGroundManifest").append(count + " " + _pax.firstName + " " + _pax.lastName + " " + _pax.product + "<br>" ) // add link to booking here *************
-            count++
-          }
-      }
-      // Start hidden
-      $("#OnGroundManifest").hide()
-      $('#OnGroundManifestToggle').click(function(){
-        if($("#OnGroundManifest").is(":visible")){
-          $("#OnGroundManifest").hide()
-          } else {
-            $("#OnGroundManifest").show()
-          }
+  //==================================================================================================
+  // theBoard
+  //==================================================================================================
+  var theBoard = {
+    state: {},
+    clean: function () {
+      $(".TableCell").each(function () {
+        $(this).update()
       })
-    }
-    // ------------------
-    // Pack into an array
-    // ------------------
-      Data = [Data]
-          console.log("Pack Data: %o",Data)
-    }
-    
-     // ----------------------------------------------------------------------------------------------------------------------------------
-     // Pickup Manifest (sortable) (loop over the Data)
-     // ----------------------------------------------------------------------------------------------------------------------------------
-      for (let i in Data){
-//      console.log("i %o",i)
-//      console.log("PickupData: %o",Data[i])
-      //
-      // Skip Rounds with no pickups
-      //
-      if (Data[i].pickups && Data[i].pickups.total>0){
-        let data = Data[i]
-        //
-        // Scrub the time so it doesn't break Javascript... probably need to change this for the winter schedules ******************
-        // (need a different way to handle times... have a data block and a display block, probably shove it all into an object)
-        //
-        let _t = data.trip.time.replace(/:/g,"_")
-        _t = _t.replace(/\s\(.*\)/, "")
-        let time =  _t
-    //
-    // Attach the Round Container to the main Pickup Contents Container 
-    //
-    let RoundID = "Round"+time
-    $("#PickupContents").append("<div id='"+RoundID+"' data-data='PickupRound'></div>")
-    $("#"+RoundID).append("<B>====================================[ " + data.trip.time + " ]=======================================</B><br>")
-    //
-    // Sortable PickupManifest
-    //
-    let PickupManifest = "PickupManifest" + time
-    $("#"+RoundID).append("<div id='" + PickupManifest + "' data-time='" + time + "' data-round='"+RoundID+"' class='PickupManifest'></div>")
-    $("#"+PickupManifest).append('<ul id="sortable1'+time+'" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="1">Van1</span></ul>')
-    //
-    // Each Pickup
-    //
-    for (let s in data.pickups.stops){
-      let stop = data.pickups.stops[s]
-      //
-      // Reformat pickup time
-      //
-      let pickupTime = stop.pickupLocation.pickupTime
-      if (!!pickupTime){
-        //"2020-02-23 07:20:00"
-        let regex = /\d\d\d\d-\d\d-\d\d /gi
-        pickupTime = pickupTime.replace(regex, "")
-        regex = /:\d\d$/i
-        pickupTime = pickupTime.replace(regex, "")
-      }
-      
-      let stopName = stop.pickupLocation.locationName
-      if (!!stopName && stopName.match(/=/)){
-        stopName = "<span style='font-size:x-small'>[" + stopName.replace(/=/ , ']</span><br> ')
-      }
-      $("#sortable1"+time).append('<li id="Stop' + stop.orderNumber + 
-      '" class="ui-state-default stop">' +
-      "<span class='seats' style='font-weight:bold' data-seats='" + stop.seats + "'>" + stop.seats + " </span> ) " +
-      stopName + " " +
-      pickupTime + '<br>'  +
-      "<span class='click_area' style='font-size:x-small'>" + stop.bookingName + "</span>" + ' <span class="click_area">&#8594;</span></li>'
-      )
-      $("#Stop"+stop.orderNumber).data('data',stop)
-    }
-    //
-    // Two other sortable lists (Van2 and "Other")
-    //
-    $("#"+PickupManifest).append('<ul id="sortable2'+time+'" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="2">Van2</span></ul>')
-    $("#"+PickupManifest).append('<ul id="sortable3'+time+'" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="3">Other</span></ul>')
-    //
-    // Link the sortables
-    //
-    $( "ul.droptrue" ).sortable({
-      connectWith: "ul"
-    })
-    //
-    $( "ul.dropfalse" ).sortable({
-      connectWith: "ul",
-      dropOnEmpty: false
-    })
-    
-    // --------------------------------------------------------------
-    // Name Dropdowns
-    // --------------------------------------------------------------
-    //
-    $( "#sortable1"+time+", #sortable2"+time+", #sortable3"+time ).disableSelection().on("click", ".click_area", function() {
-      //
-      // Show/Hide details
-      //
-      if ($(this).data('visible')&&$(this).data('visible')>0){
-        $(this).empty()
-        $(this).html('&#8594;')
-        $(this).data('visible',0)
-      } else {
-        let _stop = $(this).parent().data('data')
-        let details = "<div></div>"
-        $(this).html('&#8595;')
-        $(this).append(details)
-        let _pax = []
-          for (let p in _stop.pax){
-            _pax.push(_stop.pax[p].firstName + " " + _stop.pax[p].lastName)
-          }
-        $(this).append(_pax.join("<BR>"))
-        
-        $(this).data('visible',1)
-      }
-    })
+    },
+    print: function () {
+      $("#TheBoard").focus()
+      window.print()
+    },
+    timeStamp: {
+      value: null,
+      compare: function (remoteValue) {
+        let localValue = theBoard.timeStamp.value
 
-    $( "#sortable1"+time+", #sortable2"+time+", #sortable3"+time ).droppable({
-        accept: ".ui-state-default",
-        drop: theBoard.handleDropEvent,
-        })
-        
-        
+        let match = false
+        let msg = ""
+        if (localValue == remoteValue) {
+          msg = "match"
+          match = true
+        } else {
+          msg = "no match"
+        }
+
+        if (match) {
+          $("#SaveButton").css({ background: "green" })
+          setTimeout(function () {
+            $("#SaveButton").css({ background: "blue" })
+          }, 2000)
+        } else {
+          $("#SaveButton").css({ background: "red" })
+          setTimeout(function () {
+            $("#SaveButton").css({ background: "blue" })
+          }, 2000)
+        }
+        utility.alert(msg)
+      },
+      saveRemote: function (date) {
+        // This is already saved with each save to the board data
+      },
+      saveLocal: function (TimeStamp) {
+        let d = new Date(TimeStamp)
+        let date = Dates.getNZ(d)
+        console.log(date + " saved")
+        theBoard.timeStamp.value = TimeStamp
+      },
+      checkRemote: function () {
+        google.script.run.withSuccessHandler(theBoard.timeStamp.compare).getLastSave()
+      },
+      getRemote: function () {
+        // google.script.run.withSuccessHandler(theBoard.timeStamp.compare).getLastSave()
+      },
+      getLocal: function () {
+        return theBoard.timeStamp.value
+      },
+      loadRemote: function () {
+        google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).getLastSave()
+      },
+    },
+    showPickups: function () {
+      $(".PickupCell").each(function () {
+        let row = $(this).prop("id")
+        let numPickups = theBoard.getManifest(row).pickups.total
+        if (numPickups) {
+          $(this).html(numPickups)
+        } else {
+          $(this).html('<span style="color:white">00</span>')
+        }
+      })
+    },
+    showManifest: function (Data) {
+      console.log("showManifest Data: %o", Data)
+      //
+      // Clear old list
+      //
+      let pickupList = $("#PickupList")
+      $("#PickupContents").remove()
+      pickupList.append("<div id='PickupContents'>PickupContents</div>")
+      //
+      // Navbar
+      //
+      let _nav =
+        "<div style='float:right; width: 100%; display: block; position: absolute; top: 0;'>" +
+        "<button id='OnGroundManifestToggle' onClick=''>On-Ground Manifest</button><button onClick='utility.printPickup()'>Print</button>" +
+        "</div><P>"
+      $("#PickupContents").append(_nav)
+
+      // ----------------------------------------------------------------------------------------------------------------------------------
+      if (!Data.length) {
+        //
+        // On Ground Manifest
+        //
+        $("#PickupContents").append("<div id='OnGroundManifest'></div>")
+        if (Data.onGround.Milford.length > 0) {
+          $("#OnGroundManifest").append("<B>Milford On Ground:</B><br>")
+          let count = 1
+          for (let b in Data.onGround.Milford) {
+            let _booking = Data.onGround.Milford[b]
+            for (let p in _booking.pax) {
+              let _pax = _booking.pax[p]
+              $("#OnGroundManifest").append(
+                count + " " + _pax.firstName + " " + _pax.lastName + " " + _pax.product + "<br>"
+              ) // add link to booking here *************
+              count++
+            }
+          }
+          // Start hidden
+          $("#OnGroundManifest").hide()
+          $("#OnGroundManifestToggle").click(function () {
+            if ($("#OnGroundManifest").is(":visible")) {
+              $("#OnGroundManifest").hide()
+            } else {
+              $("#OnGroundManifest").show()
+            }
+          })
+        }
+        // ------------------
+        // Pack into an array
+        // ------------------
+        Data = [Data]
+        console.log("Pack Data: %o", Data)
+      }
+
+      // ----------------------------------------------------------------------------------------------------------------------------------
+      // Pickup Manifest (sortable) (loop over the Data)
+      // ----------------------------------------------------------------------------------------------------------------------------------
+      for (let i in Data) {
+        //      console.log("i %o",i)
+        //      console.log("PickupData: %o",Data[i])
+        //
+        // Skip Rounds with no pickups
+        //
+        if (Data[i].pickups && Data[i].pickups.total > 0) {
+          let data = Data[i]
+          //
+          // Scrub the time so it doesn't break Javascript... probably need to change this for the winter schedules ******************
+          // (need a different way to handle times... have a data block and a display block, probably shove it all into an object)
+          //
+          let _t = data.trip.time.replace(/:/g, "_")
+          _t = _t.replace(/\s\(.*\)/, "")
+          let time = _t
+          //
+          // Attach the Round Container to the main Pickup Contents Container
+          //
+          let RoundID = "Round" + time
+          $("#PickupContents").append("<div id='" + RoundID + "' data-data='PickupRound'></div>")
+          $("#" + RoundID).append(
+            "<B>====================================[ " +
+              data.trip.time +
+              " ]=======================================</B><br>"
+          )
+          //
+          // Sortable PickupManifest
+          //
+          let PickupManifest = "PickupManifest" + time
+          $("#" + RoundID).append(
+            "<div id='" +
+              PickupManifest +
+              "' data-time='" +
+              time +
+              "' data-round='" +
+              RoundID +
+              "' class='PickupManifest'></div>"
+          )
+          $("#" + PickupManifest).append(
+            '<ul id="sortable1' +
+              time +
+              '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="1">Van1</span></ul>'
+          )
+          //
+          // Each Pickup
+          //
+          for (let s in data.pickups.stops) {
+            let stop = data.pickups.stops[s]
+            //
+            // Reformat pickup time
+            //
+            let pickupTime = stop.pickupLocation.pickupTime
+            if (!!pickupTime) {
+              //"2020-02-23 07:20:00"
+              let regex = /\d\d\d\d-\d\d-\d\d /gi
+              pickupTime = pickupTime.replace(regex, "")
+              regex = /:\d\d$/i
+              pickupTime = pickupTime.replace(regex, "")
+            }
+
+            let stopName = stop.pickupLocation.locationName
+            if (!!stopName && stopName.match(/=/)) {
+              stopName = "<span style='font-size:x-small'>[" + stopName.replace(/=/, "]</span><br> ")
+            }
+            $("#sortable1" + time).append(
+              '<li id="Stop' +
+                stop.orderNumber +
+                '" class="ui-state-default stop">' +
+                "<span class='seats' style='font-weight:bold' data-seats='" +
+                stop.seats +
+                "'>" +
+                stop.seats +
+                " </span> ) " +
+                stopName +
+                " " +
+                pickupTime +
+                "<br>" +
+                "<span class='click_area' style='font-size:x-small'>" +
+                stop.bookingName +
+                "</span>" +
+                ' <span class="click_area">&#8594;</span></li>'
+            )
+            $("#Stop" + stop.orderNumber).data("data", stop)
+          }
+          //
+          // Two other sortable lists (Van2 and "Other")
+          //
+          $("#" + PickupManifest).append(
+            '<ul id="sortable2' +
+              time +
+              '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="2">Van2</span></ul>'
+          )
+          $("#" + PickupManifest).append(
+            '<ul id="sortable3' +
+              time +
+              '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="3">Other</span></ul>'
+          )
+          //
+          // Link the sortables
+          //
+          $("ul.droptrue").sortable({
+            connectWith: "ul",
+          })
+          //
+          $("ul.dropfalse").sortable({
+            connectWith: "ul",
+            dropOnEmpty: false,
+          })
+
+          // --------------------------------------------------------------
+          // Name Dropdowns
+          // --------------------------------------------------------------
+          //
+          $("#sortable1" + time + ", #sortable2" + time + ", #sortable3" + time)
+            .disableSelection()
+            .on("click", ".click_area", function () {
+              //
+              // Show/Hide details
+              //
+              if ($(this).data("visible") && $(this).data("visible") > 0) {
+                $(this).empty()
+                $(this).html("&#8594;")
+                $(this).data("visible", 0)
+              } else {
+                let _stop = $(this).parent().data("data")
+                let details = "<div></div>"
+                $(this).html("&#8595;")
+                $(this).append(details)
+                let _pax = []
+                for (let p in _stop.pax) {
+                  _pax.push(_stop.pax[p].firstName + " " + _stop.pax[p].lastName)
+                }
+                $(this).append(_pax.join("<BR>"))
+
+                $(this).data("visible", 1)
+              }
+            })
+
+          $("#sortable1" + time + ", #sortable2" + time + ", #sortable3" + time).droppable({
+            accept: ".ui-state-default",
+            drop: theBoard.handleDropEvent,
+          })
         }
       }
-    // ----------------------------------------------------------------------------------------------------------------------------------
-     pickupList.show()
-  },
-  // -----------------------------------------------------------------------------------
-  // Pickup List... Handle Drop Event
-  // -----------------------------------------------------------------------------------
-  //
-  // This should maybe have a less generic name (since it's for pickups/dropoffs and not just any old drop) **********************
-  //
-  handleDropEvent: function(e,ui){
+      // ----------------------------------------------------------------------------------------------------------------------------------
+      pickupList.show()
+    },
+    // -----------------------------------------------------------------------------------
+    // Pickup List... Handle Drop Event
+    // -----------------------------------------------------------------------------------
     //
-    // $(this) being the target of the drop
-    // ui.draggable being the dropped object
+    // This should maybe have a less generic name (since it's for pickups/dropoffs and not just any old drop) **********************
     //
-   // let vehicleNumber = $(this).find("span").data("vehicle")// e.target  
-    //let seats = ui.draggable.find(".seats").data("seats")
-    //let seats = ui.draggable.data("data").seats
-    
-    //ui.draggable.data("data").pickupLocation.vehicle = vehicleNumber
-    
-    
-    // ***********************************************************************************
-    // Save pickups here
-    // ***********************************************************************************
-//    theBoard.savePickups(ui.draggable,vehicleNumber)
-//    console.log("Vehicle#: %o",vehicleNumber)
-//    console.log("Seats: %o",seats)
-//    console.log("Drop draggable: %o",ui.draggable.data("data"))
-    
-    setTimeout(function(){ theBoard.updatePickups() }, 100) // delay allows the totals to catch up
-  },
-  updatePickups:function(){
-  console.log("updatePickups()")
-  
-  let rounds = $("#PickupContents > div > .PickupManifest")
-  let sum = $("#PickupContents > div > .PickupManifest > ul > span[id^='pax']")
+    handleDropEvent: function (e, ui) {
+      //
+      // $(this) being the target of the drop
+      // ui.draggable being the dropped object
+      //
+      // let vehicleNumber = $(this).find("span").data("vehicle")// e.target
+      //let seats = ui.draggable.find(".seats").data("seats")
+      //let seats = ui.draggable.data("data").seats
 
-  console.log("Rounds %o",rounds)
-  
-  //
-  // Each Round
-  //
-  rounds.each(function(index,value){
-    //
-    // Each PickupManifest
-    //
-    let roundId = $(this).data("round")
-    let pickups = $("#"+roundId + " > div > ul[class^='stop']")
-    let paxLabel = $("#"+roundId + " > div > ul > span[class^='pax']")
-    let roundTime = $(this).data("time")
-    let vanNumber = $(this).find("span").data("vehicle")
-//    
-    console.log("Round: %o",roundId)
-//    console.log("Round Time: %o",roundTime)
-//    console.log("Van #: %o",vanNumber)
+      //ui.draggable.data("data").pickupLocation.vehicle = vehicleNumber
 
+      // ***********************************************************************************
+      // Save pickups here
+      // ***********************************************************************************
+      //    theBoard.savePickups(ui.draggable,vehicleNumber)
+      //    console.log("Vehicle#: %o",vehicleNumber)
+      //    console.log("Seats: %o",seats)
+      //    console.log("Drop draggable: %o",ui.draggable.data("data"))
 
-//   let _t = $("> ul > span[id^='title']", this)
-//   console.log("_t Titles: %o",_t)
-//   console.log("ID: %o", $(this).prop('id'))
-    
-//    console.log("Index %o",index)
-//      console.log("Round: %o",value)
-    
-    // ---------------
-    // Pickup Manifest
-    // ---------------
-    let _roundSeats = 0
-    //
-    // Each Van
-    //
-    $(this).children().each(function(i,v){
-      let _vanSeats = 0
-      let stops  = $(this).children('li').find('span.seats')
-      console.log("Stops: %o",stops)
-      if(stops.length>0){
-        $.each(stops,function(index,value){
-          console.log("This: %o That: %o",index, value)
-          let total = $(this).data("seats")
-          console.log("Total: %o",total)
-          if (total>0){
-            _roundSeats += total
-            _vanSeats += total
-          }
-        })
-      }
-      console.log("Van Seats: %o",_vanSeats)
-      if (_vanSeats==0){
-        _vanSeats = ""
-      }
-      _vanSeats = "( " + _vanSeats + " ) "
-      $(this).find('span.pax').text(_vanSeats)
-    })
-    console.log("Round Total: %o",_roundSeats)
+      setTimeout(function () {
+        theBoard.updatePickups()
+      }, 100) // delay allows the totals to catch up
+    },
+    updatePickups: function () {
+      console.log("updatePickups()")
 
+      let rounds = $("#PickupContents > div > .PickupManifest")
+      let sum = $("#PickupContents > div > .PickupManifest > ul > span[id^='pax']")
 
-//    let EachRound = $(this).children()
-//    console.log("EachRound: %o",$(EachRound[index]))
+      console.log("Rounds %o", rounds)
 
+      //
+      // Each Round
+      //
+      rounds.each(function (index, value) {
+        //
+        // Each PickupManifest
+        //
+        let roundId = $(this).data("round")
+        let pickups = $("#" + roundId + " > div > ul[class^='stop']")
+        let paxLabel = $("#" + roundId + " > div > ul > span[class^='pax']")
+        let roundTime = $(this).data("time")
+        let vanNumber = $(this).find("span").data("vehicle")
+        //
+        console.log("Round: %o", roundId)
+        //    console.log("Round Time: %o",roundTime)
+        //    console.log("Van #: %o",vanNumber)
 
+        //   let _t = $("> ul > span[id^='title']", this)
+        //   console.log("_t Titles: %o",_t)
+        //   console.log("ID: %o", $(this).prop('id'))
 
+        //    console.log("Index %o",index)
+        //      console.log("Round: %o",value)
 
+        // ---------------
+        // Pickup Manifest
+        // ---------------
+        let _roundSeats = 0
+        //
+        // Each Van
+        //
+        $(this)
+          .children()
+          .each(function (i, v) {
+            let _vanSeats = 0
+            let stops = $(this).children("li").find("span.seats")
+            console.log("Stops: %o", stops)
+            if (stops.length > 0) {
+              $.each(stops, function (index, value) {
+                console.log("This: %o That: %o", index, value)
+                let total = $(this).data("seats")
+                console.log("Total: %o", total)
+                if (total > 0) {
+                  _roundSeats += total
+                  _vanSeats += total
+                }
+              })
+            }
+            console.log("Van Seats: %o", _vanSeats)
+            if (_vanSeats == 0) {
+              _vanSeats = ""
+            }
+            _vanSeats = "( " + _vanSeats + " ) "
+            $(this).find("span.pax").text(_vanSeats)
+          })
+        console.log("Round Total: %o", _roundSeats)
 
-    //
-    // Each stop
-    //
-//    let _numPax = 0
-//    $(EachRound[index]).children().find('.stop').each(function(index,_value){
-//
-//      let wrapper = $(EachRound[index]).children()
-//      
-//      console.log("Wrapper: %o",$(wrapper[index]))
-//      let _data = $(wrapper[index]).data('seats')
-//      
-//      console.log("Seats: %o",_data)
-//      if (_data>0){
-//        _numPax += _data
-//      }
-//    })
-//    console.log("Data Seats: %o",_numPax)
-//    console.log("\n")
-    
-    
-  })
-  //let children = $("#PickupContents > div > .PickupManifest > .PickupSprite")
-  
+        //    let EachRound = $(this).children()
+        //    console.log("EachRound: %o",$(EachRound[index]))
 
-    //console.log("children: %o",children)
+        //
+        // Each stop
+        //
+        //    let _numPax = 0
+        //    $(EachRound[index]).children().find('.stop').each(function(index,_value){
+        //
+        //      let wrapper = $(EachRound[index]).children()
+        //
+        //      console.log("Wrapper: %o",$(wrapper[index]))
+        //      let _data = $(wrapper[index]).data('seats')
+        //
+        //      console.log("Seats: %o",_data)
+        //      if (_data>0){
+        //        _numPax += _data
+        //      }
+        //    })
+        //    console.log("Data Seats: %o",_numPax)
+        //    console.log("\n")
+      })
+      //let children = $("#PickupContents > div > .PickupManifest > .PickupSprite")
 
-  
-//  for (let c in children){
-//    console.log("C: %o", c)
-//    
-//    let kids  = children[c].find("li[class*='sortable']")
-//    console.log("Kids: %o",kids)
-//    
-//  }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-//  for (let r = 0;r<=children.length;r++){
-//    console.log("Row %o",r)
-//    
-//    let total = 0
-//    for (let i = 1; i<=3; i++){
-//      let count = 0
-//      
-//
-//      console.log("Children: %o", $("#sortable"+r+i).children('li'))
-//      
-//      
-//      $("#sortable"+r+i).children().each(function () {
-//            if ($(this).data("data") && $(this).data("data").seats){
-//              let seats = $(this).data("data").seats
-//              count += seats
-//            }
-//          })
-//          $("#sortable1"+r > 'title').text(" " + count + " ")
-//          total += count
-//      }
-//      console.log('R: %o',r)
-//      console.log("total %o",total)
-//      //$("#Total").text("Total: " + total)
-//    }
-  
-  },
-  getManifest: function(row){
-    //
-    // Get the row's manifest. If no row is passed in, return a full day manifest
-    //
+      //console.log("children: %o",children)
+
+      //  for (let c in children){
+      //    console.log("C: %o", c)
+      //
+      //    let kids  = children[c].find("li[class*='sortable']")
+      //    console.log("Kids: %o",kids)
+      //
+      //  }
+
+      //  for (let r = 0;r<=children.length;r++){
+      //    console.log("Row %o",r)
+      //
+      //    let total = 0
+      //    for (let i = 1; i<=3; i++){
+      //      let count = 0
+      //
+      //
+      //      console.log("Children: %o", $("#sortable"+r+i).children('li'))
+      //
+      //
+      //      $("#sortable"+r+i).children().each(function () {
+      //            if ($(this).data("data") && $(this).data("data").seats){
+      //              let seats = $(this).data("data").seats
+      //              count += seats
+      //            }
+      //          })
+      //          $("#sortable1"+r > 'title').text(" " + count + " ")
+      //          total += count
+      //      }
+      //      console.log('R: %o',r)
+      //      console.log("total %o",total)
+      //      //$("#Total").text("Total: " + total)
+      //    }
+    },
+    getManifest: function (row) {
+      //
+      // Get the row's manifest. If no row is passed in, return a full day manifest
+      //
       let manifest = {
-        trip:{
-          time:  null,
+        trip: {
+          time: null,
         },
-        pax:{
-          total:0,
-          bookings:[],
+        pax: {
+          total: 0,
+          bookings: [],
         },
-        onGround:{
+        onGround: {
           // List of product codes that we're tracking people on the ground .. needs a better system ***********
-          products:[
-            "PR115C",
-            "P03UKW",
-            "PX31V0",
-            "PYML6Y",
-            "P3BW7J",
-            "PWHCSM"
-          ],
-          Milford:[],
-          MtCook:[],
-          bootsOnGround: function(code){
-            for (let c in manifest.onGround.products){
-              if (manifest.onGround.products[c] == code){
+          products: ["PR115C", "P03UKW", "PX31V0", "PYML6Y", "P3BW7J", "PWHCSM"],
+          Milford: [],
+          MtCook: [],
+          bootsOnGround: function (code) {
+            for (let c in manifest.onGround.products) {
+              if (manifest.onGround.products[c] == code) {
                 return true
               }
             }
             return false
           },
         },
-        pickups:{
-          total:0,
-          stops:[],
+        pickups: {
+          total: 0,
+          stops: [],
         },
-        nonPickups:{
-          SelfDrive:[],
-          GlenorchyAirstrip:[],
+        nonPickups: {
+          SelfDrive: [],
+          GlenorchyAirstrip: [],
         },
       }
-    if(!!row){
-      //
-      manifest.trip.time = $(".TimeCell."+row).text()
-      //
-      // Each column in the row
-      //
-      $("."+row).each(function(){
-            let JSON = $(this).data('json')
-            if ( !jQuery.isEmptyObject(JSON) ){
+      if (!!row) {
+        //
+        manifest.trip.time = $(".TimeCell." + row).text()
+        //
+        // Each column in the row
+        //
+        $("." + row).each(function () {
+          let JSON = $(this).data("json")
+          if (!jQuery.isEmptyObject(JSON)) {
+            //
+            // Each booking in the column
+            //
+            for (let b in JSON) {
+              let booking = JSON[b]
+              let pickup = true
+              let pickupLocation = ""
               //
-              // Each booking in the column
-              //
-              for(let b in JSON){
-                let booking = JSON[b]
-                let pickup = true
-                let pickupLocation = ""
+              if (booking.pickupLocation) {
+                if (booking.pickupLocation.locationName) {
+                  pickupLocation = booking.pickupLocation.locationName
+                  //
+                  if (booking.product && booking.product.match(/out/gi)) {
+                    pickupLocation = "Outs"
+                  }
+                  if (pickupLocation.match(/self drive/gi)) {
+                    manifest.nonPickups["SelfDrive"].push(booking)
+                    pickup = false
+                  } else if (pickupLocation.match(/Glenorchy Airstrip/gi)) {
+                    manifest.nonPickups["GlenorchyAirstrip"].push(booking)
+                    pickup = false
+                  }
+                } else {
+                  pickupLocation = "Unspecified"
+                }
+                if (pickup) {
+                  manifest.pickups.stops.push(booking)
+                  manifest.pickups.total += booking.pax.length
+                }
                 //
-                if (booking.pickupLocation){
-                  if (booking.pickupLocation.locationName){
-                    pickupLocation = booking.pickupLocation.locationName
-                    //
-                    if (booking.product && booking.product.match(/out/ig)){
-                      pickupLocation = "Outs"
-                    }
-                    if(pickupLocation.match(/self drive/ig)){
-                      manifest.nonPickups["SelfDrive"].push(booking)
-                      pickup = false
-                    }
-                    else if(pickupLocation.match(/Glenorchy Airstrip/ig)){
-                      manifest.nonPickups["GlenorchyAirstrip"].push(booking)
-                      pickup = false
-                    }
+                // Boots on ground
+                //
+                let code = booking.productCode[1]
+                if (manifest.onGround.bootsOnGround(code)) {
+                  manifest.onGround.Milford.push(booking)
+                }
+                //
+                // totals
+                //
+                manifest.pax.total += booking.pax.length
+                manifest.pax.bookings.push(booking)
+              }
+            }
+          }
+        })
+        return manifest
+      } else {
+        console.log("No Row, return full manifest")
+        let ret = []
+        $(".PickupCell").each(function () {
+          let _o = theBoard.getManifest($(this).prop("id"))
+          ret.push(_o)
+        })
+        return ret
+      }
+    },
+    printPickupList: function () {
+      $("#PickupList").focus()
+      window.print()
+    },
+    savePickups: function (pickup, vehicle) {
+      if (!pickup) {
+        return
+      }
+      console.log("Pickup: %o", pickup.data("data"))
+
+      // Get the TableCell copy of the booking (Eventually this can just live in the manifest object*********************)
+      $(".TableCell").each(function (index, val) {
+        let _this = $(val).data("json")
+
+        if (!!_this) {
+          for (let a in _this) {
+            let order = pickup.data("data")
+            if (order.orderNumber == _this[a].orderNumber) {
+              console.log("this: %o", _this[a].orderNumber)
+              console.log("Match: %o", order.orderNumber)
+            }
+          }
+        }
+      })
+    },
+    //
+    // Save Loadsheet
+    //
+    save: function () {
+      // $("#SaveButton").css({ background: "green" })
+      // setTimeout(function () {
+      //   $("#SaveButton").css({ background: "blue" })
+      // }, 2000)
+      let data = {}
+      //
+      // Loop over all the table cells
+      //
+      $(".TableCell").each(function (index) {
+        let json = $(this).data("json")
+        if (typeof json != "undefined" && !jQuery.isEmptyObject(json)) {
+          for (let j in json) {
+            for (let key in json[j]) {
+              if (key == "pickupLocation") {
+                if (json[j][key].pickupInstructions) {
+                  delete json[j][key].pickupInstructions
+                }
+                if (json[j][key].address) {
+                  delete json[j][key].address
+                }
+              }
+              if (key == "internalNotes") {
+                delete json[j][key]
+              }
+              if (key == "pickupInstructions") {
+                delete json[j][key]
+              }
+              if (key == "pax") {
+                for (let p in json[j][key]) {
+                  let pax = json[j][key][p]
+                  if (pax.pickupLocation && pax.pickupLocation.address) {
+                    delete pax.pickupLocation.address
                   }
-                  else {
-                    pickupLocation = "Unspecified"
+                  if (pax.pickupLocation && pax.pickupLocation.pickupInstructions) {
+                    delete pax.pickupLocation.pickupInstructions
                   }
-                  if (pickup){
-                    manifest.pickups.stops.push(booking)
-                    manifest.pickups.total += booking.pax.length
-                  }
-                  //
-                  // Boots on ground
-                  //
-                  let code = booking.productCode[1]
-                  if (manifest.onGround.bootsOnGround(code)){
-                    manifest.onGround.Milford.push(booking)
-                  }
-                  //
-                  // totals
-                  //
-                  manifest.pax.total += booking.pax.length
-                  manifest.pax.bookings.push(booking)
                 }
               }
             }
+          }
+          // push each booking into data hash
+          if (!jQuery.isEmptyObject(json)) {
+            data[$(this).attr("id")] = json
+          }
         }
-      )
-      return manifest
-    } else {
-      console.log("No Row, return full manifest")
-      let ret = []
-      $(".PickupCell").each(function(){
-        let _o = theBoard.getManifest($(this).prop('id'))
-        ret.push(_o)
       })
-      return ret
-    }
-  },
-  printPickupList:function(){
-      $('#PickupList').focus()
-      window.print()
-  },
-  savePickups: function(pickup,vehicle){
-    if (!pickup){return}
-    console.log("Pickup: %o", pickup.data("data"))
-    
-    
-    // Get the TableCell copy of the booking (Eventually this can just live in the manifest object*********************)
-    $(".TableCell").each(function(index,val) {
-      let _this = $(val).data('json')
-      
-      
-      
-      if (!!_this){
-        for (let a in _this){
-          let order = pickup.data("data")
-          if (order.orderNumber == _this[a].orderNumber){
-            console.log("this: %o",_this[a].orderNumber)
-            console.log("Match: %o", order.orderNumber)
+      $(".PlaneCell").each(function (index) {
+        let json = $(this).data("PCF")
+        if (typeof json != "undefined" && !jQuery.isEmptyObject(json)) {
+          // push each booking into data hash
+          if (!jQuery.isEmptyObject(json)) {
+            data[$(this).attr("id")] = json
           }
         }
+      })
+      //
+      // Save
+      //
+      let dataArry = []
 
-      }
-    })
-    
-  },
-  //
-  // Save Loadsheet
-  //
-  save: function(){
-    $("#SaveButton").css({"background": "green",})
-    setTimeout(function(){ $("#SaveButton").css({"background": "blue",}) }, 2000)
-    let data = {}
-    //
-    // Loop over all the table cells
-    //
-    $(".TableCell").each(function(index) {
-        let json = $(this).data('json')
-        if (typeof json != "undefined" && !jQuery.isEmptyObject(json)) {
-             for (let j in json){
-               for (let key in json[j]){
-                 if (key == "pickupLocation"){
-                   if (json[j][key].pickupInstructions){
-                     delete json[j][key].pickupInstructions
-                   }
-                   if (json[j][key].address){
-                     delete json[j][key].address
-                   }
-                 }
-                 if(key == "internalNotes"){
-                   delete json[j][key]
-                 }
-                 if(key == "pickupInstructions"){
-                   delete json[j][key]
-                 }
-                 if(key == "pax"){
-                   for (let p in json[j][key]){
-                     let pax = json[j][key][p]
-                     if (pax.pickupLocation && pax.pickupLocation.address){
-                       delete pax.pickupLocation.address
-                     }
-                     if (pax.pickupLocation && pax.pickupLocation.pickupInstructions){
-                       delete pax.pickupLocation.pickupInstructions
-                     }
-                   }
-                 }
-               }
-             }
-            // push each booking into data hash
-            if (!jQuery.isEmptyObject(json)){
-              data[$(this).attr("id")] = json
-            }
-        }
-    });
-    $(".PlaneCell").each(function(index) {
-        let json = $(this).data('PCF')
-        if (typeof json != "undefined" && !jQuery.isEmptyObject(json)) {
-            // push each booking into data hash
-            if (!jQuery.isEmptyObject(json)){
-              data[$(this).attr("id")] = json
-            }
-        }
-    });
-    //
-    // Save
-    //
-    let dataArry = []
-    
-    let s1 = {}
-    let s2 = {}
-    let s3 = {}
-    let s4 = {}
-    let count = 0
-    for (let a in data){
-      if (count<10){
-        s1[a] = data[a]
-        count++
-      } else {
-        if (count<15){
-          s2[a] = data[a]
-                  count++
+      let s1 = {}
+      let s2 = {}
+      let s3 = {}
+      let s4 = {}
+      let count = 0
+      for (let a in data) {
+        if (count < 10) {
+          s1[a] = data[a]
+          count++
         } else {
-          if (count<20){
-            s3[a] = data[a]
-                    count++
+          if (count < 15) {
+            s2[a] = data[a]
+            count++
           } else {
-            s4[a] = data[a]
-                    count++
-          }
-        }
-      }
-    }
-    let date = Dates.getNZ($("#datepicker").datepicker('getDate'))
-    //
-    // Split data up so as not to overload Google's 50K cell limit ***************** 
-    //
-    dataArry.push(date)
-    dataArry.push(JSON.stringify(s1))
-    dataArry.push(JSON.stringify(s2))
-    dataArry.push(JSON.stringify(s3))
-    dataArry.push(JSON.stringify(s4))
-    google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).saveBoard( dataArry )
-  },
-  update: function(JSON){
-    if(!JSON){return}
-    let data = JSON.parse(JSON)
-  },
-  next: function($picker,n,rzdy){
-    let num = 1
-    if (n || n == 0){ num = n}
-    
-    let dd = $picker.datepicker('getDate')
-    dd=dd.addDays(num)
-    let newDate = Dates.getNZ(dd)
-    //
-    // Load Board
-    //
-    this.load(newDate,$picker)
-    //
-    // Reload Manifest
-    //
-    if(rzdy){Rezdy.load(newDate)}
-    //
-    // Update Picker
-    //
-    $picker.datepicker('setDate', dd)
-  },
-  previous: function(){
-    this.next(-1)
-  },
-  load: function(d,obj){
-    if (!!d){
-      d
-    } else {
-      return
-    }
-//    display.clearBoard()
-    $("#SaveButton").css({"background": "green",})
-    setTimeout(function(){ $("#SaveButton").css({"background": "blue",}) }, 2000)
-    google.script.run
-    .withSuccessHandler(this.show)
-    .withUserObject(obj)
-    .loadBoard(d)
-  },
-  show: function(arg){
-    return
-  console.log("theBoard.show(%o)",arg)
-  if(!arg){console.log("No Data")}
-  //
-  if(arg){
-    //
-    for (let a in arg){
-    if (arg[a].length>0){
-    
-      let data = JSON.parse(arg[a])
-      if (!!data){
-        for (let b in data){
-          // Airplane Cell
-          if (b.match(/ac\d/)){
-            $("#"+b).data('PCF',data[b])
-            continue // instead of an else block
-          }
-          // Board Cell
-          $("#"+b).data('json',data[b])
-          let type = "out"
-          if (data[b].length>0){
-            if (data[b][0].IN){
-              if (data[b][0].IN == b){
-                type = "in"
-              } 
+            if (count < 20) {
+              s3[a] = data[a]
+              count++
+            } else {
+              s4[a] = data[a]
+              count++
             }
           }
-          $("#"+b).data("type",type)
-          $("#"+b).text(b)
         }
-  
       }
+      let date = Dates.getNZ($("#datepicker").datepicker("getDate"))
+      //
+      // Split data up so as not to overload Google's 50K cell limit *****************
+      //
+
+      const dt = new Date()
+      dataArry.push(dt.toDateString()) //
+      dataArry.push(JSON.stringify(s1))
+      dataArry.push(JSON.stringify(s2))
+      dataArry.push(JSON.stringify(s3))
+      dataArry.push(JSON.stringify(s4))
+
+      dataArry.push("Test")
+      console.log("Save: %o",dataArry)
+
+      google.script.run.saveBoard(dataArry)
+      //google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).saveBoard(dataArry)
+    },
+    update: function (JSON) {
+      if (!JSON) {
+        return
       }
-    }
-       //display.update()
-   }
-  },
-  alert: function(){
-    utility.alert(html)
-  },
-  showData: function(){
-    //
-    // Loop over all the table cells
-    //
-    $(".TableCell").each(function(index) {
-        let json = $(this).data('json')
-        if (typeof json != "undefined" && !jQuery.isEmptyObject(json)) {
-            // $(this).parent().attr("id")
-            console.log("Cell: %s Booking: %o",$(this).attr("id"),json)
+      let data = JSON.parse(JSON)
+    },
+    next: function ($picker, n, rzdy) {
+      let num = 1
+      if (n || n == 0) {
+        num = n
+      }
+
+      let dd = $picker.datepicker("getDate")
+      dd = dd.addDays(num)
+      let newDate = Dates.getNZ(dd)
+      //
+      // Load Board
+      //
+      this.load(newDate, $picker)
+      //
+      // Reload Manifest
+      //
+      if (rzdy) {
+        Rezdy.load(newDate)
+      }
+      //
+      // Update Picker
+      //
+      $picker.datepicker("setDate", dd)
+    },
+    previous: function () {
+      this.next(-1)
+    },
+    load: function (d, obj) {
+      if (!!d) {
+        d
+      } else {
+        return
+      }
+      //    display.clearBoard()
+      $("#SaveButton").css({ background: "green" })
+      setTimeout(function () {
+        $("#SaveButton").css({ background: "blue" })
+      }, 2000)
+      google.script.run.withSuccessHandler(this.show).withUserObject(obj).loadBoard(d)
+    },
+    show: function (arg) {
+      return
+      console.log("theBoard.show(%o)", arg)
+      if (!arg) {
+        console.log("No Data")
+      }
+      //
+      if (arg) {
+        //
+        for (let a in arg) {
+          if (arg[a].length > 0) {
+            let data = JSON.parse(arg[a])
+            if (!!data) {
+              for (let b in data) {
+                // Airplane Cell
+                if (b.match(/ac\d/)) {
+                  $("#" + b).data("PCF", data[b])
+                  continue // instead of an else block
+                }
+                // Board Cell
+                $("#" + b).data("json", data[b])
+                let type = "out"
+                if (data[b].length > 0) {
+                  if (data[b][0].IN) {
+                    if (data[b][0].IN == b) {
+                      type = "in"
+                    }
+                  }
+                }
+                $("#" + b).data("type", type)
+                $("#" + b).text(b)
+              }
+            }
+          }
         }
-    })
-  },
-  getPlottedBookings: function(){
-    let bookingList = []
-    //
-    // Loop over all the table cells
-    //
-    $(".TableCell").each(function(index) {
-        let json = $(this).data('json')
+        //display.update()
+      }
+    },
+    alert: function () {
+      utility.alert(html)
+    },
+    showData: function () {
+      //
+      // Loop over all the table cells
+      //
+      $(".TableCell").each(function (index) {
+        let json = $(this).data("json")
         if (typeof json != "undefined" && !jQuery.isEmptyObject(json)) {
-          for (let b in json){
-            if (json[b].orderNumber){
+          // $(this).parent().attr("id")
+          console.log("Cell: %s Booking: %o", $(this).attr("id"), json)
+        }
+      })
+    },
+    getPlottedBookings: function () {
+      let bookingList = []
+      //
+      // Loop over all the table cells
+      //
+      $(".TableCell").each(function (index) {
+        let json = $(this).data("json")
+        if (typeof json != "undefined" && !jQuery.isEmptyObject(json)) {
+          for (let b in json) {
+            if (json[b].orderNumber) {
               bookingList.push(json[b].orderNumber)
             }
           }
         }
-    })
-    return bookingList
-  },
-  getTripTime:function(_this){
-    let row = this.getRow(_this)
-    let ret = ""
-    $(".TimeCell").each(function(index){
-      let id = $(this).prop('id')
-      let _id = row + "0"
-      if (id == _id){
-        ret = $(this).html()
+      })
+      return bookingList
+    },
+    getTripTime: function (_this) {
+      let row = this.getRow(_this)
+      let ret = ""
+      $(".TimeCell").each(function (index) {
+        let id = $(this).prop("id")
+        let _id = row + "0"
+        if (id == _id) {
+          ret = $(this).html()
+        }
+      })
+      return ret
+    },
+    get4DigitTime: function (_this) {
+      let t = this.getTripTime(_this)
+      let timeParts = t.split(":")
+      let h = timeParts[0]
+      let m = timeParts[1]
+      if (h.length < 2) {
+        h = "0" + h
       }
-    })
-    return ret
-  },
-  get4DigitTime:function(_this){
-    let t = this.getTripTime(_this)
-    let timeParts = t.split(":")
-    let h = timeParts[0]
-    let m = timeParts[1]
-    if (h.length<2){
-      h = "0"+h
-    }
-    return (h+":"+m)
-  },
-  getTotalRowPax:function(_this){
-    let row = this.getRow(_this,true) // returns row class
-    let count = 0
-    $("."+row).each(function(){
-      let bookings = $(this).data('json')
-      for (let b in bookings){
-            if (bookings[b].seats){
-              if (bookings[b].seats>0){
-                count = count + bookings[b].seats
-              }
+      return h + ":" + m
+    },
+    getTotalRowPax: function (_this) {
+      let row = this.getRow(_this, true) // returns row class
+      let count = 0
+      $("." + row).each(function () {
+        let bookings = $(this).data("json")
+        for (let b in bookings) {
+          if (bookings[b].seats) {
+            if (bookings[b].seats > 0) {
+              count = count + bookings[b].seats
             }
-      }
-    })
-    return count
-  },
-  //
-  // Get the row by class
-  // if getClass = true, return row class
-  //
-  getRow:function(_this,getClass){
-    let classes = _this.prop("classList")
-    let row
-    let rowClass
-    for(let c in classes){
-      let isString = (typeof classes[c] == 'string') ? true:false
-      if (isString){
+          }
+        }
+      })
+      return count
+    },
+    //
+    // Get the row by class
+    // if getClass = true, return row class
+    //
+    getRow: function (_this, getClass) {
+      let classes = _this.prop("classList")
+      let row
+      let rowClass
+      for (let c in classes) {
+        let isString = typeof classes[c] == "string" ? true : false
+        if (isString) {
           let r = classes[c].match(/Row_\d.*/)
-          if(!!r&&!!r[0]){
+          if (!!r && !!r[0]) {
             rowClass = r[0]
             row = r[0].split("_")[1]
             break // Because Classes also list all the classes as a single string... which will match()
+          }
         }
       }
-    }
-    if(getClass){row=rowClass}
-    return row
-  },
-  getColumn:function(id){
-    // placeholder function for this workaround *************************************
-    let _array = id.split('')
-    let col=_array[1]
-    if (id.length>2){
-      col = _array[0] +""+ _array[1]
-    }
-    return col
-  },
-  getCol:function(_this,getClass){
-    let classes = _this.prop("classList")
-    let col
-    let colClass
-    for(let c in classes){
-      let isString = (typeof classes[c] == 'string') ? true:false
-      if (isString){
+      if (getClass) {
+        row = rowClass
+      }
+      return row
+    },
+    getColumn: function (id) {
+      // placeholder function for this workaround *************************************
+      let _array = id.split("")
+      let col = _array[1]
+      if (id.length > 2) {
+        col = _array[0] + "" + _array[1]
+      }
+      return col
+    },
+    getCol: function (_this, getClass) {
+      let classes = _this.prop("classList")
+      let col
+      let colClass
+      for (let c in classes) {
+        let isString = typeof classes[c] == "string" ? true : false
+        if (isString) {
           let r = classes[c].match(/Col_\d.*/)
-          if(!!r&&!!r[0]){
-          colClass = r[0]
-          col = r[0].split("_")[1]
-          break // Because Classes also list all the classes as a single string... which will match()
+          if (!!r && !!r[0]) {
+            colClass = r[0]
+            col = r[0].split("_")[1]
+            break // Because Classes also list all the classes as a single string... which will match()
+          }
         }
       }
-    }
-    if(getClass){col=colClass}
-    return col
-  },
-  highlightFerryLegs:function(){
-    let last = ""
-    //
-    // Clear old Ferry Leg text
-    //
-    $(".TableCell").each(function() {
-      if ($(this).html().match(/ferry/ig)){
-        $(this).html("")
+      if (getClass) {
+        col = colClass
       }
-    })
-    // Each Row in Each Column (use PlaneCell array to loop over columns)
-    //
-    // Each Column
-    //
-    $(".PlaneCell").each(function(_col) {
-    //
-    // Each Row
-    //
-      $(".Col_"+_col).each(function(_row){
-        if( _row == 0) {
-          last = "out" // Reset the top of every Column to "out" by default (so it always assumes the plane starts in QT)
+      return col
+    },
+    highlightFerryLegs: function () {
+      let last = ""
+      //
+      // Clear old Ferry Leg text
+      //
+      $(".TableCell").each(function () {
+        if ($(this).html().match(/ferry/gi)) {
+          $(this).html("")
         }
-        let _type = $(this).data("type")
-        if (_type){
-          if (_type == "in" && last == "in"){
-              let ferryRowNum = _row -2
+      })
+      // Each Row in Each Column (use PlaneCell array to loop over columns)
+      //
+      // Each Column
+      //
+      $(".PlaneCell").each(function (_col) {
+        //
+        // Each Row
+        //
+        $(".Col_" + _col).each(function (_row) {
+          if (_row == 0) {
+            last = "out" // Reset the top of every Column to "out" by default (so it always assumes the plane starts in QT)
+          }
+          let _type = $(this).data("type")
+          if (_type) {
+            if (_type == "in" && last == "in") {
+              let ferryRowNum = _row - 2
               let ferryRow = $("#" + ferryRowNum + _col)
-              
-              if ( ferryRow.data("type") == null ){
+
+              if (ferryRow.data("type") == null) {
                 ferryRow.html("<span style='color:#c9735d;'>Ferry Out</span>")
               }
-              
-          }
-          if (_type == "out" && last != "in"){
-              let ferryRowNum = _row -2
+            }
+            if (_type == "out" && last != "in") {
+              let ferryRowNum = _row - 2
               let ferryRow = $("#" + ferryRowNum + _col)
-              
-              if ( ferryRow.data("type") == null ){
+
+              if (ferryRow.data("type") == null) {
                 ferryRow.html("<span style='color:#c9735d;'>Ferry In</span>")
               }
             }
-          last = _type
-        }
+            last = _type
+          }
+        })
       })
-    })
+    },
   }
-
-}
 </script>

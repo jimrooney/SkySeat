@@ -82,34 +82,40 @@ function getState(find) {
   return outputArr
 }
 function saveBoard(_array) {
-  var date = _array[0]
+  var date = new Date()
+  if (!!_array){
+    date = _array[0]
+  }
 
   var d = new Date()
   var time = d.getTime()
 
   var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
-  var sheet = SpreadsheetApp.openById(DataID).getSheetByName("TheBoardData")
-  var metaSheet = SpreadsheetApp.openById(DataID).getSheetByName("TheBoardMeta") // second sheet for meta data like the last save time
-  var range = sheet.getRange("A:E") // Number of columns needs to match getRange below... last number is the number of rows. // needs to match (below) *********************!!!!!!!!!!
-  var data = range.getValues()
+  var sheet = SpreadsheetApp.openById(DataID).getSheetByName("state")
+  var range = sheet.getRange("A:K") // Number of columns needs to match getRange below... last number is the number of rows. // needs to match (below) *********************!!!!!!!!!!
+  var values = range.getValues()
   var numRows = range.getNumRows()
   var numCols = range.getNumColumns()
 
-  var values = [_array]
 
-  for (var i = 0; i < data.length; i++) {
-    if (data[i][0] == date) {
-      sheet.getRange(i + 1, 1, 1, numCols).clearContent()
-      delete data[i]
+  for (var i = 0; i < values.length; i++) {
+    if (i==0) {
+      values[0][0] = date
+      values[i][1] = JSON.stringify(_array)
     }
   }
 
   var lastRow = sheet.getLastRow()
   var lastColumn = sheet.getLastColumn()
-  var cell = sheet.getRange(lastRow + 1, 1, 1, 5)
+  //var cell = sheet.getRange(lastRow + 1, 1, 1, 5)
 
-  cell.setValues(values)
-  metaSheet.getRange("A1").setValue(time)
+
+
+  range.setValues(values)
+
+
+
+
   return time
 }
 function getNZdate(d) {
