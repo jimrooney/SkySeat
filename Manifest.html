@@ -111,7 +111,6 @@
       Rezdy.load(this)
     }
     onLoad(json) {
-      console.log(`${this.board.$board.prop("id")} Manifest onLoad()`)
       this.data = JSON.parse(json) // parse json String data into a json object
       // to Rezdy, a "booking" is a "booking order" (cuz they couldn't decide which name they preferred)
       this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects

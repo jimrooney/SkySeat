@@ -22,7 +22,6 @@
       this.manifest.showTitle()
     }
     load() {
-      console.log(`${this.$board.prop("id")}.load()`)
       this.state.clear()
       this.manifest.load()
     }
@@ -180,7 +179,7 @@
         .prepend(
           `<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8"/></div>`
         )
-      this.$datepicker = $("#" + this.$board.prop("id") + " .datepicker")
+      this.$datepicker = this.$board.find(".datepicker")// $("#" + this.$board.prop("id") + " .datepicker")
       Dates.initPicker(this.$datepicker, this)
       // ******************************************************************************
       // Autoload rezdy?
