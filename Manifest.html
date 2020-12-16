@@ -61,6 +61,14 @@
       // Show State Button
       //
       let _board = this.board
+
+      
+      const $_save = $("<button class='Dark Debug' />").html("&#128190;")
+      this.$this.prepend($_save)
+      $_save.on("click", function () {
+        _board.state.save()
+      })
+
       let $_s = $("<button class='Dark Debug'>").text("State")
         this.$this.prepend($_s)
       $_s.on("click", function () {

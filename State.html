@@ -10,7 +10,7 @@
   class State {
     constructor(Board) {
       this.board = Board
-      this.date = this.board.manifest.getDate()
+      this.date = this.getDate()
       //
       // data is an object that holds booking keys key'd by their keys
       //
@@ -19,6 +19,9 @@
     clear() {
       console.log("Cleared State")
       this.data = {}
+    }
+    getDate(){
+      return this.board.manifest.getDate()
     }
     /*
       ************************************************************************************
@@ -163,6 +166,24 @@
     }
     getState() {
       return this
+    }
+    save(){
+      console.log("{board}.saveState()")
+      const date = this.getDate()
+      
+      const d = date.getDate()+"/"+(date.getMonth() + 1)+"/"+date.getFullYear()
+
+      console.log("Date: %o",date)
+      console.log("D: %o", d)
+
+      const d2 = Dates.getFromEuro(d)
+      console.log("D2: %o",d2)
+
+      //
+      // google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).saveBoard( dataArry )
+      // function saveBoard(_array) { ... in Code.js
+      //
+      // Can just try calling the root save() function.
     }
   }
 </script>

@@ -42,6 +42,11 @@
       d = d.map(x => parseInt(x))
       return new Date([d[2],d[1]+1,d[0]])
     },
+    getFromEuro: function (d) {
+      d = d.split("/")
+      d = d.map(x => parseInt(x))
+      return new Date([d[2],d[1],d[0]])
+    },
     getNZ: function (d,short) {
       //if (typeof d === 'undefined') {d = new Date()}
       typeof d === "undefined" ? (d = new Date()) : d.constructor === Date ? d : (d = new Date(d))
