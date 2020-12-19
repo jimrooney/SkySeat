@@ -55,14 +55,6 @@ function getLastSave() {
   var saveDate = saveDateCell.getValue()
   return saveDate
 }
-function saveState(state) {
-  var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
-  var sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
-  var range = sheet.getRange("A:B")
-  var data = range.getValues()
-  var numRows = range.getNumRows()
-  var numCols = range.getNumColumns()
-}
 function getState(find) {
   var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
   var sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
@@ -80,6 +72,27 @@ function getState(find) {
       return cellData != null
     })
   return outputArr
+}
+function saveState(_array) {
+  var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
+  var sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
+  var range = sheet.getRange("A:K")
+  var values = range.getValues()
+  var numRows = range.getNumRows()
+  var numCols = range.getNumColumns()
+
+  var date = new Date()
+  if (!!_array){
+    date = _array[0]
+  }
+    for (var i = 0; i < values.length; i++) {
+    if (i==0) {
+      values[0][0] = date
+      values[i][1] = JSON.stringify(_array)
+    }
+  }
+  range.setValues(values)
+  return date
 }
 function saveBoard(_array) {
   var date = new Date()

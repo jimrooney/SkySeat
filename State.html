@@ -180,7 +180,7 @@
       console.log("D2: %o",d2)
       console.log("D2 Locale: %o",d2.toLocaleString("en-NZ",{dateStyle: "medium"}))
 
-      google.script.run.saveBoard( d2.toLocaleString("en-NZ",{dateStyle: "medium"}) )
+      google.script.run.saveState( d2.toLocaleString("en-NZ",{dateStyle: "medium"}) )
       //
       // google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).saveBoard( dataArry )
       // function saveBoard(_array) { ... in Code.js
