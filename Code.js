@@ -73,22 +73,30 @@ function getState(find) {
     })
   return outputArr
 }
-function saveState(_array) {
-  var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
-  var sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
-  var range = sheet.getRange("A:K")
-  var values = range.getValues()
-  var numRows = range.getNumRows()
-  var numCols = range.getNumColumns()
+function saveState(state) {
+  const DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
+  const sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
+  let range = sheet.getRange("A:K")
+  let values = range.getValues()
+  const numRows = range.getNumRows()
+  const numCols = range.getNumColumns()
 
-  var date = new Date()
-  if (!!_array){
-    date = _array[0]
+      const d = new Date()
+      let dd = String(d.getDate()).padStart(2, "0")
+      let mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
+      let yyyy = d.getFullYear()
+      let date = `${dd}/${mm}/${yyyy}`
+
+  //If a state is passed in, use it's date...
+  if (!!state){
+    date = state[0]
   }
+
+
     for (var i = 0; i < values.length; i++) {
-    if (i==0) {
+    if (i==0 && !!state) {
       values[0][0] = date
-      values[i][1] = JSON.stringify(_array)
+      values[i][1] = JSON.stringify(state)
     }
   }
   range.setValues(values)

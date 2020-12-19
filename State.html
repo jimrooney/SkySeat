@@ -169,18 +169,28 @@
     }
     save(){
       console.log("{board}.saveState()")
-      const date = this.getDate()
       
+      const date = this.getDate()
       const d = date.getDate()+"/"+(date.getMonth() + 1)+"/"+date.getFullYear()
-
-      console.log("Date: %o",date)
-      console.log("D: %o", d)
-
       const d2 = Dates.getFromEuro(d)
-      console.log("D2: %o",d2)
       console.log("D2 Locale: %o",d2.toLocaleString("en-NZ",{dateStyle: "medium"}))
 
-      google.script.run.saveState( d2.toLocaleString("en-NZ",{dateStyle: "medium"}) )
+
+
+      console.log("State: %o",JSON.stringify(this.data))
+
+
+      //google.script.run.saveState( d2.toLocaleString("en-NZ",{dateStyle: "medium"}) )
+
+
+
+
+
+
+
+
+
+
       //
       // google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).saveBoard( dataArry )
       // function saveBoard(_array) { ... in Code.js
