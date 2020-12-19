@@ -173,22 +173,8 @@
       const date = this.getDate()
       const d = date.getDate()+"/"+(date.getMonth() + 1)+"/"+date.getFullYear()
       const d2 = Dates.getFromEuro(d)
-      console.log("D2 Locale: %o",d2.toLocaleString("en-NZ",{dateStyle: "medium"}))
-
-
-
-      console.log("State: %o",JSON.stringify(this.data))
-
-
-      //google.script.run.saveState( d2.toLocaleString("en-NZ",{dateStyle: "medium"}) )
-
-
-
-
-
-
-
-
+      const _date = d2.toLocaleString("en-NZ",{dateStyle: "medium"})
+      google.script.run.saveState( _date, this.data )
 
 
       //

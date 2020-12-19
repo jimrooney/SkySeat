@@ -73,7 +73,7 @@ function getState(find) {
     })
   return outputArr
 }
-function saveState(state) {
+function saveState(date,data) {
   const DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
   const sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
   let range = sheet.getRange("A:K")
@@ -81,22 +81,38 @@ function saveState(state) {
   const numRows = range.getNumRows()
   const numCols = range.getNumColumns()
 
-      const d = new Date()
-      let dd = String(d.getDate()).padStart(2, "0")
-      let mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
-      let yyyy = d.getFullYear()
-      let date = `${dd}/${mm}/${yyyy}`
+  //     const d = new Date()
+  //     let dd = String(d.getDate()).padStart(2, "0")
+  //     let mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
+  //     let yyyy = d.getFullYear()
+  //     let date = `${dd}/${mm}/${yyyy}`
 
-  //If a state is passed in, use it's date...
-  if (!!state){
-    date = state[0]
-  }
-
+  // //If a state is passed in, use it's date...
+  // if (!!state){
+  //   date = state[0]
+  // }
 
     for (var i = 0; i < values.length; i++) {
-    if (i==0 && !!state) {
+    if (i==0 && !!data) {
+      // use date as key (1st column)
       values[0][0] = date
-      values[i][1] = JSON.stringify(state)
+      // transpose rows to columns (so each time is a column in the spreadsheet)
+
+//     for (let index in data) {
+//   const item = data[index]
+//   values[0][1] = JSON.stringify(item)
+  
+// }
+
+      let count = 1
+      for (let item in data) {
+        values[0][count] = JSON.stringify(data[item])
+        count++
+      }
+
+
+
+      //values[i][1] = JSON.stringify(data)
     }
   }
   range.setValues(values)
