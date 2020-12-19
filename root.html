@@ -1,0 +1,59 @@
+<script>
+let root = {
+	boards: [],
+	// --------------------------------- Load TripCodes ----------------------------------------------
+	loadTripCodes: function () {
+		google.script.run.withSuccessHandler(gya.onTripCodeLoad).loadTripCodes()
+	},
+	getBoards: function() {
+		return $(".Board").map((i,board) => $(board).data("root"))
+	},
+	//
+	// Example function, changes all boards to today.
+	//
+	changeBoards: function() {
+		$(".Board").each( (i,board) => {
+			$(board).data("root").manifest.setDate(new Date())
+		})
+	},
+	makeNewBoard: function () {
+		const boardName = "AutoBoard" + root.boards.length
+		const lastBoard = root.boards[root.boards.length - 1]
+		const lastDate = !!lastBoard ? lastBoard.getDate() : null
+		const $this = $("<div />", {
+			class: "root NoPrint Board",
+			// id: boardName,
+			style: "display:inline-block;vertical-align:top",
+		})
+		const _board = new Board($this)
+		$this.data("root", _board)
+		$("#Boards").append($this)
+		$this.data("root").writeBoard()
+		//
+		// Set to next day
+		//
+		if (!!lastDate) {
+			let tomorrow = new Date(lastDate)
+			tomorrow.setDate(tomorrow.getDate() + 1)
+			_board.setDate(tomorrow)
+			_board.load() // Load Rezdy
+		}
+		this.boards.push(_board)
+	},
+	debug: {
+		logs:[],
+		log: function (...msg) {
+			const _this = this
+			if(this.show){
+				console.log("{Debug} %o",msg)
+			}
+			_this.logs.push(msg)
+		},
+		clear: function () {
+			this.logs = []
+			return "Logs Cleared"
+		},
+		show:false,
+	}
+}
+</script>
