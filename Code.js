@@ -80,19 +80,45 @@ function saveState(date,data) {
   let values = range.getValues()
   const numRows = range.getNumRows()
   const numCols = range.getNumColumns()
-
-    for (var i = 0; i < values.length; i++) {
-    if (i==0 && !!data) {
-      // use date as key (1st column)
-      values[0][0] = date
-      // transpose rows to columns (so each time is a column in the spreadsheet)
-      let count = 1
-      for (let item in data) {
-        values[0][count] = JSON.stringify(data[item])
-        count++
-      }
+  //
+  // Change the date to US format so we can create a Date Object
+  //
+  const _d = date.split("/")
+  const _usDate = `${_d[1]}/${_d[0]}/${_d[2]}`
+  const stateDate = new Date(_usDate)
+  const StateDate = `${stateDate.getFullYear()}${stateDate.getMonth()}${stateDate.getDate()}`
+  //
+  // Check if date's already recorded (check spreadsheet values for existing date)
+  //
+  let key = values.findIndex((element)=>{
+    const elm = element[0]
+    let ret = false
+    if (!!elm){
+        const rowDate = new Date(elm)
+        const RowDate = `${rowDate.getFullYear()}${rowDate.getMonth()}${rowDate.getDate()}`
+        if (RowDate == StateDate){
+          ret = true
+        }
     }
-  }
+    return ret
+  })
+  
+    //
+    // Record Row
+    //
+  key = key >= 0 ? key : 0
+  console.log("Key: ",key)
+  values[key][0] = stateDate
+        let count = 1
+        for (let item in data) {
+          values[key][count] = JSON.stringify(data[item])
+          count++
+        }
+
+
+
+
+
   range.setValues(values)
   return date
 }
