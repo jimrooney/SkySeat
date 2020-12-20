@@ -81,38 +81,16 @@ function saveState(date,data) {
   const numRows = range.getNumRows()
   const numCols = range.getNumColumns()
 
-  //     const d = new Date()
-  //     let dd = String(d.getDate()).padStart(2, "0")
-  //     let mm = String(d.getMonth() + 1).padStart(2, "0") //January is 0!
-  //     let yyyy = d.getFullYear()
-  //     let date = `${dd}/${mm}/${yyyy}`
-
-  // //If a state is passed in, use it's date...
-  // if (!!state){
-  //   date = state[0]
-  // }
-
     for (var i = 0; i < values.length; i++) {
     if (i==0 && !!data) {
       // use date as key (1st column)
       values[0][0] = date
       // transpose rows to columns (so each time is a column in the spreadsheet)
-
-//     for (let index in data) {
-//   const item = data[index]
-//   values[0][1] = JSON.stringify(item)
-  
-// }
-
       let count = 1
       for (let item in data) {
         values[0][count] = JSON.stringify(data[item])
         count++
       }
-
-
-
-      //values[i][1] = JSON.stringify(data)
     }
   }
   range.setValues(values)

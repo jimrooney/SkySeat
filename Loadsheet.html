@@ -1,15 +1,19 @@
 <div id="printLoadsheetClose" class="popupCloseButton MobileButton NoPrint">X</div>
-<div class="MenuButton FlightFollowing MobileButton NoPrint">FlightFollowing</div>
+<div class="MenuButton FlightFollowing MobileButton NoPrint">CloselightFollowing</div>
+<div id="FlightFollowing" class="MenuButton FlightFollowingOpen MobileButton NoPrint">ShowFlightFollowing</div>
 <script>
   // ===============================
   // Loadsheet Close Button onClick
   // ===============================
-  $(() => {
+  $(function ()  {
     $("#printLoadsheetClose").click(function () {
       $("#Loadsheet").hide()
     })
-    $(".FlightFollowing").click(function () {
-      $("#FlightFollowing").toggle()
+    $(".FlightFollowingOpen").show()
+    $(".FlightFollowing").hide()
+    $(".FlightFollowing,.FlightFollowingOpen").click(function () {
+      $(".FlightFollowing").toggle()
+      $(".FlightFollowingOpen").toggle()
     })
   })
 </script>
@@ -32,6 +36,7 @@
       $("#LoadsheetPrint").focus()
       window.print()
       $(".NoPrint").show()
+      $(".FlightFollowingClose").hide()
     }
     // ---------------------------
     // Show
@@ -40,7 +45,7 @@
       //
       // Hide flight following by default
       //
-      $("#FlightFollowing").hide()
+      // $(".FlightFollowingClose").hide()
       //
       // Clear out old values
       //
@@ -68,9 +73,7 @@
       // Get the plane data
       // ------------------
       let LoadedPlane = TableCell.getPlane()
-      console.log("\n\n{Loadsheet}.show()\nLoadedPlane: ", LoadedPlane)
       const WB = LoadedPlane.getWB()
-      console.log("WB", WB)
       let seats = WB.POB
       //
       // Find PIC
@@ -1019,7 +1022,7 @@
     <!------------------- Flight Following ------------------->
   </p>
 
-  <div id="FlightFollowing">
+  <div class="FlightFollowing">
     <table width="100%" class="noBorder FF">
       <tr>
         <td>
