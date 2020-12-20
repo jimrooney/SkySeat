@@ -1,5 +1,5 @@
 <div id="printLoadsheetClose" class="popupCloseButton MobileButton NoPrint">X</div>
-<div class="MenuButton FlightFollowing MobileButton NoPrint">CloselightFollowing</div>
+<div class="MenuButton FlightFollowing MobileButton NoPrint">CloseFlightFollowing</div>
 <div id="FlightFollowing" class="MenuButton FlightFollowingOpen MobileButton NoPrint">ShowFlightFollowing</div>
 <script>
   // ===============================
@@ -12,8 +12,7 @@
     $(".FlightFollowingOpen").show()
     $(".FlightFollowing").hide()
     $(".FlightFollowing,.FlightFollowingOpen").click(function () {
-      $(".FlightFollowing").toggle()
-      $(".FlightFollowingOpen").toggle()
+      $(".FlightFollowing,.FlightFollowingOpen").toggle()
     })
   })
 </script>
