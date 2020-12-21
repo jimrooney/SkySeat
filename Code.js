@@ -116,18 +116,37 @@ function saveState(date, data) {
     }
     return ret
   })
-
+  //
+  // Find first blank row
+  //
+  let nextKey = values.findIndex(element => element[0] == "")
+  console.log("NextBlankIndex: ",nextKey)
   //
   // Record Row
   //
-  key = key >= 0 ? key : 0
-  console.log("Key: ", key)
-  values[key][0] = stateDate
+
+  //
+  // Build Row
+  //
+  const newVals = new Array(numCols)
+  newVals[0] = stateDate
   let count = 1
   for (let item in data) {
-    values[key][count] = JSON.stringify(data[item])
+    newVals[count] = JSON.stringify(data[item])
     count++
   }
+
+  // If not recorded and no blanks...
+  if (nextKey<0 && key<0){
+  //
+  // Insert one empty row after the last row in the active sheet.
+  sheet.insertRowsAfter(numRows, 1)
+  sheet.appendRow(newVals)
+  console.log("End of line")
+  return date
+  }
+  key = key >= 0 ? key : nextKey
+  values[key] = newVals
   range.setValues(values)
   return date
 }
