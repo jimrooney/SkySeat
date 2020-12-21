@@ -6,6 +6,31 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 ---------------------------------------------------------------------------------
 
 -------------------------------
+Currently
+-------------------------------
+
+saveState
+  Save to new blank row (find first blank row)
+  Add a new row to the spreadsheet to save to.
+  toLocaleString("en-NZ",{dateStyle: "medium"}) // Something to make dealing with dates easier
+
+Reading in Saved State data
+Deleting plotted bookings
+Plotting return legs
+
+Save State... writing to the correct row... if no row matches the date, pick the next empty row.
+  Comparing the dates (need to write)
+  Saving State (pax seats)
+  saveState(date,data) (saving Date rows)
+
+Standard fuel by default
+Airvan's aft luggage shelf
+
+
+
+
+
+-------------------------------
 Glitch
 -------------------------------
 Once a TableCell is moved, it won't highlight.
@@ -30,17 +55,7 @@ Saving of loadsheet prints is disabled in TheBoard_JS...
 printLoadsheet: function(){
 Loadsheet.show() calls TableCell.getPlane() ... look into it loading the right data or not.
 
--------------------------------
-Currently
--------------------------------
 
-Save State... writing to the correct row... if no row matches the date, pick the next empty row.
-  Comparing the dates (need to write)
-  Saving State (pax seats)
-  saveState(date,data) (saving Date rows)
-
-Standard fuel by default
-Airvan's aft luggage shelf
 
 Pods
   Reset pod per plane (keeps dropmenus when switching planes)

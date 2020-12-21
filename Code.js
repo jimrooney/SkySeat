@@ -55,25 +55,37 @@ function getLastSave() {
   var saveDate = saveDateCell.getValue()
   return saveDate
 }
-function getState(find) {
-  var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
-  var sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
-  var range = sheet.getRange("A:B")
-  var values = range.getValues()
-  var outputArr = values
-    .map(function (rowData, rowIndex) {
-      var colIndex = rowData.indexOf(find)
-      if (colIndex > -1) {
-        return sheet.getRange(rowIndex + 1, colIndex + 1).getA1Notation() // A1Notation means cell reference; like A1, BC23 etc.
+function loadState(date) {
+  const DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
+  const sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
+  const range = sheet.getRange("A:K")
+  const values = range.getValues()
+  //
+  // Change the date to US format so we can create a Date Object
+  //
+  const _d = date.split("/")
+  const _usDate = `${_d[1]}/${_d[0]}/${_d[2]}`
+  const stateDate = new Date(_usDate)
+  stateDate.setHours(3)
+  const StateDate = `${stateDate.getFullYear()}${stateDate.getMonth()}${stateDate.getDate()}`
+  //
+  let key = values.findIndex((element) => {
+    const elm = element[0]
+    let ret = false
+    if (!!elm) {
+      const rowDate = new Date(elm)
+      rowDate.setHours(3)
+      const RowDate = `${rowDate.getFullYear()}${rowDate.getMonth()}${rowDate.getDate()}`
+      if (RowDate == StateDate) {
+              console.log("Match")
+        ret = true
       }
-    })
-    .filter(function (cellData) {
-      // eliminating all null elements from the array returned using `map`
-      return cellData != null
-    })
-  return outputArr
+    }
+    return ret
+  })
+  return JSON.stringify(values[key]) // Can't seem to send the values as data, so sending as JSON
 }
-function saveState(date,data) {
+function saveState(date, data) {
   const DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
   const sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
   let range = sheet.getRange("A:K")
@@ -86,45 +98,42 @@ function saveState(date,data) {
   const _d = date.split("/")
   const _usDate = `${_d[1]}/${_d[0]}/${_d[2]}`
   const stateDate = new Date(_usDate)
+  stateDate.setHours(3)
   const StateDate = `${stateDate.getFullYear()}${stateDate.getMonth()}${stateDate.getDate()}`
   //
   // Check if date's already recorded (check spreadsheet values for existing date)
   //
-  let key = values.findIndex((element)=>{
+  let key = values.findIndex((element) => {
     const elm = element[0]
     let ret = false
-    if (!!elm){
-        const rowDate = new Date(elm)
-        const RowDate = `${rowDate.getFullYear()}${rowDate.getMonth()}${rowDate.getDate()}`
-        if (RowDate == StateDate){
-          ret = true
-        }
+    if (!!elm) {
+      const rowDate = new Date(elm)
+      rowDate.setHours(3)
+      const RowDate = `${rowDate.getFullYear()}${rowDate.getMonth()}${rowDate.getDate()}`
+      if (RowDate == StateDate) {
+        ret = true
+      }
     }
     return ret
   })
-  
-    //
-    // Record Row
-    //
+
+  //
+  // Record Row
+  //
   key = key >= 0 ? key : 0
-  console.log("Key: ",key)
+  console.log("Key: ", key)
   values[key][0] = stateDate
-        let count = 1
-        for (let item in data) {
-          values[key][count] = JSON.stringify(data[item])
-          count++
-        }
-
-
-
-
-
+  let count = 1
+  for (let item in data) {
+    values[key][count] = JSON.stringify(data[item])
+    count++
+  }
   range.setValues(values)
   return date
 }
 function saveBoard(_array) {
   var date = new Date()
-  if (!!_array){
+  if (!!_array) {
     date = _array[0]
   }
 
@@ -138,9 +147,8 @@ function saveBoard(_array) {
   var numRows = range.getNumRows()
   var numCols = range.getNumColumns()
 
-
   for (var i = 0; i < values.length; i++) {
-    if (i==0) {
+    if (i == 0) {
       values[0][0] = date
       values[i][1] = JSON.stringify(_array)
     }
@@ -150,12 +158,7 @@ function saveBoard(_array) {
   var lastColumn = sheet.getLastColumn()
   //var cell = sheet.getRange(lastRow + 1, 1, 1, 5)
 
-
-
   range.setValues(values)
-
-
-
 
   return time
 }

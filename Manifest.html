@@ -68,6 +68,11 @@
       $_save.on("click", function () {
         _board.state.save()
       })
+      const $_load = $("<button class='Dark Debug' />").html("Load")
+      this.$this.prepend($_load)
+      $_load.on("click", function () {
+        _board.state.load()
+      })
 
       let $_s = $("<button class='Dark Debug'>").text("State")
         this.$this.prepend($_s)
