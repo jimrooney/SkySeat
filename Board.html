@@ -17,7 +17,7 @@
     init() {
       this.state = new State(this)
     }
-    handleDatePickerSelect($picker){
+    handleDatePickerSelect($picker) {
       this.load()
       this.manifest.showTitle()
     }
@@ -28,10 +28,10 @@
     //
     // Get the date for this board (from the datepicker)
     //
-    getDate(){
+    getDate() {
       return this.manifest.getDate()
     }
-    setDate(date){
+    setDate(date) {
       this.manifest.setDate(date)
     }
     // --------------------------------
@@ -46,14 +46,43 @@
       //
       initializeDraggables()
       //
-      // Updata TableCells
+      // Updata TableCells and reinit draggable code
       //
-      let $tableCells = this.$board.find(".TableCell")
-      $tableCells.each(function (index) {
-        if (!!$(this).data("_script")) {
-          $(this).data("_script").update()
-        }
-      })
+      // *** possibly only update effected cells ************************************
+      this.$board
+        .find(".TableCell")
+        .each(function (index) {
+          if (!!$(this).data("_script")) {
+            $(this).data("_script").update()
+          }
+        })
+        .draggable({
+          revert: true,
+          helper: "clone",
+          cursor: "pointer",
+        })
+        //
+        // Centers the cursor
+        //
+        .draggable({
+          start: function (event, ui) {
+            $(this).draggable("instance").offset.click = {
+              left: Math.floor(ui.helper.width() / 2),
+              top: Math.floor(ui.helper.height() / 2),
+            }
+          },
+        })
+        .draggable("enable")
+        .mouseover(function () {
+          if (typeof $(this).data("json") != "undefined") {
+            display.highlightBookings($(this).data("json"))
+          }
+        })
+        .mouseleave(function () {
+          display.removeHighlight($(this).data("json"))
+          //    display.update()
+        })
+
       //
       // Updata PlaneCells (set defaults)
       //
@@ -62,22 +91,21 @@
         const _this = $(this).data("_script")
         const data = _this.board.state.getData($(this))
 
-      if (!data.PCF) {
-        const plane = planeList.shift()
-        data.PCF = {
-          type: "Plane",
-          reg: plane.reg,
-          pilot: "Standard",
-          fuel: "150",
+        if (!data.PCF) {
+          const plane = planeList.shift()
+          data.PCF = {
+            type: "Plane",
+            reg: plane.reg,
+            pilot: "Standard",
+            fuel: "150",
+          }
+          _this.saveData(data)
         }
-        _this.saveData(data)
-      }
         //$("> #hours", this).remove() // removes all "hours" children ***********************
         _this.update() // call update against all PlaneCells (maybe use above code to refine that to just this board?)
       })
       $(".MobileButton").mouseenter(_mouseOverEvent).mouseleave(_mouseOutEvent)
     }
-
     /*
 
     Will need to update the origin board if moving between days.
@@ -179,7 +207,7 @@
         .prepend(
           `<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8"/></div>`
         )
-      this.$datepicker = this.$board.find(".datepicker")// $("#" + this.$board.prop("id") + " .datepicker")
+      this.$datepicker = this.$board.find(".datepicker") // $("#" + this.$board.prop("id") + " .datepicker")
       Dates.initPicker(this.$datepicker, this)
       // ******************************************************************************
       // Autoload rezdy?

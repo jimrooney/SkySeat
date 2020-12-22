@@ -24,6 +24,7 @@ let root = {
 			class: "root NoPrint Board",
 			// id: boardName,
 			style: "display:inline-block;vertical-align:top",
+			id: boardName
 		})
 		const _board = new Board($this)
 		$this.data("root", _board)
@@ -55,12 +56,5 @@ let root = {
 		},
 		show:false,
 	},
-	initDraggables: function (){
-		$(".TableCell").draggable({
-        revert: true,
-        helper: "clone",
-      })
-    $(".TableCell").draggable("enable")
-	}
 }
 </script>

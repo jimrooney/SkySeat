@@ -49,22 +49,7 @@
       utility.alert("Click")
     })
   }
-  $(".TableCell").draggable({
-        revert: true,
-        helper: "clone",
-      })
-  ////////////////
-  //  Mouse Over/Out
-  ////////////////
-  $(".TableCell").mouseover(function () {
-    if (typeof $(this).data("json") != "undefined") {
-      display.highlightBookings($(this).data("json"))
-    }
-  })
-  $(".TableCell").mouseleave(function () {
-    display.removeHighlight($(this).data("json"))
-    //    display.update()
-  })
+
 
   ////////////////
   // Hover

@@ -93,24 +93,15 @@
         //
         !!cellData.leg ? null : (cellData.leg = _dropped.getLeg())
         //
-        _this.board.state.data[this.id] = cellData // record the new data
+        //// record the new data
         //
-        // Make Draggable
+        _this.board.state.data[this.id] = cellData 
         //
-        $(this).draggable("enable")
-        //
-        // Centers the cursor
-        //
-        $(this).draggable("option", "cursorAt", {
-          left: Math.floor(ui.helper.width() / 2),
-          top: Math.floor(ui.helper.height() / 2),
-        })
         _this.removeBookings(ui, _this)
         //
         // === Update ===
         //
         _this.board.update() // board.update() calls update() on each TableCell.
-        // *** possibly only update effected cells ************************************
 
         $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
       } else {
