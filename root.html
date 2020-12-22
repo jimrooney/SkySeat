@@ -54,6 +54,13 @@ let root = {
 			return "Logs Cleared"
 		},
 		show:false,
+	},
+	initDraggables: function (){
+		$(".TableCell").draggable({
+        revert: true,
+        helper: "clone",
+      })
+    $(".TableCell").draggable("enable")
 	}
 }
 </script>

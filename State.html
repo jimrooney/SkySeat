@@ -185,11 +185,7 @@
       _this.data = st
 
       _this.board.update()
-      $(".TableCell").draggable({
-        revert: true,
-        helper: "clone",
-      })
-    $(".TableCell").draggable("enable")
+      root.initDraggables()
 
     
     }
