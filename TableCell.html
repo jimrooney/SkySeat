@@ -60,6 +60,9 @@
     // Drop
     // -------------------------------------------
     handleDrop(event, ui) {
+      if(!ui.draggable.data("_script").getPassengers()){ // ignore blank drops
+        return
+      }
       //
       // Since this is getting called externally, "this" isn't this obj
       // So we'll use the jQuery $(this) to get a pointer to this object
@@ -69,7 +72,6 @@
       //_dropped.constructor.name // {TableCell} or {Booking}
       let _this = $(this).data("_script") // This JS Object
       let cellData = _this.getData()
-
       let leg = _this.getLeg()
       let droppedIsOut = _dropped.isOut()
 

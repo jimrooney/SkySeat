@@ -48,31 +48,41 @@
       //
       // Updata TableCells and reinit draggable code
       //
-      // *** possibly only update effected cells ************************************
       this.$board
         .find(".TableCell")
         .each(function (index) {
           if (!!$(this).data("_script")) {
             $(this).data("_script").update()
+            //
+            // Enable Dragging (only for cells with passengers)
+            //
+            $(this).draggable("disable") // Disable by default
+            if (!!$(this).data("_script").getPassengers())
+            {
+            $(this)
+              .draggable({
+                revert: true,
+                helper: "clone",
+                cursor: "pointer",
+              })
+              //
+              // Centers the cursor
+              //
+              .draggable({
+                start: function (event, ui) {
+                  $(this).draggable("instance").offset.click = {
+                    left: Math.floor(ui.helper.width() / 2),
+                    top: Math.floor(ui.helper.height() / 2),
+                  }
+                },
+              })
+              .draggable("enable")
+            }
+
+
+
           }
         })
-        .draggable({
-          revert: true,
-          helper: "clone",
-          cursor: "pointer",
-        })
-        //
-        // Centers the cursor
-        //
-        .draggable({
-          start: function (event, ui) {
-            $(this).draggable("instance").offset.click = {
-              left: Math.floor(ui.helper.width() / 2),
-              top: Math.floor(ui.helper.height() / 2),
-            }
-          },
-        })
-        .draggable("enable")
         .mouseover(function () {
           if (typeof $(this).data("json") != "undefined") {
             display.highlightBookings($(this).data("json"))
