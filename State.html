@@ -20,7 +20,7 @@
       console.log("Cleared State")
       this.data = {}
     }
-    getDate(){
+    getDate() {
       return this.board.manifest.getDate()
     }
     /*
@@ -45,7 +45,7 @@
       return data
     }
     setData(id, data) {
-      console.log("{state}.setData(): %o %o",id,data)
+      console.log("{state}.setData(): %o %o", id, data)
       let cell = this.data[id]
       !cell ? (cell = new CellData(id)) : null
       cell.bookingOrders = data
@@ -154,9 +154,7 @@
       // look in remove function ************
       // Will need reference to originating board on multiboard?... might come with context though ********
 
-
       delete this.data[$cell.prop("id")]
-
 
       // let ret = this.data[$cell.prop("id")].removeOrder()
       // if (ret == 0) {
@@ -167,23 +165,31 @@
     getState() {
       return this
     }
-    load(){
+    load() {
       console.log("{state}.load()")
-      const _date = this.getDate().toLocaleString("en-NZ",{dateStyle: "medium"})
+      const _date = this.getDate().toLocaleString("en-NZ", { dateStyle: "medium" })
 
-      console.log("Date: %o",_date)
-      google.script.run.withSuccessHandler( this.onLoad ).withUserObject(this).loadState( _date )
+      console.log("Date: %o", _date)
+      google.script.run.withSuccessHandler(this.onLoad).withUserObject(this).loadState(_date)
     }
-    onLoad(args){
-      console.log("LoadedState %o",args)
+    onLoad(args) {
+      const _args = JSON.parse(args)
+      const date = _args.shift()
+      const st = {}
+      _args.forEach((element) => {
+        if (!!element){
+          const JS = JSON.parse(element)
+          st[JS.cellID] = JS
+        }
+      })
+      console.log("st: %o", st)
     }
-    save(){
+    save() {
       console.log("{state}.save()")
-      const _date = this.getDate().toLocaleString("en-NZ",{dateStyle: "medium"})
+      const _date = this.getDate().toLocaleString("en-NZ", { dateStyle: "medium" })
 
-      console.log("Date: %o",_date)
-      google.script.run.saveState( _date, this.data )
-
+      console.log("Date: %o", _date)
+      google.script.run.saveState(_date, this.data)
 
       //
       // google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).saveBoard( dataArry )
