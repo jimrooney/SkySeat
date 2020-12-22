@@ -1,20 +1,18 @@
 <style>
-
-.drop-area{
-    background-color:blue;
-}
-#BookingSprite {
+  .drop-area {
+    background-color: blue;
+  }
+  #BookingSprite {
     float: left;
     width: 30px;
     height: 30px;
-
-}
-#makeMeDroppable {
+  }
+  #makeMeDroppable {
     float: right;
     width: 30px;
     height: 30px;
     border: 1px solid #999;
-}
+  }
 </style>
 
 <script type="text/javascript">
@@ -36,7 +34,7 @@
     $(".Draggable").draggable({
       revert: false,
     })
-    
+
     $(".PlaneCell").droppable({
       accept: ".BookingSprite",
       // drop: handleDropEvent,
@@ -51,31 +49,33 @@
       utility.alert("Click")
     })
   }
+  $(".TableCell").draggable({
+        revert: true,
+        helper: "clone",
+      })
+  ////////////////
+  //  Mouse Over/Out
+  ////////////////
+  $(".TableCell").mouseover(function () {
+    if (typeof $(this).data("json") != "undefined") {
+      display.highlightBookings($(this).data("json"))
+    }
+  })
+  $(".TableCell").mouseleave(function () {
+    display.removeHighlight($(this).data("json"))
+    //    display.update()
+  })
 
-////////////////
-//  Mouse Over/Out
-////////////////
-  $(".TableCell").mouseover(function(){  
-  if(typeof $(this).data('json') != 'undefined' ){
-    display.highlightBookings( $(this).data('json') )
-  }
-  });
-  $(".TableCell").mouseleave(function(){
-    display.removeHighlight( $(this).data('json') )
-//    display.update()
-  });
-
-////////////////
-// Hover
-///////////////
-function handleOverEvent(event, ui){
-
+  ////////////////
+  // Hover
+  ///////////////
+  function handleOverEvent(event, ui) {
     let source = ui.draggable
     let newBookings = source.data("json")
     let inCell = $(this)
     let inCellBookings = inCell.data("json")
     let returnTripTarget = {}
-   
+
     // Objects to hold the list of in and out cells (ins should all be the current cell)
     let outs = {}
     let ins = {}
@@ -83,16 +83,18 @@ function handleOverEvent(event, ui){
     // ---------------------------------------------------------------------------------
     // calcultate IN/OUT
     // ---------------------------------------------------------------------------------
-    for (b in newBookings){
+    for (b in newBookings) {
       let booking = newBookings[b]
-      if (booking && booking.orderNumber){
-          let INOUT = utility.getTarget(inCell,booking) // Array [[IN,OUT]] cells (Coordinate IDs)
-          if(!INOUT){return} // =================== If null, exit ===================
-          let inKey = INOUT[0].join("")
-          utility.pushKey(ins,inKey,booking) // Push cell keys into the "ins" object list (creates arrays key'd on in cell coordinates)
-          let outKey = INOUT[1].join("")
-          utility.pushKey(outs,outKey,booking) // Push cell keys into the "outs" object list (creates arrays key'd on out cell coordinates)
-       }
+      if (booking && booking.orderNumber) {
+        let INOUT = utility.getTarget(inCell, booking) // Array [[IN,OUT]] cells (Coordinate IDs)
+        if (!INOUT) {
+          return
+        } // =================== If null, exit ===================
+        let inKey = INOUT[0].join("")
+        utility.pushKey(ins, inKey, booking) // Push cell keys into the "ins" object list (creates arrays key'd on in cell coordinates)
+        let outKey = INOUT[1].join("")
+        utility.pushKey(outs, outKey, booking) // Push cell keys into the "outs" object list (creates arrays key'd on out cell coordinates)
+      }
     }
     // ---------------------------------------------------------------------------------
     // Set IN Cell
@@ -100,52 +102,48 @@ function handleOverEvent(event, ui){
     // Everything added will have the same IN Cell, so we'll use that instead of looping
     inCell = $("#" + Object.keys(ins)[0])
     inCellBookings = inCell.data("json")
-    inCell.data("baseStyle",inCell.attr("style")) // Capture pre-highlight style
+    inCell.data("baseStyle", inCell.attr("style")) // Capture pre-highlight style
     let border = "3px dashed yellow"
-    
-  // ---------------------------------------------------------------------------------
-  // Highlight
-  // ---------------------------------------------------------------------------------
-  let highlighted = inCell.data('highlighted') || false
-  if (!highlighted){ // Not yet highlighted
-    inCell.css({
-      border: border,
-    })
-    inCell.data('highlighted',true)
-  }  
-  
-  for (cell in outs){
-    let outCell = $("#"+cell) // Key
 
-    // Capture pre-highlight style
-    let preStyle = outCell.attr("style")
-    if (preStyle == ""){
-      delete preStyle
-    }
-    outCell.data("baseStyle",preStyle) 
-    
-    highlighted = outCell.data('highlighted') || false
-    if (!highlighted){ // Not yet highlighted
-        outCell.css({
-          "border": "3px dashed green",
+    // ---------------------------------------------------------------------------------
+    // Highlight
+    // ---------------------------------------------------------------------------------
+    let highlighted = inCell.data("highlighted") || false
+    if (!highlighted) {
+      // Not yet highlighted
+      inCell.css({
+        border: border,
       })
-      outCell.data('highlighted',true)
+      inCell.data("highlighted", true)
     }
-  
+
+    for (cell in outs) {
+      let outCell = $("#" + cell) // Key
+
+      // Capture pre-highlight style
+      let preStyle = outCell.attr("style")
+      if (preStyle == "") {
+        delete preStyle
+      }
+      outCell.data("baseStyle", preStyle)
+
+      highlighted = outCell.data("highlighted") || false
+      if (!highlighted) {
+        // Not yet highlighted
+        outCell.css({
+          border: "3px dashed green",
+        })
+        outCell.data("highlighted", true)
+      }
+    }
   }
-
-
-
-
-}
-function handleOutEvent(event, ui){
-   
+  function handleOutEvent(event, ui) {
     let source = ui.draggable
     let newBookings = source.data("json")
     let inCell = $(this)
     let inCellBookings = inCell.data("json")
     let returnTripTarget = {}
-   
+
     // Objects to hold the list of in and out cells (ins should all be the current cell)
     let outs = {}
     let ins = {}
@@ -153,54 +151,53 @@ function handleOutEvent(event, ui){
     // ---------------------------------------------------------------------------------
     // calcultate IN/OUT and brand the booking
     // ---------------------------------------------------------------------------------
-    for (b in newBookings){
+    for (b in newBookings) {
       let booking = newBookings[b]
-      if (booking && booking.orderNumber){
-          let INOUT = utility.getTarget(inCell,booking) // Array [[IN,OUT]] cells (Coordinate IDs)
-          if(!INOUT){return} // =================== If null, exit ===================
-          let inKey = INOUT[0].join("")
-          utility.pushKey(ins,inKey,booking) // Push cell keys into the "ins" object list (creates arrays key'd on in cell coordinates)
-          let outKey = INOUT[1].join("")
-          utility.pushKey(outs,outKey,booking) // Push cell keys into the "outs" object list (creates arrays key'd on out cell coordinates)
-       }
+      if (booking && booking.orderNumber) {
+        let INOUT = utility.getTarget(inCell, booking) // Array [[IN,OUT]] cells (Coordinate IDs)
+        if (!INOUT) {
+          return
+        } // =================== If null, exit ===================
+        let inKey = INOUT[0].join("")
+        utility.pushKey(ins, inKey, booking) // Push cell keys into the "ins" object list (creates arrays key'd on in cell coordinates)
+        let outKey = INOUT[1].join("")
+        utility.pushKey(outs, outKey, booking) // Push cell keys into the "outs" object list (creates arrays key'd on out cell coordinates)
+      }
     }
     // ---------------------------------------------------------------------------------
     // Target IN Cell
     // ---------------------------------------------------------------------------------
     // Everything added will have the same IN Cell, so we'll use that instead of looping
     inCell = $("#" + Object.keys(ins)[0])
-    
+
     // Remove Highlighting
-   let highlighted = inCell.data('highlighted') || false      
-      
-   if (highlighted){
-     inCell.data('highlighted',false)
-        
-     let revertStyle = inCell.data("baseStyle") || false
-     if (!revertStyle){
-       inCell.removeAttr("style")
-     } else {
-       inCell.attr("style",revertStyle)
-     }
-     // revert the out cells
-      for (cell in outs){
-      
-        let outCell = $("#"+cell) // Key
-        outCell.data('highlighted',false)
-            
-        if (typeof outCell.data("baseStyle") != 'undefined'){
-    
-           revertStyle = outCell.data("baseStyle") || false
-           if (!revertStyle){
-             outCell.removeAttr("style")
-           } else {
-             outCell.attr("style",revertStyle)
-           }
-        }
-        else { 
+    let highlighted = inCell.data("highlighted") || false
+
+    if (highlighted) {
+      inCell.data("highlighted", false)
+
+      let revertStyle = inCell.data("baseStyle") || false
+      if (!revertStyle) {
+        inCell.removeAttr("style")
+      } else {
+        inCell.attr("style", revertStyle)
+      }
+      // revert the out cells
+      for (cell in outs) {
+        let outCell = $("#" + cell) // Key
+        outCell.data("highlighted", false)
+
+        if (typeof outCell.data("baseStyle") != "undefined") {
+          revertStyle = outCell.data("baseStyle") || false
+          if (!revertStyle) {
+            outCell.removeAttr("style")
+          } else {
+            outCell.attr("style", revertStyle)
+          }
+        } else {
           outCell.removeAttr("style")
         }
       }
-   }         
-}
+    }
+  }
 </script>

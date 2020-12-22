@@ -172,7 +172,7 @@
       console.log("Date: %o", _date)
       google.script.run.withSuccessHandler(this.onLoad).withUserObject(this).loadState(_date)
     }
-    onLoad(args) {
+    onLoad(args,_this) {
       const _args = JSON.parse(args)
       const date = _args.shift()
       const st = {}
@@ -182,7 +182,16 @@
           st[JS.cellID] = JS
         }
       })
-      console.log("st: %o", st)
+      _this.data = st
+
+      _this.board.update()
+      $(".TableCell").draggable({
+        revert: true,
+        helper: "clone",
+      })
+    $(".TableCell").draggable("enable")
+
+    
     }
     save() {
       console.log("{state}.save()")

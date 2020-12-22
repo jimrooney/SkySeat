@@ -120,7 +120,6 @@ function saveState(date, data) {
   // Find first blank row
   //
   let nextKey = values.findIndex(element => element[0] == "")
-  console.log("NextBlankIndex: ",nextKey)
   //
   // Record Row
   //
@@ -142,7 +141,6 @@ function saveState(date, data) {
   // Insert one empty row after the last row in the active sheet.
   sheet.insertRowsAfter(numRows, 1)
   sheet.appendRow(newVals)
-  console.log("End of line")
   return date
   }
   key = key >= 0 ? key : nextKey
