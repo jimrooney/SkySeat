@@ -161,11 +161,14 @@
         o.items = o.items.map((item, index) => {
           item.index = index
           item.participants = item.participants.map((pax, i) => {
+            const groupKey = `${orderNumber}_${index}`
+            const paxKey = `${groupKey}_${i}`
             pax.fields.push({ label: "itemIndex", value: index })
             pax.fields.push({ label: "orderNumber", value: orderNumber })
             pax.fields.push({ label: "paxIndex", value: i })
-            pax.fields.push({ label: "groupID", value: orderNumber + "_" + index })
+            pax.fields.push({ label: "groupID", value: groupKey })
             pax.fields.push({ label: "productCode", value: item.productCode })
+            pax.fields.push({ label: "key", value: paxKey })
             return pax
           })
           return item

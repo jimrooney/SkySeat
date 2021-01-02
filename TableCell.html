@@ -62,33 +62,54 @@
     handleDrop(event, ui) {
       if(!ui.draggable.data("_script").getPassengers()){ // ignore blank drops
         return
-      }
+      } 
+      // -----------------------------------------
+      // $dropped [jQuery dropped Sprite]
+      // _dropped [JS dropped Sprite]
+      // _this    [JS TableCell]
+      // -----------------------------------------
       //
-      // Since this is getting called externally, "this" isn't this obj
-      // So we'll use the jQuery $(this) to get a pointer to this object
+      //
+      //
+      //_dropped.constructor.name // {TableCell} or {Booking}
       //
       let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
       let _dropped = $dropped.data("_script") // ({TableCell} or {Booking}) JS object attached to the Selector
-      //_dropped.constructor.name // {TableCell} or {Booking}
+      //
+      // -------[[ This ]]--------
+      // Since this is getting called externally, "this" isn't this obj
+      // So we'll use the jQuery $(this) to get a pointer to this object
+      //
       let _this = $(this).data("_script") // This JS Object
+      //
+      //
+      //
       let cellData = _this.getData()
       let leg = _this.getLeg()
       let droppedIsOut = _dropped.isOut()
 
+      console.log("CellLeg: %o",leg)
+      console.log("Dropped isOut: %o",droppedIsOut)
+      console.log("LegalDrop: %o",_this.isLegalDrop(leg,droppedIsOut))
+      //
+      //
       if (_this.isLegalDrop(leg, droppedIsOut)) {
+        //
         // ------------
         // Record Drop
         // ------------
 
         /*
         - Merge Dropped Pax -
-        cellData.passengers 
-        _dropped.getPassengers()
-        [{fields: Array(9)}]
-
-        Merging with Set() removes duplicates
         */
-        cellData.passengers = [...new Set([...cellData.passengers, ..._dropped.getPassengers()])]
+        console.log("\n")
+        console.log("Dropped Passengers: %o",_dropped.getPassengers())
+        console.log("Cell Passengers %o",cellData.passengers)
+
+        cellData.passengers = array.uniquePax(cellData.passengers,_dropped.getPassengers())
+
+        console.log("NewPassengerSet: %o \n\n",cellData.passengers)
+
 
         //
         // Brand the cell
@@ -109,6 +130,7 @@
       } else {
         let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellLeg: " + leg
         utility.error(msg)
+        console.log("Error: %o",msg)
       }
     }
     addPax(pax) {}

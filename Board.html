@@ -83,16 +83,6 @@
 
           }
         })
-        .mouseover(function () {
-          if (typeof $(this).data("json") != "undefined") {
-            display.highlightBookings($(this).data("json"))
-          }
-        })
-        .mouseleave(function () {
-          display.removeHighlight($(this).data("json"))
-          //    display.update()
-        })
-
       //
       // Updata PlaneCells (set defaults)
       //

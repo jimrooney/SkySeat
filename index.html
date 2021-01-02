@@ -33,7 +33,6 @@
       {CSS} ... for CSS utility functions. Not currently used.
       {date}
       {debug}
-      {display}
       {Events}
       {pilots}
       {planes}
@@ -63,6 +62,7 @@
   <head>
     <?!= include('jQuery'); ?>
     <?!= include('Utility_JS'); ?>
+    <?!= include('array'); ?>
     <?!= include('Global'); ?>
     <?!= include('Dates'); ?>
     <?!= include('Time'); ?>
@@ -79,7 +79,6 @@
     <?!= include('GYA'); ?>
     <?!= include('Test'); ?>
     <?!= include('Init'); ?>
-    <?!= include('Display'); ?>
     <?!= include('TheBoard_JS'); ?>
     <?!= include('WB'); ?>
     <?!= include('Pilots'); ?>
@@ -117,7 +116,10 @@
       class="NoPrint"
       style="float: top; width: 100%; text-align: center; background: #737373; color: white"
     >
-      [[ 2.4.7 ]] [ Carvan Loadsheets ]
+      [[ 2.4.8 ]] [ SaveState ] 
+      <a href = "https://docs.google.com/spreadsheets/d/1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c/edit#gid=1155160317">Data Spreadsheet</a>
+      <a href = "https://docs.google.com/spreadsheets/d/1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s/edit#gid=1046036202">Airplane Data</a>
+ 
     </div>
 
     <div id="PickupList" class="pickupDetails">
@@ -198,7 +200,7 @@
           </span>
         </div>
         <div>
-          <button onClick="display.clearBoard()">Clear Board</button> <button onClick="theBoard.load()">&#10226;</button
+          <button onClick="theBoard.load()">&#10226;</button
           ><br />
           <div class="Trash">&#9851;</div>
         </div>
@@ -229,7 +231,6 @@
     colors: colors,
     // CSS,
     // date,
-    display: display,
     Events: Events,
     pilots: pilots,
     planes: planes,
@@ -252,7 +253,6 @@
       {CSS} ... for CSS utility functions. Not currently used.
       {date}
       {debug}
-      {display}
       {Events}
       {pilots}
       {planes}

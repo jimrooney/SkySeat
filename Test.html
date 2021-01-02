@@ -20,12 +20,72 @@
     }
   }
   function test(args) {
+    console.log("\nTest")
+ 
+    const a = [
+{ value:"4a55eff3-1e0d-4a81-9105-3ddd7521d642", label:"key", id:"0"}, 
+{ value:"644838b3-604d-4899-8b78-09e4799f586f", label:"key", id:"1"}, 
+{ value:"b6ee537a-375c-45bd-b9d4-4dd84a75041d", label:"key", id:"2"}, 
+{ value:"e97339e1-939d-47ab-974c-1b68c9cfb536", label:"key", id:"3"}, 
+{ value:"a63a6f77-c637-454e-abf2-dfb9b543af6c", label:"key", id:"4"}, 
+]
 
-    
+    const b = [
+{ value:"4a55eff3-1e0d-4a81-9105-3ddd7521d642", label:"key", id:"0"},  
+{ value:"644838b3-604d-4899-8b78-09e4799f586f", label:"key", id:"1"}, 
+{ value:"b6ee537a-375c-45bd-b9d4-4dd84a75041d", label:"key", id:"2"}, 
+{ value:"e97339e1-939d-47ab-974c-1b68c9cfb536", label:"key", id:"3"}, 
+]
+
+const paxList = [
+{fields : [
+{label: "First Name", value: "Test1"},
+{label: "Last Name", value: "McTesty"},
+{label: "Company Name", value: ""},
+{label: "Passenger weight (Please specify units: kg or lbs)", value: ""},
+{label: "itemIndex", value: 0},
+{label: "orderNumber", value: "GYA001619"},
+{label: "paxIndex", value: 0},
+{label: "groupID", value: "GYA001619_0"},
+{label: "productCode", value: "P0SM9T"},
+//{label: "key", value: "GYA001619_0_0"}
+]},
+{fields : [
+{label: "First Name", value: "Test"},
+{label: "Last Name", value: "McTesty2"},
+{label: "Company Name", value: ""},
+{label: "Passenger weight (Please specify units: kg or lbs)", value: ""},
+{label: "itemIndex", value: 0},
+{label: "orderNumber", value: "GYA001619"},
+{label: "paxIndex", value: 1},
+{label: "groupID", value: "GYA001619_0"},
+{label: "productCode", value: "P0SM9T"},
+{label: "key", value: "GYA001619_0_1"}
+]}
+ ]
+const paxList2 = [
+{fields : [
+{label: "First Name", value: "Test2"},
+{label: "Last Name", value: "McTesty"},
+{label: "Company Name", value: ""},
+{label: "Passenger weight (Please specify units: kg or lbs)", value: ""},
+{label: "itemIndex", value: 0},
+{label: "orderNumber", value: "GYA001619"},
+{label: "paxIndex", value: 0},
+{label: "groupID", value: "GYA001619_0"},
+{label: "productCode", value: "P0SM9T"},
+{label: "key", value: "GYA001619_0_0"}
+]}
+]
 
 
+    // let result = array.difference(a,b)
+    // console.log("Difference: %o",result)
 
+  //console.log("PaxList: %o",paxList.concat(paxList2))
 
+    result = array.uniquePax(paxList,paxList2)
+    console.log("Unique: %o",result)
     return
     $("#Loadsheet").show()
 

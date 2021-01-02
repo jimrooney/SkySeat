@@ -13,10 +13,10 @@
       this.lastName = this.getValue("Last Name")
       this.weight = this.getValue("Weight")
     }
-    getValue(label){
+    getValue(label) {
       const rgxp = new RegExp(label, "i")
       const result = this.fields.find((x) => x.label.match(label))
-      if (!!result){
+      if (!!result) {
         return result.value
       }
       return
@@ -34,6 +34,17 @@
     }
     getGroupColor() {
       Color.getByBooking()
+    }
+    get key() {
+      //
+      // see uniquePax() in array
+      //
+      // const orderNumber = item.fields.find((row) => !!row.label && row.label == "orderNumber").value
+      // const itemIndex = item.fields.find((row) => !!row.label && row.label == "itemIndex").value
+      // const paxIndex = item.fields.find((row) => !!row.label && row.label == "paxIndex").value
+    }
+    set key(key){
+
     }
   }
 </script>

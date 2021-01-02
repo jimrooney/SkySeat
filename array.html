@@ -1,0 +1,33 @@
+<script>
+  const array = {
+    comparer: (otherArray) => {
+      return (current) => {
+        return (
+          otherArray.filter(function (other) {
+            return other.value == current.value && other.label == "key"
+          }).length == 0
+        )
+      }
+    },
+    difference: (a, b) => {
+      return a.filter(array.comparer(b)).concat(b.filter(array.comparer(a)))
+    },
+    unique: (arr, key) => {
+      return [...new Map(arr.map((item) => [item[key], item])).values()]
+    },
+    uniquePax: (...arr) => {
+      const newArr = Array.prototype.concat(...arr)
+      return [
+        ...new Map(
+          newArr.map((item) => {
+              const orderNumber = item.fields.find(row =>!!row.label && row.label == "orderNumber").value
+              const itemIndex = item.fields.find(row =>!!row.label && row.label == "itemIndex").value
+              const paxIndex = item.fields.find(row =>!!row.label && row.label == "paxIndex").value
+              const _key = `${orderNumber}"_"${itemIndex}_${paxIndex}`
+              return [_key,item]
+          })
+        ).values(),
+      ]
+    },
+  }
+</script>
