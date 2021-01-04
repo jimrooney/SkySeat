@@ -21,7 +21,7 @@
   }
   function test(args) {
     console.log("\nTest")
- 
+
     const a = [
 { value:"4a55eff3-1e0d-4a81-9105-3ddd7521d642", label:"key", id:"0"}, 
 { value:"644838b3-604d-4899-8b78-09e4799f586f", label:"key", id:"1"}, 
@@ -77,6 +77,25 @@ const paxList2 = [
 {label: "key", value: "GYA001619_0_0"}
 ]}
 ]
+
+
+
+
+
+const pax = paxList.map(field => {
+const mapped = field.fields.map(x => ({[x.label]:x.value}))
+return Object.assign({}, ...mapped )
+})
+console.log(pax)
+
+return
+
+
+
+
+
+
+
 
 
     // let result = array.difference(a,b)

@@ -8,14 +8,18 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Currently
 -------------------------------
+Highlight where plotted bookings are and add the ability to see booking references/details (so we can keep track of things)
+WB not checking MAUW???
+
+Ability to remove bookings from a plotted TableCell
+(Probably start with Trash)
+
 Rewrite isOut check... not working... can drop outs on ins (dropping ins on outs fails)
       // Perhaps "hasOuts()" ************************************
       // This only tells you if the cell contains outs, not the direction of the leg
       isOut() {
         return this.getOrders().some((x) => x.isOut() == true)
       }
-
-
 
 Working on merging duplicates on dropped TableCells (so we don't get duplicates in State)..
 Created a new array object (array.html) to make this easier.

@@ -20,9 +20,35 @@
       // jQuery object
       // -------------------------------------------
       let $this = $("<td />", {
-        class: `TableCell Row_${r} Col_${c} MobileButton`,//"TableCell Row_" + r + " Col_" + c,
+        class: `TableCell Row_${r} Col_${c} MobileButton`, //"TableCell Row_" + r + " Col_" + c,
         id: this.id,
-      })
+      }).hover(
+        function () {
+          const $FBox = $("<div />", {
+            class: "FloatingBox",
+          })
+          const pax = _this.getPassengers()
+          console.log("Pax: %o", pax)
+
+          if (!!pax) {
+            const _acc = []
+            for (let field in pax){
+              let px = ""
+              pax[field].fields.forEach((entry) => {
+              if (entry.label == "First Name" || entry.label == "Last Name") {
+                px += entry.value
+              }
+            })
+            _acc.push(px)
+          }
+            $FBox.html(_acc.join("<br>"))
+            _this.board.manifest.$this.append($FBox)
+            }
+        },
+        function () {
+          $(".FloatingBox").empty()
+        }
+      )
       // -------------------------------------------
       // Backreference
       // -------------------------------------------
@@ -60,9 +86,10 @@
     // Drop
     // -------------------------------------------
     handleDrop(event, ui) {
-      if(!ui.draggable.data("_script").getPassengers()){ // ignore blank drops
+      if (!ui.draggable.data("_script").getPassengers()) {
+        // ignore blank drops
         return
-      } 
+      }
       // -----------------------------------------
       // $dropped [jQuery dropped Sprite]
       // _dropped [JS dropped Sprite]
@@ -88,9 +115,9 @@
       let leg = _this.getLeg()
       let droppedIsOut = _dropped.isOut()
 
-      console.log("CellLeg: %o",leg)
-      console.log("Dropped isOut: %o",droppedIsOut)
-      console.log("LegalDrop: %o",_this.isLegalDrop(leg,droppedIsOut))
+      console.log("CellLeg: %o", leg)
+      console.log("Dropped isOut: %o", droppedIsOut)
+      console.log("LegalDrop: %o", _this.isLegalDrop(leg, droppedIsOut))
       //
       //
       if (_this.isLegalDrop(leg, droppedIsOut)) {
@@ -103,13 +130,12 @@
         - Merge Dropped Pax -
         */
         console.log("\n")
-        console.log("Dropped Passengers: %o",_dropped.getPassengers())
-        console.log("Cell Passengers %o",cellData.passengers)
+        console.log("Dropped Passengers: %o", _dropped.getPassengers())
+        console.log("Cell Passengers %o", cellData.passengers)
 
-        cellData.passengers = array.uniquePax(cellData.passengers,_dropped.getPassengers())
+        cellData.passengers = array.uniquePax(cellData.passengers, _dropped.getPassengers())
 
-        console.log("NewPassengerSet: %o \n\n",cellData.passengers)
-
+        console.log("NewPassengerSet: %o \n\n", cellData.passengers)
 
         //
         // Brand the cell
@@ -118,7 +144,7 @@
         //
         //// record the new data
         //
-        _this.board.state.data[this.id] = cellData 
+        _this.board.state.data[this.id] = cellData
         //
         _this.removeBookings(ui, _this)
         //
@@ -130,7 +156,7 @@
       } else {
         let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellLeg: " + leg
         utility.error(msg)
-        console.log("Error: %o",msg)
+        console.log("Error: %o", msg)
       }
     }
     addPax(pax) {}
@@ -279,7 +305,7 @@
             }
           }
           if ($station.hasClass("Baggage")) {
-            airplane.stations.forEach((station,index) => {
+            airplane.stations.forEach((station, index) => {
               if (!!station.id && station.id == $station.data("station").id) {
                 airplane.stations[index] = $station.data("station")
               }
