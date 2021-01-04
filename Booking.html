@@ -82,8 +82,9 @@
     //Constructs and returns a booking sprite
     //
     getSprite() {
-      let orderNumber = this.orderNumber
       let $sprite = $("<span class='BookingSprite' />")
+      .addClass(this.orderNumber)
+
       $sprite.data("this", this) // Self Reference (for click)
       $sprite.data("script", this)
       $sprite.data("_script", this)

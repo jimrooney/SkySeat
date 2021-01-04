@@ -27,25 +27,26 @@
           const $FBox = $("<div />", {
             class: "FloatingBox",
           })
-          const pax = _this.getPassengers()
-          console.log("Pax: %o", pax)
-
-          if (!!pax) {
+          const paxList = _this.getPax()
+          if (!!paxList) {
             const _acc = []
-            for (let field in pax){
-              let px = ""
-              pax[field].fields.forEach((entry) => {
-              if (entry.label == "First Name" || entry.label == "Last Name") {
-                px += entry.value
-              }
+            paxList.forEach((pax) => {
+              console.log("Pax: %o", pax)
+              _acc.push(pax.fullName)
+              $("." + pax.orderNumber).addClass("highlight")
             })
-            _acc.push(px)
-          }
             $FBox.html(_acc.join("<br>"))
             _this.board.manifest.$this.append($FBox)
-            }
+          }
         },
         function () {
+          const paxList = _this.getPax()
+          if (!!paxList) {
+            paxList.forEach((pax) => {
+              $("." + pax.orderNumber).removeClass("highlight")
+            })
+          }
+
           $(".FloatingBox").empty()
         }
       )
