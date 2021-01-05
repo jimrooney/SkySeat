@@ -31,7 +31,6 @@
           if (!!paxList) {
             const _acc = []
             paxList.forEach((pax) => {
-              console.log("Pax: %o", pax)
               _acc.push(pax.fullName)
               $("." + pax.orderNumber).addClass("highlight")
             })
@@ -46,7 +45,6 @@
               $("." + pax.orderNumber).removeClass("highlight")
             })
           }
-
           $(".FloatingBox").empty()
         }
       )

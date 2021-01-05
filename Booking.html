@@ -102,8 +102,27 @@
       // Click
       //
       $sprite.click(function () {
+        $(".FloatingBox").remove()
         let _this = $sprite.data("this")
         _this.show() // inherited function from Plottable
+        console.log("Booking: %o", _this)
+        const $FBox = $("<div />", {
+            class: "FloatingBox",
+          })
+          const paxList = _this.getPax()
+          let orderNumber = ""
+          if (!!paxList) {
+            const _acc = []
+            paxList.forEach((pax) => {
+              _acc.push(pax.fullName)
+              $("." + pax.orderNumber).addClass("highlight")
+              orderNumber = pax.orderNumber
+            })
+            $FBox.html(_acc.join("<br>"))
+            $FBox.prepend("<A id='" + orderNumber + "_rezdyLink' href='https://app.rezdy.com/orders/edit/"+orderNumber+"' target='_blank'>"+orderNumber+"</a><br>")
+            _this.manifest.$this.append($FBox)
+          }
+          
       })
       $sprite.hover(
         // On
@@ -120,6 +139,7 @@
           let $row = time.getRowByHour(_this.getStartHour())
           if ($row) {
             $(".Row_" + $row.data("row")).removeClass("highlight")
+            $sprite.removeClass("highlight")
           }
         }
       )
