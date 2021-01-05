@@ -12,7 +12,7 @@
       this.firstName = this.getValue("First Name")
       this.lastName = this.getValue("Last Name")
       this.fullName = this.firstName + " " + this.lastName  
-      this.weight = this.getValue("Weight")
+      this.weight = this.getWeight()
     }
     getValue(label) {
       const rgxp = new RegExp(label, "i")
