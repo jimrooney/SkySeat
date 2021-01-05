@@ -271,6 +271,12 @@
         return false
       }
       //
+      // Check Weight
+      //
+      if (totalWeight > this.limits.weight.MAUW) {
+        return false
+      }
+      //
       // Check forward bounds
       //
       bounds.forEach((bound) => {
