@@ -22,12 +22,11 @@
       this.arm = data.arm
       this.moment = data.moment
       this.type = this.constructor.name
-
-      this.burn = {
-        // climb:
-        // cruise:
-        // descent:
-      }
+      // this.burn = {
+      //   // climb:
+      //   // cruise:
+      //   // descent:
+      // }
       this.limit = {
         // cg: [forard,aft]
         // weight: [TO,LND,Ramp]
@@ -52,7 +51,7 @@
         // {},
         // {}
       ]
-      this.fuel = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight() }
+      this.fuel = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight(), burnRate: 60 }
     }
     getSeats() {
       return this.stations((item) => item.type.includes("seat"))
@@ -102,9 +101,8 @@
       //
       // If plane's station doesn't exist yet, create it.
       //
-      const plane = this.stations.filter( station => station.type.includes("airplane"))
-      if (plane.length<=0)
-      {
+      const plane = this.stations.filter((station) => station.type.includes("airplane"))
+      if (plane.length <= 0) {
         //
         // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
         //
@@ -150,12 +148,12 @@
         station.moment = station.weight * station.arm
       })
       const CREW = POB.filter((station) => {
-          if (!!station.pax)
-          {station.pax.find(
+        if (!!station.pax) {
+          station.pax.find(
             (pax) => pax.label == "Role" // only return pax with Roles (crew)
-          )}
+          )
         }
-      )
+      })
       //
       // Find the PIC (Flies Left Seat, so find works, but could also search by matching seat number) ****
       //
@@ -298,7 +296,6 @@
   class GA8 extends Airplane {
     constructor(data) {
       super(data)
-
       /*
 
 1219 mm (48 in) aft of datum at 1089 kg (2400 lb) and below;
@@ -327,9 +324,9 @@ between these points.
           new Station({ type: ["seat"], arm: 3.247 }),
           new Station({ type: ["seat"], arm: 3.247 }),
           new Station({ type: ["fuel"], arm: 1.715, limit: 330 }),
-          new Station({ type: ["cargo", "backShelf"], arm: 0, limit: 113, id:"BackShelf"  }),
-          new Station({ type: ["cargo", "podBay"], arm: 1.5665, limit: 120, id:"PodBay1"  }),
-          new Station({ type: ["cargo", "podBay"], arm: 2.3445, limit: 100, id:"PodBay2"  }),
+          new Station({ type: ["cargo", "backShelf"], arm: 0, limit: 113, id: "BackShelf" }),
+          new Station({ type: ["cargo", "podBay"], arm: 1.5665, limit: 120, id: "PodBay1" }),
+          new Station({ type: ["cargo", "podBay"], arm: 2.3445, limit: 100, id: "PodBay2" }),
         ])
     }
   }
@@ -349,6 +346,7 @@ between these points.
         },
       }
       ;(this.fuel.capacity = 330),
+      (this.fuel.burnRate = 76),
         (this.stations = [
           new Station({ type: ["seat"], arm: 0.9398 }),
           new Station({ type: ["seat"], arm: 0.9398 }),
@@ -393,12 +391,10 @@ between these points.
         new Station({ type: ["seat"], arm: 8.69696 }),
         new Station({ type: ["fuel"], arm: 5.175758 }),
         new Station({ type: ["cargo"], arm: 3.44, limit: 113 }),
-        new Station({ type: ["cargo", "podBay"], arm: 4.62534, id:"bay1" }),
-        new Station({ type: ["cargo", "podBay"], arm: 5.92836, id: "bay2"}),
+        new Station({ type: ["cargo", "podBay"], arm: 4.62534, id: "bay1" }),
+        new Station({ type: ["cargo", "podBay"], arm: 5.92836, id: "bay2" }),
         new Station({ type: ["cargo", "podBay"], arm: 3.36296, id: "bay3" }),
         new Station({ type: ["cargo", "podBay"], arm: 7.30504, id: "bay4" }),
-        
-
       ]
     }
   }

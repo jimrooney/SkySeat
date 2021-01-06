@@ -130,7 +130,17 @@
         const cargoW = WB.stations.filter(station => station.type.includes("cargo")).reduce((accumulator,station) =>{
             return accumulator + Number(station.weight)
         },0)
-        
+
+        let burnRate = 60
+        let tillLanding = 0
+        const weightToBurn = WB.TotalWeight - LoadedPlane.limits.weight.Landing
+        const litersToBurn = weightToBurn * LoadedPlane.fuel.factor
+        burnRate = LoadedPlane.fuel.burnRate
+        const timeToBurn = litersToBurn / burnRate
+
+        console.log("LoadedPlane: %o",LoadedPlane)
+        console.log("BurnRate: %o",burnRate)
+
       this.plane = {
         pilot: CrewNames,
         reg: LoadedPlane.reg,
@@ -143,8 +153,9 @@
         fuelWeight: fuelWeightString,
         TOW: utility.round(WB.TotalWeight),
         MCTOW: LoadedPlane.limits.weight.MAUW,
+        MLW: LoadedPlane.limits.weight.Landing,
         Burnoff: "",
-        LandingWeight: "",
+        LandingWeight: `${Math.round((litersToBurn + Number.EPSILON) * 100) / 100}L ${Math.round((timeToBurn + Number.EPSILON) * 100) / 100}(time)`,
         //CGLimit: "", //_displayLimits,
         CG: Math.round((WB.CG + Number.EPSILON) * 100) / 100,
         OutOfLimits: "",
@@ -297,7 +308,7 @@
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td>&nbsp;</td>
+          <td><span style="font-size: small">(Limits)</span></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
@@ -474,7 +485,7 @@
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
           <td width="16%"><font size="1">Landing Weight</font></td>
-          <td width="6%">&nbsp;</td>
+          <td width="6%" class="_plane_MLW">&nbsp;</td>
           <td width="15%">
             <!--[Landing Weight]-->
             <span class="_plane_LandingWeight"></span>
@@ -601,7 +612,7 @@
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td>&nbsp;</td>
+          <td><span style="font-size: small">(Limits)</span></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
@@ -778,7 +789,7 @@
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
           <td width="16%"><font size="1">Landing Weight</font></td>
-          <td width="6%">&nbsp;</td>
+          <td width="6%" class="_plane_MLW">&nbsp;</td>
           <td width="15%">
             <!--[Landing Weight]-->
             <span class="_plane_LandingWeight"></span>
