@@ -5,7 +5,7 @@
   // ===============================
   // Loadsheet Close Button onClick
   // ===============================
-  $(function ()  {
+  $(function () {
     $("#printLoadsheetClose").click(function () {
       $("#Loadsheet").hide()
     })
@@ -83,7 +83,7 @@
       })
       if (!PIC.length) {
         PIC = null
-        utility.alert("No PIC",$("#Details > .Print"))
+        utility.alert("No PIC", $("#Details > .Print"))
         return
         // If no PIC... this should all fail (and throw an error)
       }
@@ -127,26 +127,78 @@
       ${utility.round(WB.weights.fuel)} 
       <span style="font-size:x-small">( ${utility.round(WB.cg.imperial.fuelWeight)} )lbs</font>
       `
-        const cargoW = WB.stations.filter(station => station.type.includes("cargo")).reduce((accumulator,station) =>{
-            return accumulator + Number(station.weight)
-        },0)
+      const cargoW = WB.stations
+        .filter((station) => station.type.includes("cargo"))
+        .reduce((accumulator, station) => {
+          return accumulator + Number(station.weight)
+        }, 0)
 
-        let burnRate = 60
-        let tillLanding = 0
-        const weightToBurn = WB.TotalWeight - LoadedPlane.limits.weight.Landing
-        const litersToBurn = weightToBurn * LoadedPlane.fuel.factor
-        burnRate = LoadedPlane.fuel.burnRate
-        const timeToBurn = litersToBurn / burnRate
+      const fuel = {
+        time: {
+          decimal: WB.fuel.liters / LoadedPlane.fuel.burnRate,
+          get hrs(){
+            return  time.decimalToHours(WB.fuel.liters / LoadedPlane.fuel.burnRate)
+            },
+          get string(){
+            return `${this.hrs.join(":")}(hrs)`
+          }
+        },
+        quantity: {
+          liters: WB.fuel.liters,
+        },
+        landing: {
+          toBurn: {
+            kg: WB.TotalWeight - LoadedPlane.limits.weight.Landing,
+            get liters() {
+              return this.kg * LoadedPlane.fuel.factor
+              //return `${Math.round((litersToBurn + Number.EPSILON) * 100) / 100}L`
+            },
+            get time() {
+              const d = this.liters / LoadedPlane.fuel.burnRate
+              const hrs = time.decimalToHours(d)
+              let str = hrs.join(":") + "(hrs)"
+              if (!!d && d < 0) {
+                str = ""
+              }
+              return {
+                decimal: d,
+                hours: hrs,
+                string: str,
+              }
+            },
+            get string(){
+              if (this.kg > 0){
+                return this.liters + '' + this.time.string
+              }
+              return ""
+            },
+          },
+        },
+      }
+      console.log("Fuel Object: %o", fuel)
 
-        console.log("LoadedPlane: %o",LoadedPlane)
-        console.log("BurnRate: %o",burnRate)
+      // const burnRate = LoadedPlane.fuel.burnRate
+
+      // // Landing Weight
+      // const weightToBurn = WB.TotalWeight - LoadedPlane.limits.weight.Landing
+      // const litersToBurn = weightToBurn * LoadedPlane.fuel.factor
+      // const timeToBurn = litersToBurn / burnRate
+
+      // const fuelInTime = WB.fuel.liters / burnRate
+      // const fuelInHours = time.decimalToHours(fuelInTime)
+      // let timeToBurnInHours = time.decimalToHours(timeToBurn)
+
+      // console.log("LoadedPlane: %o", LoadedPlane)
+      // console.log("BurnRate: %o", burnRate)
+
+
 
       this.plane = {
         pilot: CrewNames,
         reg: LoadedPlane.reg,
         type: LoadedPlane.type,
         regColor: LoadedPlane.regcolor,
-        fuel: WB.fuel.liters, // Liters
+        fuel: `${WB.fuel.liters}(L) ${fuel.time.string}`, // Liters
         EmptyWeight: utility.round(LoadedPlane.weight),
         AUW: utility.round(WB.weights.auw),
         ZFW: utility.round(WB.weights.zfw),
@@ -155,7 +207,7 @@
         MCTOW: LoadedPlane.limits.weight.MAUW,
         MLW: LoadedPlane.limits.weight.Landing,
         Burnoff: "",
-        LandingWeight: `${Math.round((litersToBurn + Number.EPSILON) * 100) / 100}L ${Math.round((timeToBurn + Number.EPSILON) * 100) / 100}(time)`,
+        LandingWeight: `${fuel.landing.toBurn.time.string}`,
         //CGLimit: "", //_displayLimits,
         CG: Math.round((WB.CG + Number.EPSILON) * 100) / 100,
         OutOfLimits: "",

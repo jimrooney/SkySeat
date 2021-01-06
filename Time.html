@@ -4,6 +4,11 @@
     // We can make getTime pseudo-polymorphic by examining what's passed in and replying accordingly.
     // So if we pass in a in12hr boolean, we give it back in AM/PM
     //
+    decimalToHours : (time) => {
+      const hour = Math.floor(time)
+      const minutes = Math.round((time % 1 * 60))
+      return [hour,minutes]
+    },
     getTime: function (string, in12hr) {
       let date = new Date(string)
       let hours = date.getHours()
