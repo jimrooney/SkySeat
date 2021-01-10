@@ -25,7 +25,7 @@
       const _this = this
       this._this = this
       this.$this = $this
-      this.plane = null
+      this.displayPlane = null
       $this.data("object", this)
     }
     print() {
@@ -42,10 +42,12 @@
     // Show
     // ---------------------------
     show(TableCell) {
-      //
-      // Hide flight following by default
-      //
-      // $(".FlightFollowingClose").hide()
+      console.log("\n")
+      console.log("{Loadsheet}.show()")
+      this.plane = TableCell.getPlane()
+      console.log("this.plane: %o",this.plane)
+      console.log("WB: %o",this.plane.getWB())
+      console.log("\n")
       //
       // Clear out old values
       //
@@ -72,8 +74,9 @@
       // ------------------
       // Get the plane data
       // ------------------
-      let LoadedPlane = TableCell.getPlane()
-      const WB = LoadedPlane.getWB()
+      let _thisPlane = TableCell.getPlane()
+      this.plane = TableCell.getPlane()
+      const WB = _thisPlane.getWB()
       let seats = WB.POB
       //
       // Find PIC
@@ -120,11 +123,11 @@
       //
       // Make plane variable... names mapped to class names
       //
-      // For some reason, this needs to be set as a const before putting into this.plane ? *
-      const _displayLimits = LoadedPlane.limits.CG.aft + "" + LoadedPlane.limits.CG.forward
+      // For some reason, this needs to be set as a const before putting into this.displayPlane ? *
+      const _displayLimits = _thisPlane.limits.CG.aft + "" + _thisPlane.limits.CG.forward
       //
       let fuelWeightString = `${utility.round(WB.weights.fuel)}`
-      if (LoadedPlane.reg == "MMZ"){
+      if (_thisPlane.reg == "MMZ"){
         fuelWeightString = `
         ${utility.round(WB.weights.fuel)} 
       <span style="font-size:x-small">( ${utility.round(WB.cg.imperial.fuelWeight)} )lbs</span>`
@@ -141,9 +144,9 @@
 
       const fuel = {
         time: {
-          decimal: WB.fuel.liters / LoadedPlane.fuel.burnRate,
+          decimal: WB.fuel.liters / _thisPlane.fuel.burnRate,
           get hrs(){
-            return  time.decimalToHours(WB.fuel.liters / LoadedPlane.fuel.burnRate)
+            return  time.decimalToHours(WB.fuel.liters / _thisPlane.fuel.burnRate)
             },
           get string(){
             return `${this.hrs.join(":")}(hrs)`
@@ -154,14 +157,14 @@
         },
         landing: {
           toBurn: {
-            kg: WB.TotalWeight - LoadedPlane.limits.weight.Landing,
-            lbs: (WB.TotalWeight - LoadedPlane.limits.weight.Landing) * 2.2,
+            kg: WB.TotalWeight - _thisPlane.limits.weight.Landing,
+            lbs: (WB.TotalWeight - _thisPlane.limits.weight.Landing) * 2.2,
             get liters() {
-              return this.kg * LoadedPlane.fuel.factor
+              return this.kg * _thisPlane.fuel.factor
               //return `${Math.round((litersToBurn + Number.EPSILON) * 100) / 100}L`
             },
             get time() {
-              const d = this.liters / LoadedPlane.fuel.burnRate
+              const d = this.liters / _thisPlane.fuel.burnRate
               const hrs = time.decimalToHours(d)
               let str = hrs.join(":") + "(hrs)"
               if (!!d && d < 0) {
@@ -182,45 +185,28 @@
           },
         },
       }
-      console.log("Fuel Object: %o", fuel)
-
-      // const burnRate = LoadedPlane.fuel.burnRate
-
-      // // Landing Weight
-      // const weightToBurn = WB.TotalWeight - LoadedPlane.limits.weight.Landing
-      // const litersToBurn = weightToBurn * LoadedPlane.fuel.factor
-      // const timeToBurn = litersToBurn / burnRate
-
-      // const fuelInTime = WB.fuel.liters / burnRate
-      // const fuelInHours = time.decimalToHours(fuelInTime)
-      // let timeToBurnInHours = time.decimalToHours(timeToBurn)
-
-      // console.log("LoadedPlane: %o", LoadedPlane)
-      // console.log("BurnRate: %o", burnRate)
-
-
-
+      this.fuel = fuel
+      
       let toBurnString = ""
       if (fuel.landing.toBurn.kg > 0){
       toBurnString = `${utility.round(fuel.landing.toBurn.liters,0)}L ${fuel.landing.toBurn.time.string}`
-      if (LoadedPlane.reg == "MMZ"){
+      if (_thisPlane.reg == "MMZ"){
         toBurnString = `${utility.round(fuel.landing.toBurn.lbs,0)}lbs ${fuel.landing.toBurn.time.string}`
       }
 }
-
-      this.plane = {
+      this.displayPlane = {
         pilot: CrewNames,
-        reg: LoadedPlane.reg,
-        type: LoadedPlane.type,
-        regColor: LoadedPlane.regcolor,
+        reg: _thisPlane.reg,
+        type: _thisPlane.type,
+        regColor: _thisPlane.regcolor,
         fuel: `${WB.fuel.liters}(L) ${fuel.time.string}`, // Liters
-        EmptyWeight: utility.round(LoadedPlane.weight),
+        EmptyWeight: utility.round(_thisPlane.weight),
         AUW: utility.round(WB.weights.auw),
         ZFW: utility.round(WB.weights.zfw),
         fuelWeight: fuelWeightString,
         TOW: utility.round(WB.TotalWeight),
-        MCTOW: LoadedPlane.limits.weight.MAUW,
-        MLW: LoadedPlane.limits.weight.Landing,
+        MCTOW: _thisPlane.limits.weight.MAUW,
+        MLW: _thisPlane.limits.weight.Landing,
         Burnoff: "",
         LandingWeight: toBurnString,
         //CGLimit: "", //_displayLimits,
@@ -233,13 +219,13 @@
         totalFreightWeight: "",
         totalBagWeight: utility.round(cargoW),
       }
-      $(".reg").css("background-color", this.plane.regColor)
+      $(".reg").css("background-color", this.displayPlane.regColor)
       //
       // Map _plane object into classes
       //
-      const keys = Object.keys(this.plane)
+      const keys = Object.keys(this.displayPlane)
       keys.map((key) => {
-        $("._plane_" + key).html(this.plane[key])
+        $("._plane_" + key).html(this.displayPlane[key])
       })
       //
       // Map the passenger data to _paxList- classes
@@ -551,7 +537,7 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><font size="1">Burn before Landing</font></td>
+          <td width="16%"  style="font-size:small">Burn before Landing</td>
           <td width="6%" class="_plane_MLW" style="font-size:x-small"></td>
           <td width="15%">
             <!--[Landing Weight]-->
@@ -855,7 +841,7 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><font size="1">Burn before Landing</font></td>
+          <td width="16%"  style="font-size:small">Burn before Landing</td>
           <td width="6%" class="_plane_MLW" style="font-size:x-small"></td>
           <td width="15%">
             <!--[Landing Weight]-->
@@ -1127,14 +1113,11 @@
         <td><b>Date:</b> <span class="_tripDate"></span></td>
       </tr>
       <tr>
-        <td colspan="3"><b>Route Details</b> <span class="_trip_route"></span></td>
+        <td colspan="3"><b>Route Details:</b> <span class="_trip_route"></span></td>
       </tr>
       <tr>
-        <td><b>Fuel:</b> <span class="_plane_fuel"></span> Litres</td>
-        <td>
-          <b>Fuel Endurance:</b> Hours <span class="plane_Endurance_hour"></span>____ Minutes
-          <span class="plane_Endurance_min"></span>____
-        </td>
+        <td>&nbsp;</td>
+        <td><b>Fuel:</b> <span class="_plane_fuel"></span></td>
         <td>&nbsp;</td>
       </tr>
       <tr>
