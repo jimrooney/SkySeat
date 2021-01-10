@@ -123,10 +123,16 @@
       // For some reason, this needs to be set as a const before putting into this.plane ? *
       const _displayLimits = LoadedPlane.limits.CG.aft + "" + LoadedPlane.limits.CG.forward
       //
-      const fuelWeightString = `
-      ${utility.round(WB.weights.fuel)} 
-      <span style="font-size:x-small">( ${utility.round(WB.cg.imperial.fuelWeight)} )lbs</font>
-      `
+      let fuelWeightString = `${utility.round(WB.weights.fuel)}`
+      if (LoadedPlane.reg == "MMZ"){
+        fuelWeightString = `
+        ${utility.round(WB.weights.fuel)} 
+      <span style="font-size:x-small">( ${utility.round(WB.cg.imperial.fuelWeight)} )lbs</span>`
+      }
+
+
+
+
       const cargoW = WB.stations
         .filter((station) => station.type.includes("cargo"))
         .reduce((accumulator, station) => {
@@ -198,7 +204,7 @@
       if (fuel.landing.toBurn.kg > 0){
       toBurnString = `${utility.round(fuel.landing.toBurn.liters,0)}L ${fuel.landing.toBurn.time.string}`
       if (LoadedPlane.reg == "MMZ"){
-        toBurnString = `${utility.round(fuel.landing.toBurn.lbs)}lbs ${fuel.landing.toBurn.time.string}`
+        toBurnString = `${utility.round(fuel.landing.toBurn.lbs,0)}lbs ${fuel.landing.toBurn.time.string}`
       }
 }
 
@@ -545,7 +551,7 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><font size="1">Burn before Landing Weight</font></td>
+          <td width="16%"><font size="1">Burn before Landing</font></td>
           <td width="6%" class="_plane_MLW" style="font-size:x-small"></td>
           <td width="15%">
             <!--[Landing Weight]-->
@@ -849,7 +855,7 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><font size="1">Burn before Landing Weight</font></td>
+          <td width="16%"><font size="1">Burn before Landing</font></td>
           <td width="6%" class="_plane_MLW" style="font-size:x-small"></td>
           <td width="15%">
             <!--[Landing Weight]-->
