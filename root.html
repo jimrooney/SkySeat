@@ -1,6 +1,7 @@
 <script>
 let root = {
 	boards: [],
+	trash: new Trash(),
 	// --------------------------------- Load TripCodes ----------------------------------------------
 	loadTripCodes: function () {
 		google.script.run.withSuccessHandler(gya.onTripCodeLoad).loadTripCodes()

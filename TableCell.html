@@ -85,7 +85,7 @@
     // Drop
     // -------------------------------------------
     handleDrop(event, ui) {
-      if (!ui.draggable.data("_script").getPassengers()) {
+      if (!ui.draggable.data("_script").getPassengers()) { // Plottable
         // ignore blank drops
         return
       }
@@ -94,8 +94,6 @@
       // _dropped [JS dropped Sprite]
       // _this    [JS TableCell]
       // -----------------------------------------
-      //
-      //
       //
       //_dropped.constructor.name // {TableCell} or {Booking}
       //
@@ -112,10 +110,20 @@
       //
       let cellData = _this.getData()
       let leg = _this.getLeg()
+      console.log("TableCell Leg: %o",leg)
+      console.log("Dropped Leg: %o", _dropped.getLeg())
+
+
       let droppedIsOut = _dropped.isOut()
 
-      console.log("CellLeg: %o", leg)
-      console.log("Dropped isOut: %o", droppedIsOut)
+
+      console.log("\n")
+      console.log("Dropped getPassengers: %o",ui.draggable.data("_script").getPassengers())
+      console.log("Dropped getPax: %o",ui.draggable.data("_script").getPax())
+      
+      console.log("This CellData: %o", cellData)
+      console.log("_dropped: %o", _dropped) // either {Booking} or {TableCell}
+
       console.log("LegalDrop: %o", _this.isLegalDrop(leg, droppedIsOut))
       //
       //
@@ -128,14 +136,10 @@
         /*
         - Merge Dropped Pax -
         */
-        console.log("\n")
-        console.log("Dropped Passengers: %o", _dropped.getPassengers())
-        console.log("Cell Passengers %o", cellData.passengers)
-
         cellData.passengers = array.uniquePax(cellData.passengers, _dropped.getPassengers())
-
-        console.log("NewPassengerSet: %o \n\n", cellData.passengers)
-
+        console.log("New Passenger Set: %o", cellData.passengers)
+        console.log("New Pax: %o",cellData.passengers.map((entry) => new Pax(entry)))
+        console.log("\n\n")
         //
         // Brand the cell
         //
@@ -323,7 +327,7 @@
     // Perhaps "hasOuts()" ************************************
     // This only tells you if the cell contains outs, not the direction of the leg
     isOut() {
-      return this.getOrders().some((x) => x.isOut() == true)
+      return this.getOrders().some((x) => x.isOut() == true) // returns {Booking} Objects
     }
     //
     // get Plane Crew Fuel

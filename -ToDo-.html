@@ -8,6 +8,16 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Currently
 -------------------------------
+Change the isOut stuff to legs.....
+Rewrite isOut check... not working... can drop outs on ins (dropping ins on outs fails)
+      // Perhaps "hasOuts()" ************************************
+      // This only tells you if the cell contains outs, not the direction of the leg
+      isOut() {
+        return this.getOrders().some((x) => x.isOut() == true)
+      }
+
+
+
 Shoved BurnRate into Aircraft.html for now... need to use the dynamically loaded spreadsheet values.
 Use getter setter for getWeight in Pax.html
 Use getWeight to suss out auto updating the board details (board objects should pull data out of the manifest, not maps)
@@ -15,12 +25,7 @@ Use getWeight to suss out auto updating the board details (board objects should 
 Ability to remove bookings from a plotted TableCell
 (Probably start with Trash)
 
-Rewrite isOut check... not working... can drop outs on ins (dropping ins on outs fails)
-      // Perhaps "hasOuts()" ************************************
-      // This only tells you if the cell contains outs, not the direction of the leg
-      isOut() {
-        return this.getOrders().some((x) => x.isOut() == true)
-      }
+
 
 Working on merging duplicates on dropped TableCells (so we don't get duplicates in State)..
 Created a new array object (array.html) to make this easier.
