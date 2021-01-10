@@ -46,9 +46,13 @@
     //    code: code,
     //    ACI: ACI,
     round(num,decimalPlaces){
-      // decimalPlaces... not used, but could be handy ***
+
+      let factor = 100
+      if (decimalPlaces > -1){
+        factor = Math.pow(10,decimalPlaces)
+      }
       num = Number(num)
-      return Math.round((num + Number.EPSILON) * 100) / 100
+      return Math.round((num + Number.EPSILON) * factor) / factor
     },
     // -----------------------------------------------------------------------------
     // Get passenger numbers. If quantities are by product and not pax, return false
