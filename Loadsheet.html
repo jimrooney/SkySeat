@@ -163,6 +163,9 @@
               return this.kg * _thisPlane.fuel.factor
               //return `${Math.round((litersToBurn + Number.EPSILON) * 100) / 100}L`
             },
+            get gallons(){
+              return this.liters / 3.79
+            },
             get time() {
               const d = this.liters / _thisPlane.fuel.burnRate
               const hrs = time.decimalToHours(d)
@@ -192,6 +195,9 @@
       toBurnString = `${utility.round(fuel.landing.toBurn.liters,0)}L ${fuel.landing.toBurn.time.string}`
       if (_thisPlane.reg == "MMZ"){
         toBurnString = `${utility.round(fuel.landing.toBurn.lbs,0)}lbs ${fuel.landing.toBurn.time.string}`
+      }
+      if (_thisPlane.reg == "JTK"){
+        toBurnString = `${utility.round(fuel.landing.toBurn.gallons,0)}Gal ${fuel.landing.toBurn.time.string}`
       }
 }
       this.displayPlane = {
