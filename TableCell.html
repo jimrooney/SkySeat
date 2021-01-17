@@ -31,7 +31,7 @@
           if (!!paxList) {
             const _acc = []
             paxList.forEach((pax) => {
-              _acc.push(pax.fullName)
+              _acc.push(`${pax.fullName} (${pax.weight})`)
               $("." + pax.orderNumber).addClass("highlight")
             })
             $FBox.html(_acc.join("<br>"))
@@ -118,9 +118,33 @@
 
 
       console.log("\n")
-      console.log("Dropped getPassengers: %o",ui.draggable.data("_script").getPassengers())
-      console.log("Dropped getPax: %o",ui.draggable.data("_script").getPax())
+      console.log("Dropped getPax: %o",ui.draggable.data("_script").getPax()) // From Plottable, from State
+
+      // From Manifest
+      const list = ui.draggable.data("_script").getPax()
+      const bkngs = list.filter(px =>  _this.board.manifest.getBooking(px))
+
+      console.log("bkngs: %o",bkngs)
+
+      let result = bkngs.map(bk => {
+        return _this.board.manifest.getOrder(bk.orderNumber)
+      })
+
+      console.log("\n\nresult: %o",result)
+      console.log("Bookings %o",bkngs)
+
+      bkngs.forEach(item =>{
+
+        const result = _this.board.manifest.getItem(item.barcode)
+        console.log("Item: %o",result)
+        })
+
       
+
+
+
+
+
       console.log("This CellData: %o", cellData)
       console.log("_dropped: %o", _dropped) // either {Booking} or {TableCell}
 

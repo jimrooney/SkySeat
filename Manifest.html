@@ -12,8 +12,8 @@
     getDate() {
       return this.board.$datepicker.datepicker("getDate")
     }
-    setDate(date){
-      this.board.$datepicker.datepicker("setDate", new Date(date) )
+    setDate(date) {
+      this.board.$datepicker.datepicker("setDate", new Date(date))
       this.showTitle()
     }
     write() {
@@ -37,7 +37,7 @@
           <div class="Roster" >Roster</div>
       </div>
       `)
-      
+
       // this.$roster = $(``)
       // this.$board.append(this.$roster)
       this.$roster = this.$this.find(".Roster")
@@ -57,12 +57,11 @@
         console.log(_this)
       })
 
-            //
+      //
       // Show State Button
       //
       let _board = this.board
 
-      
       const $_save = $("<button class='Dark Debug' />").html("&#128190;")
       this.$this.prepend($_save)
       $_save.on("click", function () {
@@ -75,13 +74,13 @@
       })
 
       let $_s = $("<button class='Dark Debug'>").text("State")
-        this.$this.prepend($_s)
+      this.$this.prepend($_s)
       $_s.on("click", function () {
         console.log("{state}.getState(): %o", _board.state.getState())
       })
 
       let $_r = $("<button class='Dark Debug'>").append("<BR>").text("R")
-        this.$this.prepend($_r)
+      this.$this.prepend($_r)
       $_r.on("click", function () {
         $(".Roster").toggle()
       })
@@ -89,10 +88,9 @@
       $_msg.on("click", function () {
         //
       })
-
     }
-    showTitle(){
-      this.$this.find("#Title").html(this.getDate().toLocaleString('en-us', {  weekday: 'long' }))
+    showTitle() {
+      this.$this.find("#Title").html(this.getDate().toLocaleString("en-us", { weekday: "long" }))
     }
     loadRoster() {
       const $roster = this.$roster
@@ -102,26 +100,26 @@
       const date = d.toString()
       google.script.run.withSuccessHandler(this.handleRosterLoad).withUserObject(this).loadRoster(date)
     }
-    handleRosterLoad(args,manifest) {
-    const $roster = manifest.$this.find(".Roster")
-    $roster.empty()
-    if (!!args) {
-      let labels = args.values.map((row) => row[0])
-      let results = args.values.map((row) => row[args.ci])
-      let keyVal = args.values.map((row, ri) => {
-        const key = row[0]
-        const val = row[args.ci]
-        const color = args.colors[ri][args.ci]
-        return [key, val, color]
-      })
-      const rosterRows = keyVal.map(
-        (row) => `<div><span style="background-color:${row[2]}">${row[0]} ${row[1]}</span></div>`
-      )
-      const $rosterContent = $("<div />")
-      $rosterContent.append(rosterRows.join(""))
-      $roster.append($rosterContent)
+    handleRosterLoad(args, manifest) {
+      const $roster = manifest.$this.find(".Roster")
+      $roster.empty()
+      if (!!args) {
+        let labels = args.values.map((row) => row[0])
+        let results = args.values.map((row) => row[args.ci])
+        let keyVal = args.values.map((row, ri) => {
+          const key = row[0]
+          const val = row[args.ci]
+          const color = args.colors[ri][args.ci]
+          return [key, val, color]
+        })
+        const rosterRows = keyVal.map(
+          (row) => `<div><span style="background-color:${row[2]}">${row[0]} ${row[1]}</span></div>`
+        )
+        const $rosterContent = $("<div />")
+        $rosterContent.append(rosterRows.join(""))
+        $roster.append($rosterContent)
+      }
     }
-  }
     // Call the Google Rezdy loading script, passing this object so the results can be returned into it
     load() {
       Rezdy.load(this)
@@ -314,21 +312,30 @@
       }
       return
     }
-    getOrder(orderNumber, productNumber) {
+    getBooking(pax) {
+      //
+      // return the matching booking (accepts Pax Object or an array of pax fields)
+      //
+      if (typeof pax != "object") {
+        // if fields are passed in instead of {Pax}, convert to {Pax}
+        pax = new Pax(pax)
+      }
+      return this.orders.filter((order) => order.orderNumber == pax.orderNumber)
+    }
+    getItem(barcode) {
+      return this.orders.find((order) =>
+        order.items.find((item) =>
+          item.participants.find((part) =>
+            part.fields.find((field) => field.label == "Barcode" && field.value == barcode)
+          )
+        )
+      )
+    }
+    getOrder(orderNumber) {
       //
       // return the matching order objects
       //
-      let data = this.data.bookings
-      let Orders = []
-      if (!!data && Array.isArray(data)) {
-        // Loop over the orders and return the matching manifest object
-        for (let b in data) {
-          let _oNum = data[b].split("_")[0]
-          Orders.push(this.orders.find((x) => x.orderNumber === _oNum))
-        }
-        return Orders
-      }
-      return
+      return this.orders.find((order) => order.orderNumber == orderNumber)
     }
     //
     // return total number of filled seats

@@ -11,13 +11,13 @@
       this.orderNumber = this.getValue("orderNumber")
       this.firstName = this.getValue("First Name")
       this.lastName = this.getValue("Last Name")
-      this.fullName = this.firstName + " " + this.lastName  
+      this.fullName = this.firstName + " " + this.lastName
       this.weight = this.getWeight()
     }
     getValue(label) {
       const rgxp = new RegExp(label, "i")
       const result = this.fields.find((x) => x.label.match(label))
-      if (!!result) {
+      if (!!result && !!result.value) {
         return result.value
       }
       return
@@ -26,12 +26,13 @@
       //
       // Maybe a good place to add standard weights and standard weight addition (4kg)
       //
-      let ret = this.fields.find((x) => x.label.match(/weight/i))
+      let result = this.fields.find((x) => x.label.match(/weight/i))
       // Always return KG...
       // Removes KG LBS etc
-      ret = wb.getKilos(ret.value)
-
-      return ret
+      if (!!result && !!result.value) {
+        result = wb.getKilos(result.value)
+      }
+      return result
     }
     getGroupColor() {
       Color.getByBooking()
@@ -44,8 +45,6 @@
       // const itemIndex = item.fields.find((row) => !!row.label && row.label == "itemIndex").value
       // const paxIndex = item.fields.find((row) => !!row.label && row.label == "paxIndex").value
     }
-    set key(key){
-
-    }
+    set key(key) {}
   }
 </script>
