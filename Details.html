@@ -477,7 +477,7 @@
       passengers.forEach((p, index) => {
         let pax = new Pax(p)
         const firstName = pax.getValue("First Name") //pax.getFirstName()
-        const weight = pax.getValue("weight") //pax.getWeight()
+        const weight = pax.weight //pax.getWeight()
         const orderNumber = pax.getValue("orderNumber") ///pax.getOrderNumber()
 
         let $pax = $(

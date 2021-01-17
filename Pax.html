@@ -6,45 +6,75 @@
       } else {
         this.fields = data
       }
-      this.seat = data.seat || null
-      this.barcode = this.getValue("Barcode")
-      this.orderNumber = this.getValue("orderNumber")
-      this.firstName = this.getValue("First Name")
-      this.lastName = this.getValue("Last Name")
       this.fullName = this.firstName + " " + this.lastName
-      this.weight = this.getWeight()
+    }
+    //
+    // Getter/Setter Utility functions
+    //
+    setValue(label, value) {
+      const rgxp = new RegExp(label, "i")
+      let result = this.fields.find((x) => x.label.match(rgxp))
+      result.value = value
     }
     getValue(label) {
       const rgxp = new RegExp(label, "i")
-      const result = this.fields.find((x) => x.label.match(label))
+      const result = this.fields.find((x) => x.label.match(rgxp))
       if (!!result && !!result.value) {
         return result.value
       }
       return
     }
-    getWeight() {
+    //
+    // Getters/Setters
+    //
+    get seat() {
+      return this.getValue("seat")
+    }
+    set seat(seatNum) {
+      this.setValue("seat",seatNum)
+    }
+    get firstName() {
+      return this.getValue("First Name")
+    }
+    set firstName(name) {
+      this.setValue("First Name", name)
+    }
+    get lastName() {
+      return this.getValue("Last Name")
+    }
+    set lastName(name) {
+      this.setValue("Last Name", name)
+    }
+    get barcode() {
+      return this.getValue("Barcode")
+    }
+    set barcode(Barcode) {
+      this.setValue("Barcode", Barcode)
+    }
+    get orderNumber() {
+      return this.getValue("Barcode")
+    }
+    set orderNumber(orderNumber) {
+      this.setValue("orderNumber", orderNumber)
+    }
+    get weight() {
       //
       // Maybe a good place to add standard weights and standard weight addition (4kg)
       //
-      let result = this.fields.find((x) => x.label.match(/weight/i))
+      let result = this.getValue("weight")
       // Always return KG...
       // Removes KG LBS etc
       if (!!result && !!result.value) {
         result = wb.getKilos(result.value)
       }
+      result = parseInt(result)
       return result
+    }
+    set weight(weight){
+      this.setValue("weight", weight)
     }
     getGroupColor() {
       Color.getByBooking()
     }
-    get key() {
-      //
-      // see uniquePax() in array
-      //
-      // const orderNumber = item.fields.find((row) => !!row.label && row.label == "orderNumber").value
-      // const itemIndex = item.fields.find((row) => !!row.label && row.label == "itemIndex").value
-      // const paxIndex = item.fields.find((row) => !!row.label && row.label == "paxIndex").value
-    }
-    set key(key) {}
   }
 </script>

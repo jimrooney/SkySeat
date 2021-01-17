@@ -325,7 +325,7 @@
           if ($station.hasClass("Seat")) {
             seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
             pax = $(this).data("pax")
-            weight = $(this).data("_pax").getWeight()
+            weight = $(this).data("_pax").weight
             if (seat >= 0) {
               seats[seat].weight = weight
               seats[seat].pax = pax
