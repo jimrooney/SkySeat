@@ -323,13 +323,18 @@
       return this.orders.filter((order) => order.orderNumber == pax.orderNumber)
     }
     getItem(barcode) {
-      return this.orders.find((order) =>
-        order.items.find((item) =>
+      let ret
+      this.orders.forEach((order) => {
+        let found = order.items.find((item) =>
           item.participants.find((part) =>
             part.fields.find((field) => field.label == "Barcode" && field.value == barcode)
           )
         )
-      )
+        if (!!found){
+          ret = found
+        }
+      })
+      return ret
     }
     getOrder(orderNumber) {
       //

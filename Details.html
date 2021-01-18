@@ -8,7 +8,8 @@
   // Details Class
   // ===============================
   class Details {
-    constructor() {
+    constructor(root) {
+      this.root = root
       this._this = this
       this.bookings = []
       const _this = this
@@ -300,7 +301,7 @@
       let loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
       let WB = loadedPlane.getWB()
 
-      console.log("{loadedPlane}", loadedPlane)      
+      console.log("{loadedPlane}", loadedPlane)
       console.log("{getWB}", WB)
 
       const report = this.$root.find(".Report")
@@ -476,14 +477,15 @@
 
       passengers.forEach((p, index) => {
         let pax = new Pax(p)
-        const firstName = pax.getValue("First Name") //pax.getFirstName()
-        const weight = pax.weight //pax.getWeight()
-        const orderNumber = pax.getValue("orderNumber") ///pax.getOrderNumber()
+        const firstName = pax.getValue("First Name")
+        const weight = pax.weight
+        const orderNumber = pax.getValue("orderNumber")
+        const barcode = pax.getValue("Barcode")
 
         let $pax = $(
           `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
         )
-          //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
+          .data("number", p)
           .data("seat", index)
           .data("booking", orderNumber)
           .data("pax", pax.fields)
@@ -506,6 +508,11 @@
                 ui.helper.position({ of: $station, my: "left top", at: "left top" })
               }
             },
+          })
+          .click(() => {
+            console.log("Pax Click")
+            console.log("Item: %o",root.getItem(barcode))
+            
           })
 
         let hue

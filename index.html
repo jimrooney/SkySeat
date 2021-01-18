@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html>
   <?!= include('Trash'); ?>
-<?!= include('root'); ?>
-<script>
-  let debug = {}
-  // list of root variables (so they're easier to find in debug)
-  // testBoard needs to exist before writeboard is called (so it has somewhere to write to)
-  // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
+  <?!= include('root'); ?>
+  <script>
+    let debug = {}
+    // list of root variables (so they're easier to find in debug)
+    // testBoard needs to exist before writeboard is called (so it has somewhere to write to)
+    // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
 
-  var testBoard
-  var LOADSHEET
-  // Placeholder for the LOADSHEET object *** This should go in {root}
-      //
-      // Some Debug Stuff
-      //
-      console.clear()
-      //
-      // root object to attach debug info to so it's easy to find in console.
-      //
-      console.log(`To see the debug object, change the Javascript Context to userFrame(blank) and type debug`)
-      // To use:
-      // Change the "Javascript: context" at the top of the debug console to "userFrame(blank)Iframe"
-      // and type "debug" into the console.
-      //
-  /*
+    var testBoard
+    var LOADSHEET
+    // Placeholder for the LOADSHEET object *** This should go in {root}
+    //
+    // Some Debug Stuff
+    //
+    console.clear()
+    //
+    // root object to attach debug info to so it's easy to find in console.
+    //
+    console.log(`To see the debug object, change the Javascript Context to userFrame(blank) and type debug`)
+    // To use:
+    // Change the "Javascript: context" at the top of the debug console to "userFrame(blank)Iframe"
+    // and type "debug" into the console.
+    //
+    /*
       ___________root objects______________
       {root}
       {testBoard}
@@ -58,7 +58,7 @@
   var _loadsheetData = []
 
   */
-</script>
+  </script>
 
   <head>
     <?!= include('jQuery'); ?>
@@ -92,14 +92,14 @@
     <?!= include('Details_CSS'); ?>
     <?!= include('Click'); ?>
 
-<script>
+    <script>
       //
       $(document).ready(function () {
         // Put the DOM into debug
         root.debug.DOM = this
       })
       //
-</script>
+    </script>
     <base target="_top" />
   </head>
   <body>
@@ -117,10 +117,13 @@
       class="NoPrint"
       style="float: top; width: 100%; text-align: center; background: #737373; color: white"
     >
-      [[ 2.4.8.3 ]] [ Landing Weight ] 
-      <a href = "https://docs.google.com/spreadsheets/d/1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c/edit#gid=1155160317">Data Spreadsheet</a>
-      <a href = "https://docs.google.com/spreadsheets/d/1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s/edit#gid=1046036202">Airplane Data</a>
- 
+      [[ 2.4.8.3 ]] [ Landing Weight ]
+      <a href="https://docs.google.com/spreadsheets/d/1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c/edit#gid=1155160317"
+        >Data Spreadsheet</a
+      >
+      <a href="https://docs.google.com/spreadsheets/d/1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s/edit#gid=1046036202"
+        >Airplane Data</a
+      >
     </div>
 
     <div id="PickupList" class="pickupDetails">
@@ -141,13 +144,12 @@
 
     <script>
       $(document).ready(function () {
-        $("body").append(new Details())
+        $("body").append(new Details(root))
         Events.init() // for Mobile Click
       })
 
       // --------------------------------- OnLoad --------------------------------------------------
       // (Moved to INIT)
-
 
       /*
   These functions are first called in planemanager ->
@@ -201,8 +203,7 @@
           </span>
         </div>
         <div>
-          <button onClick="theBoard.load()">&#10226;</button
-          ><br />
+          <button onClick="theBoard.load()">&#10226;</button><br />
           <div class="Trash">&#9851;</div>
         </div>
       </div>
@@ -223,7 +224,8 @@
   </body>
 </html>
 <script>
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
   root.vars = {
     testBoard: testBoard,
     LOADSHEET: LOADSHEET,
