@@ -27,6 +27,12 @@
     //
     // Getters/Setters
     //
+    get item(){
+      return root.getItem(this.barcode)
+    }
+    set item(value){
+      this.item = value // Placeholder
+    }
     get seat() {
       return this.getValue("seat")
     }
