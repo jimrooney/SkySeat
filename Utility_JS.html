@@ -149,7 +149,7 @@
       let col = null
 
       if (cell.attr("class").search("PlaneCell") >= 0) {
-        row = parseInt(time.getRow(booking.time))
+        row = parseInt(root.time.getRow(booking.time))
         col = parseInt(cell.prop("id").match(/\d+/g)) // Get PlaneCell id digits (which equal the column)
       } else {
         //console.log("Parent Row: %o",cell.parent().prop('id'))

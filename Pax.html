@@ -27,17 +27,17 @@
     //
     // Getters/Setters
     //
-    get item(){
+    get item() {
       return root.getItem(this.barcode)
     }
-    set item(value){
+    set item(value) {
       this.item = value // Placeholder
     }
     get seat() {
       return this.getValue("seat")
     }
     set seat(seatNum) {
-      this.setValue("seat",seatNum)
+      this.setValue("seat", seatNum)
     }
     get firstName() {
       return this.getValue("First Name")
@@ -76,8 +76,35 @@
       result = parseInt(result)
       return result
     }
-    set weight(weight){
+    set weight(weight) {
       this.setValue("weight", weight)
+    }
+    get times() {
+      const time = {
+        start: {
+          string: this.item.startTimeLocal,
+          hour: root.time.getHour(this.item.startTimeLocal),
+          time: this.item.startTime,
+        },
+        stop: {
+          string: this.item.endTimeLocal,
+          hour: root.time.getHour(this.item.endTimeLocal),
+          time: this.item.endTime,
+        },
+        get duration() {
+          const a = new Date(this.start.time)
+          const b = new Date(this.stop.time)
+          return Math.floor((b - a) / 36e5) // 36e5 scientific notation for 3600000
+        },
+        set duration(value) {
+          // placeholder
+          this.duration = value
+        },
+      }
+      return time
+    }
+    set times(value) {
+      this.times = value // placeholder
     }
     getGroupColor() {
       Color.getByBooking()

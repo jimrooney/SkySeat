@@ -85,7 +85,8 @@
     // Drop
     // -------------------------------------------
     handleDrop(event, ui) {
-      if (!ui.draggable.data("_script").getPassengers()) { // Plottable
+      if (!ui.draggable.data("_script").getPassengers()) {
+        // Plottable
         // ignore blank drops
         return
       }
@@ -97,83 +98,66 @@
       //
       //_dropped.constructor.name // {TableCell} or {Booking}
       //
-      let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
-      let _dropped = $dropped.data("_script") // ({TableCell} or {Booking}) JS object attached to the Selector
+      const $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
+      const _dropped = $dropped.data("_script") // ({TableCell} or {Booking}) JS object attached to the Selector
       //
       // -------[[ This ]]--------
       // Since this is getting called externally, "this" isn't this obj
       // So we'll use the jQuery $(this) to get a pointer to this object
       //
-      let _this = $(this).data("_script") // This JS Object
+      const _this = $(this).data("_script") // This JS Object
       //
       //
-      //
-      let cellData = _this.getData()
       let leg = _this.getLeg()
-      console.log("TableCell Leg: %o",leg)
-      console.log("Dropped Leg: %o", _dropped.getLeg())
-
-
       let droppedIsOut = _dropped.isOut()
-
-
-      console.log("\n")
-      console.log("Dropped getPax: %o",ui.draggable.data("_script").getPax()) // From Plottable, from State
-
       // From Manifest
       const list = ui.draggable.data("_script").getPax()
-      const bkngs = list.filter(px =>  _this.board.manifest.getBooking(px))
-
-      console.log("bkngs: %o",bkngs)
-
-      let result = bkngs.map(bk => {
-        return _this.board.manifest.getOrder(bk.orderNumber)
-      })
-
-      console.log("\n\nresult: %o",result)
-      console.log("Bookings %o",bkngs)
-
-      bkngs.forEach(pax =>{
-        console.log("Pax Item: %o",pax.item)
-        // const result = _this.board.manifest.getItem(item.barcode)
-        // console.log("Item: %o",result)
-        })
-
-      
-
-
-
-
-
-      console.log("This CellData: %o", cellData)
-      console.log("_dropped: %o", _dropped) // either {Booking} or {TableCell}
-
-      console.log("LegalDrop: %o", _this.isLegalDrop(leg, droppedIsOut))
-      //
+      const droppedPax = list.filter((px) => _this.board.manifest.getBooking(px))
       //
       if (_this.isLegalDrop(leg, droppedIsOut)) {
-        //
         // ------------
         // Record Drop
         // ------------
 
-        /*
-        - Merge Dropped Pax -
-        */
-        cellData.passengers = array.uniquePax(cellData.passengers, _dropped.getPassengers())
-        console.log("New Passenger Set: %o", cellData.passengers)
-        console.log("New Pax: %o",cellData.passengers.map((entry) => new Pax(entry)))
-        console.log("\n\n")
+        // ---------------
+        // Add Passengers
+        // ---------------
+        _this.addPax(droppedPax)
+//        _this.addPax(_dropped.getPax())
+
         //
         // Brand the cell
         //
+        let cellData = _this.cellData
         !!cellData.leg ? null : (cellData.leg = _dropped.getLeg())
-        //
-        //// record the new data
-        //
-        _this.board.state.data[this.id] = cellData
+        // -----
+        // Save
+        // -----
+        _this.cellData = cellData // saves in {state}
         //
         _this.removeBookings(ui, _this)
+        // --------------
+        // Plot Out Legs
+        // --------------
+        droppedPax.forEach((pax) => {
+          console.log("Pax Item: %o", pax.item)
+          console.log("Pax Times: %o", pax.times)
+
+          console.log("Duration: %o", pax.times.duration)
+          // pax.times.stop.hour
+
+          console.log("This Row %o",_this.row)
+          console.log("This Row Time %o",root.time.getRow(_this.row).prop("id"))
+
+          // this cell's row time
+          // this cell's column
+
+
+
+
+
+
+        })
         //
         // === Update ===
         //
@@ -186,7 +170,17 @@
         console.log("Error: %o", msg)
       }
     }
-    addPax(pax) {}
+    addPax(pax) {
+      // handles both {pax} or [passengers]
+      // ------------------
+      // Merge Dropped Pax
+      // ------------------
+      let cellData = this.cellData
+      cellData.passengers = root.array.uniquePax(cellData.passengers, pax)
+      this.cellData = cellData
+      return cellData
+    }
+    removePax(pax) {}
     removeBookings(ui, _this) {
       $(ui.helper).remove()
       let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
@@ -253,6 +247,12 @@
         retArray.shift()
       }
       return retArray
+    }
+    get cellData() {
+      return this.board.state.getData(this.$this) // get the CellData Object from the state object
+    }
+    set cellData(cellData) {
+      this.board.state.data[this.id] = cellData
     }
     getData() {
       //
