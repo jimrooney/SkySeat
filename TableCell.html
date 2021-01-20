@@ -147,6 +147,11 @@
           // pax.times.stop.hour
 
           console.log("This Row %o",_this.row)
+          console.log("This Row %o",_this.column)
+
+          const targetId = `#${_this.row+pax.times.duration}_${_this.column}`
+          $(targetId).addClass("highlight")
+
           console.log("This Row Time %o",root.time.getRow(_this.row).prop("id"))
 
           // this cell's row time
