@@ -122,18 +122,9 @@
         // ---------------
         // Add Passengers
         // ---------------
-        _this.addPax(droppedPax)
+        _this.addPax(droppedPax,_dropped.getLeg())
 //        _this.addPax(_dropped.getPax())
 
-        //
-        // Brand the cell
-        //
-        let cellData = _this.cellData
-        !!cellData.leg ? null : (cellData.leg = _dropped.getLeg())
-        // -----
-        // Save
-        // -----
-        _this.cellData = cellData // saves in {state}
         //
         _this.removeBookings(ui, _this)
         // --------------
@@ -150,7 +141,11 @@
           console.log("This Row %o",_this.column)
 
           const targetId = `#${_this.row+pax.times.duration}_${_this.column}`
-          $(targetId).addClass("highlight")
+
+          if (_dropped.getLeg()=="A"){
+          // Plot Out Leg
+          $(targetId).data("_script")._this.addPax(pax,"B")
+          }
 
           console.log("This Row Time %o",root.time.getRow(_this.row).prop("id"))
 
@@ -175,14 +170,22 @@
         console.log("Error: %o", msg)
       }
     }
-    addPax(pax) {
+    addPax(pax,leg) {
       // handles both {pax} or [passengers]
       // ------------------
       // Merge Dropped Pax
       // ------------------
       let cellData = this.cellData
       cellData.passengers = root.array.uniquePax(cellData.passengers, pax)
-      this.cellData = cellData
+      //this.cellData = cellData
+
+        !!cellData.leg ? null : (cellData.leg = leg)
+        // -----
+        // Save
+        // -----
+        this.cellData = cellData // saves in {state}
+
+
       return cellData
     }
     removePax(pax) {}
