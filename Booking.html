@@ -2,7 +2,7 @@
   class Booking extends Plottable {
     constructor(manifest, order, item) {
       super(item.participants)
-      this.manifest = manifest
+      this.board = manifest.board
       this.order = order
       this.item = item
       this.orderNumber = order.orderNumber
@@ -55,6 +55,9 @@
     //
     // Compare Booking data to which cell it's in and determine which leg it's on.
     //
+    get leg() {
+      return this.getDirection()
+    }
     getLeg() {
       return this.getDirection()
     }

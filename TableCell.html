@@ -12,7 +12,7 @@
       this.row = r
       this.column = c
       this.hour // Placeholder
-      this.leg
+      //this.leg
       //
       // _this.getData() holds all the Cell's data
       //
@@ -20,7 +20,7 @@
       // jQuery object
       // -------------------------------------------
       let $this = $("<td />", {
-        class: `TableCell Row_${r} Col_${c} MobileButton`, //"TableCell Row_" + r + " Col_" + c,
+        class: `TableCell Row_${r} Col_${c} MobileButton ${this.id}`, //"TableCell Row_" + r + " Col_" + c,
         id: this.id,
       }).hover(
         function () {
@@ -106,71 +106,59 @@
       // So we'll use the jQuery $(this) to get a pointer to this object
       //
       const _this = $(this).data("_script") // This JS Object
+      const list = ui.draggable.data("_script").getPax() // From Manifest
+      
+      const droppedPax = list.filter((px) => _dropped.board.manifest.getBooking(px))
       //
+
+
+      console.log("_this  %o",_this)
+      console.log("_dropped %o",_dropped)
+
+      console.log("LegalDrop: %o", _this.isLegalDrop(_this.leg, _dropped.leg))
       //
-      let leg = _this.getLeg()
-      let droppedIsOut = _dropped.isOut()
-      // From Manifest
-      const list = ui.draggable.data("_script").getPax()
-      const droppedPax = list.filter((px) => _this.board.manifest.getBooking(px))
-      //
-      if (_this.isLegalDrop(leg, droppedIsOut)) {
+      if (_this.isLegalDrop(_this.leg, _dropped.leg)) {
         // ------------
         // Record Drop
         // ------------
-
         // ---------------
         // Add Passengers
         // ---------------
-        _this.addPax(droppedPax,_dropped.getLeg())
-//        _this.addPax(_dropped.getPax())
-
-        //
-        _this.removeBookings(ui, _this)
+        _this.addPax(droppedPax, _dropped.leg)
+        
         // --------------
         // Plot Out Legs
         // --------------
         droppedPax.forEach((pax) => {
-          console.log("Pax Item: %o", pax.item)
-          console.log("Pax Times: %o", pax.times)
-
-          console.log("Duration: %o", pax.times.duration)
-          // pax.times.stop.hour
-
-          console.log("This Row %o",_this.row)
-          console.log("This Row %o",_this.column)
-
-          const targetId = `#${_this.row+pax.times.duration}_${_this.column}`
-
-          if (_dropped.getLeg()=="A"){
-          // Plot Out Leg
-          $(targetId).data("_script")._this.addPax(pax,"B")
+          const $target = _this.board.$this.find(`.${_this.row + pax.times.duration}_${_this.column}`)
+          if (_dropped.leg == "A" || _dropped.leg == null) {
+            // Plot Out Leg
+            const _out = $target.data("_script")
+            if (!!_out)
+            {
+              _out._this.addPax(pax, "B")
+              $target.addClass('highlight')
+            }
           }
 
-          console.log("This Row Time %o",root.time.getRow(_this.row).prop("id"))
+          console.log("This Row Time %o", root.time.getRow(_this.row).prop("id"))
 
           // this cell's row time
           // this cell's column
-
-
-
-
-
-
         })
         //
         // === Update ===
         //
         _this.board.update() // board.update() calls update() on each TableCell.
-
+        _this.removeBookings(ui, _this)
         $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
       } else {
-        let msg = "Wrong Type: DroppedIsOut" + droppedIsOut + " CellLeg: " + leg
+        let msg = "Wrong Type: DroppedIsOut" + _dropped.leg + " CellLeg: " + _this.leg
         utility.error(msg)
         console.log("Error: %o", msg)
       }
     }
-    addPax(pax,leg) {
+    addPax(pax, leg) {
       // handles both {pax} or [passengers]
       // ------------------
       // Merge Dropped Pax
@@ -179,12 +167,11 @@
       cellData.passengers = root.array.uniquePax(cellData.passengers, pax)
       //this.cellData = cellData
 
-        !!cellData.leg ? null : (cellData.leg = leg)
-        // -----
-        // Save
-        // -----
-        this.cellData = cellData // saves in {state}
-
+      !!cellData.leg ? null : (cellData.leg = leg)
+      // -----
+      // Save
+      // -----
+      this.cellData = cellData // saves in {state}
 
       return cellData
     }
@@ -207,7 +194,7 @@
     // -------------------------------------------------------------------
     // isLegalDrop
     // -------------------------------------------------------------------
-    isLegalDrop(cellLeg, droppedIsOut) {
+    isLegalDrop(cellLeg, droppedLeg) {
       let cellIsOut = cellLeg == "B"
       /*
       Cell hasn't been branded = legal // can be either
@@ -219,7 +206,7 @@
       ***************************************************************************
       */
       let legal
-      cellLeg == null ? (legal = true) : cellIsOut == droppedIsOut ? (legal = true) : (legal = false)
+      cellLeg == null ? (legal = true) : cellIsOut == droppedLeg ? (legal = true) : (legal = false)
       return legal
     }
     // ------------------------------
@@ -292,7 +279,7 @@
       state = { ...state, ...data }
       return state
     }
-    getLeg() {
+    get leg() {
       if (!!this.getData()) {
         return this.getData().leg
       }
@@ -401,7 +388,7 @@
         //
         // In/Out Chevrons
         //
-        switch (this.getLeg()) {
+        switch (this.leg) {
           case "A":
           case null:
             let name = "--in"

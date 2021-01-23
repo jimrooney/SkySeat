@@ -1,7 +1,8 @@
 <script>
   class Board {
     constructor($board) {
-      this.$board = $board // save a reference to the jQuery object
+      this.$board = $board // save a reference to the jQuery objects
+      this.$this = $board
       // Access this object through $([Board Selector]).data('root')
       //
       this.date = ""
