@@ -107,11 +107,8 @@
       //
       const _this = $(this).data("_script") // This JS Object
       const list = ui.draggable.data("_script").getPax() // From Manifest
-      
-      const droppedPax = list.filter((px) => _dropped.board.manifest.getBooking(px))
+      const droppedPaxList = list.filter((px) => _dropped.board.manifest.getBooking(px))
       //
-
-
       console.log("_this  %o",_this)
       console.log("_dropped %o",_dropped)
 
@@ -124,20 +121,25 @@
         // ---------------
         // Add Passengers
         // ---------------
-        _this.addPax(droppedPax, _dropped.leg)
-        
+        _this.addPax(droppedPaxList, _dropped.leg)
         // --------------
         // Plot Out Legs
         // --------------
-        droppedPax.forEach((pax) => {
+        droppedPaxList.forEach((pax) => {
           const $target = _this.board.$this.find(`.${_this.row + pax.times.duration}_${_this.column}`)
+          const $oldPlot = _dropped.board.$this.find(`.${_dropped.row + pax.times.duration}_${_dropped.column}`)
           if (_dropped.leg == "A" || _dropped.leg == null) {
             // Plot Out Leg
-            const _out = $target.data("_script")
-            if (!!_out)
+            const _target = $target.data("_script")
+            const _oldPlot = $oldPlot.data("_script")
+            if (!!_target)
             {
-              _out._this.addPax(pax, "B")
-              $target.addClass('highlight')
+              _target._this.addPax(pax, "B")
+              _target.board.update()
+              if (!!_oldPlot){
+                _oldPlot._this.removePax(pax)
+                _oldPlot.board.update()
+              }
             }
           }
 
@@ -159,6 +161,7 @@
       }
     }
     addPax(pax, leg) {
+      console.log("Add Pax")
       // handles both {pax} or [passengers]
       // ------------------
       // Merge Dropped Pax
@@ -172,10 +175,13 @@
       // Save
       // -----
       this.cellData = cellData // saves in {state}
-
+      console.log("return cellData: %o",cellData)
       return cellData
     }
-    removePax(pax) {}
+    removePax(pax) {
+      console.log("RemovePax Cell ID: %o",this.$this.prop("id"))
+      this.board.state.removeOrder(this.$this,pax.barcode)
+    }
     removeBookings(ui, _this) {
       $(ui.helper).remove()
       let $dropped = ui.draggable // ui.draggable : The Manifest Sprite or $dropped TableCell
