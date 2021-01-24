@@ -142,11 +142,6 @@
               }
             }
           }
-
-          console.log("This Row Time %o", root.time.getRow(_this.row).prop("id"))
-
-          // this cell's row time
-          // this cell's column
         })
         //
         // === Update ===
@@ -161,7 +156,6 @@
       }
     }
     addPax(pax, leg) {
-      console.log("Add Pax")
       // handles both {pax} or [passengers]
       // ------------------
       // Merge Dropped Pax
@@ -175,11 +169,9 @@
       // Save
       // -----
       this.cellData = cellData // saves in {state}
-      console.log("return cellData: %o",cellData)
       return cellData
     }
     removePax(pax) {
-      console.log("RemovePax Cell ID: %o",this.$this.prop("id"))
       this.board.state.removeOrder(this.$this,pax.barcode)
     }
     removeBookings(ui, _this) {
@@ -201,7 +193,8 @@
     // isLegalDrop
     // -------------------------------------------------------------------
     isLegalDrop(cellLeg, droppedLeg) {
-      let cellIsOut = cellLeg == "B"
+      console.log("CellLeg: %o",cellLeg)
+      console.log("Dropped Leg: %o",droppedLeg)
       /*
       Cell hasn't been branded = legal // can be either
       Cell matches drop = legal
@@ -212,7 +205,7 @@
       ***************************************************************************
       */
       let legal
-      cellLeg == null ? (legal = true) : cellIsOut == droppedLeg ? (legal = true) : (legal = false)
+      cellLeg == null ? (legal = true) : cellLeg == droppedLeg ? (legal = true) : (legal = false)
       return legal
     }
     // ------------------------------
