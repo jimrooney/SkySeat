@@ -108,7 +108,6 @@
         $(".FloatingBox").remove()
         let _this = $sprite.data("this")
         _this.show() // inherited function from Plottable
-        console.log("Booking: %o", _this)
         const $FBox = $("<div />", {
             class: "FloatingBox",
           })
@@ -123,7 +122,7 @@
             })
             $FBox.html(_acc.join("<br>"))
             $FBox.prepend("<A id='" + orderNumber + "_rezdyLink' href='https://app.rezdy.com/orders/edit/"+orderNumber+"' target='_blank'>"+orderNumber+"</a><br>")
-            _this.manifest.$this.append($FBox)
+            _this.board.manifest.$this.append($FBox)
           }
           
       })
