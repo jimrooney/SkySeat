@@ -204,7 +204,7 @@
         </div>
         <div>
           <button onClick="theBoard.load()">&#10226;</button><br />
-          <div class="Trash">&#9851;</div>
+          <div class="Trash" onClick="root.trash.removeBooking()">&#9851;</div>
         </div>
       </div>
       <!-- Popups -->
@@ -224,6 +224,7 @@
   </body>
 </html>
 <script>
+  root.trash.init()
   const isIOS =
     /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
   root.vars = {

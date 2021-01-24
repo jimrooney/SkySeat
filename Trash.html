@@ -1,15 +1,36 @@
 <script>
 	class Trash {
-		constructor(data){
-
+		constructor(caller){
+			this.caller = caller
+		}
+		get parent(){
+			return this.caller.root
+		}
+		init(){
+			$(".Trash").droppable({
+        greedy: true,
+        accept: ".BookingSprite, .TableCell",
+        hoverClass: "hovered",
+        drop: this.handleDrop,
+      })
 		}
 		removeBooking(booking){
-
+			this.parent.boards.forEach(board => {
+				console.log("Trash Board: %o",board)
+			})
 		}
 		handleDrop(event, ui){
-      if (!ui.draggable.data("_script").getPassengers()) { // Plottable
         // ignore blank drops
-        return
+				const pax = ui.draggable.data("_script").getPax()
+				if (!!pax) { // Plottable
+					console.log("Trash Has Pax: %o",pax)
+        
+					//
+					// Next, go through all boards and States and remove the Pax
+					//
+
+
+				//this.removeBooking()
 
 				//
 				// From TableCell drop... *********************

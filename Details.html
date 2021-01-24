@@ -524,7 +524,7 @@
         }
         $pax.css("background-color", hue)
 
-        if (firstName.length >= 7) {
+        if (!!firstName && firstName.length >= 7) {
           $pax.css("font-size", "8px")
         }
       })

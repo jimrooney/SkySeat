@@ -9,6 +9,10 @@
       }
       return this.passengers
     }
+    get pax(){
+      const paxList = this.getPassengers()
+      if (!!paxList) return paxList.map((entry) => new Pax(entry))
+    }
     getPax() {
       const paxList = this.getPassengers()
       if (!!paxList) return paxList.map((entry) => new Pax(entry))
