@@ -92,9 +92,9 @@
       //   $cell.data("_script").clear()
       // }
     }
-    removePax(pax){
-      for (let cell in this.data){
-        console.log("{state} Cell: %o Pax: %o",cell,pax)
+    removePax(pax) {
+      for (const [key, value] of Object.entries(pax)) {
+        console.log("Key %o Val %o",key,value)
       }
     }
     getState() {
@@ -107,19 +107,19 @@
       console.log("Date: %o", _date)
       google.script.run.withSuccessHandler(this.onLoad).withUserObject(this).loadState(_date)
     }
-    onLoad(args,_this) {
+    onLoad(args, _this) {
       const _args = JSON.parse(args)
       const date = _args.shift()
       const st = {}
       _args.forEach((element) => {
-        if (!!element){
+        if (!!element) {
           const JS = JSON.parse(element)
           st[JS.cellID] = JS
         }
       })
       _this.data = st
 
-      _this.board.update()    
+      _this.board.update()
     }
     save() {
       console.log("{state}.save()")
