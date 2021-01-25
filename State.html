@@ -93,8 +93,14 @@
       // }
     }
     removePax(pax) {
-      for (const [key, value] of Object.entries(pax)) {
-        console.log("Key %o Val %o",key,value)
+      for (const p in pax) {
+        for (const key in this.data) {
+          for (const k in this.data[key].passengers) {
+            if (pax[p].barcode == this.data[key].passengers[k].barcode) {
+              delete this.data[key].passengers[k]
+            }
+          }
+        }
       }
     }
     getState() {
