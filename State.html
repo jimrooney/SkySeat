@@ -102,6 +102,16 @@
           }
         }
       }
+      this.clearEmpties()
+      this.board.update()
+    }
+    clearEmpties(){
+      for (const key in this.data) {
+        let arry = this.data[key].passengers.filter(n => n) 
+          if (arry.length<1 && !this.data[key].PCF){
+            delete this.data[key]
+          }
+        }
     }
     getState() {
       return this
