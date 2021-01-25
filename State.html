@@ -92,6 +92,11 @@
       //   $cell.data("_script").clear()
       // }
     }
+    removePax(pax){
+      for (let cell in this.data){
+        console.log("{state} Cell: %o Pax: %o",cell,pax)
+      }
+    }
     getState() {
       return this
     }

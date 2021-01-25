@@ -2,40 +2,47 @@
 	class Trash {
 		constructor(caller){
 			this.caller = caller
+			this._this = this // keep a reference to this JS object (self reference)
+			//
+			let $this = $('<div class="Trash">&#9851;</div>', {
+        class: `Trash`,
+        id: this.id,
+				//onClick: root.trash.removeBooking(),
+      })
+			// -------------------------------------------
+      // Backreference
+      // -------------------------------------------
+      .data("_script", this) // Backreference to JS from jQuery object
+      // -------------------------------------------
+      // Droppable
+      // -------------------------------------------
+      .droppable({
+        accept: ".BookingSprite, .TableCell",
+        drop: this.handleDrop,
+        delay: 100, // Might not need this now *******************
+      })
+			this.$this = $this // keep a reference to the jQuery object
+			return $this
 		}
 		get parent(){
-			return this.caller.root
-		}
-		init(){
-			$(".Trash").droppable({
-        greedy: true,
-        accept: ".BookingSprite, .TableCell",
-        hoverClass: "hovered",
-        drop: this.handleDrop,
-      })
+			return this.caller
 		}
 		removeBooking(booking){
 			this.parent.boards.forEach(board => {
 				console.log("Trash Board: %o",board)
 			})
 		}
+		removePax(pax){
+			this.parent.boards.forEach(board => {
+				board.state.removePax(pax)
+			})
+		}
 		handleDrop(event, ui){
+			const _this = $(this).data("_script") // This JS Object
         // ignore blank drops
 				const pax = ui.draggable.data("_script").getPax()
 				if (!!pax) { // Plottable
-					console.log("Trash Has Pax: %o",pax)
-        
-					//
-					// Next, go through all boards and States and remove the Pax
-					//
-
-
-				//this.removeBooking()
-
-				//
-				// From TableCell drop... *********************
-				//
-				// _dropped.board.state.removeOrder($dropped)
+					_this.removePax(pax)
       }
 		}
 	}

@@ -146,6 +146,8 @@
       $(document).ready(function () {
         $("body").append(new Details(root))
         Events.init() // for Mobile Click
+
+        $("#TrashHolder").append(new Trash(root))
       })
 
       // --------------------------------- OnLoad --------------------------------------------------
@@ -204,7 +206,7 @@
         </div>
         <div>
           <button onClick="theBoard.load()">&#10226;</button><br />
-          <div class="Trash" onClick="root.trash.removeBooking()">&#9851;</div>
+          <div id="TrashHolder"></div>
         </div>
       </div>
       <!-- Popups -->
@@ -224,7 +226,6 @@
   </body>
 </html>
 <script>
-  root.trash.init()
   const isIOS =
     /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
   root.vars = {
