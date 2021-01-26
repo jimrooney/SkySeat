@@ -94,7 +94,21 @@
         get duration() {
           const a = new Date(this.start.time)
           const b = new Date(this.stop.time)
-          return Math.floor((b - a) / 36e5) - 1 // 36e5 scientific notation for 3600000
+          const diff = new Date(b - a)
+          const d = Math.floor((b - a) / 36e5) // 36e5 scientific notation for 3600000
+          let ret
+
+          if ( d < 1){
+            ret = 0
+          }
+          if (d == 1){
+            ret = 1
+          }
+          if (d > 1){
+            ret = d - 1
+          }
+
+          return ret 
         },
         set duration(value) {
           // placeholder
