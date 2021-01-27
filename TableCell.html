@@ -146,14 +146,15 @@
         //
         // === Update ===
         //
-        _this.board.update() // board.update() calls update() on each TableCell.
         _this.removeBookings(ui, _this)
+
         $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
       } else {
         let msg = "Wrong Type: DroppedIsOut" + _dropped.leg + " CellLeg: " + _this.leg
         utility.error(msg)
         console.log("Error: %o", msg)
       }
+      _this.board.update() // board.update() calls update() on each TableCell.
     }
     addPax(pax, leg) {
       // handles both {pax} or [passengers]
@@ -409,14 +410,14 @@
         }
 
         let codes = []
+        let numPax = 0
         for (const a in cellData.passengers) {
           const pax = cellData.passengers[a].fields
           const pc = pax.find((item) => item.label === "productCode").value
           codes = [...new Set([...codes, ...[pc]])]
+          numPax++
         }
         const GYACodes = codes.map((c) => gya.getProduct(c).GYACode)
-        const numPax = cellData.passengers.length
-        //const codes = "TMP"
         $this.html(`(${numPax})  ${GYACodes.join("<BR>")}`)
         $this.draggable({
           //revert: true,

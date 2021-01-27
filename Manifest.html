@@ -324,16 +324,19 @@
     }
     getItem(barcode) {
       let ret
-      this.orders.forEach((order) => {
-        let found = order.items.find((item) =>
-          item.participants.find((part) =>
-            part.fields.find((field) => field.label == "Barcode" && field.value == barcode)
+      if (!!this.orders) {
+        this.orders.forEach((order) => {
+          let found = order.items.find((item) =>
+            item.participants.find((part) =>
+              part.fields.find((field) => field.label == "Barcode" && field.value == barcode)
+            )
           )
-        )
-        if (!!found){
-          ret = found
-        }
-      })
+          if (!!found) {
+            ret = found
+          }
+        })
+      }
+
       return ret
     }
     getOrder(orderNumber) {
