@@ -109,8 +109,8 @@
       const list = ui.draggable.data("_script").getPax() // From Manifest
       const droppedPaxList = list.filter((px) => _dropped.board.manifest.getBooking(px))
       //
-      console.log("_this  %o",_this)
-      console.log("_dropped %o",_dropped)
+      console.log("_this  %o", _this)
+      console.log("_dropped %o", _dropped)
 
       console.log("LegalDrop: %o", _this.isLegalDrop(_this.leg, _dropped.leg))
       //
@@ -126,20 +126,42 @@
         // Plot Out Legs
         // --------------
         droppedPaxList.forEach((pax) => {
-          const $target = _this.board.$this.find(`.${_this.row + pax.times.duration}_${_this.column}`)
-          const $oldPlot = _dropped.board.$this.find(`.${_dropped.row + pax.times.duration}_${_dropped.column}`)
           if (_dropped.leg == "A" || _dropped.leg == null) {
-            // Plot Out Leg
+            // B legs don't need this
+            console.log("Plotting out leg Pax: %o", pax)
+            const $target = _this.board.$this.find(`.${_this.row + pax.times.duration}_${_this.column}`)
             const _target = $target.data("_script")
-            const _oldPlot = $oldPlot.data("_script")
-            if (!!_target)
-            {
+            if (!!_target) {
               _target._this.addPax(pax, "B")
-              _target.board.update()
-              if (!!_oldPlot){
-                _oldPlot._this.removePax(pax)
-                _oldPlot.board.update()
+              //
+              // Cleanup
+              //
+              if (!!_dropped.row) {
+                // Manifest drops won't have rows
+                const oldPlotId = `${_dropped.row + pax.times.duration}_${_dropped.column}`
+                const oldData = _dropped.board.state.data//.manifest.state.data[oldPlotId]
+                oldData[oldPlotId].passengers.forEach((px,index) => {
+                  if (px.barcode == pax.barcode){
+                    delete oldData[oldPlotId].passengers[index]
+                  }
+                })
+
+                // const $oldPlot = _dropped.board.$this.find(`.${oldPlotId}`)
+                // const _oldPlot = $oldPlot.data("_script")
+                // // Also find the old plot in the State
+                // console.log("oldPlotId: %o", oldPlotId)
+                // _oldPlot._this.removePax(pax)
+                // _oldPlot.board.update()
+
+
+
+
+
+
+
+                
               }
+              _target.board.update()
             }
           }
         })
@@ -173,7 +195,7 @@
       return cellData
     }
     removePax(pax) {
-      this.board.state.removeOrder(this.$this,pax.barcode)
+      this.board.state.removePax(pax)
     }
     removeBookings(ui, _this) {
       $(ui.helper).remove()
@@ -194,8 +216,8 @@
     // isLegalDrop
     // -------------------------------------------------------------------
     isLegalDrop(cellLeg, droppedLeg) {
-      console.log("CellLeg: %o",cellLeg)
-      console.log("Dropped Leg: %o",droppedLeg)
+      console.log("CellLeg: %o", cellLeg)
+      console.log("Dropped Leg: %o", droppedLeg)
       /*
       Cell hasn't been branded = legal // can be either
       Cell matches drop = legal

@@ -93,15 +93,15 @@
       // }
     }
     removePax(pax) {
-      for (const p in pax) {
+      console.log("RemovePax: %o",pax)
         for (const key in this.data) {
           for (const k in this.data[key].passengers) {
-            if (pax[p].barcode == this.data[key].passengers[k].barcode) {
+            if (pax.barcode == this.data[key].passengers[k].barcode) {
+              console.log("RemovePax: %o",pax.barcode)
               delete this.data[key].passengers[k]
             }
           }
         }
-      }
       this.clearEmpties()
       this.board.update()
     }
