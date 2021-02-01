@@ -128,7 +128,6 @@
         droppedPaxList.forEach((pax) => {
           if (_dropped.leg == "A" || _dropped.leg == null) {
             // B legs don't need this
-            console.log("Plotting out leg Pax: %o", pax)
             const $target = _this.board.$this.find(`.${_this.row + pax.times.duration}_${_this.column}`)
             const _target = $target.data("_script")
             if (!!_target) {
@@ -139,27 +138,15 @@
               if (!!_dropped.row) {
                 // Manifest drops won't have rows
                 const oldPlotId = `${_dropped.row + pax.times.duration}_${_dropped.column}`
-                const oldData = _dropped.board.state.data//.manifest.state.data[oldPlotId]
-                oldData[oldPlotId].passengers.forEach((px,index) => {
-                  if (px.barcode == pax.barcode){
-                    delete oldData[oldPlotId].passengers[index]
-                  }
-                })
-
-                // const $oldPlot = _dropped.board.$this.find(`.${oldPlotId}`)
-                // const _oldPlot = $oldPlot.data("_script")
-                // // Also find the old plot in the State
-                // console.log("oldPlotId: %o", oldPlotId)
-                // _oldPlot._this.removePax(pax)
-                // _oldPlot.board.update()
-
-
-
-
-
-
-
-                
+                const oldData = _dropped.board.state.data //.manifest.state.data[oldPlotId]
+                if (!!oldData[oldPlotId]) {
+                  oldData[oldPlotId].passengers.forEach((px, index) => {
+                    if (px.barcode == pax.barcode) {
+                      oldData[oldPlotId].passengers.splice(index, 1)
+                    }
+                  })
+                }
+                _dropped.board.update()
               }
               _target.board.update()
             }
