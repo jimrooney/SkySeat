@@ -92,26 +92,28 @@
       //   $cell.data("_script").clear()
       // }
     }
-    removePax(pax) {
-      console.log("RemovePax: %o",pax)
-        for (const key in this.data) {
-          for (const k in this.data[key].passengers) {
-            if (pax.barcode == this.data[key].passengers[k].barcode) {
-              console.log("RemovePax: %o",pax.barcode)
-              delete this.data[key].passengers[k]
-            }
+    removePax(paxList) {
+      if (!!paxList.length) { // require an array be passed in
+        paxList.forEach((pax) => {
+          for (const key in this.data) {
+            this.data[key].passengers.forEach((p, index) => {
+              if (pax.barcode == this.data[key].passengers[index].barcode) {
+                this.data[key].passengers.splice(index, 1)
+              }
+            })
           }
-        }
-      this.clearEmpties()
-      this.board.update()
+        })
+        this.clearEmpties()
+        this.board.update()
+      }
     }
-    clearEmpties(){
+    clearEmpties() {
       for (const key in this.data) {
-        let arry = this.data[key].passengers.filter(n => n) 
-          if (arry.length<1 && !this.data[key].PCF){
-            delete this.data[key]
-          }
+        let arry = this.data[key].passengers.filter((n) => n)
+        if (arry.length < 1 && !this.data[key].PCF) {
+          delete this.data[key]
         }
+      }
     }
     getState() {
       return this
