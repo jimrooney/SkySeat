@@ -52,7 +52,12 @@
       this.setValue("Last Name", name)
     }
     get barcode() {
-      return this.getValue("Barcode")
+      let code = this.getValue("Barcode")
+      if (!code){
+        code = this.orderNumber + "*" + this.firstName + "_" + this.lastName
+        this.fields.push({label:"Barcode", value: code})
+      }
+      return code
     }
     set barcode(Barcode) {
       this.setValue("Barcode", Barcode)

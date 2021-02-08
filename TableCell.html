@@ -112,7 +112,7 @@
       console.log("_this  %o", _this)
       console.log("_dropped %o", _dropped)
 
-      console.log("LegalDrop: %o", _this.isLegalDrop(_this.leg, _dropped.leg))
+      console.log("droppedPaxList: %o", droppedPaxList)
       //
       if (_this.isLegalDrop(_this.leg, _dropped.leg)) {
         // ------------
@@ -127,6 +127,7 @@
         // --------------
         droppedPaxList.forEach((pax) => {
           if (_dropped.leg == "A" || _dropped.leg == null) {
+            console.log("Plotting Pax: ",pax)
             // B legs don't need this
             const $target = _this.board.$this.find(`.${_this.row + pax.times.duration}_${_this.column}`)
             const _target = $target.data("_script")
