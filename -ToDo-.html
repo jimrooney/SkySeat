@@ -9,7 +9,15 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 Currently
 -------------------------------
 
+In TableCell... 
+// Need to adjust to look at out row... so _dropped.row + pax.times.duration ********
+Only plot out if this either returns true or if it's a manifest drop -^
+
+Moving booking not cleaning up out legs correctly (they stay branded as ins or outs)
+
 Add Item # to Barcode if barcode is missing. (in {pax})
+Look at moving GYA codes into Rezdy... will require GYA code to be formatted into the description (which it's already supposed to be)
+  and an extra server request (maybe) to load the trip route
 
 Plotting "out" legs (Leg B)
 Look into "delete" being used where splice should be (won't need the cleanup routines)

@@ -60,6 +60,10 @@
       return code
     }
     set barcode(Barcode) {
+      if (!this.barcode){
+        this.fields.push({label:"Barcode", value: Barcode})
+        return
+      }
       this.setValue("Barcode", Barcode)
     }
     get orderNumber() {

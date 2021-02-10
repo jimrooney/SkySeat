@@ -253,11 +253,13 @@
     filterByDate(orders, date) {
       let _date = date
       return orders
-        .filter((element) =>
-          element.items.some((subElement) => {
-            return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
-          })
-        )
+        .filter((element) => {
+          if (element.items) {
+            return element.items.some((subElement) => {
+              return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
+            })
+          }
+        })
         .map((element) => {
           let newElt = Object.assign({}, element) // copies element
           newElt.items = newElt.items.filter((subElement) => {

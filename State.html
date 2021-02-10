@@ -93,7 +93,8 @@
       // }
     }
     removePax(paxList) {
-      if (!!paxList.length) { // require an array be passed in
+      if (!!paxList.length) {
+        // require an array be passed in
         paxList.forEach((pax) => {
           for (const key in this.data) {
             this.data[key].passengers.forEach((p, index) => {
@@ -127,17 +128,18 @@
     }
     onLoad(args, _this) {
       const _args = JSON.parse(args)
-      const date = _args.shift()
-      const st = {}
-      _args.forEach((element) => {
-        if (!!element) {
-          const JS = JSON.parse(element)
-          st[JS.cellID] = JS
-        }
-      })
-      _this.data = st
-
-      _this.board.update()
+      if (!!_args) {
+        const date = _args.shift()
+        const st = {}
+        _args.forEach((element) => {
+          if (!!element) {
+            const JS = JSON.parse(element)
+            st[JS.cellID] = JS
+          }
+        })
+        _this.data = st
+        _this.board.update()
+      }
     }
     save() {
       console.log("{state}.save()")
