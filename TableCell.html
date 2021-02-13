@@ -134,9 +134,12 @@
             if (!!_dropped.row) {
               // Need to adjust to look at out row... so _dropped.row + pax.times.duration ********
               const $oldOut = _this.board.$this.find(`.${_dropped.row + pax.times.duration}_${_dropped.column}`)
-              // if ($oldOut.data("_script")._this.pax.some((p) => p.barcode === pax.barcode)) {
-              //   console.log("Dropped Pax Match")
-              // }
+              const _oldOut = $oldOut.data("_script")
+
+              console.log("OldOut: %o",_oldOut)
+              if (!!$oldOut.data("_script")._this.pax && $oldOut.data("_script")._this.pax.some((p) => p.barcode === pax.barcode)) {
+                console.log("Dropped Pax Match")
+              }
             }
 
             const $target = _this.board.$this.find(`.${_this.row + pax.times.duration}_${_this.column}`)
@@ -174,6 +177,7 @@
         utility.error(msg)
         console.log("Error: %o", msg)
       }
+      _this.board.state.clearEmpties()
       _this.board.update() // board.update() calls update() on each TableCell.
     }
     addPax(pax, leg) {

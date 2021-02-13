@@ -9,11 +9,15 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 Currently
 -------------------------------
 
+After drops, have the State clean itself... no bookings?->remove the {}
+
 In TableCell... 
 // Need to adjust to look at out row... so _dropped.row + pax.times.duration ********
 Only plot out if this either returns true or if it's a manifest drop -^
 
 Moving booking not cleaning up out legs correctly (they stay branded as ins or outs)
+
+In Order.feilds there can be a dropoff address (Outs in particular)... unfortunately this is attached to the order, not the item.
 
 Add Item # to Barcode if barcode is missing. (in {pax})
 Look at moving GYA codes into Rezdy... will require GYA code to be formatted into the description (which it's already supposed to be)
