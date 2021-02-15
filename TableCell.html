@@ -128,25 +128,16 @@
         droppedPaxList.forEach((pax) => {
           if (_dropped.leg == "A" || _dropped.leg == null) {
             let plotOut = true
-
             if (!!_dropped.row) { // if TableCell drop (not manifest)
               const $sourceOut = _this.board.$this.find(`.${_dropped.row + pax.times.duration}_${_dropped.column}`)
               const _sourceOut = $sourceOut.data("_script")
-
-              
               const cellList = _this.board.state.getPaxCells(pax,"B")
-              if (cellList.length>0){
+              if (!cellList.includes(_sourceOut.id)){
                 plotOut = false
               }
-              console.log("Plotted Cells: %o",cellList)
-              console.log("SourceOut.id: %o",_sourceOut.id)
-
-              
-              console.log("Linked Drop: %o",cellList.includes(_sourceOut.id))
-
-              if (!!$sourceOut.data("_script")._this.pax && $sourceOut.data("_script")._this.pax.some((p) => p.barcode === pax.barcode)) {
-                console.log("Dropped Pax Match")
-              }
+              // if (!!$sourceOut.data("_script")._this.pax && $sourceOut.data("_script")._this.pax.some((p) => p.barcode === pax.barcode)) {
+              //   console.log("Dropped Pax Match")
+              // }
             }
 
             const $target = _this.board.$this.find(`.${_this.row + pax.times.duration}_${_this.column}`)
