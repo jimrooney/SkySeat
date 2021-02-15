@@ -9,9 +9,21 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 Currently
 -------------------------------
 
-After drops, have the State clean itself... no bookings?->remove the {}
 
-In TableCell... 
+
+In TableCell...
+//
+// Check first to see if the out leg is already plotted.... *******
+//
+So... look at the {state} and see if any B legs {CellData} contain the barcode... if not, then plot it.
+If anything returns positive, the booking's B leg is plotted and moved, so don't plot it.
+Make sure the old B leg is removed first (it should be).. if it's not removed first, it can be checked against 
+since the old CellData cell is a known cell.
+
+When placing an IN, also clear those barcodes from the board first
+Moving a loaded IN doesn't move it's out.
+
+
 // Need to adjust to look at out row... so _dropped.row + pax.times.duration ********
 Only plot out if this either returns true or if it's a manifest drop -^
 

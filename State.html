@@ -92,6 +92,19 @@
       //   $cell.data("_script").clear()
       // }
     }
+    containsPax(pax) {} //
+    getPaxCells(pax, leg) {
+      // return a list of [{CellData}] for any cells with that barcode/pax
+      let ret = []
+      for (const key in this.data) {
+        this.data[key].passengers.forEach((p, index) => {
+          if (pax.barcode === this.data[key].passengers[index].barcode && leg == this.data[key].leg) {
+            ret.push(key)
+          }
+        })
+      }
+      return ret
+    }
     removePax(paxList) {
       if (!!paxList.length) {
         // require an array be passed in

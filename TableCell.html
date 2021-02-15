@@ -107,12 +107,7 @@
       //
       const _this = $(this).data("_script") // This JS Object
       const list = ui.draggable.data("_script").getPax() // From Manifest
-      const droppedPaxList = list.filter((px) => _dropped.board.manifest.getBooking(px))
-      //
-      console.log("_this  %o", _this)
-      console.log("_dropped %o", _dropped)
-
-      console.log("droppedPaxList: %o", droppedPaxList)
+      const droppedPaxList = list.filter((px) => _dropped.board.manifest.getBooking(px)) // [{Pax}{Pax}]
       //
       if (_this.isLegalDrop(_this.leg, _dropped.leg)) {
         // ------------
@@ -125,18 +120,22 @@
         // --------------
         // Plot Out Legs
         // --------------
+        //
+        //
+        // Check first to see if the out leg is already plotted.... *******
+        //
+        //
         droppedPaxList.forEach((pax) => {
           if (_dropped.leg == "A" || _dropped.leg == null) {
-            console.log("Plotting Pax: ", pax)
-            console.log("Plotting from Dropped: %o", _dropped)
-            // B legs don't need this
+            if (!!_dropped.row) { // if TableCell drop (not manifest)
+              
+              const cellList = _this.board.state.getPaxCells(pax,"B")
+              console.log("Plotted Cells: %o",cellList)
+              console.log("ThisID: %o",$(this).prop("id"))
 
-            if (!!_dropped.row) {
               // Need to adjust to look at out row... so _dropped.row + pax.times.duration ********
               const $oldOut = _this.board.$this.find(`.${_dropped.row + pax.times.duration}_${_dropped.column}`)
               const _oldOut = $oldOut.data("_script")
-
-              console.log("OldOut: %o",_oldOut)
               if (!!$oldOut.data("_script")._this.pax && $oldOut.data("_script")._this.pax.some((p) => p.barcode === pax.barcode)) {
                 console.log("Dropped Pax Match")
               }
