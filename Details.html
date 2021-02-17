@@ -12,7 +12,78 @@
       this.root = root
       this._this = this
       this.bookings = []
+      this.name = "Details"
       const _this = this
+
+      this.Pax = class {
+        constructor(pax, index) {
+          console.log("PAX: %o", pax)
+          this.name = "Pax"
+          if (!pax) {
+            return
+          }
+          let bgColors = {}
+          let colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
+
+          const firstName = pax.firstName
+          const weight = pax.weight
+          const orderNumber = pax.orderNumber
+          const barcode = pax.barcode
+
+          let $pax = $(
+            `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
+          )
+            //.data("number", p)
+            .data("seat", index)
+            .data("booking", orderNumber)
+            .data("pax", pax.fields)
+            .data("_pax", pax)
+            .attr("id", "pax" + index)
+            .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
+            .addClass("Pax")
+            .draggable({
+              containment: "#detailsDiv",
+              stack: "#PassengerList div",
+              cursor: "move",
+              revert: true,
+              start: function (evt, ui) {
+                this.startPos = ui.helper.position()
+              },
+              stop: function (event, ui) {
+                _this.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
+                let $station = $(this).closest(".station")
+                if ($station.length > 0) {
+                  ui.helper.position({ of: $station, my: "left top", at: "left top" })
+                }
+              },
+            })
+            .click(() => {
+              console.log("Pax Click")
+              //console.log("Item: %o", root.getItem(barcode))
+            })
+
+          let hue
+          if (bgColors[orderNumber]) {
+            hue = bgColors[orderNumber]
+          } else {
+            hue = colorNumbers.pop()
+            bgColors[orderNumber] = hue
+          }
+          $pax.css("background-color", hue)
+
+          if (!!firstName && firstName.length >= 7) {
+            $pax.css("font-size", "8px")
+          }
+          return $pax
+        }
+        echo() {
+          console.log("I am %o", this.name)
+        }
+      }
+
+      this.b = new this.Pax()
+      this.b.echo()
+
       this._TableCell = ""
       this.airplane // placholder (gets built in reset())
 
@@ -471,10 +542,6 @@
       // ===========================================
       // -------------- Passengers -----------------
       // ===========================================
-
-      let bgColors = {}
-      let colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
-
       passengers.forEach((p, index) => {
         let pax = new Pax(p)
         const firstName = pax.getValue("First Name")
@@ -482,51 +549,7 @@
         const orderNumber = pax.getValue("orderNumber")
         const barcode = pax.getValue("Barcode")
 
-        let $pax = $(
-          `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
-        )
-          .data("number", p)
-          .data("seat", index)
-          .data("booking", orderNumber)
-          .data("pax", pax.fields)
-          .data("_pax", pax)
-          .attr("id", "pax" + index)
-          .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
-          .addClass("Pax")
-          .draggable({
-            containment: "#detailsDiv",
-            stack: "#PassengerList div",
-            cursor: "move",
-            revert: true,
-            start: function (evt, ui) {
-              this.startPos = ui.helper.position()
-            },
-            stop: function (event, ui) {
-              _this.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
-              let $station = $(this).closest(".station")
-              if ($station.length > 0) {
-                ui.helper.position({ of: $station, my: "left top", at: "left top" })
-              }
-            },
-          })
-          .click(() => {
-            console.log("Pax Click")
-            console.log("Item: %o",root.getItem(barcode))
-            
-          })
-
-        let hue
-        if (bgColors[orderNumber]) {
-          hue = bgColors[orderNumber]
-        } else {
-          hue = colorNumbers.pop()
-          bgColors[orderNumber] = hue
-        }
-        $pax.css("background-color", hue)
-
-        if (!!firstName && firstName.length >= 7) {
-          $pax.css("font-size", "8px")
-        }
+        let $pax = new this.Pax(pax, index)
       })
 
       if (visible) {

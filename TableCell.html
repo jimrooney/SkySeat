@@ -109,30 +109,26 @@
       const list = ui.draggable.data("_script").getPax() // From Manifest
       const droppedPaxList = list.filter((px) => _dropped.board.manifest.getBooking(px)) // [{Pax}{Pax}]
       //
+      // ------------
+      // Record Drop
+      // ------------
       if (_this.isLegalDrop(_this.leg, _dropped.leg)) {
-        // ------------
-        // Record Drop
-        // ------------
         // ---------------
         // Add Passengers
         // ---------------
         _this.addPax(droppedPaxList, _dropped.leg)
         // --------------
-        // Plot Out Legs
+        // Plot B Legs
         // --------------
-        //
-        //
-        // Check first to see if the out leg is already plotted.... *******
-        //
-        //
         droppedPaxList.forEach((pax) => {
-          if (_dropped.leg == "A" || _dropped.leg == null) {
+          if (_dropped.leg != "B") {
             let plotOut = true
-            if (!!_dropped.row) { // if TableCell drop (not manifest)
+            if (!!_dropped.row) {
+              // if TableCell drop (not manifest)
               const $sourceOut = _this.board.$this.find(`.${_dropped.row + pax.times.duration}_${_dropped.column}`)
               const _sourceOut = $sourceOut.data("_script")
-              const cellList = _this.board.state.getPaxCells(pax,"B")
-              if (!cellList.includes(_sourceOut.id)){
+              const cellList = _this.board.state.getPaxCells(pax, "B")
+              if (!cellList.includes(_sourceOut.id)) {
                 plotOut = false
               }
               // if (!!$sourceOut.data("_script")._this.pax && $sourceOut.data("_script")._this.pax.some((p) => p.barcode === pax.barcode)) {
@@ -216,8 +212,6 @@
     // isLegalDrop
     // -------------------------------------------------------------------
     isLegalDrop(cellLeg, droppedLeg) {
-      console.log("CellLeg: %o", cellLeg)
-      console.log("Dropped Leg: %o", droppedLeg)
       /*
       Cell hasn't been branded = legal // can be either
       Cell matches drop = legal

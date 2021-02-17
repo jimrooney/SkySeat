@@ -8,40 +8,17 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Currently
 -------------------------------
+Auto-Allocating passengers and seats.
+  Auto-Replotting pax seats when you open the details window.
+  We might want to display discrete seated Cells differently to show that they've been assigned.
 
 
-
-In TableCell...
-//
-// Check first to see if the out leg is already plotted.... *******
-//
-So... look at the {state} and see if any B legs {CellData} contain the barcode... if not, then plot it.
-If anything returns positive, the booking's B leg is plotted and moved, so don't plot it.
-Make sure the old B leg is removed first (it should be).. if it's not removed first, it can be checked against 
-since the old CellData cell is a known cell.
-
-When placing an IN, also clear those barcodes from the board first
-Moving a loaded IN doesn't move it's out.
-
-
-// Need to adjust to look at out row... so _dropped.row + pax.times.duration ********
-Only plot out if this either returns true or if it's a manifest drop -^
-
-Moving booking not cleaning up out legs correctly (they stay branded as ins or outs)
 
 In Order.feilds there can be a dropoff address (Outs in particular)... unfortunately this is attached to the order, not the item.
 
 Add Item # to Barcode if barcode is missing. (in {pax})
 Look at moving GYA codes into Rezdy... will require GYA code to be formatted into the description (which it's already supposed to be)
   and an extra server request (maybe) to load the trip route
-
-Plotting "out" legs (Leg B)
-Look into "delete" being used where splice should be (won't need the cleanup routines)
-When a cell is fully emptied, it should be removed (see above)... Cleanup mostly working... need to clear out zero'd cells
-Not all B legs plotting
-
-getDuration needs some more attention (Heli Hikes?)
-Need a way to split bookings.
 
 Add Route to Loadsheet (and flight following)
 Add Fuel Hours to Flight Following

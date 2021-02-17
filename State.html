@@ -98,7 +98,11 @@
       let ret = []
       for (const key in this.data) {
         this.data[key].passengers.forEach((p, index) => {
-          if (pax.barcode === this.data[key].passengers[index].barcode && leg == this.data[key].leg) {
+          let px = p
+          if (p.constructor.name != "Pax"){
+            px = new Pax(p)
+          }
+          if (pax.barcode === px.barcode && leg == this.data[key].leg) {
             ret.push(key)
           }
         })
