@@ -17,16 +17,12 @@
 
       this.Pax = class {
         constructor(pax, index, _type) {
-          console.log("PAX: %o", pax)
-
           this.name = _type
           if (!pax) {
             return
           }
           const list = `${_type}List` || "PaxList"
           console.log("List: %o",list)
-
-
 
           let bgColors = {}
           let colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
@@ -507,42 +503,46 @@
         const firstName = pax.firstName
         const weight = pax.weight
 
-        let $pax = $(
-          `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
-        )
-          //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
-          .data("seat", index)
-          .attr("id", "pax" + index)
-          .appendTo("#CrewList") // This places the object... can swap #PaxList for an assigned seat **********
-          .addClass("Pax")
-          .addClass("Crew")
-          .data("_pax", pax)
-          .data("pax", crew.fields)
-          .draggable({
-            containment: "#detailsDiv",
-            stack: "#CrewList div",
-            cursor: "move",
-            revert: true,
-            start: function (evt, ui) {
-              this.startPos = ui.helper.position()
-            },
-            stop: function (event, ui) {
-              _this.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
-              let $station = $(this).closest(".station")
-              if ($station.length > 0) {
-                ui.helper.position({ of: $station, my: "left top", at: "left top" })
-              }
-            },
-          })
+        let $pax = new this.Pax(pax, index,"Crew")
+        // return 
 
-        let hue = "lightblue"
-        $pax.css("background-color", hue)
+        // // Skipping...
+        // let $pax = $(
+        //   `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
+        // )
+        //   //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
+        //   .data("seat", index)
+        //   .attr("id", "pax" + index)
+        //   .appendTo("#CrewList") // This places the object... can swap #PaxList for an assigned seat **********
+        //   .addClass("Pax")
+        //   .addClass("Crew")
+        //   .data("_pax", pax)
+        //   .data("pax", crew.fields)
+        //   .draggable({
+        //     containment: "#detailsDiv",
+        //     stack: "#CrewList div",
+        //     cursor: "move",
+        //     revert: true,
+        //     start: function (evt, ui) {
+        //       this.startPos = ui.helper.position()
+        //     },
+        //     stop: function (event, ui) {
+        //       _this.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
+        //       let $station = $(this).closest(".station")
+        //       if ($station.length > 0) {
+        //         ui.helper.position({ of: $station, my: "left top", at: "left top" })
+        //       }
+        //     },
+        //   })
 
-        if (firstName.length >= 7) {
-          $pax.css("font-size", "8px")
-        }
+        // let hue = "lightblue"
+        // $pax.css("background-color", hue)
 
-        this.init() // initialize jQuery drag/drop code
+        // if (firstName.length >= 7) {
+        //   $pax.css("font-size", "8px")
+        // }
+
+        // 
       })
 
       // ===========================================
@@ -555,9 +555,9 @@
         const orderNumber = pax.getValue("orderNumber")
         const barcode = pax.getValue("Barcode")
 
-        let $pax = new this.Pax(pax, index,"Crew")
+        let $pax = new this.Pax(pax, index,"Pax")
       })
-
+      this.init() // initialize jQuery drag/drop code
       if (visible) {
         this.$root.hide()
       } else {
