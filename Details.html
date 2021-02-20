@@ -16,12 +16,18 @@
       const _this = this
 
       this.Pax = class {
-        constructor(pax, index) {
+        constructor(pax, index, _type) {
           console.log("PAX: %o", pax)
-          this.name = "Pax"
+
+          this.name = _type
           if (!pax) {
             return
           }
+          const list = `${_type}List` || "PaxList"
+          console.log("List: %o",list)
+
+
+
           let bgColors = {}
           let colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
 
@@ -38,12 +44,12 @@
             .data("booking", orderNumber)
             .data("pax", pax.fields)
             .data("_pax", pax)
-            .attr("id", "pax" + index)
-            .appendTo("#PassengerList") // This places the object... can swap #PassengerList for an assigned seat **********
+            .attr("id", `${list}${index}`)
+            .appendTo(`#${list}`) // This places the object... can swap #PaxList for an assigned seat **********
             .addClass("Pax")
             .draggable({
               containment: "#detailsDiv",
-              stack: "#PassengerList div",
+              stack: "#PaxList div",
               cursor: "move",
               revert: true,
               start: function (evt, ui) {
@@ -93,7 +99,7 @@
         <div id="detailsContents" class="detailsContents">
           <div id="content" style="width: 100%; overflow: hidden;">
             <div id="Airplane" class="grid-container Airplane"></div>
-            <div id="PassengerList" class="PassengerList"></div>
+            <div id="PaxList" class="PaxList"></div>
             <div id="CargoPod" class="CargoPod">POD</div>
           </div>
           <div id="CrewList" class="CrewList"></div>
@@ -157,7 +163,7 @@
         hoverClass: "hovered",
         drop: this.handleDrop,
       })
-      $(".PassengerList").droppable({
+      $(".PaxList").droppable({
         accept: ".Pax",
         hoverClass: "hovered",
         drop: this.removePax,
@@ -185,7 +191,7 @@
       //
       // Add baggage removal code here ***
       //
-      let $source = $(".PassengerList")
+      let $source = $(".PaxList")
       if (ui.draggable.attr("class").includes("Crew")) {
         $source = $(".CrewList")
       }
@@ -202,7 +208,7 @@
       this.$PCFSelector.remove()
       this.$PCFSelector = $(this.PCFSelectorString)
       this.$root.prepend(this.$PCFSelector)
-      $("#PassengerList").empty()
+      $("#PaxList").empty()
       $("#CrewList").empty()
       $("#CargoPod").empty()
       //
@@ -355,7 +361,7 @@
           //
           // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
           //
-          $thisPax.appendTo($("#PassengerList"))
+          $thisPax.appendTo($("#PaxList"))
         }
       }
       $newPax.appendTo($(this))
@@ -507,7 +513,7 @@
           //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
           .data("seat", index)
           .attr("id", "pax" + index)
-          .appendTo("#CrewList") // This places the object... can swap #PassengerList for an assigned seat **********
+          .appendTo("#CrewList") // This places the object... can swap #PaxList for an assigned seat **********
           .addClass("Pax")
           .addClass("Crew")
           .data("_pax", pax)
@@ -543,13 +549,13 @@
       // -------------- Passengers -----------------
       // ===========================================
       passengers.forEach((p, index) => {
-        let pax = new Pax(p)
+        let pax = new Pax(p,index)
         const firstName = pax.getValue("First Name")
         const weight = pax.weight
         const orderNumber = pax.getValue("orderNumber")
         const barcode = pax.getValue("Barcode")
 
-        let $pax = new this.Pax(pax, index)
+        let $pax = new this.Pax(pax, index,"Crew")
       })
 
       if (visible) {
