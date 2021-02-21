@@ -11,20 +11,23 @@
     constructor(root) {
       this.root = root
       this._this = this
+      const _this = this
       this.bookings = []
       this.name = "Details"
-      const _this = this
-
+      this.bgColors = {}
+      this.colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
+      //
       this.Pax = class {
-        constructor(pax, index, _type) {
-          this.name = _type
+        constructor(parent, pax, _type) {
           if (!pax) {
             return
           }
-          const list = `${_type}List` || "PaxList"
-          let bgColors = {}
-          let colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
+          console.log("parent: %o",parent)
 
+          const index = parent.index || 0
+          this.name = _type
+          const _this = parent
+          const list = `${_type}List` || "PaxList"
           const firstName = pax.firstName
           const weight = pax.weight
           const orderNumber = pax.orderNumber
@@ -64,11 +67,11 @@
             })
 
           let hue
-          if (bgColors[orderNumber]) {
-            hue = bgColors[orderNumber]
+          if (parent.bgColors[orderNumber]) {
+            hue = parent.bgColors[orderNumber]
           } else {
-            hue = colorNumbers.pop()
-            bgColors[orderNumber] = hue
+            hue = parent.colorNumbers.pop()
+            parent.bgColors[orderNumber] = hue
           }
           $pax.css("background-color", hue)
 
@@ -81,10 +84,6 @@
           console.log("I am %o", this.name)
         }
       }
-
-      this.b = new this.Pax()
-      this.b.echo()
-
       this._TableCell = ""
       this.airplane // placholder (gets built in reset())
 
@@ -501,8 +500,9 @@
         let pax = new Pax(crew)
         const firstName = pax.firstName
         const weight = pax.weight
+       
 
-        let $pax = new this.Pax(pax, index,"Crew")
+        let $pax = new this.Pax(_this, pax,"Crew")
         // return 
 
         // // Skipping...
@@ -554,7 +554,7 @@
         const orderNumber = pax.getValue("orderNumber")
         const barcode = pax.getValue("Barcode")
 
-        let $pax = new this.Pax(pax, index,"Pax")
+        let $pax = new this.Pax(this,pax,"Pax")
       })
       this.init() // initialize jQuery drag/drop code
       if (visible) {
