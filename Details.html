@@ -22,8 +22,6 @@
             return
           }
           const list = `${_type}List` || "PaxList"
-          console.log("List: %o",list)
-
           let bgColors = {}
           let colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
 
@@ -41,11 +39,12 @@
             .data("pax", pax.fields)
             .data("_pax", pax)
             .attr("id", `${list}${index}`)
-            .appendTo(`#${list}`) // This places the object... can swap #PaxList for an assigned seat **********
+            .appendTo(`#${list}`) // This places the object
             .addClass("Pax")
+            .addClass(_type)
             .draggable({
               containment: "#detailsDiv",
-              stack: "#PaxList div",
+              stack: `#${list} div`,
               cursor: "move",
               revert: true,
               start: function (evt, ui) {
