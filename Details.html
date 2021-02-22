@@ -22,8 +22,6 @@
           if (!pax) {
             return
           }
-          console.log("parent: %o",parent)
-
           const index = parent.index || 0
           this.name = _type
           const _this = parent
@@ -369,18 +367,23 @@
       //
       // Loads plane based on Details ".station" classes
       //
-      let loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
-      let WB = loadedPlane.getWB()
-
-      console.log("{loadedPlane}", loadedPlane)
-      console.log("{getWB}", WB)
-
+      const loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
+      const WB = loadedPlane.getWB()
       const report = this.$root.find(".Report")
       const color = WB.cg.balanced ? "blue" : "red"
-
+      //
+      // Update the "red/notRed" report bar above the seats
+      //
+      report.prop("loadedPlane", loadedPlane)
+      report.click(() => {
+        console.log("Loaded Plane: %o", loadedPlane)
+        console.log("WB: %o", WB)
+      })
       report.css("background-color", color)
       report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
-
+      //
+      // Return the loadedPlane
+      //
       return loadedPlane
     }
     // =============== Workaround for that stupid position bug ========================
@@ -500,10 +503,9 @@
         let pax = new Pax(crew)
         const firstName = pax.firstName
         const weight = pax.weight
-       
 
-        let $pax = new this.Pax(_this, pax,"Crew")
-        // return 
+        let $pax = new this.Pax(_this, pax, "Crew")
+        // return
 
         // // Skipping...
         // let $pax = $(
@@ -541,20 +543,20 @@
         //   $pax.css("font-size", "8px")
         // }
 
-        // 
+        //
       })
 
       // ===========================================
       // -------------- Passengers -----------------
       // ===========================================
       passengers.forEach((p, index) => {
-        let pax = new Pax(p,index)
+        let pax = new Pax(p, index)
         const firstName = pax.getValue("First Name")
         const weight = pax.weight
         const orderNumber = pax.getValue("orderNumber")
         const barcode = pax.getValue("Barcode")
 
-        let $pax = new this.Pax(this,pax,"Pax")
+        let $pax = new this.Pax(this, pax, "Pax")
       })
       this.init() // initialize jQuery drag/drop code
       if (visible) {
