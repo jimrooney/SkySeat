@@ -11,6 +11,7 @@
     constructor(root) {
       this.root = root
       this._this = this
+      this.count = 0
       const _this = this
       this.bookings = []
       this.name = "Details"
@@ -22,7 +23,8 @@
           if (!pax) {
             return
           }
-          const index = parent.index || 0
+          const index = parent.count || 0
+          parent.count++
           this.name = _type
           const _this = parent
           const list = `${_type}List` || "PaxList"
@@ -39,7 +41,7 @@
             .data("booking", orderNumber)
             .data("pax", pax.fields)
             .data("_pax", pax)
-            .attr("id", `${list}${index}`)
+            .attr("id", `${_type}${index}`)
             .appendTo(`#${list}`) // This places the object
             .addClass("Pax")
             .addClass(_type)
@@ -59,9 +61,32 @@
                 }
               },
             })
-            .click(() => {
+            .click( function () {
               console.log("Pax Click")
-              //console.log("Item: %o", root.getItem(barcode))
+              $(`#SeatNumber${pax.seat}`).css("background", "red")
+
+              console.log("This: %o",$(this))
+              console.log("Seat: %o",pax.seat)
+              console.log("$seat: %o",$(`#SeatNumber${pax.seat}`))
+              console.log("fields: %o",pax.fields)
+
+
+              _this.seatPax()
+//              parent.assignSeat($(`#SeatNumber${pax.seat}`), $(this), pax.fields)
+
+          // seat pax
+
+          // $pax.draggable({ revert: false })
+          // //$pax.position({ of: $(`#SeatNumber${pax.seat}`), my: "left top", at: "left top" })
+          // $pax.position({
+          //   my: "left top",
+          //   at: "left top",
+          //   of: `#SeatNumber${pax.seat}`,
+          // })
+          // $pax.data("pax", pax.fields)
+          // $(`#SeatNumber${pax.seat}`).append($pax)
+
+
             })
 
           let hue
@@ -97,7 +122,17 @@
           <div id="CrewList" class="CrewList"></div>
         </div>
       </div>`)
+      //this.$root.prepend("<div id='test' class='test'>HelloNurse</div>")
       this.$this = this.$root
+      this.report = this.$root.find(".Report") // Can probably fix by rebuilding the $()
+      const _report = this.report // needed for the click scope
+      this.report.click(() => {
+        console.log("LoadedClick")
+        const loadedPlane = _report.prop("loadedPlane")
+        console.log("Loaded Plane: %o", loadedPlane)
+        console.log("WB: %o", loadedPlane.getWB())
+        _this.seatPax()
+      })
       this.PCFSelectorString = `<div class="PCF_Selector" id="PCF_Selector">
           <select class="Plane" name="plane" />
           <select class="Fuel" name="fuel" /> Liters
@@ -195,6 +230,7 @@
       $newPax.appendTo($(this))
     }
     reset($TableCell) {
+      this.count = 0
       this.airplane = $TableCell.data("_script").getPlane()
       const _this = this
       this.$PCFSelector.remove()
@@ -214,6 +250,7 @@
       $("<div></div>")
         .data("number", 1)
         .data("seat", 1)
+        .attr("id", "SeatNumber1")
         .addClass("SeatNumber1")
         .appendTo("#Airplane")
         .addClass("grid-item")
@@ -238,11 +275,12 @@
               .data("number", index)
               .data("seat", index)
               .appendTo("#Airplane")
+              .attr("id", "SeatNumber" + index)
               .addClass("SeatNumber" + index)
               .addClass("grid-item")
               .addClass("station")
               .addClass("Seat")
-              .addClass("newPaxSeat")
+              .addClass("droppedPaxSeat")
             index++
           }
         })
@@ -293,8 +331,8 @@
       let $thisPax
       const DroppedStation = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
       let $newPax = ui.draggable.detach()
-      let newPaxFields = $newPax.data("pax") // array of Rezdy fields
-      let newPaxSeat = newPaxFields.find((p) => p.label === "seat")
+      let droppedPaxFields = $newPax.data("pax") // array of Rezdy fields
+      let droppedPaxSeat = droppedPaxFields.find((p) => p.label === "seat")
       let thisSeat = {
         label: "seat",
         value: $(this).data("seat"),
@@ -303,18 +341,18 @@
       // Capture old seat
       //
       let oldSeat
-      if (!newPaxSeat) {
+      if (!droppedPaxSeat) {
         //
         // In not from a seat, just assign it this one.
-        newPaxFields.push(thisSeat)
+        droppedPaxFields.push(thisSeat)
         //
       } else {
         //
         // Capture it's last seat before assigning it this one.
-        oldSeat = JSON.parse(JSON.stringify(newPaxSeat))
+        oldSeat = JSON.parse(JSON.stringify(droppedPaxSeat))
         // Could also be done by filtering out any seats before adding the new one ***
-        newPaxFields = newPaxFields.filter((x) => JSON.stringify(x) != JSON.stringify(oldSeat))
-        newPaxFields.push(thisSeat)
+        droppedPaxFields = droppedPaxFields.filter((x) => JSON.stringify(x) != JSON.stringify(oldSeat))
+        droppedPaxFields.push(thisSeat)
       }
       //
       // Pax exists
@@ -350,18 +388,52 @@
           $thisPax.data("pax", thisPaxFields)
           //
         } else {
+          // ********* Needs to drop back where it came from (Crew to CrewList) ********
           //
           // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
           //
           $thisPax.appendTo($("#PaxList"))
         }
       }
-      $newPax.appendTo($(this))
-      $newPax.draggable({ revert: false })
-      $newPax.position({ of: $(this), my: "left top", at: "left top" })
-      $newPax.data("pax", newPaxFields)
-      //
+      console.log("This: %o", $(this))
+      _this.assignSeat($(this), $newPax, droppedPaxFields)
       _this.update()
+    }
+    assignSeat($seat, $pax, droppedPaxFields) {
+      // this should take a pax object instead of feilds *******************
+      $pax.appendTo($seat)
+      $pax.draggable({ revert: false })
+      $pax.position({ of: $seat, my: "left top", at: "left top" })
+      $pax.data("pax", droppedPaxFields)
+      //
+      this.update()
+    }
+    seatPax(){
+      this._TableCell.getPassengers().forEach((p, index) => {
+        const pax = new Pax(p, index)
+        const firstName = pax.getValue("First Name")
+        const weight = pax.weight
+        const orderNumber = pax.getValue("orderNumber")
+        const barcode = pax.getValue("Barcode")
+        const $pax = new this.Pax(this, pax, "Pax")
+        if (pax.seat > 0) {
+          $(`#SeatNumber${pax.seat}`).css("background", "red")
+          $pax.draggable({ revert: false })
+
+          console.log("PaxID: %o",$pax.attr("id"))
+          //$pax.position({ of: $(`#SeatNumber${pax.seat}`), my: "left top", at: "left top" })
+          $(`#${$pax.attr("id")}`).appendTo($(`#SeatNumber${pax.seat}`))
+          .position({
+            my: "left top",
+            at: "left top",
+            of: `#SeatNumber${pax.seat}`,
+          })
+          $pax.data("pax", pax.fields)
+          $(`#SeatNumber${pax.seat}`).append($pax)
+          //
+          this.update()
+        }
+      })
     }
     getWB() {
       //
@@ -375,10 +447,6 @@
       // Update the "red/notRed" report bar above the seats
       //
       report.prop("loadedPlane", loadedPlane)
-      report.click(() => {
-        console.log("Loaded Plane: %o", loadedPlane)
-        console.log("WB: %o", WB)
-      })
       report.css("background-color", color)
       report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
       //
@@ -496,67 +564,41 @@
       // ===========================================
       // -------------- Crew -----------------
       // ===========================================
-      //
-      //  This can be merged into the Passenger function below
-      //
       _crew.forEach((crew, index) => {
-        let pax = new Pax(crew)
+        const pax = new Pax(crew)
         const firstName = pax.firstName
         const weight = pax.weight
-
-        let $pax = new this.Pax(_this, pax, "Crew")
-        // return
-
-        // // Skipping...
-        // let $pax = $(
-        //   `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
-        // )
-        //   //"<div>" + firstName + " <BR><span style='font-size: large;'>" + pax.getWeight() + "</span></div>"            .data("number", p)
-        //   .data("seat", index)
-        //   .attr("id", "pax" + index)
-        //   .appendTo("#CrewList") // This places the object... can swap #PaxList for an assigned seat **********
-        //   .addClass("Pax")
-        //   .addClass("Crew")
-        //   .data("_pax", pax)
-        //   .data("pax", crew.fields)
-        //   .draggable({
-        //     containment: "#detailsDiv",
-        //     stack: "#CrewList div",
-        //     cursor: "move",
-        //     revert: true,
-        //     start: function (evt, ui) {
-        //       this.startPos = ui.helper.position()
-        //     },
-        //     stop: function (event, ui) {
-        //       _this.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
-        //       let $station = $(this).closest(".station")
-        //       if ($station.length > 0) {
-        //         ui.helper.position({ of: $station, my: "left top", at: "left top" })
-        //       }
-        //     },
-        //   })
-
-        // let hue = "lightblue"
-        // $pax.css("background-color", hue)
-
-        // if (firstName.length >= 7) {
-        //   $pax.css("font-size", "8px")
-        // }
-
-        //
+        const $pax = new this.Pax(_this, pax, "Crew")
       })
-
       // ===========================================
       // -------------- Passengers -----------------
       // ===========================================
       passengers.forEach((p, index) => {
-        let pax = new Pax(p, index)
+        const pax = new Pax(p, index)
         const firstName = pax.getValue("First Name")
         const weight = pax.weight
         const orderNumber = pax.getValue("orderNumber")
         const barcode = pax.getValue("Barcode")
+        const $pax = new this.Pax(this, pax, "Pax")
+        // if (pax.seat > 0) {
+        //   console.log("Seat: %o",$(`#SeatNumber${pax.seat}`))
+        //   $(`#SeatNumber${pax.seat}`).text("test").css("background", "red")
+        //   //this.assignSeat($(`#SeatNumber${pax.seat}`), $pax, pax.fields)
 
-        let $pax = new this.Pax(this, pax, "Pax")
+        //   // seat pax
+
+        //   $pax.draggable({ revert: false })
+        //   //$pax.position({ of: $(`#SeatNumber${pax.seat}`), my: "left top", at: "left top" })
+        //   $pax.position({
+        //     my: "left top",
+        //     at: "left top",
+        //     of: `#SeatNumber${pax.seat}`,
+        //   })
+        //   $pax.data("pax", pax.fields)
+        //   $(`#SeatNumber${pax.seat}`).append($pax)
+        //   //
+        //   this.update()
+        // }
       })
       this.init() // initialize jQuery drag/drop code
       if (visible) {
