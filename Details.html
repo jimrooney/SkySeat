@@ -26,7 +26,7 @@
           const index = parent.count || 0
           parent.count++
           this.name = _type
-          const _this = parent
+          const _parent = parent
           const list = `${_type}List` || "PaxList"
           const firstName = pax.firstName
           const weight = pax.weight
@@ -41,6 +41,7 @@
             .data("booking", orderNumber)
             .data("pax", pax.fields)
             .data("_pax", pax)
+            .data("this", this)
             .attr("id", `${_type}${index}`)
             .appendTo(`#${list}`) // This places the object
             .addClass("Pax")
@@ -54,39 +55,16 @@
                 this.startPos = ui.helper.position()
               },
               stop: function (event, ui) {
-                _this.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
+                _parent.setRevert($(this)) // =============== hack fix ================ (resets to draggable)
                 let $station = $(this).closest(".station")
                 if ($station.length > 0) {
                   ui.helper.position({ of: $station, my: "left top", at: "left top" })
                 }
               },
             })
-            .click( function () {
+            .click(function () {
               console.log("Pax Click")
-              $(`#SeatNumber${pax.seat}`).css("background", "red")
-
-              console.log("This: %o",$(this))
-              console.log("Seat: %o",pax.seat)
-              console.log("$seat: %o",$(`#SeatNumber${pax.seat}`))
-              console.log("fields: %o",pax.fields)
-
-
-              _this.seatPax()
-//              parent.assignSeat($(`#SeatNumber${pax.seat}`), $(this), pax.fields)
-
-          // seat pax
-
-          // $pax.draggable({ revert: false })
-          // //$pax.position({ of: $(`#SeatNumber${pax.seat}`), my: "left top", at: "left top" })
-          // $pax.position({
-          //   my: "left top",
-          //   at: "left top",
-          //   of: `#SeatNumber${pax.seat}`,
-          // })
-          // $pax.data("pax", pax.fields)
-          // $(`#SeatNumber${pax.seat}`).append($pax)
-
-
+              _parent.seatPax()
             })
 
           let hue
@@ -395,7 +373,6 @@
           $thisPax.appendTo($("#PaxList"))
         }
       }
-      console.log("This: %o", $(this))
       _this.assignSeat($(this), $newPax, droppedPaxFields)
       _this.update()
     }
@@ -408,32 +385,20 @@
       //
       this.update()
     }
-    seatPax(){
-      this._TableCell.getPassengers().forEach((p, index) => {
-        const pax = new Pax(p, index)
-        const firstName = pax.getValue("First Name")
-        const weight = pax.weight
-        const orderNumber = pax.getValue("orderNumber")
-        const barcode = pax.getValue("Barcode")
-        const $pax = new this.Pax(this, pax, "Pax")
-        if (pax.seat > 0) {
-          $(`#SeatNumber${pax.seat}`).css("background", "red")
-          $pax.draggable({ revert: false })
-
-          console.log("PaxID: %o",$pax.attr("id"))
-          //$pax.position({ of: $(`#SeatNumber${pax.seat}`), my: "left top", at: "left top" })
-          $(`#${$pax.attr("id")}`).appendTo($(`#SeatNumber${pax.seat}`))
-          .position({
+    seatPax() {
+      $(".Pax").each((index, pax) => {
+        const fields = $(pax).data("_pax")
+        if (fields.seat > 0) {
+          const $assignedSeat = $(`#SeatNumber${fields.seat}`)
+          $(pax).detach().appendTo( $assignedSeat )
+          $(pax).position({
             my: "left top",
             at: "left top",
-            of: `#SeatNumber${pax.seat}`,
+            of: $assignedSeat,
           })
-          $pax.data("pax", pax.fields)
-          $(`#SeatNumber${pax.seat}`).append($pax)
-          //
-          this.update()
         }
       })
+      this.update()
     }
     getWB() {
       //
@@ -580,26 +545,8 @@
         const orderNumber = pax.getValue("orderNumber")
         const barcode = pax.getValue("Barcode")
         const $pax = new this.Pax(this, pax, "Pax")
-        // if (pax.seat > 0) {
-        //   console.log("Seat: %o",$(`#SeatNumber${pax.seat}`))
-        //   $(`#SeatNumber${pax.seat}`).text("test").css("background", "red")
-        //   //this.assignSeat($(`#SeatNumber${pax.seat}`), $pax, pax.fields)
-
-        //   // seat pax
-
-        //   $pax.draggable({ revert: false })
-        //   //$pax.position({ of: $(`#SeatNumber${pax.seat}`), my: "left top", at: "left top" })
-        //   $pax.position({
-        //     my: "left top",
-        //     at: "left top",
-        //     of: `#SeatNumber${pax.seat}`,
-        //   })
-        //   $pax.data("pax", pax.fields)
-        //   $(`#SeatNumber${pax.seat}`).append($pax)
-        //   //
-        //   this.update()
-        // }
       })
+      //this.seatPax()
       this.init() // initialize jQuery drag/drop code
       if (visible) {
         this.$root.hide()
