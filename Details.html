@@ -306,7 +306,7 @@
       //
       // this.airplane.stations updates via getWB which searches the .station classes
       //
-      let $thisPax
+      let $alreadySeatedPax
       const DroppedStation = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
       let $newPax = ui.draggable.detach()
       let droppedPaxFields = $newPax.data("pax") // array of Rezdy fields
@@ -320,17 +320,25 @@
       //
       let oldSeat
       if (!droppedPaxSeat) {
+        console.log("No Seat, Assigning: %o",thisSeat)
         //
         // In not from a seat, just assign it this one.
         droppedPaxFields.push(thisSeat)
         //
       } else {
+        console.log("HasSeat: %o",droppedPaxSeat)
+        console.log("Fields: %o",droppedPaxFields)
+        //console.log("TableCell: %o",_this._TableCell.board.manifest)
+        const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
+        const manifestPax = _this._TableCell.board.manifest.getPax(barcode)
+        console.log("ManifestPax: %o",manifestPax)
         //
         // Capture it's last seat before assigning it this one.
         oldSeat = JSON.parse(JSON.stringify(droppedPaxSeat))
         // Could also be done by filtering out any seats before adding the new one ***
         droppedPaxFields = droppedPaxFields.filter((x) => JSON.stringify(x) != JSON.stringify(oldSeat))
         droppedPaxFields.push(thisSeat)
+        manifestPax.fields.push(thisSeat)
       }
       //
       // Pax exists
@@ -340,7 +348,7 @@
         // Swap with any existing seated pax
         //
         // Detach pax from seat
-        $thisPax = $(this).children(".Pax").detach()
+        $alreadySeatedPax = $(this).children(".Pax").detach()
         //
         // == Two pax ==, both seated, swap seats
         //
@@ -348,29 +356,33 @@
           //
           // Move the existing pax to the old station
           //
-          $thisPax.appendTo(DroppedStation)
-          $thisPax.position({ of: DroppedStation, my: "left top", at: "left top" })
+          $alreadySeatedPax.appendTo(DroppedStation)
+          $alreadySeatedPax.position({ of: DroppedStation, my: "left top", at: "left top" })
           //
           // Remove the source seat field and rebrand with the old seat
           //
-          let thisPaxFields = $thisPax.data("pax")
+          let alreadySeatedPaxFields = $alreadySeatedPax.data("pax")
           //
           // Filter out the current seat
           // Remove seat field
           //
-          thisPaxFields = thisPaxFields.filter((x) => JSON.stringify(x) != JSON.stringify(thisSeat))
-          thisPaxFields.push(oldSeat)
+          alreadySeatedPaxFields = alreadySeatedPaxFields.filter((x) => JSON.stringify(x) != JSON.stringify(thisSeat))
+          alreadySeatedPaxFields.push(oldSeat)
           //
           // Save
           //
-          $thisPax.data("pax", thisPaxFields)
+          $alreadySeatedPax.data("pax", alreadySeatedPaxFields)
+          
+          //console.log("TableCell: %o",_this._TableCell.board.manifest)
+
+      
           //
         } else {
           // ********* Needs to drop back where it came from (Crew to CrewList) ********
           //
           // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
           //
-          $thisPax.appendTo($("#PaxList"))
+          $alreadySeatedPax.appendTo($("#PaxList"))
         }
       }
       _this.assignSeat($(this), $newPax, droppedPaxFields)
