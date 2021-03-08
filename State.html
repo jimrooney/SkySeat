@@ -99,7 +99,7 @@
       for (const key in this.data) {
         this.data[key].passengers.forEach((p, index) => {
           let px = p
-          if (p.constructor.name != "Pax"){
+          if (p.constructor.name != "Pax") {
             px = new Pax(p)
           }
           if (pax.barcode === px.barcode && leg == this.data[key].leg) {
@@ -124,6 +124,15 @@
         this.clearEmpties()
         this.board.update()
       }
+    }
+    getPax(barcode) {
+      let ret
+      for (const key in this.data) {
+        ret = this.data[key].passengers.find((pax) =>
+          pax.fields.find((f) => (f.label == "Barcode" && f.value == barcode))
+        )
+      }
+      return ret
     }
     clearEmpties() {
       for (const key in this.data) {

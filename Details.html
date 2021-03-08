@@ -326,19 +326,29 @@
         droppedPaxFields.push(thisSeat)
         //
       } else {
-        console.log("HasSeat: %o",droppedPaxSeat)
-        console.log("Fields: %o",droppedPaxFields)
-        //console.log("TableCell: %o",_this._TableCell.board.manifest)
         const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
         const manifestPax = _this._TableCell.board.manifest.getPax(barcode)
-        console.log("ManifestPax: %o",manifestPax)
+        let statePax = _this._TableCell.board.state.getPax(barcode)
+
+
+
+        console.log("{manifestPax}pax: %o",manifestPax)
+        console.log("{state}pax: %o",statePax)        
         //
         // Capture it's last seat before assigning it this one.
         oldSeat = JSON.parse(JSON.stringify(droppedPaxSeat))
-        // Could also be done by filtering out any seats before adding the new one ***
-        droppedPaxFields = droppedPaxFields.filter((x) => JSON.stringify(x) != JSON.stringify(oldSeat))
-        droppedPaxFields.push(thisSeat)
+        //
+        // HERE
+        // This "push" needs to remove the old seat object before inserting the new one.
+        //
+        //
+        manifestPax.fields = manifestPax.fields.filter((x) => x.label != "seat")
         manifestPax.fields.push(thisSeat)
+        droppedPaxFields = manifestPax.fields
+
+
+        statePax.seat = thisSeat.value
+        console.log("Manifest Fields: %o", manifestPax.fields)
       }
       //
       // Pax exists

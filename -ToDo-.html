@@ -8,8 +8,12 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Currently
 -------------------------------
+Close Day
 
 In Details. Remove the pax seat when assigning a new seat (in the Manifest Pax fields)
+// also change the field here? ************************
+Dropping Pax changes their .seat value in State... need to also update it's fields.
+Since the assignment is by object, we might be able to set the fields by passing the object. 
 
 
 Details remembers assigned seats and will re-plot them if you click on a PAX (or the WB report)

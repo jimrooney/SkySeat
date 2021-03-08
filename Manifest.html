@@ -329,9 +329,12 @@
       if (!!this.orders) {
         this.orders.forEach((order) => {
           order.items.find((item) => {
-            let found = item.participants.find((part) =>
-              part.fields.find((field) => field.label == "Barcode" && field.value == barcode)
-            )
+            let found = item.participants.find((part) => {
+              const px = new Pax(part.fields)
+              if (px.barcode === barcode) {
+                return part
+              }
+            })
             if (!!found) {
               ret = found
             }
