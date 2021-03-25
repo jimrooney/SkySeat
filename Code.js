@@ -77,7 +77,7 @@ function loadState(date) {
       rowDate.setHours(3)
       const RowDate = `${rowDate.getFullYear()}${rowDate.getMonth()}${rowDate.getDate()}`
       if (RowDate == StateDate) {
-              console.log("Match")
+        console.log("Match")
         ret = true
       }
     }
@@ -85,10 +85,14 @@ function loadState(date) {
   })
   return JSON.stringify(values[key]) // Can't seem to send the values as data, so sending as JSON
 }
+/*
+  sheet.getRange("A:AZ") needs to have enough columns to hold the data for all the cells....
+  If the number of aircraft (or hours) expands, the spreadsheet needs to as well (could be fixed)
+*/
 function saveState(date, data) {
   const DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
   const sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
-  let range = sheet.getRange("A:K")
+  let range = sheet.getRange("A:AZ")
   let values = range.getValues()
   const numRows = range.getNumRows()
   const numCols = range.getNumColumns()
@@ -119,7 +123,7 @@ function saveState(date, data) {
   //
   // Find first blank row
   //
-  let nextKey = values.findIndex(element => element[0] == "")
+  let nextKey = values.findIndex((element) => element[0] == "")
   //
   // Record Row
   //
@@ -136,15 +140,17 @@ function saveState(date, data) {
   }
 
   // If not recorded and no blanks...
-  if (nextKey<0 && key<0){
-  //
-  // Insert one empty row after the last row in the active sheet.
-  sheet.insertRowsAfter(numRows, 1)
-  sheet.appendRow(newVals)
-  return date
+  if (nextKey < 0 && key < 0) {
+    //
+    // Insert one empty row after the last row in the active sheet.
+    sheet.insertRowsAfter(numRows, 1)
+    sheet.appendRow(newVals)
+    return date
   }
   key = key >= 0 ? key : nextKey
   values[key] = newVals
+  Logger.log("New Values")
+  Logger.log(values)
   range.setValues(values)
   return date
 }

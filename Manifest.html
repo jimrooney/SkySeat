@@ -147,7 +147,7 @@
       //
       // Filter by CONFIRMED
       //
-      let orders = this.orders.filter((order) => order.status == "CONFIRMED")
+      let orders = this.orders.filter((order) => order.status == "CONFIRMED" || order.status == "PENDING_SUPPLIER" || order.status == "ON_HOLD")
       root.debug.log("All Confirmed Orders Returned From Rezdy\n%o", orders) // [{Booking},{Booking},{Booking}]
 
       // ------------------
