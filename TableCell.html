@@ -114,6 +114,13 @@
       // ------------
       if (_this.isLegalDrop(_this.leg, _dropped.leg)) {
         // ---------------
+        // Remove old plots (if Manifest drop)
+        // ---------------
+        _dropped.name
+        if (_dropped instanceof Booking) {
+          _this.board.clearPax(droppedPaxList)
+        }
+        // ---------------
         // Add Passengers
         // ---------------
         _this.addPax(droppedPaxList, _dropped.leg)

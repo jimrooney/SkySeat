@@ -35,6 +35,12 @@
     setDate(date) {
       this.manifest.setDate(date)
     }
+    //
+    // Remove all pax from the board
+    //
+    clearPax(paxList){
+      this.state.removePax(paxList)
+    }
     // --------------------------------
     // Update
     // --------------------------------
