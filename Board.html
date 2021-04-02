@@ -38,7 +38,7 @@
     //
     // Remove all pax from the board
     //
-    clearPax(paxList){
+    clearPax(paxList) {
       this.state.removePax(paxList)
     }
     // --------------------------------
@@ -55,17 +55,14 @@
       //
       // Updata TableCells and reinit draggable code
       //
-      this.$board
-        .find(".TableCell")
-        .each(function (index) {
-          if (!!$(this).data("_script")) {
-            $(this).data("_script").update()
-            //
-            // Enable Dragging (only for cells with passengers)
-            //
-            $(this).draggable("disable") // Disable by default
-            if (!!$(this).data("_script").getPassengers())
-            {
+      this.$board.find(".TableCell").each(function (index) {
+        if (!!$(this).data("_script")) {
+          $(this).data("_script").update()
+          //
+          // Enable Dragging (only for cells with passengers)
+          //
+          $(this).draggable("disable") // Disable by default
+          if (!!$(this).data("_script").getPassengers()) {
             $(this)
               .draggable({
                 revert: true,
@@ -84,12 +81,9 @@
                 },
               })
               .draggable("enable")
-            }
-
-
-
           }
-        })
+        }
+      })
       //
       // Updata PlaneCells (set defaults)
       //
@@ -130,20 +124,32 @@
       }
       $table.append($row)
     }
+    close() {
+      root.removeBoard(this)
+      this.$board.remove()
+    }
     writeBoard() {
       console.log("Write Board")
       // ----------------------
       // The Board Table
       // ----------------------
       this.$board.append(
-        '<div style="float:left; display: inline-block;"><table class="BoardTable" id="MYTable"/></div>'
+        '<div class="Top"></div><div style="float:left; display: inline-block;" class="Header"><table class="BoardTable" /></div>'
       )
-
+      const _this = this
+      const $closer = $('<div class="popupCloseButton MobileButton">X</div>').click(() => {
+        _this.close()
+      })
+      this.$board.find(".Top").append($closer)
+      this.$board.append(
+        $('<span id="NewBoardButton" class="MenuButton MobileButton">[+]</span>').click(() => {
+          root.makeNewBoard()
+        })
+      )
       // ----------------------
       // Root
       // ----------------------
       let $table = this.$board.find(".BoardTable") // Improve me? There should be a better way to find root ****
-
       // ----------------------
       // Header Row
       // ----------------------

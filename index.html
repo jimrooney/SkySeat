@@ -117,7 +117,7 @@
       class="NoPrint"
       style="float: top; width: 100%; text-align: center; background: #737373; color: white"
     >
-      [[ 2.4.8.15 ]] [ Manifest Plots clear old plots ]
+      [[ 2.4.8.16 ]] [ Close Boards ]
       <a href="https://docs.google.com/spreadsheets/d/1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c/edit#gid=1155160317"
         >Data Spreadsheet</a
       >
@@ -129,17 +129,6 @@
     <div id="PickupList" class="pickupDetails">
       <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
     </div>
-    <div class="NoPrint">
-      <span id="NewBoardButton" class="MenuButton MobileButton">[+]</span>
-      <script>
-        $(() => {
-          $("#NewBoardButton").click(() => {
-            root.makeNewBoard()
-          })
-        })
-      </script>
-    </div>
-
     <div id="Boards" class="NoPrint"></div>
 
     <script>
@@ -164,6 +153,7 @@
       <div id="TheBoard" class="NoPrint" style="float: none; margin: 10px">
         <div>
           <div>
+            <button class="Nav" onClick="root.makeNewBoard()">[+]</button>
             <button class="Nav Dev" onClick="utility.close()">Close</button>
             <button class="Dark" onClick="test()">Test</button>
             <button class="Nav" id="SaveButton" onClick="saveBoard()">Save</button>

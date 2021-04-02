@@ -41,6 +41,13 @@
       }
       this.boards.push(_board)
     },
+    removeBoard: function (board) {
+      this.boards.forEach((b,i,o) => {
+        if (b === board){
+          o.splice(i,1)
+        }
+      })
+    },
     debug: {
       logs: [],
       log: function (...msg) {
