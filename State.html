@@ -110,12 +110,14 @@
       return ret
     }
     removePax(paxList) {
+      console.log("{state}removePax: %o",paxList)
       if (!!paxList.length) {
         // require an array be passed in
         paxList.forEach((pax) => {
           for (const key in this.data) {
             this.data[key].passengers.forEach((p, index) => {
-              if (pax.barcode == this.data[key].passengers[index].barcode) {
+              const px = new Pax(p)
+              if (pax.barcode == px.barcode) {
                 this.data[key].passengers.splice(index, 1)
               }
             })
