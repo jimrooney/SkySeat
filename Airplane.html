@@ -86,6 +86,7 @@
       // remove obj by load.id
     }
     getWB(SAD) {
+      console.log("{Airplane}.getWB()")
       // Standard Actual Declared
 
       //---------------------------------------
@@ -129,8 +130,10 @@
           POB = pob.map((station) => station) // copy the array... maybe use Set instead?
           break
         case "Standard":
+          console.log("using Standard Weights")
           POB = pob.map((station) => {
             station.weight = 83 // Everyone's an adult for now ******
+            // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
             return station
           })
           break
@@ -159,8 +162,10 @@
       //
       const PIC = CREW.find((station) => station.pax.find((pax) => pax.label == "Role" && pax.value == "PIC"))
       const PAX = POB.filter((x) => !CREW.includes(x)) // Filter out Crew
+
       const POB_Weight = POB.reduce((total, station) => total + parseFloat(station.weight), 0)
       const CREW_Weight = CREW.reduce((total, station) => total + parseFloat(station.weight), 0)
+
       const PAX_Weight = POB_Weight - CREW_Weight
       const ZFW_Weight = ZFW.reduce((total, station) => total + parseFloat(station.weight), 0)
 

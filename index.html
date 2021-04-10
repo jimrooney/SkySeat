@@ -133,7 +133,8 @@
 
     <script>
       $(document).ready(function () {
-        $("body").append(new Details(root))
+        root.details = new Details(root)
+        $("body").append(root.details.$root)
         Events.init() // for Mobile Click
 
         $("#TrashHolder").append(new Trash(root))

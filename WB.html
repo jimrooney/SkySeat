@@ -1,41 +1,11 @@
 <script>
   var wb = {
-
-    // Given a plane and load, return min/max weight range for the last seat
-    getLastSeatRange: function (PCF, POB) {
-      let ret
-      let plane = PlaneManager.planes.getPlane(PCF[0])
-      let numPOB = POB.length
-      let numSeats = plane.arms.seats.length
-
-      if (numPOB == numSeats - 1) {
-        let lastSeat = POB.length
-        let range = []
-        for (let i = 0; i <= 130; i++) {
-          POB[lastSeat] = [i, ""]
-          plane.load(PCF, POB)
-          let WB = plane.getOldWB()
-          let _cg = WB.getCG()
-          let _AUW = WB.getWeight()
-          if (_cg > 0 && _AUW > 0) {
-            range[0] = i
-            range[1] = _cg
-            range[2] = _AUW
-          } else {
-            break
-          }
-        }
-        POB.pop() // remove last seat
-        return range
-      }
-
-      return ""
-    },
     getKilos: function (string) {
       let factor = 1
       if (!string) {
         return
       }
+      // ** Switch this to grep **
       if (
         string.toUpperCase().indexOf("LBS") > 0 ||
         string.toUpperCase().indexOf("LB") > 0 ||

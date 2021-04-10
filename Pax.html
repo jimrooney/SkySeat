@@ -82,10 +82,10 @@
       let result = this.getValue("weight")
       // Always return KG...
       // Removes KG LBS etc
-      if (!!result && !!result.value) {
-        result = wb.getKilos(result.value)
+      if (!!result) {
+        result = wb.getKilos(result)
       }
-      result = parseInt(result)
+      result = parseInt(result) || "tbc"
       return result
     }
     set weight(weight) {

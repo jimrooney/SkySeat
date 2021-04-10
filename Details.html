@@ -15,6 +15,7 @@
       const _this = this
       this.bookings = []
       this.name = "Details"
+      this.SAD = "Declared" // Standard | Declared | Actual
       this.bgColors = {}
       this.colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
       //
@@ -147,11 +148,25 @@
       // ====================
       const $pop = $(`<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`)
       const $popLeft = $(`<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`)
+      const $SAD = $(`<div id="SAD" class="popupCloseButton left small MobileButton">D</div>`).click(function(){
+        let txt = $(this).text()
+        switch (txt)
+        {
+          case "S":
+          $(this).text("D")
+          _this.SAD = "Declared"
+          break
+          case "D":
+          $(this).text("S")
+          _this.SAD = "Standard"
+          break
+        }
+      })
       const _$root = this.$root
-      this.$root.append($pop).append($popLeft)
+      this.$root.append($pop).append($popLeft).append($SAD)
       $pop.click(() => _$root.hide())
       $popLeft.click(() => _$root.hide())
-      return this.$root
+      return this
     }
     update() {
       this.getWB()
@@ -427,7 +442,7 @@
       // Loads plane based on Details ".station" classes
       //
       const loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
-      const WB = loadedPlane.getWB()
+      const WB = loadedPlane.getWB(this.SAD) // ** testing ** 
       const report = this.$root.find(".Report")
       const color = WB.cg.balanced ? "blue" : "red"
       //

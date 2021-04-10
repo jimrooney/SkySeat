@@ -6,6 +6,16 @@
     background-color: #2196f3;
     padding: 10px;
   }
+  /* Example of 3 column... grid-template-columns */
+  .caravan-grid-container {
+    width: 150px;
+    display: grid;
+    grid-template-columns: 80px 80px;
+    background-color: #2196f3;
+    padding: 10px;
+    /* grid-template-columns: auto auto auto; */
+    justify-content: space-around;
+  }
   .grid-item {
     float: left;
     width: 45px;
@@ -15,8 +25,8 @@
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    margin: 10px;
-    background: #fff;
+    margin: 5px;
+    background: rgb(235, 224, 224);
   }
   .grid-placeholder {
     float: left;
@@ -27,7 +37,7 @@
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    margin: 10px;
+    margin: 5px;
     background-color: #2196f3;
   }
   /* Main content area 
