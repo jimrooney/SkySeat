@@ -11,6 +11,33 @@
     constructor(root) {
       this.root = root
       this._this = this
+      this.changeWeightClass = function ($selector,className){
+        const ret = {}
+          switch (className) {
+            case "S":
+            ret.txt = "Declared Weights"
+            ret.SAD = "Declared"
+            ret.class = "declaredWeights"
+              break
+            case "D":
+            ret.txt = "Actual Weights"
+            ret.SAD = "Actual"
+            ret.class = "actualWeights"
+              break
+            case "A":
+            ret.txt = "Standard Weights"
+            ret.SAD = "Standard"
+            ret.class = "standardWeights"
+              break
+          }
+          $selector.removeClass("actualWeights")
+                .removeClass("standardWeights")
+                .removeClass("declaredWeights")
+                .addClass(ret.class)
+                .text(ret.txt)
+                _this.SAD = ret.SAD
+          return ret
+      }
       this.count = 0
       const _this = this
       this.bookings = []
@@ -89,9 +116,9 @@
       this._TableCell = ""
       this.airplane // placholder (gets built in reset())
 
-      this.$root = $(`<div id="Details" class="detailsDiv NoPrint">
+      this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`).append(`
         <div class="MenuButton MobileButton Print">Print</div>
-        <div class="Report" />
+        <span class="Report" />
         <div id="detailsContents" class="detailsContents">
           <div id="content" style="width: 100%; overflow: hidden;">
             <div id="Airplane" class="grid-container Airplane"></div>
@@ -99,9 +126,7 @@
             <div id="CargoPod" class="CargoPod">POD</div>
           </div>
           <div id="CrewList" class="CrewList"></div>
-        </div>
-      </div>`)
-      //this.$root.prepend("<div id='test' class='test'>HelloNurse</div>")
+        </div>`)
       this.$this = this.$root
       this.report = this.$root.find(".Report") // Can probably fix by rebuilding the $()
       const _report = this.report // needed for the click scope
@@ -117,7 +142,7 @@
           <select class="Fuel" name="fuel" /> Liters
         </div>`
       this.$PCFSelector = $(this.PCFSelectorString)
-      this.$root.prepend(this.$PCFSelector)
+      this.$root.append(this.$PCFSelector)
       this.$root.data("root", this) // Access this object through $([Selector]).data('root')
       // ---------------------------
       // Print Button
@@ -148,23 +173,16 @@
       // ====================
       const $pop = $(`<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`)
       const $popLeft = $(`<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`)
-      const $SAD = $(`<div id="SAD" class="popupCloseButton left small MobileButton">D</div>`).click(function(){
-        let txt = $(this).text()
-        switch (txt)
-        {
-          case "S":
-          $(this).text("D")
-          _this.SAD = "Declared"
-          break
-          case "D":
-          $(this).text("S")
-          _this.SAD = "Standard"
-          break
-        }
-        _this.update()
-      })
+      const $SAD = $(`<span id="SAD" class=" relativeLeft MobileButton">Declared Weights</span>`)
+        .addClass("declaredWeights")
+        .click(function () {
+          let txt = $(this).text().charAt(0)
+          _this.changeWeightClass($(this),txt)
+          _this.update()
+        })
       const _$root = this.$root
-      this.$root.append($pop).append($popLeft).append($SAD)
+      this.$root.append($pop).append($popLeft)
+      this.$root.prepend($SAD)
       $pop.click(() => _$root.hide())
       $popLeft.click(() => _$root.hide())
       return this
@@ -336,7 +354,7 @@
       //
       let oldSeat
       if (!droppedPaxSeat) {
-        console.log("No Seat, Assigning: %o",thisSeat)
+        console.log("No Seat, Assigning: %o", thisSeat)
         //
         // In not from a seat, just assign it this one.
         droppedPaxFields.push(thisSeat)
@@ -346,10 +364,8 @@
         const manifestPax = _this._TableCell.board.manifest.getPax(barcode)
         let statePax = _this._TableCell.board.state.getPax(barcode)
 
-
-
-        console.log("{manifestPax}pax: %o",manifestPax)
-        console.log("{state}pax: %o",statePax)        
+        console.log("{manifestPax}pax: %o", manifestPax)
+        console.log("{state}pax: %o", statePax)
         //
         // Capture it's last seat before assigning it this one.
         oldSeat = JSON.parse(JSON.stringify(droppedPaxSeat))
@@ -361,7 +377,6 @@
         manifestPax.fields = manifestPax.fields.filter((x) => x.label != "seat")
         manifestPax.fields.push(thisSeat)
         droppedPaxFields = manifestPax.fields
-
 
         statePax.seat = thisSeat.value
         console.log("Manifest Fields: %o", manifestPax.fields)
@@ -398,10 +413,9 @@
           // Save
           //
           $alreadySeatedPax.data("pax", alreadySeatedPaxFields)
-          
+
           //console.log("TableCell: %o",_this._TableCell.board.manifest)
 
-      
           //
         } else {
           // ********* Needs to drop back where it came from (Crew to CrewList) ********
@@ -428,7 +442,7 @@
         const fields = $(pax).data("_pax")
         if (fields.seat > 0) {
           const $assignedSeat = $(`#SeatNumber${fields.seat}`)
-          $(pax).detach().appendTo( $assignedSeat )
+          $(pax).detach().appendTo($assignedSeat)
           $(pax).position({
             my: "left top",
             at: "left top",
@@ -443,7 +457,7 @@
       // Loads plane based on Details ".station" classes
       //
       const loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
-      const WB = loadedPlane.getWB(this.SAD) // ** testing ** 
+      const WB = loadedPlane.getWB(this.SAD)
       const report = this.$root.find(".Report")
       const color = WB.cg.balanced ? "blue" : "red"
       //

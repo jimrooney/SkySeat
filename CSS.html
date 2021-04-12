@@ -238,7 +238,7 @@
     width: auto;
     background: rgba(71, 88, 115, 1);
     color: #fff;
-    text-align: center;
+    /* text-align: center; */
     padding: 5px 15px 5px 15px;
     border-radius: 6px;
 
@@ -316,6 +316,22 @@
     text-align: center;
     z-index: 1;
   }
+  .roundButton {
+    color: #ccc;
+    background-color: #fff;
+    border: 3px solid #999;
+    border-radius: 20px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 15px;
+    /* width: 30px;
+    height: 30px; */
+    text-align: center;
+    z-index: 1;
+  }
   .small{
     font-size: 15px;
     line-height: 15px;
@@ -326,6 +342,11 @@
     position: absolute;
     top: 0px;
     right: 0px;
+  }
+  .relativeLeft {
+    position: relative;
+    top: 0;
+    left: 0;
   }
   .left {
     position: absolute;
@@ -527,4 +548,17 @@
     /* box-sizing: border-box;
     border: 2px solid #ff0000; */
   }
+  .standardWeights {
+    color: #ccc;
+    background-color: rgb(38, 0, 255);
+  }
+  .declaredWeights {
+    color: rgb(0, 0, 0);
+    background-color: rgb(242, 255, 128);
+  }
+  .actualWeights {
+    color: rgb(0, 0, 0);
+    background-color: rgb(201, 102, 102);
+  }
+
 </style>
