@@ -76,7 +76,7 @@
       // ------------------
       let _thisPlane = TableCell.getPlane()
       this.plane = TableCell.getPlane()
-      const WB = _thisPlane.getWB("Standard")// ** testing **
+      const WB = _thisPlane.getWB(root.details.SAD)// ** testing **
       let seats = WB.POB
       //
       // Find PIC
@@ -344,7 +344,7 @@
             Passengers
             <span class="_plane_std"></span>
           </td>
-          <td colspan="3" class="reg">
+          <td colspan="3" class="WeightClass">
             <!--[Weights KG/LBS]-->
             <span class="_plane_KGLBS"></span>
           </td>
@@ -648,10 +648,15 @@
         </tr>
         <tr>
           <td width="11%">&nbsp;</td>
-          <td width="36%">&nbsp;</td>
-          <td width="7%">&nbsp;</td>
-          <td width="5%">&nbsp;</td>
-          <td width="4%">&nbsp;</td>
+          <td width="36%" class="reg">
+            <!-- [Weights Declared] -->
+            Passengers
+            <span class="_plane_std"></span>
+          </td>
+          <td colspan="3" class="WeightClass">
+            <!--[Weights KG/LBS]-->
+            <span class="_plane_KGLBS"></span>
+          </td>
           <td colspan="2">Fuel</td>
           <td width="15%" class="reg">
             <!--[FuelLiters]-->

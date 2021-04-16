@@ -11,38 +11,43 @@
     constructor(root) {
       this.root = root
       this._this = this
-      this.changeWeightClass = function ($selector,className){
+      this.changeWeightClass = function (className, $selector) {
         const ret = {}
-          switch (className) {
-            case "S":
+        switch (className) {
+          case "S":
             ret.txt = "Declared Weights"
             ret.SAD = "Declared"
             ret.class = "declaredWeights"
-              break
-            case "D":
+            break
+          case "D":
             ret.txt = "Actual Weights"
             ret.SAD = "Actual"
             ret.class = "actualWeights"
-              break
-            case "A":
+            break
+          case "A":
             ret.txt = "Standard Weights"
             ret.SAD = "Standard"
             ret.class = "standardWeights"
-              break
-          }
-          $selector.removeClass("actualWeights")
-                .removeClass("standardWeights")
-                .removeClass("declaredWeights")
-                .addClass(ret.class)
-                .text(ret.txt)
-                _this.SAD = ret.SAD
-          return ret
+            break
+        }
+        $(".WeightClass").each((index, element) => {
+          $(element)
+            .removeClass("actualWeights")
+            .removeClass("standardWeights")
+            .removeClass("declaredWeights")
+            .addClass(ret.class)
+        })
+        if (!!$selector) {
+          $selector.text(ret.txt)
+        }
+        _this.SAD = ret
+        return ret
       }
       this.count = 0
       const _this = this
       this.bookings = []
       this.name = "Details"
-      this.SAD = "Declared" // Standard | Declared | Actual
+      //this.SAD = "Declared" // Standard | Declared | Actual
       this.bgColors = {}
       this.colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
       //
@@ -119,7 +124,7 @@
       this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`).append(`
         <div class="MenuButton MobileButton Print">Print</div>
         <span class="Report" />
-        <div id="detailsContents" class="detailsContents">
+        <div id="detailsContents" class="WeightClass detailsContents">
           <div id="content" style="width: 100%; overflow: hidden;">
             <div id="Airplane" class="grid-container Airplane"></div>
             <div id="PaxList" class="PaxList"></div>
@@ -173,11 +178,10 @@
       // ====================
       const $pop = $(`<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`)
       const $popLeft = $(`<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`)
-      const $SAD = $(`<span id="SAD" class=" relativeLeft MobileButton">Declared Weights</span>`)
-        .addClass("declaredWeights")
+      const $SAD = $(`<span class="SAD WeightClass relativeLeft MobileButton"></span>`)
         .click(function () {
           let txt = $(this).text().charAt(0)
-          _this.changeWeightClass($(this),txt)
+          _this.changeWeightClass(txt, $(this))
           _this.update()
         })
       const _$root = this.$root
@@ -242,6 +246,8 @@
       $newPax.appendTo($(this))
     }
     reset($TableCell) {
+      this.changeWeightClass("A") // set the default weight class to Declared (from Actual)
+      $(".SAD").text(this.SAD.txt)
       this.count = 0
       this.airplane = $TableCell.data("_script").getPlane()
       const _this = this
@@ -354,7 +360,6 @@
       //
       let oldSeat
       if (!droppedPaxSeat) {
-        console.log("No Seat, Assigning: %o", thisSeat)
         //
         // In not from a seat, just assign it this one.
         droppedPaxFields.push(thisSeat)
@@ -363,23 +368,13 @@
         const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
         const manifestPax = _this._TableCell.board.manifest.getPax(barcode)
         let statePax = _this._TableCell.board.state.getPax(barcode)
-
-        console.log("{manifestPax}pax: %o", manifestPax)
-        console.log("{state}pax: %o", statePax)
         //
         // Capture it's last seat before assigning it this one.
         oldSeat = JSON.parse(JSON.stringify(droppedPaxSeat))
-        //
-        // HERE
-        // This "push" needs to remove the old seat object before inserting the new one.
-        //
-        //
         manifestPax.fields = manifestPax.fields.filter((x) => x.label != "seat")
         manifestPax.fields.push(thisSeat)
         droppedPaxFields = manifestPax.fields
-
         statePax.seat = thisSeat.value
-        console.log("Manifest Fields: %o", manifestPax.fields)
       }
       //
       // Pax exists
@@ -413,10 +408,6 @@
           // Save
           //
           $alreadySeatedPax.data("pax", alreadySeatedPaxFields)
-
-          //console.log("TableCell: %o",_this._TableCell.board.manifest)
-
-          //
         } else {
           // ********* Needs to drop back where it came from (Crew to CrewList) ********
           //
@@ -607,6 +598,7 @@
         this.$root.css("heigh", "600px")
         this.$root.show()
       }
+
     }
   }
 </script>
