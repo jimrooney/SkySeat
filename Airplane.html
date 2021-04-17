@@ -127,7 +127,7 @@
       const _SAD = !!SAD ? SAD : root.details.SAD
       switch (_SAD.SAD) {
         case "Actual":
-        console.log("using Acutal Weights")
+          console.log("using Acutal Weights")
           POB = pob.map((station) => station) // copy the array... maybe use Set instead?
           break
         case "Standard":
@@ -140,7 +140,7 @@
           break
         // Assume Declared
         default:
-        console.log("using Declared Weights")
+          console.log("using Declared Weights")
           POB = pob.map((station) => {
             station.weight = Number(station.weight) + 4
             return station
@@ -294,118 +294,6 @@
         }
       })
       return balanced
-    }
-  }
-
-  //
-  // Max weight in cargo area 680kg
-  //
-  class GA8 extends Airplane {
-    constructor(data) {
-      super(data)
-      /*
-
-1219 mm (48 in) aft of datum at 1089 kg (2400 lb) and below;
-1448 mm (57 in) aft of datum at 1905 kg (4200 lb), linear variation
-between these points.
-
-*/
-      this.type = this.constructor.name // "GA8"
-      this.limits = {
-        weight: { empty: 0, MAUW: 1905, ramp: 1905, Landing: 1860 },
-        // fwd1/2 [limit in M ,@ weight in kg]
-        CG: {
-          forward: 1.219,
-          aft: 1.626,
-          bounds: [{ fwd1: [1.219, 1089], fwd2: [1.448, 1905] }],
-        },
-      }
-      ;(this.fuel.capacity = 330),
-        (this.stations = [
-          new Station({ type: ["seat"], arm: 0.965 }),
-          new Station({ type: ["seat"], arm: 0.965 }),
-          new Station({ type: ["seat"], arm: 1.772 }),
-          new Station({ type: ["seat"], arm: 1.772 }),
-          new Station({ type: ["seat"], arm: 2.523 }),
-          new Station({ type: ["seat"], arm: 2.523 }),
-          new Station({ type: ["seat"], arm: 3.247 }),
-          new Station({ type: ["seat"], arm: 3.247 }),
-          new Station({ type: ["fuel"], arm: 1.715, limit: 330 }),
-          new Station({ type: ["cargo", "backShelf"], arm: 0, limit: 113, id: "BackShelf" }),
-          new Station({ type: ["cargo", "podBay"], arm: 1.5665, limit: 120, id: "PodBay1" }),
-          new Station({ type: ["cargo", "podBay"], arm: 2.3445, limit: 100, id: "PodBay2" }),
-        ])
-    }
-  }
-
-  class C206 extends Airplane {
-    constructor(data) {
-      super(data)
-
-      this.type = this.constructor.name // "C206"
-      this.limits = {
-        weight: { empty: 0, MAUW: 1719, Landing: 1632.933, Ramp: 1726.373, Takeoff: 1718.661 },
-        // fwd1/2 [limit in M ,@ weight in kg]
-        CG: {
-          forward: 0.8382,
-          aft: 1.26492,
-          bounds: [{ fwd1: [0.8382, 1133.981], fwd2: [1.07188, 1632.933] }],
-        },
-      }
-      ;(this.fuel.capacity = 330),
-        (this.fuel.burnRate = 76),
-        (this.stations = [
-          new Station({ type: ["seat"], arm: 0.9398 }),
-          new Station({ type: ["seat"], arm: 0.9398 }),
-          new Station({ type: ["seat"], arm: 1.778 }),
-          new Station({ type: ["seat"], arm: 1.778 }),
-          new Station({ type: ["seat"], arm: 2.54 }),
-          new Station({ type: ["seat"], arm: 2.54 }),
-          new Station({ type: ["fuel"], arm: 1.1811 }),
-        ])
-    }
-  }
-  class C208 extends Airplane {
-    constructor(data) {
-      super(data)
-
-      this.type = this.constructor.name // "C208"
-      this.limits = {
-        weight: { empty: 0, MAUW: 3994.7, ramp: 4010, Landing: 3855.5 },
-        // fwd1/2 [limit in M ,@ weight in kg]
-        CG: {
-          forward: 4.699,
-          aft: 5.18922,
-          bounds: [
-            { fwd1: [4.699, 2948.35], fwd2: [4.9403, 3628.739] }, // 185 in at 6500 lbs - 194.5 in at 8000 lbs
-            { fwd1: [4.9403, 3628.739], fwd2: [5.05968, 3992.066] },
-          ],
-        },
-      }
-      ;(this.fuel.capacity = 1283.3),
-        (this.fuel.type = "JetA"),
-        (this.fuel.burnRate = 182),
-        (this.fuel.factor = 0.8),
-        (this.stations = [
-          new Station({ type: ["seat", "crew"], arm: 3.4417 }),
-          new Station({ type: ["seat", "crew"], arm: 3.4417 }),
-          new Station({ type: ["seat"], arm: 4.43992 }),
-          new Station({ type: ["seat"], arm: 4.43992 }),
-          new Station({ type: ["seat"], arm: 5.55752 }),
-          new Station({ type: ["seat"], arm: 5.55752 }),
-          new Station({ type: ["seat"], arm: 6.42112 }),
-          new Station({ type: ["seat"], arm: 6.60146 }),
-          new Station({ type: ["seat"], arm: 7.21106 }),
-          new Station({ type: ["placeholder"], arm: 0 }),
-          new Station({ type: ["seat"], arm: 8.69696 }),
-          new Station({ type: ["seat"], arm: 8.69696 }),
-          new Station({ type: ["fuel"], arm: 5.175758 }),
-          new Station({ type: ["cargo"], arm: 3.44, limit: 113 }),
-          new Station({ type: ["cargo", "podBay"], arm: 4.62534, id: "bay1" }),
-          new Station({ type: ["cargo", "podBay"], arm: 5.92836, id: "bay2" }),
-          new Station({ type: ["cargo", "podBay"], arm: 3.36296, id: "bay3" }),
-          new Station({ type: ["cargo", "podBay"], arm: 7.30504, id: "bay4" }),
-        ])
     }
   }
 </script>
