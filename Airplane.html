@@ -145,14 +145,6 @@
       })
       this.calculatePlaneMoment() // Plane moments inexplicably don't equal W*M for GY Air
       let stations = Array.from(this.stations) // copy so we don't change the original data
-
-
-
-
-
-
-
-
       //
       // Sum all Weights and Moments
       //
@@ -160,9 +152,6 @@
       const cargo = stations.filter((station) => station.type.includes("cargo") && station.weight > 0)
 
       pob = this.convertToSAD(pob,SAD)
-      console.log("POB: %o", pob)
-
-
 
       const ZFW = stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
       const fuel = stations.filter((station) => station.type.includes("fuel"))
@@ -186,8 +175,6 @@
 
       const PAX_Weight = POB_Weight - CREW_Weight
       const ZFW_Weight = ZFW.reduce((total, station) => total + parseFloat(station.weight), 0)
-
-      // needs tweaking for Declared Weights ***
 
       const totalWeight = stations.reduce((total, station) => total + parseFloat(station.weight), 0)
       const totalMoment = stations.reduce((total, station) => total + parseFloat(station.moment), 0)
