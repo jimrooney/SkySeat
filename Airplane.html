@@ -85,22 +85,38 @@
     removeLoad(load) {
       // remove obj by load.id
     }
-    getWB(SAD) {
-      // Standard Actual Declared
-
-      //---------------------------------------
-      // calculate CG based on load (simple WAM)
-      // returns {wb} Object
-      // --------------------------------------
-      //
-      // Calculate all moments
-      //
-      this.stations.forEach((station) => {
-        station.moment = station.weight * station.arm
-      })
-      //
-      // If plane's station doesn't exist yet, create it.
-      //
+    convertToSAD(pob,SAD){ // takes a list of passenger stations and converts their weights based on SAD
+      let POB
+      const _SAD = !!SAD ? SAD : root.details.SAD
+      switch (_SAD.SAD) {
+        case "Actual":
+          console.log("using Acutal Weights")
+          POB = pob.map((station) => { // Straight Copy, calculate arms
+            station.moment = station.weight * station.arm
+            return station
+            })
+          break
+        case "Standard":
+          console.log("using Standard Weights")
+          POB = pob.map((station) => {
+            station.weight = 83 // Everyone's an adult for now ******
+            // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
+            station.moment = station.weight * station.arm
+            return station
+          })
+          break
+        // Assume Declared
+        default:
+          console.log("using Declared Weights")
+          POB = pob.map((station) => {
+            station.weight = Number(station.weight) + 4
+            station.moment = station.weight * station.arm
+            return station
+          })
+      }
+      return POB // return new list of stations
+    }
+    calculatePlaneMoment(){ // if no plane station, make one
       const plane = this.stations.filter((station) => station.type.includes("airplane"))
       if (plane.length <= 0) {
         //
@@ -114,45 +130,45 @@
         station.moment = this.moment
         this.stations.push(station)
       }
+    }
+    getWB(SAD) {
+      // Standard Actual Declared
+      //---------------------------------------
+      // calculate CG based on load (simple WAM)
+      // returns {wb} Object
+      // --------------------------------------
+      //
+      // Calculate all moments
+      //
+      this.stations.forEach((station) => {
+        station.moment = station.weight * station.arm
+      })
+      this.calculatePlaneMoment() // Plane moments inexplicably don't equal W*M for GY Air
+      let stations = Array.from(this.stations) // copy so we don't change the original data
+
+
+
+
+
+
+
+
       //
       // Sum all Weights and Moments
       //
-      const ZFW = this.stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
-      const fuel = this.stations.filter((station) => station.type.includes("fuel"))
+      let pob = stations.filter((station) => station.type.includes("seat") && !!station.weight) // only occupied seats
+      const cargo = stations.filter((station) => station.type.includes("cargo") && station.weight > 0)
+
+      pob = this.convertToSAD(pob,SAD)
+      console.log("POB: %o", pob)
+
+
+
+      const ZFW = stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
+      const fuel = stations.filter((station) => station.type.includes("fuel"))
       const fuelQuantity = fuel.reduce((acc, station) => station.quantity, 0)
 
-      const pob = this.stations.filter((station) => station.type.includes("seat") && station.weight > 0) // only occupied seats
-      let POB = pob
-
-      const _SAD = !!SAD ? SAD : root.details.SAD
-      switch (_SAD.SAD) {
-        case "Actual":
-          console.log("using Acutal Weights")
-          POB = pob.map((station) => station) // copy the array... maybe use Set instead?
-          break
-        case "Standard":
-          console.log("using Standard Weights")
-          POB = pob.map((station) => {
-            station.weight = 83 // Everyone's an adult for now ******
-            // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
-            return station
-          })
-          break
-        // Assume Declared
-        default:
-          console.log("using Declared Weights")
-          POB = pob.map((station) => {
-            station.weight = Number(station.weight) + 4
-            return station
-          })
-      }
-      //
-      // ReCalculate POB moments
-      //
-      POB.forEach((station) => {
-        station.moment = station.weight * station.arm
-      })
-      const CREW = POB.filter((station) => {
+      const CREW = pob.filter((station) => {
         if (!!station.pax) {
           station.pax.find(
             (pax) => pax.label == "Role" // only return pax with Roles (crew)
@@ -163,9 +179,9 @@
       // Find the PIC (Flies Left Seat, so find works, but could also search by matching seat number) ****
       //
       const PIC = CREW.find((station) => station.pax.find((pax) => pax.label == "Role" && pax.value == "PIC"))
-      const PAX = POB.filter((x) => !CREW.includes(x)) // Filter out Crew
+      const PAX = pob.filter((x) => !CREW.includes(x)) // Filter out Crew
 
-      const POB_Weight = POB.reduce((total, station) => total + parseFloat(station.weight), 0)
+      const POB_Weight = pob.reduce((total, station) => total + parseFloat(station.weight), 0)
       const CREW_Weight = CREW.reduce((total, station) => total + parseFloat(station.weight), 0)
 
       const PAX_Weight = POB_Weight - CREW_Weight
@@ -173,8 +189,8 @@
 
       // needs tweaking for Declared Weights ***
 
-      const totalWeight = this.stations.reduce((total, station) => total + parseFloat(station.weight), 0)
-      const totalMoment = this.stations.reduce((total, station) => total + parseFloat(station.moment), 0)
+      const totalWeight = stations.reduce((total, station) => total + parseFloat(station.weight), 0)
+      const totalMoment = stations.reduce((total, station) => total + parseFloat(station.moment), 0)
 
       //
       const CG = totalMoment / totalWeight
@@ -186,7 +202,7 @@
       //
       const wb = {
         stations: this.stations,
-        POB: POB,
+        POB: pob,
         crew: {
           stations: CREW,
           pic: PIC,
