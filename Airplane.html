@@ -85,16 +85,20 @@
     removeLoad(load) {
       // remove obj by load.id
     }
-    convertToSAD(pob,SAD){ // takes a list of passenger stations and converts their weights based on SAD
+    convertToSAD(pob, SAD) {
+      // takes a list of passenger stations and converts their weights based on SAD
       let POB
       const _SAD = !!SAD ? SAD : root.details.SAD
       switch (_SAD.SAD) {
         case "Actual":
           console.log("using Acutal Weights")
-          POB = pob.map((station) => { // Straight Copy, calculate arms
-            station.moment = station.weight * station.arm
+          POB = pob.map((station) => {
+            // Straight Copy, calculate arms
+            station.weight = station.weight.actual
+              station.moment = station.weight * station.arm || "NaN"
+              console.log("Station: %o",station)
             return station
-            })
+          })
           break
         case "Standard":
           console.log("using Standard Weights")
@@ -109,14 +113,15 @@
         default:
           console.log("using Declared Weights")
           POB = pob.map((station) => {
-            station.weight = Number(station.weight) + 4
+            station.weight = Number(station.weight.declared) + 4
             station.moment = station.weight * station.arm
             return station
           })
       }
       return POB // return new list of stations
     }
-    calculatePlaneMoment(){ // if no plane station, make one
+    calculatePlaneMoment() {
+      // if no plane station, make one
       const plane = this.stations.filter((station) => station.type.includes("airplane"))
       if (plane.length <= 0) {
         //
@@ -151,7 +156,7 @@
       let pob = stations.filter((station) => station.type.includes("seat") && !!station.weight) // only occupied seats
       const cargo = stations.filter((station) => station.type.includes("cargo") && station.weight > 0)
 
-      pob = this.convertToSAD(pob,SAD)
+      pob = this.convertToSAD(pob, SAD)
 
       const ZFW = stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
       const fuel = stations.filter((station) => station.type.includes("fuel"))

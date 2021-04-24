@@ -8,16 +8,20 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Currently
 -------------------------------
+After second plane is plotted, pax dissapear when moved... cannot set property "seat" of undefined. 
+Handle Drop... Cannot find "seat" of undefined.
 Remove the Click for the airplane report (weigh/balance)
 
+Auto-Allocating passengers and seats (and auto-calculating best case w/b)
+  Auto-Replotting pax seats when you open the details window.
+  We might want to display discrete seated Cells differently to show that they've been assigned.
+
+LBS doesn't auto convert in from Rezdy
+
 Add KG/LBS to Details
+Maybe set default SAD based on plane?
 
 Asychronos loading (promisses?)
-
-Details recalculates based on Standard/Declared.
-  Need the Loadsheet to do the same.
-  Also need to add "Actual" to both.
-  Minor: Standard/Declared button blocks the left hand close button (CSS thing)
   
 LBS/KG 
   Everyone's an adult... in Airplane.html... we can use the pax info to figure out if they're a child.
@@ -30,12 +34,8 @@ LBS/KG
   We don't appear to be converting LBS to KG yet.
   in WB.html... // ** Switch this to grep **
 
-Auto-Allocating passengers and seats (and auto-calculating best case w/b)
-  Auto-Replotting pax seats when you open the details window.
-  We might want to display discrete seated Cells differently to show that they've been assigned.
 
-LBS doesn't auto convert in from Rezdy
-NAN screws everything
+
 
 In Details. Remove the pax seat when assigning a new seat (in the Manifest Pax fields)
 // also change the field here? ************************

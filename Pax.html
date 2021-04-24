@@ -7,6 +7,7 @@
         this.fields = data
       }
       this.fullName = this.firstName + " " + this.lastName
+      this.actualWeight = false
     }
     //
     // Getter/Setter Utility functions
@@ -14,7 +15,11 @@
     setValue(label, value) {
       const rgxp = new RegExp(label, "i")
       let result = this.fields.find((x) => x.label.match(rgxp))
-      result.value = value
+      if (!!result) {
+        result.value = value
+      } else {
+        this.fields.push({ label: label, value: value })
+      }
     }
     getValue(label) {
       const rgxp = new RegExp(label, "i")
@@ -24,9 +29,9 @@
       }
       return
     }
-    //
+    // ==============================================
     // Getters/Setters
-    //
+    // ==============================================
     get item() {
       return root.getItem(this.barcode)
     }
@@ -56,15 +61,15 @@
     }
     get barcode() {
       let code = this.getValue("Barcode")
-      if (!code){
+      if (!code) {
         code = this.orderNumber + "*" + this.firstName + "_" + this.lastName
-        this.fields.push({label:"Barcode", value: code})
+        this.fields.push({ label: "Barcode", value: code })
       }
       return code
     }
     set barcode(Barcode) {
-      if (!this.barcode){
-        this.fields.push({label:"Barcode", value: Barcode})
+      if (!this.barcode) {
+        this.fields.push({ label: "Barcode", value: Barcode })
         return
       }
       this.setValue("Barcode", Barcode)
@@ -79,17 +84,22 @@
       //
       // Maybe a good place to add standard weights and standard weight addition (4kg)
       //
-      let result = this.getValue("weight")
+      const actualWeight = this.getValue("Actual Weight")
+      let result = this.getValue("Passenger weight")
       // Always return KG...
       // Removes KG LBS etc
       if (!!result) {
         result = wb.getKilos(result)
       }
       result = parseInt(result) || "tbc"
-      return result
+      return { declared: result, actual: actualWeight }
     }
     set weight(weight) {
-      this.setValue("weight", weight)
+      if (!!weight.actual) {
+        this.setValue("Actual Weight", weight.actual)
+      } else {
+        this.setValue("Passenger weight", weight)
+      }
     }
     get times() {
       const time = {
@@ -110,17 +120,17 @@
           const d = Math.floor((b - a) / 36e5) // 36e5 scientific notation for 3600000
           let ret
 
-          if ( d < 1){
+          if (d < 1) {
             ret = 0
           }
-          if (d == 1){
+          if (d == 1) {
             ret = 1
           }
-          if (d > 1){
+          if (d > 1) {
             ret = d - 1
           }
 
-          return ret 
+          return ret
         },
         set duration(value) {
           // placeholder

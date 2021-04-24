@@ -60,6 +60,7 @@
           parent.count++
           this.name = _type
           const _parent = parent
+          const _pax = pax
           const list = `${_type}List` || "PaxList"
           const firstName = pax.firstName
           const weight = pax.weight
@@ -67,7 +68,7 @@
           const barcode = pax.barcode
 
           let $pax = $(
-            `<div>${firstName}<br><span style="font-size:large;">${weight}</span>` //<br>${orderNumber}</div>`
+            `<div>${firstName}<br><span class="weight" style="font-size:large;">${weight.declared}</span>` //<br>${orderNumber}</div>`
           )
             //.data("number", p)
             .data("seat", index)
@@ -95,10 +96,30 @@
                 }
               },
             })
-            .click(function () {
-              console.log("Pax Click")
+            .click(function (e) {
+              let weight = parseInt($pax.find(".weight").text())
+
+              // Find the midpoint of the sprite
+              const margin = 5
+              const x = e.pageX - this.offsetLeft;
+              const y = e.pageY - this.offsetTop - 50;
+              const h = $(this).outerHeight(true)
+              const midpoint = (h+margin)/2
+              // --------------------------------
+
+              if (y>midpoint){
+                const w = weight-1
+                _pax.weight = {actual:w}
+              }
+              else {
+                const w = weight+1
+                _pax.weight = {actual:w}
+              }
+              $pax.find(".weight").text(_pax.weight.actual)
               _parent.seatPax()
             })
+
+
 
           let hue
           if (parent.bgColors[orderNumber]) {
@@ -543,7 +564,7 @@
             { label: "Role", value: "PIC" },
             { label: "First Name", value: pilot.first },
             { label: "Last Name", value: pilot.last },
-            { label: "Weight", value: pilot["declared weight"].toString() },
+            { label: "Passenger Weight", value: pilot["declared weight"].toString() },
           ],
         })
       })

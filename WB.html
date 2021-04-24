@@ -5,15 +5,21 @@
       if (!string) {
         return
       }
-      // ** Switch this to grep **
-      if (
-        string.toUpperCase().indexOf("LBS") > 0 ||
-        string.toUpperCase().indexOf("LB") > 0 ||
-        string.toUpperCase().indexOf("POUND") > 0
-      ) {
-        factor = 2.20462
+      let number = string
+
+      if (typeof string == "string") {
+        // ** Switch this to grep **
+        if (
+          string.toUpperCase().indexOf("LBS") > 0 ||
+          string.toUpperCase().indexOf("LB") > 0 ||
+          string.toUpperCase().indexOf("POUND") > 0
+        ) {
+          factor = 2.20462
+        }
+        number = parseInt(string)
       }
-      let ret = parseInt(string) / factor
+
+      let ret = number / factor
       ret = Math.round(ret)
       return ret
     },
