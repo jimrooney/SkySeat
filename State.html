@@ -128,25 +128,15 @@
       }
     }
     getPax(barcode) {
-      console.log("{state}getPax(%o)", barcode)
-      console.log("Data: %o", this.data)
       let ret
       for (const key in this.data) {
         ret = this.data[key].passengers.find((pax) =>
-          pax.fields.find((f) => {
-            if (f.label == "Barcode" && f.value == barcode) {
-              console.log("Barcode: %o", barcode)
-              console.log("F: %o", f)
-              console.log("f.value: %o", f.value)
-              console.log("f.label %o", f.label)
-              console.log("Match? %o", f.label == "Barcode" && f.value == barcode)
-            }
-            return f.label == "Barcode" && f.value == barcode
-          })
+          pax.fields.find((f) => f.label == "Barcode" && f.value == barcode)
         )
-        if (ret){break}
+        if (!!ret) {
+          break
+        }
       }
-      console.log("Pax: %o", ret)
       return ret
     }
     clearEmpties() {
