@@ -389,6 +389,9 @@
         const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
         const manifestPax = _this._TableCell.board.manifest.getPax(barcode)
         let statePax = _this._TableCell.board.state.getPax(barcode)
+
+        console.log ("manifestPax: %o", manifestPax)
+        console.log("statePax: %o", statePax)
         //
         // Capture it's last seat before assigning it this one.
         oldSeat = JSON.parse(JSON.stringify(droppedPaxSeat))
