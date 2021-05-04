@@ -223,9 +223,22 @@
     }
 
     update() {
+      const _this = this
       $(".Pax").each(function () {
         const _pax = $(this).data("this").pax
-        const weight = _pax.weight.actual || `<span style="font-size:small;color:grey">${_pax.weight.declared}</span>`
+        let weight = ""
+        switch (_this.SAD.SAD) {
+          case "Declared":
+            weight = _pax.weight.declared || ` `
+            break
+          case "Actual":
+            weight = _pax.weight.actual || `<span style="font-size:small;color:grey">${_pax.weight.declared}</span>`
+            break
+          case "Standard":
+            weight = "83"
+            break
+        }
+
         $(this).html(`${_pax.firstName}<br><span class="weight" style="font-size:large;">${weight}</span>`)
       })
       this.getWB()
