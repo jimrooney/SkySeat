@@ -91,17 +91,14 @@
       const _SAD = !!SAD ? SAD : root.details.SAD
       switch (_SAD.SAD) {
         case "Actual":
-          console.log("using Acutal Weights")
           POB = pob.map((station) => {
             // Straight Copy, calculate arms
             station.weight = station.weight.actual
-              station.moment = station.weight * station.arm || "NaN"
-              console.log("Station: %o",station)
+            station.moment = station.weight * station.arm || "NaN"
             return station
           })
           break
         case "Standard":
-          console.log("using Standard Weights")
           POB = pob.map((station) => {
             station.weight = 83 // Everyone's an adult for now ******
             // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
@@ -111,7 +108,6 @@
           break
         // Assume Declared
         default:
-          console.log("using Declared Weights")
           POB = pob.map((station) => {
             station.weight = Number(station.weight.declared) + 4
             station.moment = station.weight * station.arm
@@ -164,9 +160,7 @@
 
       const CREW = pob.filter((station) => {
         if (!!station.pax) {
-          station.pax.find(
-            (pax) => pax.label == "Role" // only return pax with Roles (crew)
-          )
+          station.pax.find((pax) => !!pax && pax.label == "Role") // only return pax with Roles (crew)
         }
       })
       //

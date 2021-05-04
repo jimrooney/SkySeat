@@ -9,21 +9,27 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 Currently
 -------------------------------
 
+Pilots can't change seats (no fields)
+Actual Weight up/down/reset buttons
+Update pax sprites to display the correct SAD weight onscreen
+
+TBC in Actual weight change doesn't change (since it's not a number)...
+  Need to have it start at a number, maybe 50?
+  Eventually, we can allow it to take an input number.
+
 Actual weights, TBC needs a starting point (so if NaN, use 50 or something)
 Actual weights... display Actual only when actual is shown?
   Make icons for controls... reset, up, down, actual/declared (an "A" if actual is entered?)
-
-
-
-After second plane is plotted, pax dissapear when moved... cannot set property "seat" of undefined. 
-Handle Drop... Cannot find "seat" of undefined.
 Remove the Click for the airplane report (weigh/balance)
 
 Auto-Allocating passengers and seats (and auto-calculating best case w/b)
   Auto-Replotting pax seats when you open the details window.
   We might want to display discrete seated Cells differently to show that they've been assigned.
 
-LBS doesn't auto convert in from Rezdy
+In Details. Remove the pax seat when assigning a new seat (in the Manifest Pax fields)
+// also change the field here? ************************
+Dropping Pax changes their .seat value in State... need to also update it's fields.
+Since the assignment is by object, we might be able to set the fields by passing the object. 
 
 Add KG/LBS to Details
 Maybe set default SAD based on plane?
@@ -37,18 +43,6 @@ LBS/KG
   // ------------------
   // Tag each passenger
   // ------------------
-  
-  We don't appear to be converting LBS to KG yet.
-  in WB.html... // ** Switch this to grep **
-
-
-
-
-In Details. Remove the pax seat when assigning a new seat (in the Manifest Pax fields)
-// also change the field here? ************************
-Dropping Pax changes their .seat value in State... need to also update it's fields.
-Since the assignment is by object, we might be able to set the fields by passing the object. 
-
 
 Details remembers assigned seats and will re-plot them if you click on a PAX (or the WB report)
 Loaded Plots can't be removed from the board... they're not objects, so they probably don't have barcodes or the function that checks them

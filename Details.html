@@ -11,7 +11,12 @@
     constructor(root) {
       this.root = root
       this._this = this
-      this.changeWeightClass = function (className, $selector) {
+      this.changeWeightClass = function ($selector) {
+        let className = "S"
+        if (!!this.SAD) {
+          className = this.SAD.txt
+        }
+        className = className.slice(0, 1)
         const ret = {}
         switch (className) {
           case "S":
@@ -59,6 +64,7 @@
           const index = parent.count || 0
           parent.count++
           this.name = _type
+          this.pax = pax
           const _parent = parent
           const _pax = pax
           const list = `${_type}List` || "PaxList"
@@ -68,7 +74,7 @@
           const barcode = pax.barcode
 
           let $pax = $(
-            `<div>${firstName}<br><span class="weight" style="font-size:large;">${weight.declared}</span>` //<br>${orderNumber}</div>`
+            `<div>${firstName}<br><span class="weight" style="font-size:large;">${weight.declared}</span></div>` //<br>${orderNumber}</div>`
           )
             //.data("number", p)
             .data("seat", index)
@@ -97,29 +103,33 @@
               },
             })
             .click(function (e) {
-              let weight = parseInt($pax.find(".weight").text())
-
+              if (_parent.SAD.SAD != "Actual") {
+                return
+              }
+              let weight = _pax.weight.actual || _pax.weight.declared
               // Find the midpoint of the sprite
               const margin = 5
-              const x = e.pageX - this.offsetLeft;
-              const y = e.pageY - this.offsetTop - 50;
+              const x = e.pageX - this.offsetLeft
+              const y = e.pageY - this.offsetTop - 50
               const h = $(this).outerHeight(true)
-              const midpoint = (h+margin)/2
+              const midpoint = (h + margin) / 2
+              const deadzone = 15
               // --------------------------------
 
-              if (y>midpoint){
-                const w = weight-1
-                _pax.weight = {actual:w}
+              if (y < midpoint - deadzone) {
+                const w = weight + 1
+                _pax.weight = { actual: w }
               }
-              else {
-                const w = weight+1
-                _pax.weight = {actual:w}
+              if (y > midpoint + deadzone) {
+                const w = weight - 1
+                _pax.weight = { actual: w }
               }
-              $pax.find(".weight").text(_pax.weight.actual)
-              _parent.seatPax()
+
+              if (!!_pax.weight.actual) {
+                $pax.find(".weight").text(_pax.weight.actual)
+              }
+              //_parent.seatPax()
             })
-
-
 
           let hue
           if (parent.bgColors[orderNumber]) {
@@ -199,12 +209,11 @@
       // ====================
       const $pop = $(`<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`)
       const $popLeft = $(`<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`)
-      const $SAD = $(`<span class="SAD WeightClass relativeLeft MobileButton"></span>`)
-        .click(function () {
-          let txt = $(this).text().charAt(0)
-          _this.changeWeightClass(txt, $(this))
-          _this.update()
-        })
+      const $SAD = $(`<span class="SAD WeightClass relativeLeft MobileButton"></span>`).click(function () {
+        let txt = $(this).text().charAt(0)
+        _this.changeWeightClass($(this))
+        _this.update()
+      })
       const _$root = this.$root
       this.$root.append($pop).append($popLeft)
       this.$root.prepend($SAD)
@@ -212,7 +221,13 @@
       $popLeft.click(() => _$root.hide())
       return this
     }
+
     update() {
+      $(".Pax").each(function () {
+        const _pax = $(this).data("this").pax
+        const weight = _pax.weight.actual || `<span style="font-size:small;color:grey">${_pax.weight.declared}</span>`
+        $(this).html(`${_pax.firstName}<br><span class="weight" style="font-size:large;">${weight}</span>`)
+      })
       this.getWB()
     }
     //
@@ -267,7 +282,7 @@
       $newPax.appendTo($(this))
     }
     reset($TableCell) {
-      this.changeWeightClass("A") // set the default weight class to Declared (from Actual)
+      this.changeWeightClass()
       $(".SAD").text(this.SAD.txt)
       this.count = 0
       this.airplane = $TableCell.data("_script").getPlane()
@@ -371,7 +386,7 @@
       const DroppedStation = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
       let $newPax = ui.draggable.detach()
       let droppedPaxFields = $newPax.data("pax") // array of Rezdy fields
-      let droppedPaxSeat = droppedPaxFields.find((p) => p.label === "seat")
+      let droppedPaxSeat = droppedPaxFields.find((p) => !!p && p.label === "seat")
       let thisSeat = {
         label: "seat",
         value: $(this).data("seat"),
@@ -382,20 +397,23 @@
       let oldSeat
       if (!droppedPaxSeat) {
         //
-        // In not from a seat, just assign it this one.
+        // If not from a seat, just assign it this one.
         droppedPaxFields.push(thisSeat)
         //
       } else {
         const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
         const manifestPax = _this._TableCell.board.manifest.getPax(barcode)
         let statePax = _this._TableCell.board.state.getPax(barcode)
-        //
-        // Capture it's last seat before assigning it this one.
-        oldSeat = JSON.parse(JSON.stringify(droppedPaxSeat))
-        manifestPax.fields = manifestPax.fields.filter((x) => x.label != "seat")
-        manifestPax.fields.push(thisSeat)
-        droppedPaxFields = manifestPax.fields
-        statePax.seat = thisSeat.value
+
+        if (!!manifestPax) {
+          //
+          // Capture it's last seat before assigning it this one.
+          oldSeat = JSON.parse(JSON.stringify(droppedPaxSeat))
+          manifestPax.fields = manifestPax.fields.filter((x) => x.label != "seat")
+          manifestPax.fields.push(thisSeat)
+          droppedPaxFields = manifestPax.fields
+          statePax.seat = thisSeat.value
+        }
       }
       //
       // Pax exists
@@ -619,7 +637,6 @@
         this.$root.css("heigh", "600px")
         this.$root.show()
       }
-
     }
   }
 </script>
