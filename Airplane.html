@@ -100,7 +100,7 @@
           break
         case "Standard":
           POB = pob.map((station) => {
-            station.weight = 83 // Everyone's an adult for now ******
+            station.weight = root.standard.weight.adult // Everyone's an adult for now ******
             // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
             station.moment = station.weight * station.arm
             return station
