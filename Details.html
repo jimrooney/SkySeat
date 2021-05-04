@@ -107,6 +107,9 @@
                 return
               }
               let weight = _pax.weight.actual || _pax.weight.declared
+              if (!parseInt(weight)>0){
+                weight = root.standard.weight.adult
+              }
               // Find the midpoint of the sprite
               const margin = 5
               const x = e.pageX - this.offsetLeft
