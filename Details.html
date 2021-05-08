@@ -11,25 +11,21 @@
     constructor(root) {
       this.root = root
       this._this = this
-      this.changeWeightClass = function ($selector) {
-        let className = "S"
-        if (!!this.SAD) {
-          className = this.SAD.txt
-        }
+      this.setWeightClass = function (className,$selector){
         className = className.slice(0, 1)
         const ret = {}
         switch (className) {
-          case "S":
+          case "D":
             ret.txt = "Declared Weights"
             ret.SAD = "Declared"
             ret.class = "declaredWeights"
             break
-          case "D":
+          case "A":
             ret.txt = "Actual Weights"
             ret.SAD = "Actual"
             ret.class = "actualWeights"
             break
-          case "A":
+          case "S":
             ret.txt = "Standard Weights"
             ret.SAD = "Standard"
             ret.class = "standardWeights"
@@ -42,7 +38,31 @@
             .removeClass("declaredWeights")
             .addClass(ret.class)
         })
-        if (!!$selector) {
+        if (!!$selector && !!$selector.text) {
+          $selector.text(ret.txt)
+        }
+        _this.SAD = ret
+        return ret
+      }
+      this.changeWeightClass = function ($selector) {
+        let className = "S"
+        if (!!this.SAD) {
+          className = this.SAD.txt
+        }
+        className = className.slice(0, 1)
+        let ret = {}
+        switch (className) {
+          case "S":
+          ret = this.setWeightClass("Declared",$selector)
+            break
+          case "D":
+          ret = this.setWeightClass("Actual",$selector)
+            break
+          case "A":
+          ret = this.setWeightClass("Standard",$selector)
+            break
+        }
+        if (!!$selector && !!$selector.text) {
           $selector.text(ret.txt)
         }
         _this.SAD = ret
@@ -131,7 +151,7 @@
               if (!!_pax.weight.actual) {
                 $pax.find(".weight").text(_pax.weight.actual)
               }
-              //_parent.seatPax()
+              _parent.update()
             })
 
           let hue
@@ -298,7 +318,7 @@
       $newPax.appendTo($(this))
     }
     reset($TableCell) {
-      this.changeWeightClass()
+      this.setWeightClass("D")
       $(".SAD").text(this.SAD.txt)
       this.count = 0
       this.airplane = $TableCell.data("_script").getPlane()
