@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-  <?!= include('Trash'); ?>
   <?!= include('root'); ?>
   <script>
     let debug = {}
@@ -139,8 +138,6 @@
         root.details = new Details(root)
         $("body").append(root.details.$root)
         Events.init() // for Mobile Click
-
-        $("#TrashHolder").append(new Trash(root))
       })
 
       // --------------------------------- OnLoad --------------------------------------------------
@@ -200,7 +197,6 @@
         </div>
         <div>
           <button onClick="theBoard.load()">&#10226;</button><br />
-          <div id="TrashHolder"></div>
         </div>
       </div>
       <!-- Popups -->

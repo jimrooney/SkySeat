@@ -37,6 +37,12 @@
           <div class="Roster" >Roster</div>
       </div>
       `)
+      .droppable({
+        accept: ".BookingSprite, .TableCell",
+        drop: this.handleDrop,
+        //delay: 100, // Might not need this now *******************
+      })
+      .data("_script", _this) // Backreference to JS from jQuery object
 
       // this.$roster = $(``)
       // this.$board.append(this.$roster)
@@ -89,6 +95,22 @@
         //
       })
     }
+    //
+    // Handlers for removing bookings/pax (used to be the Trash object)
+    //
+    handleDrop(event, ui){
+			const _this = $(this).data("_script") // This JS Object
+        // ignore blank drops
+				const pax = ui.draggable.data("_script").getPax()
+				if (!!pax) { // Plottable
+					_this.removePax(pax)
+      }
+		}
+    removePax(pax){
+			root.boards.forEach(board => {
+				board.state.removePax(pax)
+			})
+		}
     showTitle() {
       this.$this.find("#Title").html(this.getDate().toLocaleString("en-us", { weekday: "long" }))
     }

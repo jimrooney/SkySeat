@@ -11,7 +11,7 @@
     constructor(root) {
       this.root = root
       this._this = this
-      this.setWeightClass = function (className,$selector){
+      this.setWeightClass = function (className, $selector) {
         className = className.slice(0, 1)
         const ret = {}
         switch (className) {
@@ -53,13 +53,13 @@
         let ret = {}
         switch (className) {
           case "S":
-          ret = this.setWeightClass("Declared",$selector)
+            ret = this.setWeightClass("Declared", $selector)
             break
           case "D":
-          ret = this.setWeightClass("Actual",$selector)
+            ret = this.setWeightClass("Actual", $selector)
             break
           case "A":
-          ret = this.setWeightClass("Standard",$selector)
+            ret = this.setWeightClass("Standard", $selector)
             break
         }
         if (!!$selector && !!$selector.text) {
@@ -127,7 +127,7 @@
                 return
               }
               let weight = _pax.weight.actual || _pax.weight.declared
-              if (!parseInt(weight)>0){
+              if (!parseInt(weight) > 0) {
                 weight = root.standard.weight.adult
               }
               // Find the midpoint of the sprite
@@ -175,9 +175,9 @@
       this._TableCell = ""
       this.airplane // placholder (gets built in reset())
 
-      this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`).append(`
-        <div class="MenuButton MobileButton Print">Print</div>
-        <span class="Report" />
+      this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`).append(
+        `<div class="MenuBar"><div class="MenuButton MobileButton Print">Print</div><span class="Report" /></div>`
+      ).append(`
         <div id="detailsContents" class="WeightClass detailsContents">
           <div id="content" style="width: 100%; overflow: hidden;">
             <div id="Airplane" class="grid-container Airplane"></div>
@@ -196,12 +196,12 @@
         console.log("WB: %o", loadedPlane.getWB())
         _this.seatPax()
       })
-      this.PCFSelectorString = `<div class="PCF_Selector" id="PCF_Selector">
+      this.PCFSelectorString = `<span class="PCF_Selector" id="PCF_Selector">
           <select class="Plane" name="plane" />
           <select class="Fuel" name="fuel" /> Liters
-        </div>`
+        </span>`
       this.$PCFSelector = $(this.PCFSelectorString)
-      this.$root.append(this.$PCFSelector)
+      this.$root.find(".MenuBar").append(this.$PCFSelector)
       this.$root.data("root", this) // Access this object through $([Selector]).data('root')
       // ---------------------------
       // Print Button
