@@ -176,7 +176,7 @@
       this.airplane // placholder (gets built in reset())
 
       this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`).append(
-        `<div class="MenuBar"><div class="MenuButton MobileButton Print">Print</div><span class="Report" /></div>`
+        `<div class="MenuBar"><span class="MenuButton MobileButton Print">Print</span><span class="Report" /></div>`
       ).append(`
         <div id="detailsContents" class="WeightClass detailsContents">
           <div id="content" style="width: 100%; overflow: hidden;">
@@ -201,7 +201,7 @@
           <select class="Fuel" name="fuel" /> Liters
         </span>`
       this.$PCFSelector = $(this.PCFSelectorString)
-      this.$root.find(".MenuBar").append(this.$PCFSelector)
+      this.$root.find(".MenuBar").prepend(this.$PCFSelector)
       this.$root.data("root", this) // Access this object through $([Selector]).data('root')
       // ---------------------------
       // Print Button
@@ -239,7 +239,7 @@
       })
       const _$root = this.$root
       this.$root.append($pop).append($popLeft)
-      this.$root.prepend($SAD)
+      this.$root.find(".MenuBar").prepend($SAD)
       $pop.click(() => _$root.hide())
       $popLeft.click(() => _$root.hide())
       return this
@@ -323,9 +323,8 @@
       this.count = 0
       this.airplane = $TableCell.data("_script").getPlane()
       const _this = this
-      this.$PCFSelector.remove()
-      this.$PCFSelector = $(this.PCFSelectorString)
-      this.$root.prepend(this.$PCFSelector)
+
+      console.log("reset this.airplane: %o", this.airplane)
       $("#PaxList").empty()
       $("#CrewList").empty()
       $("#CargoPod").empty()

@@ -328,8 +328,16 @@
       const fuelStation = airplane.stations.find((station) => station.type.includes("fuel"))
       fuelStation.weight = parseInt(state.PCF.fuel) * airplane.fuel.factor
       fuelStation.quantity = state.PCF.fuel
+
+      /*
+
+
+        Not even sure this is used ***
+
+      
+      */
       //
-      // Load pax from .station sprites (in Details)
+      // Load plane with pax seating from .station sprites (in Details)
       //
       $(".station")
         .children()
@@ -337,14 +345,17 @@
           let seat
           let weight
           let pax // array of Rezdy labels [{},{}]
-
           const $station = $(this).closest(".station")
-
           if ($station.hasClass("Seat")) {
+            console.log("Has Seat")
             seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
+            console.log("Seat: %o",seat)
             pax = $(this).data("pax")
+            console.log("Pax: %o",pax)
             weight = $(this).data("_pax").weight
-            if (seat >= 0) {
+            console.log("weight: %o",weight)
+            console.log("seats: %o",seats)
+            if (seat >= 0 && !!seats[seat]) {
               seats[seat].weight = weight
               seats[seat].pax = pax
             }
@@ -357,6 +368,8 @@
             })
           }
         })
+        
+
       return airplane
     }
     getSeats() {
