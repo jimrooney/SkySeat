@@ -323,8 +323,6 @@
       this.count = 0
       this.airplane = $TableCell.data("_script").getPlane()
       const _this = this
-
-      console.log("reset this.airplane: %o", this.airplane)
       $("#PaxList").empty()
       $("#CrewList").empty()
       $("#CargoPod").empty()
@@ -672,6 +670,7 @@
         this.$root.css("heigh", "600px")
         this.$root.show()
       }
+      this.seatPax() // load pax into seats if possible (pax might have duplicate seats) ****
     }
   }
 </script>

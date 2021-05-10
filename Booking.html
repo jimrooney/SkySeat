@@ -116,7 +116,7 @@
           if (!!paxList) {
             const _acc = []
             paxList.forEach((pax) => {
-              _acc.push(`${pax.fullName} (${pax.weight})`)
+              _acc.push(`${pax.fullName} (${pax.weight.declared})`)
               $("." + pax.orderNumber).addClass("highlight")
               orderNumber = pax.orderNumber
             })
