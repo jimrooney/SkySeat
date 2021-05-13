@@ -32,7 +32,7 @@
       return hour
     },
     getHourByRow: function (row, numDigits) {
-      let hour = row + 7 // Assumes row 0 is a header row and the day starts at 8am
+      let hour = row + 6 // Assumes row 0 is a header row and the day starts at 7am
       if (hour > 12) {
         hour = hour - 12
       }
@@ -48,6 +48,14 @@
       let hour = parseInt(h)
       if (hour > 12) {
         hour = hour - 12
+      }
+      /*                 **********************************************
+                              This is a hack!
+                              This is to make the 11:30 bookings plot at 12
+                          *********************************************
+      */
+      if (hour == 11){
+        hour = 12
       }
       // Array of all TimeCells
       let all = $(".TimeCell")
