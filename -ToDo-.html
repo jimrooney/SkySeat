@@ -6,41 +6,15 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 ---------------------------------------------------------------------------------
 
 -------------------------------
-Before Launch
--------------------------------
-
-Add limits to printed Loadsheet
-In/Out check (check out side too)... In/Out only checks in cell... converts out cell if it's an in.
-"Does W/B work" (cells go red if overloaded)
-Pickups
-Flight Data Logging
-Drop on plane plots on board
-Auto-Seating ... getting a little funkyness (pax placed in the same seat)
-
--------------------------------
 Currently
 -------------------------------
-Working in this.Airplane in Details...
-modularizing the airplane object so that we can have all of the planes for the row display.
-That way we can drag/drop pax between seats. This will also allow for splitting bookings.
 
-We'll need to put the PCF selector in the airplane as well since we'll have multiple planes now.
-PCF selector (and associate) needs to bind to Details this.Airplane object
+Pickups 
 
+-> This is a hack! (in {Time})... needs to be fixed some day.
 
-
-Change Plane/Pilot/Fuel on board
 Spliting Bookings
-
-
-
-
-
-In Time.html ...
-// This is a hack! ... needs to be fixed some day.
-// Assumes row 0 is a header row and the day starts at 7am ********
-
-
+Auto-Seating
 
 Triggers for showing weights in manifest are in TableCell and Booking (BookingSprite)
 

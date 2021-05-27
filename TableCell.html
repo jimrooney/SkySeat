@@ -74,51 +74,6 @@
           $("#Details").show()
         }
       })
-      /*
-
-
-      We'll use hover to test things.....
-
-      Get the plane _this.getPlane()
-      Get the passengers _this.getData().passengers
-
-      ---- Load the plane ----
-      Assign the pilot and then the pax
-      Have different ways to load the plane to see if things work... possibly have different colours based on the results?
-      So a loading that works easily, green... but something that's contingent on seating or something could be yellow?
-      Red for "will not work, don't bother"
-      Maybe magenta for "Will not work the way you want it (based on seats), but it could be done if you shift thing around"
-
-      highlighting / colouring could be accomplished by adding and removing classes.
-
-*/
-      $this.hover(
-        function () {
-          let data = _this.getData()
-          if (!!data && data.passengers.length > 0) {
-
-            // get PCF from top cell or this cell's data
-
-            // call {Airplane}.loadPlane()
-            // pass in state cell data ... call a version of getWB(stateData)
-            // might need to modify {Airplane} to be polymorphic based on type of data passed in?
-            // maybe have it override the loading settings if we pass in loadings?
-
-            // Look at how {Details} loads planes for an example.
-
-
-
-
-
-            let plane = _this.getPlane()
-            console.log("Data: %o", data)
-            if (!!plane) {
-              console.log("Plane: %o", plane)
-            }
-          }
-        },
-        function () {}
-      )
     }
     getDate() {
       return this.board.manifest.getDate()
@@ -324,9 +279,11 @@
       return this.board.state.getData(this.$this) // get the CellData Object from the state object
     }
     setPlaneData(key, val) {
+      console.log("Set Plane Data, Key: %o Val: %o", key, val)
       let s = this.getState() // get copy of current State
       let state = JSON.parse(JSON.stringify(s))
       state.PCF[key] = val
+      console.log("Set State: %o", state)
       this.setState(state)
     }
     setState(state) {
@@ -367,10 +324,53 @@
         let dynamic_class = eval(PCF.type)
         airplane = new dynamic_class(PCF)
       }
+      const seats = airplane.stations.filter((station) => station.type.includes("seat"))
+      const fuelStation = airplane.stations.find((station) => station.type.includes("fuel"))
+      fuelStation.weight = parseInt(state.PCF.fuel) * airplane.fuel.factor
+      fuelStation.quantity = state.PCF.fuel
+
+      /*
+
+
+        Not even sure this is used ***
+
+      
+      */
       //
-      // Get Loaded Plane
+      // Load plane with pax seating from .station sprites (in Details)
       //
-      return airplane.getLoadedPlane(state)
+      $(".station")
+        .children()
+        .each(function (i, $div) {
+          let seat
+          let weight
+          let pax // array of Rezdy labels [{},{}]
+          const $station = $(this).closest(".station")
+          if ($station.hasClass("Seat")) {
+            console.log("Has Seat")
+            seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
+            console.log("Seat: %o",seat)
+            pax = $(this).data("pax")
+            console.log("Pax: %o",pax)
+            weight = $(this).data("_pax").weight
+            console.log("weight: %o",weight)
+            console.log("seats: %o",seats)
+            if (seat >= 0 && !!seats[seat]) {
+              seats[seat].weight = weight
+              seats[seat].pax = pax
+            }
+          }
+          if ($station.hasClass("Baggage")) {
+            airplane.stations.forEach((station, index) => {
+              if (!!station.id && station.id == $station.data("station").id) {
+                airplane.stations[index] = $station.data("station")
+              }
+            })
+          }
+        })
+        
+
+      return airplane
     }
     getSeats() {
       return this.getPlane()

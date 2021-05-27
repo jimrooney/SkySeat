@@ -45,10 +45,11 @@
     //    seats: seats,
     //    code: code,
     //    ACI: ACI,
-    round(num, decimalPlaces) {
+    round(num,decimalPlaces){
+
       let factor = 100
-      if (decimalPlaces > -1) {
-        factor = Math.pow(10, decimalPlaces)
+      if (decimalPlaces > -1){
+        factor = Math.pow(10,decimalPlaces)
       }
       num = Number(num)
       return Math.round((num + Number.EPSILON) * factor) / factor
@@ -165,12 +166,6 @@
       if (booking.product && booking.product.toUpperCase().includes("OUTS")) {
         isout = true
       }
-      if (booking.product && booking.product.toUpperCase().includes("ONFB")) {
-        isout = true
-      }
-      if (booking.product && booking.product.includes("SR-Aspiring")) {
-        isout = true
-      }
       if (cell.data("type") && cell.data("type").toUpperCase().includes("OUTS")) {
         isout = true
       }
@@ -257,7 +252,7 @@
       targetObject = targetObject || "#Alert"
       $('<div class="alert">' + message + "</div>")
         .insertAfter(targetObject)
-        .css("z-index", 10)
+        .css("z-index",10)
         .delay(3000)
         .fadeOut(function () {
           $(this).remove()
@@ -346,9 +341,9 @@
         return a[0] > b[0] ? -1 : 1
       }
     },
-    merge(a, b) {
+    merge(a,b){
       return a.concat(b.filter((item) => a.indexOf(item) < 0))
-    },
+    }
   }
   root.arrays = arrays
 </script>
