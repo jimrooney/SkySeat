@@ -132,6 +132,51 @@
         this.stations.push(station)
       }
     }
+    getLoadedPlane(state){
+      // *************
+      // Loading from Details... more logic to be added.
+      // *************
+      //
+      // Load plane with pax seating from .station sprites (in Details)
+      //
+
+
+      const seats = this.stations.filter((station) => station.type.includes("seat"))
+      const fuelStation = this.stations.find((station) => station.type.includes("fuel"))
+      fuelStation.weight = parseInt(state.PCF.fuel) * this.fuel.factor
+      fuelStation.quantity = state.PCF.fuel
+
+
+
+      // $(".station")
+      //   .children()
+      //   .each(function (i, $div) {
+      //     let seat
+      //     let weight
+      //     let pax // array of Rezdy labels [{},{}]
+      //     const $station = $(this).closest(".station")
+      //     if ($station.hasClass("Seat")) {
+      //       seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
+      //       pax = $(this).data("pax")
+      //       weight = $(this).data("_pax").weight
+      //       if (seat >= 0 && !!seats[seat]) {
+      //         seats[seat].weight = weight
+      //         seats[seat].pax = pax
+      //       }
+      //     }
+      //     if ($station.hasClass("Baggage")) {
+      //       this.stations.forEach((station, index) => {
+      //         if (!!station.id && station.id == $station.data("station").id) {
+      //           this.stations[index] = $station.data("station")
+      //         }
+      //       })
+      //     }
+      //   })
+        return this
+    }
+    loadPlane(data){
+      
+    }
     getWB(SAD) {
       // Standard Actual Declared
       //---------------------------------------
