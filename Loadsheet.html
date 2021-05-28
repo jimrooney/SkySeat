@@ -45,8 +45,8 @@
       console.log("\n")
       console.log("{Loadsheet}.show()")
       this.plane = TableCell.getPlane()
-      console.log("this.plane: %o",this.plane)
-      console.log("WB: %o",this.plane.getWB())
+      console.log("this.plane: %o", this.plane)
+      console.log("WB: %o", this.plane.getWB())
       console.log("\n")
       //
       // Clear out old values
@@ -76,7 +76,7 @@
       // ------------------
       let _thisPlane = TableCell.getPlane()
       this.plane = TableCell.getPlane()
-      const WB = _thisPlane.getWB(root.details.SAD)// ** testing **
+      const WB = _thisPlane.getWB(root.details.SAD) // ** testing **
       let seats = WB.POB
       //
       // Find PIC
@@ -127,14 +127,11 @@
       const _displayLimits = _thisPlane.limits.CG.aft + "" + _thisPlane.limits.CG.forward
       //
       let fuelWeightString = `${utility.round(WB.weights.fuel)}`
-      if (_thisPlane.reg == "MMZ"){
+      if (_thisPlane.reg == "MMZ") {
         fuelWeightString = `
         ${utility.round(WB.weights.fuel)} 
       <span style="font-size:x-small">( ${utility.round(WB.cg.imperial.fuelWeight)} )lbs</span>`
       }
-
-
-
 
       const cargoW = WB.stations
         .filter((station) => station.type.includes("cargo"))
@@ -145,12 +142,12 @@
       const fuel = {
         time: {
           decimal: WB.fuel.liters / _thisPlane.fuel.burnRate,
-          get hrs(){
-            return  time.decimalToHours(WB.fuel.liters / _thisPlane.fuel.burnRate)
-            },
-          get string(){
+          get hrs() {
+            return time.decimalToHours(WB.fuel.liters / _thisPlane.fuel.burnRate)
+          },
+          get string() {
             return `${this.hrs.join(":")}(hrs)`
-          }
+          },
         },
         quantity: {
           liters: WB.fuel.liters,
@@ -163,7 +160,7 @@
               return this.kg * _thisPlane.fuel.factor
               //return `${Math.round((litersToBurn + Number.EPSILON) * 100) / 100}L`
             },
-            get gallons(){
+            get gallons() {
               return this.liters / 3.79
             },
             get time() {
@@ -179,9 +176,9 @@
                 string: str,
               }
             },
-            get string(){
-              if (this.kg > 0){
-                return this.liters + '' + this.time.string
+            get string() {
+              if (this.kg > 0) {
+                return this.liters + "" + this.time.string
               }
               return ""
             },
@@ -189,17 +186,17 @@
         },
       }
       this.fuel = fuel
-      
+
       let toBurnString = ""
-      if (fuel.landing.toBurn.kg > 0){
-      toBurnString = `${utility.round(fuel.landing.toBurn.liters,0)}L ${fuel.landing.toBurn.time.string}`
-      if (_thisPlane.reg == "MMZ"){
-        toBurnString = `${utility.round(fuel.landing.toBurn.lbs,0)}lbs ${fuel.landing.toBurn.time.string}`
+      if (fuel.landing.toBurn.kg > 0) {
+        toBurnString = `${utility.round(fuel.landing.toBurn.liters, 0)}L ${fuel.landing.toBurn.time.string}`
+        if (_thisPlane.reg == "MMZ") {
+          toBurnString = `${utility.round(fuel.landing.toBurn.lbs, 0)}lbs ${fuel.landing.toBurn.time.string}`
+        }
+        if (_thisPlane.reg == "JTK") {
+          toBurnString = `${utility.round(fuel.landing.toBurn.gallons, 0)}Gal ${fuel.landing.toBurn.time.string}`
+        }
       }
-      if (_thisPlane.reg == "JTK"){
-        toBurnString = `${utility.round(fuel.landing.toBurn.gallons,0)}Gal ${fuel.landing.toBurn.time.string}`
-      }
-}
       this.displayPlane = {
         pilot: CrewNames,
         reg: _thisPlane.reg,
@@ -543,8 +540,8 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"  style="font-size:small">Burn before Landing</td>
-          <td width="6%" class="_plane_MLW" style="font-size:x-small"></td>
+          <td width="16%" style="font-size: small">Burn before Landing</td>
+          <td width="6%" class="_plane_MLW" style="font-size: x-small"></td>
           <td width="15%">
             <!--[Landing Weight]-->
             <span class="_plane_LandingWeight"></span>
@@ -558,6 +555,21 @@
           </td>
           <td>
             <span class="_paxList-12-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%"></td>
+          <td width="6%" class="limit"></td>
+          <td width="15%"></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-13-fullName"></span>
+            <span class="_paxList-13-product"></span>
+            <span class="_paxList-13-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-13-weight"></span>
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
@@ -582,6 +594,7 @@
         </tr>
       </table>
     </div>
+    <span style="font-size:26px;">&nbsp;<!-- I pass the butter --></span>
     <!------------------------------------------------ Duplicate Loadsheet ------------------------------------------------------>
     <div class="HalfA4">
       <table
@@ -852,8 +865,8 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"  style="font-size:small">Burn before Landing</td>
-          <td width="6%" class="_plane_MLW" style="font-size:x-small"></td>
+          <td width="16%" style="font-size: small">Burn before Landing</td>
+          <td width="6%" class="_plane_MLW" style="font-size: x-small"></td>
           <td width="15%">
             <!--[Landing Weight]-->
             <span class="_plane_LandingWeight"></span>
@@ -867,6 +880,21 @@
           </td>
           <td>
             <span class="_paxList-12-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%"></td>
+          <td width="6%" class="limit"></td>
+          <td width="15%"></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-13-fullName"></span>
+            <span class="_paxList-13-product"></span>
+            <span class="_paxList-13-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-13-weight"></span>
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
