@@ -199,6 +199,7 @@
         cg: {
           position: CG,
           balanced: isBalanced,
+          fwdLimit: this.getForwardCGLimit(totalWeight, this.limits.CG.bounds[0]),
           imperial: {
             TotalWeight: totalWeight * 2.2,
             CG: CG * 39.3701,
@@ -241,6 +242,9 @@
       //
       // bounds [limit,weight] (coordinates on the plotted WB chart)
       //
+      if (!bounds) {
+        return
+      }
       const fwd1 = bounds.fwd1[0] //|| 1219
       const fwd2 = bounds.fwd2[0] // 1422
       const weight1 = bounds.fwd1[1] // 1089
@@ -250,13 +254,17 @@
       const o = weight2 - weight1
       const rad = Math.atan(o / a)
 
-      const o2 = weight1 - weight // (problem weight)
+      const o2 = weight - weight1 // (problem weight)
       const h2 = o2 / Math.sin(rad)
 
       const a2 = Math.sqrt(h2 * h2 - o2 * o2)
       const limit = fwd1 + a2 // 1000
 
-      return limit
+      if (o2 < 0) {
+        return bounds.fwd1[0]
+      } else {
+        return limit
+      }
     }
     getAftCGLimit(weight) {
       return this.limits.CG.aft // *** For now. will make more complex if needed ***
