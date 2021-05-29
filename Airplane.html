@@ -132,51 +132,6 @@
         this.stations.push(station)
       }
     }
-    getLoadedPlane(state){
-      // *************
-      // Loading from Details... more logic to be added.
-      // *************
-      //
-      // Load plane with pax seating from .station sprites (in Details)
-      //
-
-
-      const seats = this.stations.filter((station) => station.type.includes("seat"))
-      const fuelStation = this.stations.find((station) => station.type.includes("fuel"))
-      fuelStation.weight = parseInt(state.PCF.fuel) * this.fuel.factor
-      fuelStation.quantity = state.PCF.fuel
-
-
-
-      // $(".station")
-      //   .children()
-      //   .each(function (i, $div) {
-      //     let seat
-      //     let weight
-      //     let pax // array of Rezdy labels [{},{}]
-      //     const $station = $(this).closest(".station")
-      //     if ($station.hasClass("Seat")) {
-      //       seat = parseInt($(this).closest(".station").data("seat")) - 1 // 0 based counting
-      //       pax = $(this).data("pax")
-      //       weight = $(this).data("_pax").weight
-      //       if (seat >= 0 && !!seats[seat]) {
-      //         seats[seat].weight = weight
-      //         seats[seat].pax = pax
-      //       }
-      //     }
-      //     if ($station.hasClass("Baggage")) {
-      //       this.stations.forEach((station, index) => {
-      //         if (!!station.id && station.id == $station.data("station").id) {
-      //           this.stations[index] = $station.data("station")
-      //         }
-      //       })
-      //     }
-      //   })
-        return this
-    }
-    loadPlane(data){
-      
-    }
     getWB(SAD) {
       // Standard Actual Declared
       //---------------------------------------
@@ -244,6 +199,7 @@
         cg: {
           position: CG,
           balanced: isBalanced,
+          fwdLimit: this.getForwardCGLimit(totalWeight, this.limits.CG.bounds[0]),
           imperial: {
             TotalWeight: totalWeight * 2.2,
             CG: CG * 39.3701,
@@ -286,6 +242,9 @@
       //
       // bounds [limit,weight] (coordinates on the plotted WB chart)
       //
+      if (!bounds) {
+        return
+      }
       const fwd1 = bounds.fwd1[0] //|| 1219
       const fwd2 = bounds.fwd2[0] // 1422
       const weight1 = bounds.fwd1[1] // 1089
@@ -295,13 +254,17 @@
       const o = weight2 - weight1
       const rad = Math.atan(o / a)
 
-      const o2 = weight1 - weight // (problem weight)
+      const o2 = weight - weight1 // (problem weight)
       const h2 = o2 / Math.sin(rad)
 
       const a2 = Math.sqrt(h2 * h2 - o2 * o2)
       const limit = fwd1 + a2 // 1000
 
-      return limit
+      if (o2 < 0) {
+        return bounds.fwd1[0]
+      } else {
+        return limit
+      }
     }
     getAftCGLimit(weight) {
       return this.limits.CG.aft // *** For now. will make more complex if needed ***
