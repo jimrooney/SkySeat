@@ -53,6 +53,17 @@
       ]
       this.fuel = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight(), burnRate: 60 }
     }
+    getLoadedPlane(state)
+    {
+      // ** Next up... need logic to put pax in the plane (based on their state data) **
+      console.log("getLoadedPlane: %o", state)
+      /*
+
+        Logic to load plane based on {state} data passed in
+
+      */
+      return this
+    }
     getSeats() {
       return this.stations((item) => item.type.includes("seat"))
     }

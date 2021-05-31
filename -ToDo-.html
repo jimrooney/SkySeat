@@ -9,7 +9,16 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 Before Launch
 -------------------------------
 
-Add "Unseat Pax" Button
+
+Building: In TableCell... getPlane() getLoadedPlane() ... getting the loaded plane based on state not DOM
+Working in {TableCell}.click() to pass data into Details before opening it.
+  Details.drop() will need to manipulate {state} as well as the GUI
+
+
+
+When auto-seating passengers, check if a seat is available before plotting them.
+  As it is right now, if you combine two planes, it combines people into seats.
+
 Still working on Display so we can have multiple planes open at the same time.
 
 In/Out check (check out side too)... In/Out only checks in cell... converts out cell if it's an in.

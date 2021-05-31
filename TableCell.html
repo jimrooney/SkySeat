@@ -65,14 +65,24 @@
       // Click
       // -------------------------------------------
       $this.click(function () {
-        _this.show()
-        //
-        let data = _this.getData()
-        console.log("Data: %o", data)
-        if (!!data) {
-          $("#Details").data("root").show($(this))
-          $("#Details").show()
+        const data = _this.getData() // gets the data from {State}
+        if (!!data && data.passengers.length > 0) {
+          // Unless there's pax, don't bother doing anything
+          console.log("{TableCell} Data: %o", data)
+          const plane = _this.getPlane() // Gets the plane based on {State}
+          //
+          if (!!plane) {
+            console.log("{TableCell}.getPlane(): %o", plane)// get PCF from top cell or this cell's data
+            /* ***************************************************************************
+            Rewire all this (below) so that we pass the data into Details.show()
+            Right now, we're passing in the jQuery for it to extract the data from.
+            pass this cell's id... Details can then pull this cell plus all it's sister cells based on matrix
+            */
+            $("#Details").data("root").show($(this))
+            $("#Details").show()
+          }
         }
+        //_this.show()
       })
       /*
 
@@ -92,33 +102,12 @@
       highlighting / colouring could be accomplished by adding and removing classes.
 
 */
-      $this.hover(
-        function () {
-          let data = _this.getData()
-          if (!!data && data.passengers.length > 0) {
+      // $this.hover(
+      //   function () {
 
-            // get PCF from top cell or this cell's data
-
-            // call {Airplane}.loadPlane()
-            // pass in state cell data ... call a version of getWB(stateData)
-            // might need to modify {Airplane} to be polymorphic based on type of data passed in?
-            // maybe have it override the loading settings if we pass in loadings?
-
-            // Look at how {Details} loads planes for an example.
-
-
-
-
-
-            let plane = _this.getPlane()
-            console.log("Data: %o", data)
-            if (!!plane) {
-              console.log("Plane: %o", plane)
-            }
-          }
-        },
-        function () {}
-      )
+      //   },
+      //   function (){} // placeholder for the hover out function
+      // )
     }
     getDate() {
       return this.board.manifest.getDate()

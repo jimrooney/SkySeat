@@ -524,19 +524,19 @@
       this.update()
     }
     seatPax() {
-      $(".Pax").each((index, pax) => {
-        const fields = $(pax).data("_pax")
-        if (fields.seat > 0) {
-          const $assignedSeat = $(`#SeatNumber${fields.seat}`)
-          $(pax).detach().appendTo($assignedSeat)
-          $(pax).position({
-            my: "left top",
-            at: "left top",
-            of: $assignedSeat,
-          })
-        }
-      })
-      this.update()
+      // $(".Pax").each((index, pax) => {
+      //   const fields = $(pax).data("_pax")
+      //   if (fields.seat > 0) {
+      //     const $assignedSeat = $(`#SeatNumber${fields.seat}`)
+      //     $(pax).detach().appendTo($assignedSeat)
+      //     $(pax).position({
+      //       my: "left top",
+      //       at: "left top",
+      //       of: $assignedSeat,
+      //     })
+      //   }
+      // })
+      // this.update()
     }
     getWB() {
       //
@@ -567,10 +567,12 @@
     // Show
     // --------------------------------------
     show($TableCell) {
+      /* change all this to accept data rather than a specific cell */
+      console.log("{details}.show: %o",$TableCell)
       //
-      // Clear the popup
+      // Clear the popup ******************* skipping this for now *******************************
       //
-      this.reset($TableCell)
+      //this.reset($TableCell)
       //
       //
       //
