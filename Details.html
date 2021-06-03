@@ -567,6 +567,12 @@
     // Show
     // --------------------------------------
     show($TableCell) {
+
+      const _TableCell = $TableCell.data("_script")
+      console.log("_TableCell.row: %o",_TableCell.row)
+
+
+
       /* change all this to accept data rather than a specific cell */
       console.log("{details}.show: %o",$TableCell)
       //
@@ -583,7 +589,7 @@
       //
       this.$TableCell = $TableCell
       this._TableCell = $TableCell.data("_script")
-      let _TableCell = this._TableCell
+      //let _TableCell = this._TableCell
       //
       //
       //

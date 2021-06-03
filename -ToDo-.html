@@ -8,43 +8,37 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Before Launch
 -------------------------------
-
-
-Building: In TableCell... getPlane() getLoadedPlane() ... getting the loaded plane based on state not DOM
-Working in {TableCell}.click() to pass data into Details before opening it.
-  Details.drop() will need to manipulate {state} as well as the GUI
-
-
-
-When auto-seating passengers, check if a seat is available before plotting them.
-  As it is right now, if you combine two planes, it combines people into seats.
-
-Still working on Display so we can have multiple planes open at the same time.
-
-In/Out check (check out side too)... In/Out only checks in cell... converts out cell if it's an in.
+Spliting Bookings / Moving pax between planes in Details
 "Does W/B work" (cells go red if overloaded)
 Pickups
 Flight Data Logging
 Drop on plane plots on board
-Auto-Seating ... getting a little funkyness (pax placed in the same seat)
+-------------------------------
 
 -------------------------------
 Currently
 -------------------------------
-Working in this.Airplane in Details...
-modularizing the airplane object so that we can have all of the planes for the row display.
-That way we can drag/drop pax between seats. This will also allow for splitting bookings.
+
+-- Is this still happening? --
+Pilots moving seats adds an extra undefined field each time (needs to be fixed eventually) ***
 
 We'll need to put the PCF selector in the airplane as well since we'll have multiple planes now.
 PCF selector (and associate) needs to bind to Details this.Airplane object
 
+=====================================================
+== Changing {Details} to read from {state} not DOM ==
+=====================================================
+Working on Display so we can have multiple planes open at the same time.
+Building: In TableCell... getPlane() getLoadedPlane() ... getting the loaded plane based on state not DOM
+Working in {TableCell}.click() to pass data into Details before opening it.
+  Details.drop() will need to manipulate {state} as well as the GUI
+
+When auto-seating passengers, check if a seat is available before plotting them.
+As it is right now, if you combine two planes, it combines people into seats.
 
 
-Change Plane/Pilot/Fuel on board
-Spliting Bookings
 
-
-
+In/Out check (check out side too)... In/Out only checks in cell... converts out cell if it's an in.
 
 
 In Time.html ...
@@ -59,7 +53,7 @@ Moving bookings between days only moves in legs,not out legs.
 
 Lock actual weights? (need reset in case someone accidentally sets the wrong person [likely])
 (lock/unlock icon? up down only appears when selected?)
-Pilots moving seats adds an extra undefined field each time (needs to be fixed eventually) ***
+
 
 TBC in Actual weight change doesn't change (since it's not a number)...
   Need to have it start at a number, maybe 50?
