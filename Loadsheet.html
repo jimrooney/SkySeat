@@ -146,7 +146,7 @@
             return time.decimalToHours(WB.fuel.liters / _thisPlane.fuel.burnRate)
           },
           get string() {
-            return `${this.hrs.join(":")}(hrs)`
+            return `${this.hrs.join(".")}(hrs)`
           },
         },
         quantity: {
@@ -166,7 +166,7 @@
             get time() {
               const d = this.liters / _thisPlane.fuel.burnRate
               const hrs = time.decimalToHours(d)
-              let str = hrs.join(":") + "(hrs)"
+              let str = hrs.join(".") + "(hrs)"
               if (!!d && d < 0) {
                 str = ""
               }
