@@ -196,7 +196,7 @@
 
 
 
-
+Details GUI Object 
 
 
 */
@@ -568,13 +568,24 @@
     // --------------------------------------
     show($TableCell) {
 
-      const _TableCell = $TableCell.data("_script")
-      console.log("_TableCell.row: %o",_TableCell.row)
+      const _this = this
+      const visible = this.$root.css("display") !== "none"
 
+      // Store the clicked cell      
+      this.$TableCell = $TableCell.data("_script")
+      this._TableCell = $TableCell.data("_script")
 
+      // Get the entire row
+      console.log("_TableCell.row: %o",this._TableCell.row)
+      const data = this._TableCell.board.state //.data
+      const entries = data.getRow(this._TableCell.row)// Object.entries(data).filter(key=>key[0].split("_")[0] == "6")
+      console.log("Row Entries: %o",entries)
+      return 
 
-      /* change all this to accept data rather than a specific cell */
-      console.log("{details}.show: %o",$TableCell)
+      const passengers = this._TableCell.getPassengers() || []
+      const state = this._TableCell.getState() // Returns State {CellData}
+
+     console.log("{details}.show: %o",$TableCell)
       //
       // Clear the popup ******************* skipping this for now *******************************
       //
@@ -582,26 +593,14 @@
       //
       //
       //
-      let visible = this.$root.css("display") !== "none"
-      const _this = this
-      //
-      // Keep the TableCell object cuz drops lose it.
-      //
-      this.$TableCell = $TableCell
-      this._TableCell = $TableCell.data("_script")
-      //let _TableCell = this._TableCell
-      //
-      //
-      //
-      const passengers = this._TableCell.getPassengers() || []
-      let state = this._TableCell.getState() // Returns State {CellData}
+
       // ====================================
       // -------------- PCF -----------------
       // ====================================
-      let $plane = $("> .Plane", this.$PCFSelector)
-      let $pilot = $("> .Pilot", this.$PCFSelector)
-      let $coPilot = $("> .CoPilot", this.$PCFSelector)
-      let $fuel = $("> .Fuel", this.$PCFSelector)
+      const $plane = $("> .Plane", this.$PCFSelector)
+      const $pilot = $("> .Pilot", this.$PCFSelector)
+      const $coPilot = $("> .CoPilot", this.$PCFSelector)
+      const $fuel = $("> .Fuel", this.$PCFSelector)
 
       PlaneManager.planes.data.forEach((plane, i) => {
         if (!!plane.weight) {
@@ -609,7 +608,7 @@
         }
       })
       $plane.change(function () {
-        _TableCell.setPlaneData("reg", this.value)
+        this._TableCell.setPlaneData("reg", this.value)
         _this.show(_this.$TableCell)
         _this.$this.show()
       })
@@ -618,14 +617,32 @@
         $fuel.append(`<option value="${i}">${i}</option>`)
       }
       $fuel.change(function () {
-        _TableCell.setPlaneData("fuel", this.value)
+        this._TableCell.setPlaneData("fuel", this.value)
         _this.update()
       })
       //      Make Fuel List that's determined by the plane's max fuel ***************
 
       /*
 
+
+
+
+
+
+
+
+
+
+
+
         Set the values to the data stored in State ***************************
+
+
+
+
+
+
+
 
       */
       if (Object.keys(state.PCF).length > 0) {

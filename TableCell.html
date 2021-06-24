@@ -66,13 +66,11 @@
       // -------------------------------------------
       $this.click(function () {
         const data = _this.getData() // gets the data from {State}
-        if (!!data && data.passengers.length > 0) {
+        if (!!data?.passengers.length > 0) {
           // Unless there's pax, don't bother doing anything
-          console.log("{TableCell} Data: %o", data)
           const plane = _this.getPlane() // Gets the plane based on {State}
           //
           if (!!plane) {
-            console.log("{TableCell}.getPlane(): %o", plane)// get PCF from top cell or this cell's data
             /* ***************************************************************************
             Rewire all this (below) so that we pass the data into Details.show()
             Right now, we're passing in the jQuery for it to extract the data from.
@@ -409,7 +407,7 @@
       // --------
       // If Data
       // --------
-      if (!!cellData && cellData.passengers.length > 0) {
+      if (!!cellData?.passengers.length > 0) {
         //
         // In/Out Chevrons
         //

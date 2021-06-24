@@ -62,6 +62,12 @@
         this.data[cell_ID] = { ...this.data[cell_ID], ...data }
       }
     }
+    getRow(number){
+      // iterate over this.data extracting all that match the row number (split the ID on _ )
+      number = number.toString() 
+      const entries = Object.entries(this.data).filter(key=>key[0].split("_")[0] == number)
+      return entries
+    }
     addOrder(cell_ID, booking) {
       let cell = this.data[cell_ID]
 
