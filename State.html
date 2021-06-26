@@ -68,6 +68,11 @@
       const entries = Object.entries(this.data).filter(key=>key[0].split("_")[0] == number)
       return entries
     }
+    getPlane(cell){
+      const [r,c] = cell.split("_")
+      const key = "0_" + c
+      return this.data[key]
+    }
     addOrder(cell_ID, booking) {
       let cell = this.data[cell_ID]
 

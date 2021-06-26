@@ -204,26 +204,9 @@ Details GUI Object
         `<div class="MenuBar"><span class="MenuButton MobileButton Print">Print</span><span class="Report" /></div>`
       ).append(`
         <div id="detailsContents" class="WeightClass detailsContents">
-          <div class="content" style="width: 100%; overflow: hidden;">
-            
-            <div id="PaxList" class="PaxList"></div>
-            <div id="CargoPod" class="CargoPod">POD</div>
-          </div>
+          <div class="content" />
           <div id="CrewList" class="CrewList"></div>
         </div>`)
-      // Todo:
-      // Add an airplane object for each airplane on the table's row...
-      this.$root.find(".content").prepend(new this.Airplane(this).$plane)
-      /*
-
-
-
-
-
-
-
-
-*/
       this.$this = this.$root
       this.report = this.$root.find(".Report") // Can probably fix by rebuilding the $()
       const _report = this.report // needed for the click scope
@@ -577,9 +560,35 @@ Details GUI Object
 
       // Get the entire row
       console.log("_TableCell.row: %o",this._TableCell.row)
-      const data = this._TableCell.board.state //.data
-      const entries = data.getRow(this._TableCell.row)// Object.entries(data).filter(key=>key[0].split("_")[0] == "6")
-      console.log("Row Entries: %o",entries)
+      const _state = this._TableCell.board.state
+      const _row = _state.getRow(this._TableCell.row)
+      const planeXML = `<span id="PaxList" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span>`
+
+      // Todo:
+      // Add an airplane object for each airplane on the table's row...
+// Next, get a plane either from the cell or from the state
+
+      _row.forEach((cell, i) => {
+        
+        console.log("Cell: %o",cell)
+        console.log("Plane: %o",_state.getPlane(cell[1].cellID))
+
+        const $plane = new _this.Airplane(_this).$plane
+        $plane.addClass("MyID"+i)
+        _this.$root.find(".content").prepend(planeXML).prepend($plane)
+      })
+
+      
+//      this.$root.find(".content").prepend(new this.Airplane(this).$plane)
+
+
+
+
+
+
+
+
+
       return 
 
       const passengers = this._TableCell.getPassengers() || []
