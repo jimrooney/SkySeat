@@ -550,7 +550,8 @@ Details GUI Object
     // Show
     // --------------------------------------
     show($TableCell) {
-
+      console.log("{details}.show: %o",$TableCell)
+      //
       const _this = this
       const visible = this.$root.css("display") !== "none"
 
@@ -566,51 +567,44 @@ Details GUI Object
 
       // Todo:
       // Add an airplane object for each airplane on the table's row...
-// Next, get a plane either from the cell or from the state
+      // Next, get a plane either from the cell or from the state (currently just pulls from {state})
 
+      // -------------------------------------------
+      // Each cell in the row
+      // -------------------------------------------
+      // Each of these will be a different plane (and have it's own PCF)
+      // 
       _row.forEach((cell, i) => {
-        
         console.log("Cell: %o",cell)
-        console.log("Plane: %o",_state.getPlane(cell[1].cellID))
-
+        const plane = _state.getPlane(cell[1].cellID).PCF
         const $plane = new _this.Airplane(_this).$plane
-        $plane.addClass("MyID"+i)
+        $plane.addClass(plane.reg)
         _this.$root.find(".content").prepend(planeXML).prepend($plane)
       })
-
-      
-//      this.$root.find(".content").prepend(new this.Airplane(this).$plane)
-
-
-
-
-
-
-
-
-
-      return 
-
       const passengers = this._TableCell.getPassengers() || []
       const state = this._TableCell.getState() // Returns State {CellData}
 
-     console.log("{details}.show: %o",$TableCell)
-      //
+
+      // *****************************************************************************************
       // Clear the popup ******************* skipping this for now *******************************
       //
       //this.reset($TableCell)
       //
-      //
-      //
-
+      //******************************************************************************************
+      
+      // *****************************************************************************************
+      // This section will need a re-write since we have more than one plane
+      // *****************************************************************************************
+      // Make Fuel List that's determined by the plane's max fuel ***************
+      // 
       // ====================================
       // -------------- PCF -----------------
       // ====================================
+      // $("> .Plane", this.$PCFSelector) shorthand for this.$PCFSelector.find(".Plane")
       const $plane = $("> .Plane", this.$PCFSelector)
       const $pilot = $("> .Pilot", this.$PCFSelector)
       const $coPilot = $("> .CoPilot", this.$PCFSelector)
       const $fuel = $("> .Fuel", this.$PCFSelector)
-
       PlaneManager.planes.data.forEach((plane, i) => {
         if (!!plane.weight) {
           $plane.append(`<option value="${plane.reg}">${plane.reg}</option>`)
@@ -629,31 +623,9 @@ Details GUI Object
         this._TableCell.setPlaneData("fuel", this.value)
         _this.update()
       })
-      //      Make Fuel List that's determined by the plane's max fuel ***************
-
-      /*
-
-
-
-
-
-
-
-
-
-
-
-
-        Set the values to the data stored in State ***************************
-
-
-
-
-
-
-
-
-      */
+      //
+      // Load PCF into selectors
+      //
       if (Object.keys(state.PCF).length > 0) {
         if (!!state.PCF.coPilot) {
           $coPilot.val(state.PCF.coPilot)
@@ -664,6 +636,11 @@ Details GUI Object
         $fuel.val(state.PCF.fuel)
         $plane.val(state.PCF.reg)
       }
+      // *****************************************************************************************
+
+
+
+
 
       const _crew = []
       pilots.list.forEach((pilot, i) => {
@@ -698,6 +675,9 @@ Details GUI Object
       //   },
       // ]
 
+      // --------------------
+      // Build Pax/Crew icons
+      // --------------------
       // ===========================================
       // -------------- Crew -----------------
       // ===========================================
@@ -718,7 +698,7 @@ Details GUI Object
         const barcode = pax.getValue("Barcode")
         const $pax = new this.Pax(this, pax, "Pax")
       })
-      //this.seatPax()
+      //this.seatPax() *********************************************
       this.init() // initialize jQuery drag/drop code
       if (visible) {
         this.$root.hide()

@@ -322,7 +322,7 @@
     getState() {
       let state = this.board.state.getData(this.$this) // get the CellData Object from the state object
       // Check for an assigned plane. If none, get from the PlaneCell
-      if (!!state.PCF && !!state.PCF.reg) {
+    if (state?.PCF?.reg) {
         return state
       }
       const PlaneCellState = this.$PlaneCell.data("_script").getData()
