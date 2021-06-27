@@ -63,10 +63,12 @@
       }
     }
     getRow(number){
+      // Get each cell {} for the row
+      // Returns an [] of {}
       // iterate over this.data extracting all that match the row number (split the ID on _ )
-      number = number.toString() 
-      const entries = Object.entries(this.data).filter(key=>key[0].split("_")[0] == number)
-      return entries
+      number = number.toString()
+      const list = Object.values(this.data).filter(entry=>entry.cellID.split("_")[0] == number)
+      return list
     }
     getPlane(cell){
       const [r,c] = cell.split("_")

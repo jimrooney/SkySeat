@@ -563,6 +563,7 @@ Details GUI Object
       console.log("_TableCell.row: %o",this._TableCell.row)
       const _state = this._TableCell.board.state
       const _row = _state.getRow(this._TableCell.row)
+      console.log("Row: %o",_row)
       const planeXML = `<span id="PaxList" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span>`
 
       // Todo:
@@ -570,13 +571,13 @@ Details GUI Object
       // Next, get a plane either from the cell or from the state (currently just pulls from {state})
 
       // -------------------------------------------
-      // Each cell in the row
+      // New Plane
       // -------------------------------------------
       // Each of these will be a different plane (and have it's own PCF)
       // 
       _row.forEach((cell, i) => {
         console.log("Cell: %o",cell)
-        const plane = _state.getPlane(cell[1].cellID).PCF
+        const plane = _state.getPlane(cell.cellID).PCF
         const $plane = new _this.Airplane(_this).$plane
         $plane.addClass(plane.reg)
         _this.$root.find(".content").prepend(planeXML).prepend($plane)
