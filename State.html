@@ -73,7 +73,9 @@
     getPlane(cell){
       const [r,c] = cell.split("_")
       const key = "0_" + c
-      return this.data[key]
+      const PCF = this.data[key].PCF
+      const plane = planes.getPlane(PCF.reg)
+      return plane
     }
     addOrder(cell_ID, booking) {
       let cell = this.data[cell_ID]

@@ -173,9 +173,10 @@
         }
       }
       this.Airplane = class {
-        constructor(parent) {
-          this.parent = parent
-          this.$plane = $(`<div id="Airplane" class="grid-container Airplane"></div>`)
+        constructor(cell,i) {
+          this.parent = _this
+          this.airplane = _this.state.getPlane(cell.cellID)
+          this.$plane = $(`<div id="Airplane${i}" class="grid-container Airplane ${this.airplane.reg}"></div>`)
             .data("_this", this)
             .click(() => {
               console.log("AirplaneClick")
@@ -188,9 +189,58 @@
                 })
             })
         }
+        reset(){
+          this.$plane.empty()
+          console.log("Resetting Plane: %o",this.$plane.prop("id"))
+          const $Airplane = this.$plane
+
+      // ------------
+      // Pilot's seat
+      // ------------
+      $("<div></div>")
+        .data("number", 1)
+        .data("seat", 1)
+        .attr("id", "SeatNumber1")
+        .addClass("SeatNumber1")
+        .addClass("grid-item")
+        .addClass("station")
+        .addClass("Seat")
+        .addClass("PilotSeat")
+        .addClass("Crew")
+        .appendTo($Airplane)
+
+      // -----
+      // Seats
+      // -----
+      // slice(1) skips the pilot's seat
+      let index = 2 // Skipping the Pilot seat and using 1 based counting.
+      this.airplane.stations
+        .slice(1)
+        .filter((el) => el.type.includes("seat") || el.type.includes("placeholder"))
+        .forEach((seat) => {
+          if (seat.type.includes("placeholder")) {
+            $("<div></div>").appendTo("#Airplane").addClass("grid-placeholder")
+            //.text("Placeholder")
+          } else {
+            $("<div></div>")
+              .data("number", index)
+              .data("seat", index)
+              .attr("id", "SeatNumber" + index)
+              .addClass("SeatNumber" + index)
+              .addClass("grid-item")
+              .addClass("station")
+              .addClass("Seat")
+              .addClass("droppedPaxSeat")
+              .appendTo($Airplane)
+            index++
+          }
+        })
+
+
+        }
       }
       this._TableCell = ""
-      this.airplane // placholder (gets built in reset())
+      this.airplane // placholder (gets built in resetAirplane())
       /*
 
 
@@ -322,7 +372,7 @@ Details GUI Object
       }
       $newPax.appendTo($(this))
     }
-    reset($TableCell) {
+    resetAirplane($TableCell) {
       this.setWeightClass("D")
       $(".SAD").text(this.SAD.txt)
       this.count = 0
@@ -335,48 +385,11 @@ Details GUI Object
       // -------------------------
       // Setup Airplane
       // -------------------------
-      $("#Airplane").empty()
+
+      $(".Airplane").data("_this").reset()
       const $Airplane = "#Airplane"
-      // ------------
-      // Pilot's seat
-      // ------------
-      $("<div></div>")
-        .data("number", 1)
-        .data("seat", 1)
-        .attr("id", "SeatNumber1")
-        .addClass("SeatNumber1")
-        .addClass("grid-item")
-        .addClass("station")
-        .addClass("Seat")
-        .addClass("PilotSeat")
-        .addClass("Crew")
-        .appendTo($Airplane)
-      // -----
-      // Seats
-      // -----
-      // slice(1) skips the pilot's seat
-      let index = 2 // Skipping the Pilot seat and using 1 based counting.
-      this.airplane.stations
-        .slice(1)
-        .filter((el) => el.type.includes("seat") || el.type.includes("placeholder"))
-        .forEach((seat) => {
-          if (seat.type.includes("placeholder")) {
-            $("<div></div>").appendTo("#Airplane").addClass("grid-placeholder")
-            //.text("Placeholder")
-          } else {
-            $("<div></div>")
-              .data("number", index)
-              .data("seat", index)
-              .attr("id", "SeatNumber" + index)
-              .addClass("SeatNumber" + index)
-              .addClass("grid-item")
-              .addClass("station")
-              .addClass("Seat")
-              .addClass("droppedPaxSeat")
-              .appendTo($Airplane)
-            index++
-          }
-        })
+
+
       // -----------
       // Baggage Pod
       // -----------
@@ -558,11 +571,11 @@ Details GUI Object
       // Store the clicked cell      
       this.$TableCell = $TableCell.data("_script")
       this._TableCell = $TableCell.data("_script")
+      this.state = this._TableCell.board.state
 
       // Get the entire row
       console.log("_TableCell.row: %o",this._TableCell.row)
-      const _state = this._TableCell.board.state
-      const _row = _state.getRow(this._TableCell.row)
+      const _row = this.state.getRow(this._TableCell.row)
       console.log("Row: %o",_row)
       const planeXML = `<span id="PaxList" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span>`
 
@@ -577,19 +590,16 @@ Details GUI Object
       // 
       _row.forEach((cell, i) => {
         console.log("Cell: %o",cell)
-        const plane = _state.getPlane(cell.cellID).PCF
-        const $plane = new _this.Airplane(_this).$plane
-        $plane.addClass(plane.reg)
+        const _plane = new _this.Airplane(cell,i)
+        const $plane = _plane.$plane
+        
+        _plane.reset()
         _this.$root.find(".content").prepend(planeXML).prepend($plane)
       })
       const passengers = this._TableCell.getPassengers() || []
       const state = this._TableCell.getState() // Returns State {CellData}
 
-
-      // *****************************************************************************************
-      // Clear the popup ******************* skipping this for now *******************************
-      //
-      //this.reset($TableCell)
+      this.resetAirplane($TableCell)
       //
       //******************************************************************************************
       
