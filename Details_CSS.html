@@ -1,21 +1,21 @@
 <style>
   .grid-container {
-    width: 155px;
+    width: 120px;
     display: grid;
-    grid-template-columns: 80px 80px;
+    grid-template-columns: 55px 55px;
     background-color: #2196f3;
-    padding: 10px;
+    /* padding: 5px; */
   }
-  /* Example of 3 column... grid-template-columns */
+  /* Example of 3 column... grid-template-columns 
   .caravan-grid-container {
-    width: 150px;
+    width: 130x;
     display: grid;
     grid-template-columns: 80px 80px;
     background-color: #2196f3;
-    padding: 10px;
-    /* grid-template-columns: auto auto auto; */
+    padding: 5px;
+    // grid-template-columns: auto auto auto; 
     justify-content: space-around;
-  }
+  }*/
   .grid-item {
     float: left;
     width: 45px;
@@ -50,8 +50,32 @@
     user-select: none;
   }
 */
+  .detailsContents {
+    width: 2000px;
+    display: inline-block;
+    background: rgb(133, 133, 133);
+    color: #fff;
+    text-align: center;
+    padding: 5px 15px 5px 15px;
+    border-radius: 6px;
+  }
+  .planeDetails {
+    display: none;
+    width: auto;
+    background: rgba(71, 88, 115, 1);
+    color: #fff;
+    text-align: center;
+    padding: 5px 15px 5px 15px;
+    border-radius: 6px;
+
+    position: absolute;
+    top: 60px;
+    left: 280px;
+    z-index: 1;
+  }
   .Airplane {
     float: left;
+    margin: 5px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
@@ -75,8 +99,8 @@
     float: left;
     width: 150px;
     height: 420px;
-    margin-left: 20px;
-    padding: 20px;
+    margin-left: 5px;
+    padding: 5px;
     background: rgb(255, 254, 221);
     border: 2px solid #333;
     border-radius: 10px;
@@ -88,20 +112,20 @@
   }
   .CargoPod {
     float: left;
-    width: 100px;
-    height: 420px;
-    margin-left: 20px;
-    padding: 20px;
-    background: rgb(243, 242, 177);
-    border: 2px solid #333;
+    width: 30px;
+    height: 300px;
+    /* margin-left: 2px; */
+    padding: 2px;
+    background: rgb(90, 90, 90);
+    border: 1px solid #333;
     border-radius: 10px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
-    -moz-box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.8);
-    -webkit-box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.8);
-    box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.8);
   }
-  .CrewList{
+  .CrewList {
     background: rgb(193, 255, 178);
   }
 

@@ -253,10 +253,8 @@ Details GUI Object
       this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`).append(
         `<div class="MenuBar"><span class="MenuButton MobileButton Print">Print</span><span class="Report" /></div>`
       ).append(`
-        <div id="detailsContents" class="WeightClass detailsContents">
-          <div class="content" />
-          <div id="CrewList" class="CrewList"></div>
-        </div>`)
+        <div id="detailsContents" class="WeightClass detailsContents content" />
+        <div id="CrewList" class="CrewList" />`)
       this.$this = this.$root
       this.report = this.$root.find(".Report") // Can probably fix by rebuilding the $()
       const _report = this.report // needed for the click scope
@@ -569,13 +567,13 @@ Details GUI Object
       const visible = this.$root.css("display") !== "none"
 
       // Store the clicked cell      
-      this.$TableCell = $TableCell.data("_script")
+      this.$TableCell = $TableCell
       this._TableCell = $TableCell.data("_script")
       this.state = this._TableCell.board.state
 
       // Get the entire row
-      console.log("_TableCell.row: %o",this._TableCell.row)
-      const _row = this.state.getRow(this._TableCell.row)
+      console.log("_TableCell.row: %o",this._TableCell.row) // int
+      const _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
       console.log("Row: %o",_row)
       const planeXML = `<span id="PaxList" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span>`
 
