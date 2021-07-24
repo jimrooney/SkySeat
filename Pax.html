@@ -85,6 +85,11 @@
       // Maybe a good place to add standard weights and standard weight addition (4kg)
       //
       const actualWeight = this.getValue("Actual Weight")
+      const childAge = parseInt(this.getValue("Child"))
+
+      // *** needs Infant Logic ***
+      const standardWeight = childAge > 3 && childAge < 17 ? root.standard.weight.child : root.standard.weight.adult 
+
       let result = this.getValue("Passenger weight")
       // Always return KG...
       // Removes KG LBS etc
@@ -92,7 +97,7 @@
         result = wb.getKilos(result)
       }
       result = parseInt(result) || "tbc"
-      return { declared: result, actual: actualWeight }
+      return { declared: result, actual: actualWeight, standard: standardWeight }
     }
     set weight(weight) {
       if (!!weight.actual) {

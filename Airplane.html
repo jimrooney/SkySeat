@@ -100,8 +100,13 @@
           break
         case "Standard":
           POB = pob.map((station) => {
-            station.weight = root.standard.weight.adult // Everyone's an adult for now ******
-            // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
+            const pax = new Pax(station.pax)
+            if (pax.getValue("Child")>0){
+              station.weight = root.standard.weight.child
+            }
+            else {
+              station.weight = root.standard.weight.adult
+            }
             station.moment = station.weight * station.arm
             return station
           })
