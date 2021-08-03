@@ -55,6 +55,27 @@
     }
     getLoadedPlane(state)
     {
+      //
+      // Called by TableCell
+      //
+      /*
+
+
+      Loop over {state} pax fields and make {Pax} objects
+
+
+
+
+
+
+
+      **** Take the data from state and load the plane based on it... return the resulting airplane
+      right now, we're just reading the state data and returning the plane... not the loaded plane
+
+
+
+
+      */
       // ** Next up... need logic to put pax in the plane (based on their state data) **
       console.log("{Airplane} getLoadedPlane: %o", state)
       /*
@@ -62,6 +83,31 @@
         Logic to load plane based on {state} data passed in
 
       */
+
+
+
+
+      console.log("{Airplane}.stations %o",this.stations)
+      // this.stations.forEach((station) => {
+      //   station.moment = station.weight * station.arm
+      // })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       return this
     }
     getSeats() {

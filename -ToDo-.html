@@ -19,6 +19,15 @@ Drop on plane plots on board
 Currently
 -------------------------------
 
+== In each {Airplane} type (GA8, etc), need to add "Id" to each seat so that we can put pax in their assigned seat based on {state} 
+==== Loading the plane based on passed in state data ====
+In {Airplane}.getLoadedPlane()....
+It doesn't currently return a loaded plane as we're changing it to load data from {state} instead of the Details DOM
+// ** Next up... need logic to put pax in the plane (based on their state data) **
+.... Can't show the loadsheet currently because it won't recognise that there's a PIC
+
+If a pax is removed from a seat, we need to remove the seat value from their {state} data
+
 Displaying the full row in Details, not just the Cell...
 
 Need to start clearing objects so they don't duplicate (dragging pax and opening details)

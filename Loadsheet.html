@@ -43,11 +43,11 @@
     // ---------------------------
     show(TableCell) {
       console.log("\n")
-      console.log("{Loadsheet}.show()")
+      console.log("{Loadsheet}.show(%o)",TableCell)
       this.plane = TableCell.getPlane()
-      console.log("this.plane: %o", this.plane)
-      console.log("WB: %o", this.plane.getWB())
-      console.log("\n")
+      console.log("{Loadsheet} this.plane: %o", this.plane)
+      console.log("{Loadsheet} this.plane.getWB(%o)", this.plane.getWB())
+      console.log("\n\n")
       //
       // Clear out old values
       //
@@ -70,13 +70,33 @@
       const dateSTR = date.toLocaleDateString("en-NZ", options)
       $("._tripDate").html(dateSTR)
       $("._trip_time").html(TableCell.getTime() + ":00") // ********
-
       // ------------------
       // Get the plane data
       // ------------------
-      let _thisPlane = TableCell.getPlane()
-      this.plane = TableCell.getPlane()
+      this.plane = TableCell.getPlane() // calls {TableCell}.getLoadedPlane()
+      const _thisPlane = this.plane
       const WB = _thisPlane.getWB(root.details.SAD) // ** testing **
+
+
+
+
+      console.log("root.details.SAD: %o",root.details.SAD)
+      console.log("{Loadsheet} _thisPlane: %o", _thisPlane)
+      console.log("{Loadsheet} WB: %o",WB)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       let seats = WB.POB
       //
       // Find PIC
@@ -84,12 +104,15 @@
       let PIC = seats.filter((station) => {
         return station.pax.find((el) => el.label == "seat" && el.value == 1)
       })
-      if (!PIC.length) {
-        PIC = null
-        utility.alert("No PIC", $("#Details > .Print"))
-        return
-        // If no PIC... this should all fail (and throw an error)
-      }
+      console.log("PIC: %o",PIC)
+      // **** Disabling the PIC check for now ******
+      // if (!PIC.length) {
+      //   console.log("[error] No PIC")
+      //   PIC = null
+      //   utility.alert("No PIC", $("#Details > .Print"))
+      //   return
+      //   // If no PIC... this should all fail (and throw an error)
+      // }
       const SIC = seats.filter((station) => {
         const isCrew = station.pax.find((el) => el.label == "Role")
         if (!!isCrew) {
@@ -110,7 +133,7 @@
       )</span>
       `
       }
-
+      
       // PIC[0].pax.find((el) => el.label == "First Name").value +
       // " " +
       // PIC[0].pax.find((el) => el.label == "Last Name").value +
@@ -132,6 +155,8 @@
         ${utility.round(WB.weights.fuel)} 
       <span style="font-size:x-small">( ${utility.round(WB.cg.imperial.fuelWeight)} )lbs</span>`
       }
+
+
 
       const cargoW = WB.stations
         .filter((station) => station.type.includes("cargo"))
@@ -260,6 +285,8 @@
       $(".Notes").html(notes)
       Events.init() // for Mobile Click
       this.$this.show()
+
+      console.log("{Loadsheet}.show() end")
     }
   }
 </script>
@@ -577,7 +604,7 @@
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
           <td width="16%"><font size="1">C of G Position</font></td>
-          <td width="6%" class="limit"><span style="font-size:x-small" class="_plane_CGLimits"></span></td>
+          <td width="6%" class="limit"><span style="font-size: x-small" class="_plane_CGLimits"></span></td>
           <td width="15%">
             <!--[CG]-->
             <span class="_plane_CG"></span>
@@ -597,7 +624,7 @@
         </tr>
       </table>
     </div>
-    <span style="font-size:26px;">&nbsp;<!-- I pass the butter --></span>
+    <span style="font-size: 26px">&nbsp;<!-- I pass the butter --></span>
     <!------------------------------------------------ Duplicate Loadsheet ------------------------------------------------------>
     <div class="HalfA4">
       <table
@@ -902,7 +929,7 @@
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
           <td width="16%"><font size="1">C of G Position</font></td>
-          <td width="6%" class="limit"><span style="font-size:x-small" class="_plane_CGLimits"></span></td>
+          <td width="6%" class="limit"><span style="font-size: x-small" class="_plane_CGLimits"></span></td>
           <td width="15%">
             <!--[CG]-->
             <span class="_plane_CG"></span>
@@ -927,202 +954,7 @@
   <!-- vcontainer -->
 </div>
 <!-- /A4 div -->
-<!-- _________________________________ Customer Signature Form _________________________________________ -->
-<center>
-  <div class="A4">
-    <div class="HalfA4">
-      <table>
-        <tr>
-          <td>
-            <center>
-              <img
-                src="https://sites.google.com/a/glenorchyair.co.nz/resources/web/images/logo/GlenorchyAir_RGB_Full_kea-red-200.png?attredirects=0"
-                style="float: center"
-              />
-              <br />
-              <table
-                border="1"
-                bordercolor="#888"
-                cellspacing="0"
-                style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
-              >
-                <tbody>
-                  <tr>
-                    <td style="width: 485px; height: 40px">Print Customer Name</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 485px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 485px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 485px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 485px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 485px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 485px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 485px; height: 40px">&nbsp;</td>
-                  </tr>
-                </tbody>
-              </table>
-            </center>
-          </td>
-          <!-- ________ Extra Trip Data ______ -->
-          <td class="v reg">
-            <table
-              border="1"
-              bordercolor="#888"
-              cellspacing="0"
-              style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
-            >
-              <tbody>
-                <tr>
-                  <td style="width: 90px; height: 40px">
-                    <span style="font-weight: bold; font-size: 20pt"
-                      ><!--[Time]--><!--[Trip Time]--><span class="_trip_time"></span></span
-                    ><br />
 
-                    <br />
-                    <br />
-                    <!--[Pilot]--><span class="_plane_pilot"></span> <span class="_plane_copilot"></span><br />
-                    <!--[Date]--><span class="_tripDate"></span><br />
-                    <!--[REG]--><span class="_plane_reg"></span><br />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <div class="HalfA4">
-      <!-- _________________________________ Duplicate Customer Signature Form _________________________________________ -->
-
-      <center>
-        <table>
-          <tr>
-            <td>
-              <img
-                src="https://sites.google.com/a/glenorchyair.co.nz/resources/web/images/logo/GlenorchyAir_RGB_Full_kea-red-200.png?attredirects=0"
-                style="float: center"
-              />
-              <br />
-              <table
-                border="1"
-                bordercolor="#888"
-                cellspacing="0"
-                style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
-              >
-                <tbody>
-                  <tr>
-                    <td style="width: 242px; height: 40px">Print Customer Name</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 242px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 242px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 242px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 242px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 242px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 242px; height: 40px">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 242px; height: 40px">&nbsp;</td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-            <td>
-              <!-- ---------------------------------Extra Data--------------------------------- -->
-              <table
-                border="1"
-                bordercolor="#888"
-                cellspacing="0"
-                style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
-              >
-                <tbody>
-                  <tr>
-                    <td style="width: 500px; height: 40px">
-                      Trip Time:
-                      <!--[Trip Time]--><span class="_trip_time"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width: 500px; height: 40px">
-                      <span class="_paxList-0-fullName"></span>
-                      <span class="_paxList-0-product" style="background: yellow"></span>
-                      <span id="data[8][9]"></span> <span id="extraData[0]"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width: 500px; height: 40px">
-                      <span class="_paxList-1-fullName"></span>
-                      <span class="_paxList-1-product" style="background: yellow"></span>
-                      <span id="data[9][9]"></span> <span id="extraData[1]"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width: 500px; height: 40px">
-                      <span class="_paxList-2-fullName"></span>
-                      <span class="_paxList-2-product" style="background: yellow"></span>
-                      <span id="data[10][9]"></span> <span id="extraData[2]"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width: 500px; height: 40px">
-                      <span class="_paxList-3-fullName"></span>
-                      <span class="_paxList-3-product" style="background: yellow"></span>
-                      <span id="data[11][9]"></span> <span id="extraData[3]"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width: 500px; height: 40px">
-                      <span class="_paxList-4-fullName"></span>
-                      <span class="_paxList-4-product" style="background: yellow"></span>
-                      <span id="data[12][9]"></span> <span id="extraData[4]"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width: 500px; height: 40px">
-                      <span class="_paxList-5-fullName"></span>
-                      <span class="_paxList-5-product" style="background: yellow"></span>
-                      <span id="data[13][9]"></span> <span id="extraData[5]"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width: 500px; height: 40px">
-                      <span class="_paxList-6-fullName"></span>
-                      <span class="_paxList-6-product" style="background: yellow"></span>
-                      <span id="data[14][9]"></span> <span id="extraData[6]"></span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
-        </table>
-        <div width="100%" class="noBorder Notes"></div>
-        <div class="MenuButton FlightFollowing NoPrint">FlightFollowing</div>
-      </center>
-    </div>
-  </div>
 
   <p>
     <!------------------- Flight Following ------------------->
