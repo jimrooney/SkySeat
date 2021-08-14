@@ -14,7 +14,7 @@
   }
 
   class Airplane {
-    constructor(data) {
+    constructor(data,state) {
       // data.REG data.Weight,data.ARM,data.Moment,data.Type,data.RegColor] *** update with new signature ***
       this.reg = data.reg
       this.regcolor = data.regcolor
@@ -22,6 +22,7 @@
       this.arm = data.arm
       this.moment = data.moment
       this.type = this.constructor.name
+
       // this.burn = {
       //   // climb:
       //   // cruise:
@@ -52,95 +53,50 @@
         // {}
       ]
       this.fuel = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight(), burnRate: 60 }
+      this.state = state  // breaks things if not set last (maybe because getFuelWeight() depends on it?)
     }
-    getLoadedPlane(state)
-    {
+    getLoadedPlane() {
+      const _this = this
+      console.log("getLoadedPlane() this: %o",this)
+      // 
+      // **** Take the data from state and load the plane based on it ***
+      // (return the resulting airplane)
+      // 
       //
       // Called by TableCell
       //
-      /*
 
+      // -- Load Fuel --
+      this.loadFuelWeightFromSate()
 
-      Loop over {state} pax fields and make {Pax} objects
-
-
-
-
-
-
-
-      **** Take the data from state and load the plane based on it... return the resulting airplane
-      right now, we're just reading the state data and returning the plane... not the loaded plane
-
-
-
-
-      */
-      // ** Next up... need logic to put pax in the plane (based on their state data) **
-      console.log("{Airplane} getLoadedPlane: %o", state)
-      /*
-
-        Logic to load plane based on {state} data passed in
-
-      */
-
-
-
-
-      console.log("{Airplane}.stations %o",this.stations)
-      // this.stations.forEach((station) => {
-      //   station.moment = station.weight * station.arm
-      // })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      // -- Load Passengers --
+      this.state.passengers.forEach((pax) => {
+        _this.seatPax(pax)
+      })
       return this
     }
     getSeats() {
       return this.stations((item) => item.type.includes("seat"))
     }
+    loadFuelWeightFromSate(){ // crude linear function to force loading of the fuel data from state
+      this.getFuelWeight()
+    }
     getFuelWeight() {
-      let ret
-      const stations = this.stations.find((station) => station.type.includes("fuel"))
-      if (!!stations) {
-        ret = stations.reduce((total, station) => total + parseFloat(station.weight), 0)
+      if (!!this.state){
+        const fuelStations = this.stations.find((station) => station.type.includes("fuel"))
+        fuelStations.weight = this.state.PCF.fuel * this.fuel.factor
+        return fuelStations.weight
       }
-      return ret
+      return null
     }
-    addLoad(load) {
-      // Accepts: {id,station,type,weight} {station}
-
-      // ************ Need checks **************************
-      // if id exists, make sure it hasn't been used already
-      // if it has, just get a new one .... this.getNextLoadId()
-      // if no id exists, get one.
-      let legal = false
-      if (this.isLegal(load)) {
-        load.id = this.getNextLoadId()
-        this.load.push(load)
-        legal = true
+    seatPax(pax) {
+      if (!!pax.seat) {
+        const stations = this.stations.find((station) => station.type.includes("seat") && station.id == pax.seat)
+        if (!!stations) {
+          stations.weight = pax.weight
+          stations.px = pax // pukes if you call stations.px stations.pax
+        }
       }
-      return ret
-    }
-    isLegal(load) {
-      // check type and limits, return T/F
-    }
-    removeLoad(load) {
-      // remove obj by load.id
     }
     convertToSAD(pob, SAD) {
       // takes a list of passenger stations and converts their weights based on SAD

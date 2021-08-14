@@ -352,12 +352,12 @@
       let airplane
       if (!!PCF.type) {
         let dynamic_class = eval(PCF.type)
-        airplane = new dynamic_class(PCF)
+        airplane = new dynamic_class(PCF,state) // pass in the cell data from {state}
       }
       //
       // Get Loaded Plane
       //
-      return airplane.getLoadedPlane(state)
+      return airplane.getLoadedPlane()
     }
     getSeats() {
       return this.getPlane()

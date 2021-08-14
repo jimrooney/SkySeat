@@ -19,7 +19,43 @@ Drop on plane plots on board
 Currently
 -------------------------------
 
-== In each {Airplane} type (GA8, etc), need to add "Id" to each seat so that we can put pax in their assigned seat based on {state} 
+We're in {Loadsheet} at the moment.
+  TableCell {state} is now attached to all {Airplane} instances (except the initial ones loaded from Google data because they don't have a TableCell yet)
+  Need to start clearing {Details} data so that it doesn't load tons of duplicate planes each time you open it.
+  All fuel calculations (on the Loadsheet) are borked for now... need fixing
+  Should check all WB calculations to ensure that they're using the new fuel data structure (loading fuel from {state})
+
+
+// ***************** Disabling all crew checks ******************************
+
+In {Airplane} getLoadedPlane() adding fuel and fuel weight // *** Quantity, need to convert to weight ***
+
+The whole chain we're following starts at {Details}.show() -> Right about where it hits... this.resetAirplane($TableCell)
+.. Which then follows on to $TableCell.data("_script").getPlane()
+
+Pax are being seated correctly.
+Failing on "print"... can't find undefined.
+
+Seats do get assigned into the {state} correctly (in the two places mentioned below)...
+They could probably be set here instead so it's in one place... 
+assignSeat($seat, $pax, droppedPaxFields)
+// this should take a pax object instead of feilds *******************
+
+
+
+
+
+Chasing down setting the seats in {state}... in {details} handleDrop() currently... 
+    (in two places):    // sets the seat value
+
+
+Working in Airplane.html... *** Pax done... now fuel and baggage ***
+Working in {Loadsheet}
+// *** We'll need this to get planes for the whole row. ***
+
+Check the AUW/CG calculations ( {Details}.getWB() )that set the top blue bar in {Details} and see if they read from the state or DOM
+Add functions to the Station object in {Airplane} that seat pax/etc.
+== Each plane now has an "Id" (in each station) so that we can put pax in their assigned seat based on {state} 
 ==== Loading the plane based on passed in state data ====
 In {Airplane}.getLoadedPlane()....
 It doesn't currently return a loaded plane as we're changing it to load data from {state} instead of the Details DOM

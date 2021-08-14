@@ -42,12 +42,9 @@
     // Show
     // ---------------------------
     show(TableCell) {
-      console.log("\n")
-      console.log("{Loadsheet}.show(%o)",TableCell)
+      console.log("Called by cell:",TableCell.id)
+      // *** We'll need this to get planes for the whole row. ***
       this.plane = TableCell.getPlane()
-      console.log("{Loadsheet} this.plane: %o", this.plane)
-      console.log("{Loadsheet} this.plane.getWB(%o)", this.plane.getWB())
-      console.log("\n\n")
       //
       // Clear out old values
       //
@@ -77,33 +74,16 @@
       const _thisPlane = this.plane
       const WB = _thisPlane.getWB(root.details.SAD) // ** testing **
 
-
-
-
-      console.log("root.details.SAD: %o",root.details.SAD)
-      console.log("{Loadsheet} _thisPlane: %o", _thisPlane)
-      console.log("{Loadsheet} WB: %o",WB)
-
-
-
-
-
-
-
-
-
-
-
+      console.log("{Loadsheet} WB: %o",WB) // correct to here ***
 
 
 
       let seats = WB.POB
+      // ***************** Disabling all crew checks ******************************
       //
       // Find PIC
       //
-      let PIC = seats.filter((station) => {
-        return station.pax.find((el) => el.label == "seat" && el.value == 1)
-      })
+      let PIC = seats.filter((station) => station.id == 1)
       console.log("PIC: %o",PIC)
       // **** Disabling the PIC check for now ******
       // if (!PIC.length) {
@@ -113,36 +93,19 @@
       //   return
       //   // If no PIC... this should all fail (and throw an error)
       // }
-      const SIC = seats.filter((station) => {
-        const isCrew = station.pax.find((el) => el.label == "Role")
-        if (!!isCrew) {
-          return station.pax.find((el) => el.label == "seat" && el.value == 2)
-        }
-      })
+      const SIC = seats.filter((station) => station.id == 2)
       const CREW = [...PIC, ...SIC]
       let CrewNames = `
-      ${PIC[0].pax.find((el) => el.label == "First Name").value}
-      ${PIC[0].pax.find((el) => el.label == "Last Name").value}
-      ${PIC[0].weight}
+      ${PIC[0].px.fullName}
+      (${PIC[0].weight})
       `
       if (SIC.length > 0) {
         CrewNames += `
         <span style="font-size: xx-small;">/ (
-      ${SIC[0].pax.find((el) => el.label == "First Name").value}
-      ${SIC[0].pax.find((el) => el.label == "Last Name").value}
+      ${SIC[0].px.fullName}
       )</span>
       `
       }
-      
-      // PIC[0].pax.find((el) => el.label == "First Name").value +
-      // " " +
-      // PIC[0].pax.find((el) => el.label == "Last Name").value +
-      // ""
-      // " / " +
-      // SIC[0].pax.find((el) => el.label == "First Name").value +
-      // " " +
-      // SIC[0].pax.find((el) => el.label == "Last Name").value
-
       //
       // Make plane variable... names mapped to class names
       //

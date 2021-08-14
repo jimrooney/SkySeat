@@ -1,7 +1,7 @@
 <script>
   class C206 extends Airplane {
-    constructor(data) {
-      super(data)
+    constructor(data,state) {
+      super(data,state)
 
       this.type = this.constructor.name // "C206"
       this.limits = {
@@ -16,12 +16,12 @@
       ;(this.fuel.capacity = 330),
         (this.fuel.burnRate = 76),
         (this.stations = [
-          new Station({ type: ["seat"], arm: 0.9398, id: 0 }),
           new Station({ type: ["seat"], arm: 0.9398, id: 1 }),
-          new Station({ type: ["seat"], arm: 1.778, id: 2 }),
+          new Station({ type: ["seat"], arm: 0.9398, id: 2 }),
           new Station({ type: ["seat"], arm: 1.778, id: 3 }),
-          new Station({ type: ["seat"], arm: 2.54, id: 4 }),
+          new Station({ type: ["seat"], arm: 1.778, id: 4 }),
           new Station({ type: ["seat"], arm: 2.54, id: 5 }),
+          new Station({ type: ["seat"], arm: 2.54, id: 6 }),
           new Station({ type: ["fuel"], arm: 1.1811 }),
         ])
     }

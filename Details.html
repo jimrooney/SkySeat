@@ -360,6 +360,8 @@ Details GUI Object
       // Add baggage removal code here ***
       //
       let $source = $(".PaxList")
+      ui.draggable.data("_pax").seat = null // Remove old seat value (so pax doesn't get plotted)
+
       if (ui.draggable.attr("class").includes("Crew")) {
         $source = $(".CrewList")
       }
@@ -385,7 +387,7 @@ Details GUI Object
       // -------------------------
 
       $(".Airplane").data("_this").reset()
-      const $Airplane = "#Airplane"
+      //const $Airplane = "#Airplane"
 
 
       // -----------
@@ -437,6 +439,8 @@ Details GUI Object
       let $newPax = ui.draggable.detach()
       let droppedPaxFields = $newPax.data("pax") // array of Rezdy fields
       let droppedPaxSeat = droppedPaxFields.find((p) => !!p && p.label === "seat")
+
+      // sets the seat value (also below if changing seats)
       let thisSeat = {
         label: "seat",
         value: $(this).data("seat"),
@@ -462,7 +466,7 @@ Details GUI Object
           manifestPax.fields = manifestPax.fields.filter((x) => x.label != "seat")
           manifestPax.fields.push(thisSeat)
           droppedPaxFields = manifestPax.fields
-          statePax.seat = thisSeat.value
+          statePax.seat = thisSeat.value // sets the seat value
         }
       }
       //
@@ -498,7 +502,6 @@ Details GUI Object
           //
           $alreadySeatedPax.data("pax", alreadySeatedPaxFields)
         } else {
-          // ********* Needs to drop back where it came from (Crew to CrewList) ********
           //
           // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
           //
@@ -509,6 +512,7 @@ Details GUI Object
       _this.update()
     }
     assignSeat($seat, $pax, droppedPaxFields) {
+      console.log("Assign Seat: %o \npax: %o\nfields: %o", $seat, $pax, droppedPaxFields)
       // this should take a pax object instead of feilds *******************
       $pax.appendTo($seat)
       $pax.draggable({ revert: false })
@@ -598,6 +602,7 @@ Details GUI Object
       const state = this._TableCell.getState() // Returns State {CellData}
 
       this.resetAirplane($TableCell)
+      console.log("== this.airplane is now: ", this.airplane)
       //
       //******************************************************************************************
       

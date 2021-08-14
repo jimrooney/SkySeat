@@ -3,8 +3,8 @@
   // Max weight in cargo area 680kg
   //
   class GA8 extends Airplane {
-    constructor(data) {
-      super(data)
+    constructor(data,state) {
+      super(data,state)
       /*
 
 1219 mm (48 in) aft of datum at 1089 kg (2400 lb) and below;
@@ -24,14 +24,14 @@ between these points.
       }
       ;(this.fuel.capacity = 330),
         (this.stations = [
-          new Station({ type: ["seat"], arm: 0.965, id: 0 }),
           new Station({ type: ["seat"], arm: 0.965, id: 1 }),
-          new Station({ type: ["seat"], arm: 1.772, id: 2 }),
+          new Station({ type: ["seat"], arm: 0.965, id: 2 }),
           new Station({ type: ["seat"], arm: 1.772, id: 3 }),
-          new Station({ type: ["seat"], arm: 2.523, id: 4 }),
+          new Station({ type: ["seat"], arm: 1.772, id: 4 }),
           new Station({ type: ["seat"], arm: 2.523, id: 5 }),
-          new Station({ type: ["seat"], arm: 3.247, id: 6 }),
+          new Station({ type: ["seat"], arm: 2.523, id: 6 }),
           new Station({ type: ["seat"], arm: 3.247, id: 7 }),
+          new Station({ type: ["seat"], arm: 3.247, id: 8 }),
           new Station({ type: ["fuel"], arm: 1.715, limit: 330 }),
           new Station({ type: ["cargo", "backShelf"], arm: 0, limit: 113, id: "BackShelf" }),
           new Station({ type: ["cargo", "podBay"], arm: 1.5665, limit: 120, id: "PodBay1" }),
