@@ -565,7 +565,9 @@ Details GUI Object
     // Show
     // --------------------------------------
     show($TableCell) {
-      console.log("{details}.show: %o",$TableCell)
+      this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
+
+      console.log("{details}.show row: %o",$TableCell.data("_script").row)
       //
       const _this = this
       const visible = this.$root.css("display") !== "none"
@@ -576,9 +578,8 @@ Details GUI Object
       this.state = this._TableCell.board.state
 
       // Get the entire row
-      console.log("_TableCell.row: %o",this._TableCell.row) // int
       const _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
-      console.log("Row: %o",_row)
+      console.log("Row Array: %o",_row)
       const planeXML = `<span id="PaxList" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span>`
 
       // Todo:
@@ -589,13 +590,13 @@ Details GUI Object
       // New Plane
       // -------------------------------------------
       // Each of these will be a different plane (and have it's own PCF)
-      // 
+      //
       _row.forEach((cell, i) => {
         console.log("Cell: %o",cell)
         const _plane = new _this.Airplane(cell,i)
         const $plane = _plane.$plane
         
-        _plane.reset()
+        _plane.reset() // *********************************** 
         _this.$root.find(".content").prepend(planeXML).prepend($plane)
       })
       const passengers = this._TableCell.getPassengers() || []
