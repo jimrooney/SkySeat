@@ -23,9 +23,18 @@ display
 
 
 
+---------------------------------------------------------------------------------------------------------
+jQuery shorthand
+---------------------------------------------------------------------------------------------------------
+Pass variables into the jQuery object on creation... 
+let $this = $("<td />", {
+  class: "TableCell Row_" + r + " Col_" + c,
+  id: this.id,
+})
 
-select the child of a class 
-let $plane = $("> .Plane", this.$PCFSelector)
+
+select the child of a class ... 
+// $("> .Plane", this.$PCFSelector) shorthand for this.$PCFSelector.find(".Plane")
 
 
 // $(() => { ... }); is shorthand for document.ready

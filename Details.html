@@ -174,10 +174,11 @@
       }
       this.Airplane = class {
         constructor(cell,i) {
+          this.id = i
           this.parent = _this
           this.airplane = _this.state.getPlane(cell.cellID)
-          this.$plane = $(`<div id="Airplane${i}" class="grid-container Airplane ${this.airplane.reg}"></div>`)
-            .data("_this", this)
+          this.$seating = $(`<div id="Airplane_${i}" class="grid-container Airplane ${this.airplane.reg}"></div>`)
+            .data("_this", this) // backreference
             .click(() => {
               console.log("AirplaneClick")
               $(".station")
@@ -190,9 +191,10 @@
             })
         }
         reset(){
-          this.$plane.empty()
-          console.log("Resetting Plane: %o",this.$plane.prop("id"))
-          const $Airplane = this.$plane
+          this.$seating.empty()
+          this.$seating.append(`<div class="Report Report_${this.id}" /><br>`)
+          console.log("Resetting Plane: %o",this.$seating.prop("id"))
+          const $Airplane = this.$seating
 
       // ------------
       // Pilot's seat
@@ -251,20 +253,11 @@ Details GUI Object
 
 */
       this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`).append(
-        `<div class="MenuBar"><span class="MenuButton MobileButton Print">Print</span><span class="Report" /></div>`
+        `<div class="MenuBar"><span class="MenuButton MobileButton Print">Print</span></div>`
       ).append(`
         <div id="detailsContents" class="WeightClass detailsContents content" />
         <div id="CrewList" class="CrewList" />`)
       this.$this = this.$root
-      this.report = this.$root.find(".Report") // Can probably fix by rebuilding the $()
-      const _report = this.report // needed for the click scope
-      this.report.click(() => {
-        console.log("LoadedClick")
-        const loadedPlane = _report.prop("loadedPlane")
-        console.log("Loaded Plane: %o", loadedPlane)
-        console.log("WB: %o", loadedPlane.getWB())
-        _this.seatPax()
-      })
       this.PCFSelectorString = `<span class="PCF_Selector" id="PCF_Selector">
           <select class="Plane" name="plane" />
           <select class="Fuel" name="fuel" /> Liters
@@ -579,9 +572,8 @@ Details GUI Object
 
       // Get the entire row
       const _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
-      console.log("Row Array: %o",_row)
-      const planeXML = `<span id="PaxList" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span>`
-
+      console.log("Row Array (from {state}): %o",_row)
+ 
       // Todo:
       // Add an airplane object for each airplane on the table's row...
       // Next, get a plane either from the cell or from the state (currently just pulls from {state})
@@ -592,12 +584,16 @@ Details GUI Object
       // Each of these will be a different plane (and have it's own PCF)
       //
       _row.forEach((cell, i) => {
-        console.log("Cell: %o",cell)
-        const _plane = new _this.Airplane(cell,i)
-        const $plane = _plane.$plane
-        
-        _plane.reset() // *********************************** 
-        _this.$root.find(".content").prepend(planeXML).prepend($plane)
+        const _plane = new _this.Airplane(cell,i) // backlink is in data.this
+
+        const $plane = $(`<div />`,{
+          id:`AirplanePlotter_${i}`
+        })
+        .append(_plane.$seating)
+        .append(`<span id="PaxList" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span><span class="SpacerPod"></span>`)
+
+        _plane.reset() 
+        _this.$root.find(".content").append($plane)
       })
       const passengers = this._TableCell.getPassengers() || []
       const state = this._TableCell.getState() // Returns State {CellData}
@@ -616,16 +612,16 @@ Details GUI Object
       // -------------- PCF -----------------
       // ====================================
       // $("> .Plane", this.$PCFSelector) shorthand for this.$PCFSelector.find(".Plane")
-      const $plane = $("> .Plane", this.$PCFSelector)
+      const $seating = $("> .Plane", this.$PCFSelector)
       const $pilot = $("> .Pilot", this.$PCFSelector)
       const $coPilot = $("> .CoPilot", this.$PCFSelector)
       const $fuel = $("> .Fuel", this.$PCFSelector)
       PlaneManager.planes.data.forEach((plane, i) => {
         if (!!plane.weight) {
-          $plane.append(`<option value="${plane.reg}">${plane.reg}</option>`)
+          $seating.append(`<option value="${plane.reg}">${plane.reg}</option>`)
         }
       })
-      $plane.change(function () {
+      $seating.change(function () {
         this._TableCell.setPlaneData("reg", this.value)
         _this.show(_this.$TableCell)
         _this.$this.show()
@@ -649,7 +645,7 @@ Details GUI Object
         }
         $pilot.val(state.PCF.pilot)
         $fuel.val(state.PCF.fuel)
-        $plane.val(state.PCF.reg)
+        $seating.val(state.PCF.reg)
       }
       // *****************************************************************************************
 

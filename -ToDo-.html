@@ -18,13 +18,24 @@ Drop on plane plots on board
 -------------------------------
 Currently
 -------------------------------
+Working in Details.show()
+  Organizing the layout and building it to suit multiple planes.
+  Need to attach the JS plane to the JQuery plane
+  using SpacerPod to separate the planes (could probably be done better)
+  Attatch each pax to it's plane so when it's removed, it goes back to a holding pen (it replicates at the moment)
 
-We're in {Loadsheet} at the moment.
+Make each plane distinct and self contained (PCF dropdowns for example)
+Load each plane's pax into holding pens
+Removed pax duplicate across holding pens (need to fix)
+
+
   TableCell {state} is now attached to all {Airplane} instances (except the initial ones loaded from Google data because they don't have a TableCell yet)
-  Need to start clearing {Details} data so that it doesn't load tons of duplicate planes each time you open it.
+
   All fuel calculations (on the Loadsheet) are borked for now... need fixing
   Should check all WB calculations to ensure that they're using the new fuel data structure (loading fuel from {state})
 
+  When auto-seating passengers, check if a seat is available before plotting them.
+  As it is right now, if you combine two planes, it combines people into seats.
 
 // ***************** Disabling all crew checks ******************************
 
@@ -81,18 +92,10 @@ Pilots moving seats adds an extra undefined field each time (needs to be fixed e
 We'll need to put the PCF selector in the airplane as well since we'll have multiple planes now.
 PCF selector (and associate) needs to bind to Details this.Airplane object
 
-=====================================================
-== Changing {Details} to read from {state} not DOM ==
-=====================================================
-Working on Display so we can have multiple planes open at the same time.
-Building: In TableCell... getPlane() getLoadedPlane() ... getting the loaded plane based on state not DOM
-Working in {TableCell}.click() to pass data into Details before opening it.
-  Details.drop() will need to manipulate {state} as well as the GUI
-
-When auto-seating passengers, check if a seat is available before plotting them.
-As it is right now, if you combine two planes, it combines people into seats.
 
 
+
+Need to adjust the Details "Close" button so it's not so tempting to close the board (they're too close to each other)
 
 In/Out check (check out side too)... In/Out only checks in cell... converts out cell if it's an in.
 
