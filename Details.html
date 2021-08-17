@@ -533,6 +533,16 @@ Details GUI Object
       //
       // Loads plane based on Details ".station" classes
       //
+
+      const _row = this.state.getRow(this._TableCell.row)
+      _row.forEach((cell, i) => {
+        const plane = $(`#Airplane_${i}`).data("_this")
+        console.log("Airplane: %o",plane)
+      })
+
+
+
+
       const loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
       const WB = loadedPlane.getWB(this.SAD)
       const report = this.$root.find(".Report")
