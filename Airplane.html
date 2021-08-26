@@ -69,8 +69,8 @@
       // -- Load Fuel --
       this.loadFuelWeightFromSate()
 
-      // -- Load Passengers --
-      this.state.passengers.forEach((pax) => {
+      // -- Load Passengers -- // cheeky shortcut (?) around undefined state
+      this.state?.passengers.forEach((pax) => {
         _this.seatPax(pax)
       })
       return this

@@ -75,19 +75,22 @@
       //this.SAD = "Declared" // Standard | Declared | Actual
       this.bgColors = {}
       this.colorNumbers = Array.from({ length: 20 }, (_, i) => "hsl(" + (i + 1) + 360 / (i + 1) + ", 50%, 75%)")
-      //
+      // ==============================
+      // Pax Class
+      // ==============================
       this.Pax = class {
-        constructor(parent, pax, _type) {
+        constructor(parent, pax, _type, id) {
           if (!pax) {
             return
           }
+          const _this = this
           const index = parent.count || 0
           parent.count++
           this.name = _type
           this.pax = pax
           const _parent = parent
           const _pax = pax
-          const list = `${_type}List` || "PaxList"
+          const list = `${_type}List_${id}` || "PaxList"
           const firstName = pax.firstName
           const weight = pax.weight
           const orderNumber = pax.orderNumber
@@ -123,6 +126,7 @@
               },
             })
             .click(function (e) {
+              console.log("PaxClick this %o",_this)
               if (_parent.SAD.SAD != "Actual") {
                 return
               }
@@ -537,7 +541,7 @@ Details GUI Object
       const _row = this.state.getRow(this._TableCell.row)
       _row.forEach((cell, i) => {
         const plane = $(`#Airplane_${i}`).data("_this")
-        console.log("Airplane: %o",plane)
+        console.log("Airplane: %o",plane.airplane.getLoadedPlane())
       })
 
 
@@ -553,10 +557,6 @@ Details GUI Object
       report.prop("loadedPlane", loadedPlane)
       report.css("background-color", color)
       report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
-      //
-      // Return the loadedPlane
-      //
-      return loadedPlane
     }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time
@@ -600,13 +600,63 @@ Details GUI Object
           id:`AirplanePlotter_${i}`
         })
         .append(_plane.$seating)
-        .append(`<span id="PaxList" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span><span class="SpacerPod"></span>`)
+        .append(`<span id="PaxList_${i}" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span><span class="SpacerPod"></span>`)
 
         _plane.reset() 
         _this.$root.find(".content").append($plane)
+
+        const passengers = cell.passengers
+        const state = this.state // need this cells {CellData}... might be getting {state} ***
+        // ===========================================
+        // -------------- Passengers -----------------
+        // ===========================================
+        passengers.forEach((p, index) => {
+          const pax = new Pax(p, index)
+          const firstName = pax.getValue("First Name")
+          const weight = pax.weight
+          const orderNumber = pax.getValue("orderNumber")
+          const barcode = pax.getValue("Barcode")
+          const $pax = new this.Pax(this, pax, "Pax" ,i)
+        })
+
       })
+
+      // ****** Moving everything below into the loop above ******
+
+
+
+
+
+
+
+
+
+
+
+
+
       const passengers = this._TableCell.getPassengers() || []
       const state = this._TableCell.getState() // Returns State {CellData}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       this.resetAirplane($TableCell)
       console.log("== this.airplane is now: ", this.airplane)

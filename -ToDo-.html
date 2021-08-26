@@ -19,6 +19,16 @@ Drop on plane plots on board
 Currently
 -------------------------------
 Working in Details.show()
+
+
+  Changing to load each plane, not just the TableCell plane... 
+    // ****** Moving everything below into the loop above ******
+    Need to rebuild the PCF and Report objects so each plane has one
+
+  Dropping pax doesn't get loaded plane (missing {state})
+  Skpping past it with : // cheeky shortcut (?) around undefined state
+
+  Also, the forEach loop evaluates for every plane, even if only one is shown.
   "Report" still only shows the current plane... added a Report_[id] class to target different reports
     in {Details}.getWB() ... this._TableCell.getPlane() (needs to get specific plane)
   Organizing the layout and building it to suit multiple planes.
