@@ -105,6 +105,7 @@
             .data("pax", pax.fields)
             .data("_pax", pax)
             .data("this", this)
+            .data("list", list)
             .attr("id", `${_type}${index}`)
             .appendTo(`#${list}`) // This places the object
             .addClass("Pax")
@@ -356,7 +357,8 @@ Details GUI Object
       //
       // Add baggage removal code here ***
       //
-      let $source = $(".PaxList")
+      const list = ui.draggable.data("list")
+      let $source = $(`#${list}`)
       ui.draggable.data("_pax").seat = null // Remove old seat value (so pax doesn't get plotted)
 
       if (ui.draggable.attr("class").includes("Crew")) {
