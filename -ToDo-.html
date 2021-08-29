@@ -20,18 +20,26 @@ Currently
 -------------------------------
 Working in Details.show()
 
+  in handleDrop... working on manipulating {state} data when dropping into different planes... 
+    we're moving pax into the new cell, so they need to move in {state}, then they'll reflect on the Calendar page
+    Just got this working (for the current leg, not the associated leg)
+    Will need logic to plot the whole board from state, inclusive of out legs... doesn't matter if they've been moved... they need to be handled.
+    When pax are moved in the wedding planner, they need to be evaluated in the state... 
+    None of the out leg logic should live in the calendar view... all should be in the state.
+
+Add the trip leg to the {state}.addPax() call in Details 
+// can add the booking leg to this (since we already know that) ***
+
+
+  Because each pax list is pulled out of {state}, the planes don't do WB correctly.
+    We either need to reflect pax drops into {state} or calculate them based on DOM (or some other way)
+
+Crew List still not displaying
+
 
   Changing to load each plane, not just the TableCell plane... 
     // ****** Moving everything below into the loop above ******
     Need to rebuild the PCF and Report objects so each plane has one
-
-  Dropping pax doesn't get loaded plane (missing {state})
-  Skpping past it with : // cheeky shortcut (?) around undefined state
-
-  Also, the forEach loop evaluates for every plane, even if only one is shown.
-  "Report" still only shows the current plane... added a Report_[id] class to target different reports
-    in {Details}.getWB() ... this._TableCell.getPlane() (needs to get specific plane)
-  Organizing the layout and building it to suit multiple planes.
 
   using SpacerPod to separate the planes (could probably be done better)
   Attatch each pax to it's plane so when it's removed, it goes back to a holding pen (it replicates at the moment)

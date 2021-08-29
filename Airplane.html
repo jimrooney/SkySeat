@@ -6,7 +6,7 @@
   class Station {
     constructor(data) {
       this.type = data.type || ""
-      this.weight = data.weight || 0
+      this.weight = data.weight > 0 ? data.weight : 0
       this.arm = data.arm || 0
       this.moment = this.weight * this.arm
       this.id = data.id
@@ -14,7 +14,7 @@
   }
 
   class Airplane {
-    constructor(data,state) {
+    constructor(data, state) {
       // data.REG data.Weight,data.ARM,data.Moment,data.Type,data.RegColor] *** update with new signature ***
       this.reg = data.reg
       this.regcolor = data.regcolor
@@ -53,15 +53,13 @@
         // {}
       ]
       this.fuel = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight(), burnRate: 60 }
-      this.state = state  // breaks things if not set last (maybe because getFuelWeight() depends on it?)
+      this.state = state // breaks things if not set last (maybe because getFuelWeight() depends on it?)
     }
     getLoadedPlane() {
       const _this = this
-      console.log("getLoadedPlane() this: %o",this)
-      // 
-      // **** Take the data from state and load the plane based on it ***
+      //
       // (return the resulting airplane)
-      // 
+      //
       //
       // Called by TableCell
       //
@@ -78,13 +76,14 @@
     getSeats() {
       return this.stations((item) => item.type.includes("seat"))
     }
-    loadFuelWeightFromSate(){ // crude linear function to force loading of the fuel data from state
+    loadFuelWeightFromSate() {
+      // crude linear function to force loading of the fuel data from state
       this.getFuelWeight()
     }
     getFuelWeight() {
-      if (!!this.state){
+      if (!!this.state) {
         const fuelStations = this.stations.find((station) => station.type.includes("fuel"))
-        fuelStations.weight = this.state.PCF.fuel * this.fuel.factor
+        fuelStations.weight = this.state.PCF?.fuel * this.fuel.factor || 0
         return fuelStations.weight
       }
       return null
@@ -106,7 +105,8 @@
         case "Actual":
           POB = pob.map((station) => {
             // Straight Copy, calculate arms
-            station.weight = station.weight.actual
+            const w = station.weight.actualstation.weight.actual
+            station.weight = !!w ? w : 0
             station.moment = station.weight * station.arm || "NaN"
             return station
           })
@@ -122,7 +122,8 @@
         // Assume Declared
         default:
           POB = pob.map((station) => {
-            station.weight = Number(station.weight.declared) + 4
+            const w = Number(station.weight.declared) + 4
+            station.weight = !!w ? w : 0
             station.moment = station.weight * station.arm
             return station
           })

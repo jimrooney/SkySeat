@@ -11,6 +11,10 @@
     constructor(root) {
       this.root = root
       this._this = this
+      this.state // placeholder
+      this.$TableCell // placeholder
+      this._TableCell // placeholder
+
       this.setWeightClass = function (className, $selector) {
         className = className.slice(0, 1)
         const ret = {}
@@ -322,9 +326,6 @@ Details GUI Object
         const _row = this.state.getRow(this._TableCell.row)
         _row.forEach((cell, i) => {
           const plane = $(`#Airplane_${i}`).data("_this")
-
-          console.log("\n\nAirplane: %o", plane.airplane.getLoadedPlane())
-
           const loadedPlane = plane.airplane.getLoadedPlane() // retunrs a loaded airplane object
           const WB = loadedPlane.getWB(this.SAD)
           const report = this.$root.find(`.Report_${i}`)
@@ -449,7 +450,8 @@ Details GUI Object
     handleDrop(event, ui) {
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
       const $root = ui.draggable.closest(".detailsDiv")
-      const $AirplanePlotter = ui.draggable.closest(".AirplanePlotter")
+      const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter")
+      const $thisAirplanePlotter = $(this).closest(".AirplanePlotter")
       const _root = $root.data("root")
       //
       // this.airplane.stations updates via getWB which searches the .station classes
@@ -464,6 +466,17 @@ Details GUI Object
         label: "seat",
         value: $(this).data("seat"),
       }
+
+
+
+
+
+
+
+
+
+
+
       //
       // Capture old seat
       //
@@ -529,16 +542,39 @@ Details GUI Object
 
       // Move pax in {state}
 
-      console.log("$AirplanePlotter: ", $AirplanePlotter.data("cell"))
+      console.log("$AirplanePlotter: ", $droppedAirplanePlotter.data("cell"))
       console.log("Dropped Pax: ", droppedPaxFields)
       console.log("Dropped Seat: ", droppedPaxSeat)
+      console.log("This Cell: ", $thisAirplanePlotter.data("cell"))
 
+      const clickedCell = $thisAirplanePlotter.data("cell")
 
-
-
-
+      const newCellID = $thisAirplanePlotter.data("cell").cellID
 
       
+      console.log("clickedCell: ",clickedCell)
+      console.log("newCellID: ",newCellID)
+      console.log("_this._TableCell: ", _this._TableCell)
+      console.log("Row: ",_this._TableCell.row)
+
+      // have Row (and Leg)
+
+
+
+
+
+
+
+      console.log("State: ",_this.state)
+      console.log("StateCell: ",_this.state.data[newCellID])
+
+
+
+
+      const pax = new Pax(droppedPaxFields)
+      _this.state.removePax([pax])
+      _this.state.addPax(pax,newCellID) // can add the booking leg to this (since we already know that) ***
+
       _this.assignSeat($(this), $newPax, droppedPaxFields)
       _this.update()
     }
@@ -639,7 +675,6 @@ Details GUI Object
       const state = this._TableCell.getState() // Returns State {CellData}
 
       this.resetAirplane($TableCell)
-      console.log("== this.airplane is now: ", this.airplane)
       //
       //******************************************************************************************
 

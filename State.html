@@ -77,17 +77,21 @@
       const plane = planes.getPlane(PCF.reg)
       return plane
     }
-    addOrder(cell_ID, booking) {
-      let cell = this.data[cell_ID]
+    // addOrder(cell_ID, booking) {
+    //   let cell = this.data[cell_ID]
 
-      cell.leg = booking.getLeg()
-      let orderNumber = booking.orderNumber
-      let product = booking.itemNumber
-      let key = orderNumber + "_" + product
-      if (!!key && !cell.bookingOrders.includes(key)) {
-        cell.bookingOrders.push(key)
-      }
-      return true
+    //   cell.leg = booking.getLeg()
+    //   let orderNumber = booking.orderNumber
+    //   let product = booking.itemNumber
+    //   let key = orderNumber + "_" + product
+    //   if (!!key && !cell.bookingOrders.includes(key)) {
+    //     cell.bookingOrders.push(key)
+    //   }
+    //   return true
+    // }
+    addPax(pax,cellID){
+      const cell = this.data[cellID]
+      cell?.passengers.push(pax)
     }
     // -----------------------------------------------------------------------------------------------------
     //
