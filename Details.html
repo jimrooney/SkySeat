@@ -127,7 +127,7 @@
               },
             })
             .click(function (e) {
-              console.log("PaxClick this %o",_this)
+              console.log("PaxClick this %o", _this)
               if (_parent.SAD.SAD != "Actual") {
                 return
               }
@@ -178,10 +178,11 @@
         }
       }
       this.Airplane = class {
-        constructor(cell,i) {
+        constructor(cell, i) {
           this.id = i
           this.parent = _this
           this.airplane = _this.state.getPlane(cell.cellID)
+          this.airplane.state = cell
           this.$seating = $(`<div id="Airplane_${i}" class="grid-container Airplane ${this.airplane.reg}"></div>`)
             .data("_this", this) // backreference
             .click(() => {
@@ -195,55 +196,53 @@
                 })
             })
         }
-        reset(){
+        reset() {
           this.$seating.empty()
           this.$seating.append(`<div class="Report Report_${this.id}" /><br>`)
-          console.log("Resetting Plane: %o",this.$seating.prop("id"))
+          console.log("Resetting Plane: %o", this.$seating.prop("id"))
           const $Airplane = this.$seating
 
-      // ------------
-      // Pilot's seat
-      // ------------
-      $("<div></div>")
-        .data("number", 1)
-        .data("seat", 1)
-        .attr("id", "SeatNumber1")
-        .addClass("SeatNumber1")
-        .addClass("grid-item")
-        .addClass("station")
-        .addClass("Seat")
-        .addClass("PilotSeat")
-        .addClass("Crew")
-        .appendTo($Airplane)
+          // ------------
+          // Pilot's seat
+          // ------------
+          $("<div></div>")
+            .data("number", 1)
+            .data("seat", 1)
+            .attr("id", "SeatNumber1")
+            .addClass("SeatNumber1")
+            .addClass("grid-item")
+            .addClass("station")
+            .addClass("Seat")
+            .addClass("PilotSeat")
+            .addClass("Crew")
+            .appendTo($Airplane)
 
-      // -----
-      // Seats
-      // -----
-      // slice(1) skips the pilot's seat
-      let index = 2 // Skipping the Pilot seat and using 1 based counting.
-      this.airplane.stations
-        .slice(1)
-        .filter((el) => el.type.includes("seat") || el.type.includes("placeholder"))
-        .forEach((seat) => {
-          if (seat.type.includes("placeholder")) {
-            $("<div></div>").appendTo("#Airplane").addClass("grid-placeholder")
-            //.text("Placeholder")
-          } else {
-            $("<div></div>")
-              .data("number", index)
-              .data("seat", index)
-              .attr("id", "SeatNumber" + index)
-              .addClass("SeatNumber" + index)
-              .addClass("grid-item")
-              .addClass("station")
-              .addClass("Seat")
-              .addClass("droppedPaxSeat")
-              .appendTo($Airplane)
-            index++
-          }
-        })
-
-
+          // -----
+          // Seats
+          // -----
+          // slice(1) skips the pilot's seat
+          let index = 2 // Skipping the Pilot seat and using 1 based counting.
+          this.airplane.stations
+            .slice(1)
+            .filter((el) => el.type.includes("seat") || el.type.includes("placeholder"))
+            .forEach((seat) => {
+              if (seat.type.includes("placeholder")) {
+                $("<div></div>").appendTo("#Airplane").addClass("grid-placeholder")
+                //.text("Placeholder")
+              } else {
+                $("<div></div>")
+                  .data("number", index)
+                  .data("seat", index)
+                  .attr("id", "SeatNumber" + index)
+                  .addClass("SeatNumber" + index)
+                  .addClass("grid-item")
+                  .addClass("station")
+                  .addClass("Seat")
+                  .addClass("droppedPaxSeat")
+                  .appendTo($Airplane)
+                index++
+              }
+            })
         }
       }
       this._TableCell = ""
@@ -298,6 +297,8 @@ Details GUI Object
 
     update() {
       const _this = this
+
+      // Reflect PAX weights as per SAD
       $(".Pax").each(function () {
         const _pax = $(this).data("this").pax
         let weight = ""
@@ -312,10 +313,30 @@ Details GUI Object
             weight = root.standard.weight.adult
             break
         }
-
         $(this).html(`${_pax.firstName}<br><span class="weight" style="font-size:large;">${weight}</span>`)
       })
-      this.getWB()
+
+      //Update WB reports
+      console.log("\n\nUpdate WB Reports")
+      {
+        const _row = this.state.getRow(this._TableCell.row)
+        _row.forEach((cell, i) => {
+          const plane = $(`#Airplane_${i}`).data("_this")
+
+          console.log("\n\nAirplane: %o", plane.airplane.getLoadedPlane())
+
+          const loadedPlane = plane.airplane.getLoadedPlane() // retunrs a loaded airplane object
+          const WB = loadedPlane.getWB(this.SAD)
+          const report = this.$root.find(`.Report_${i}`)
+          const color = WB.cg.balanced ? "blue" : "red"
+          //
+          // Update the "red/notRed" report bar above the seats
+          //
+          report.prop("loadedPlane", loadedPlane)
+          report.css("background-color", color)
+          report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
+        })
+      }
     }
     //
     // .stations are tagged in their data with seat number ... .data("number", i)
@@ -388,7 +409,6 @@ Details GUI Object
       $(".Airplane").data("_this").reset()
       //const $Airplane = "#Airplane"
 
-
       // -----------
       // Baggage Pod
       // -----------
@@ -429,6 +449,7 @@ Details GUI Object
     handleDrop(event, ui) {
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
       const $root = ui.draggable.closest(".detailsDiv")
+      const $AirplanePlotter = ui.draggable.closest(".AirplanePlotter")
       const _root = $root.data("root")
       //
       // this.airplane.stations updates via getWB which searches the .station classes
@@ -438,7 +459,6 @@ Details GUI Object
       let $newPax = ui.draggable.detach()
       let droppedPaxFields = $newPax.data("pax") // array of Rezdy fields
       let droppedPaxSeat = droppedPaxFields.find((p) => !!p && p.label === "seat")
-
       // sets the seat value (also below if changing seats)
       let thisSeat = {
         label: "seat",
@@ -449,17 +469,14 @@ Details GUI Object
       //
       let oldSeat
       if (!droppedPaxSeat) {
-        //
         // If not from a seat, just assign it this one.
         droppedPaxFields.push(thisSeat)
-        //
       } else {
+        // Rassigning Seat
         const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
         const manifestPax = _this._TableCell.board.manifest.getPax(barcode)
         let statePax = _this._TableCell.board.state.getPax(barcode)
-
         if (!!manifestPax) {
-          //
           // Capture it's last seat before assigning it this one.
           oldSeat = JSON.parse(JSON.stringify(droppedPaxSeat))
           manifestPax.fields = manifestPax.fields.filter((x) => x.label != "seat")
@@ -468,9 +485,9 @@ Details GUI Object
           statePax.seat = thisSeat.value // sets the seat value
         }
       }
-      //
-      // Pax exists
-      //
+      // ============================================
+      // Seat's occupied
+      // ============================================
       if ($(this).children().length > 0) {
         //
         // Swap with any existing seated pax
@@ -507,6 +524,21 @@ Details GUI Object
           $alreadySeatedPax.appendTo($("#PaxList"))
         }
       }
+
+
+
+      // Move pax in {state}
+
+      console.log("$AirplanePlotter: ", $AirplanePlotter.data("cell"))
+      console.log("Dropped Pax: ", droppedPaxFields)
+      console.log("Dropped Seat: ", droppedPaxSeat)
+
+
+
+
+
+
+      
       _this.assignSeat($(this), $newPax, droppedPaxFields)
       _this.update()
     }
@@ -535,31 +567,6 @@ Details GUI Object
       // })
       // this.update()
     }
-    getWB() {
-      //
-      // Loads plane based on Details ".station" classes
-      //
-
-      const _row = this.state.getRow(this._TableCell.row)
-      _row.forEach((cell, i) => {
-        const plane = $(`#Airplane_${i}`).data("_this")
-        console.log("Airplane: %o",plane.airplane.getLoadedPlane())
-      })
-
-
-
-
-      const loadedPlane = this._TableCell.getPlane() // retunrs a loaded airplane object
-      const WB = loadedPlane.getWB(this.SAD)
-      const report = this.$root.find(".Report")
-      const color = WB.cg.balanced ? "blue" : "red"
-      //
-      // Update the "red/notRed" report bar above the seats
-      //
-      report.prop("loadedPlane", loadedPlane)
-      report.css("background-color", color)
-      report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
-    }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time
     // This lets it revert to something close to the new container
@@ -572,20 +579,20 @@ Details GUI Object
     show($TableCell) {
       this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
 
-      console.log("{details}.show row: %o",$TableCell.data("_script").row)
+      console.log("{details}.show row: %o", $TableCell.data("_script").row)
       //
       const _this = this
       const visible = this.$root.css("display") !== "none"
 
-      // Store the clicked cell      
+      // Store the clicked cell
       this.$TableCell = $TableCell
       this._TableCell = $TableCell.data("_script")
       this.state = this._TableCell.board.state
 
       // Get the entire row
       const _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
-      console.log("Row Array (from {state}): %o",_row)
- 
+      console.log("Row Array (from {state}): %o", _row)
+
       // Todo:
       // Add an airplane object for each airplane on the table's row...
       // Next, get a plane either from the cell or from the state (currently just pulls from {state})
@@ -596,15 +603,19 @@ Details GUI Object
       // Each of these will be a different plane (and have it's own PCF)
       //
       _row.forEach((cell, i) => {
-        const _plane = new _this.Airplane(cell,i) // backlink is in data.this
+        const _plane = new _this.Airplane(cell, i) // backlink is in data.this
 
-        const $plane = $(`<div />`,{
-          id:`AirplanePlotter_${i}`
+        const $plane = $(`<div />`, {
+          id: `AirplanePlotter_${i}`,
+          class: "AirplanePlotter",
         })
-        .append(_plane.$seating)
-        .append(`<span id="PaxList_${i}" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span><span class="SpacerPod"></span>`)
+          .data("cell",cell) // Backreference to which calendar cell it's plotting
+          .append(_plane.$seating)
+          .append(
+            `<span id="PaxList_${i}" class="PaxList"></span><span id="CargoPod" class="CargoPod">POD</span><span class="SpacerPod"></span>`
+          )
 
-        _plane.reset() 
+        _plane.reset()
         _this.$root.find(".content").append($plane)
 
         const passengers = cell.passengers
@@ -618,58 +629,25 @@ Details GUI Object
           const weight = pax.weight
           const orderNumber = pax.getValue("orderNumber")
           const barcode = pax.getValue("Barcode")
-          const $pax = new this.Pax(this, pax, "Pax" ,i)
+          const $pax = new this.Pax(this, pax, "Pax", i)
         })
-
       })
 
       // ****** Moving everything below into the loop above ******
 
-
-
-
-
-
-
-
-
-
-
-
-
       const passengers = this._TableCell.getPassengers() || []
       const state = this._TableCell.getState() // Returns State {CellData}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       this.resetAirplane($TableCell)
       console.log("== this.airplane is now: ", this.airplane)
       //
       //******************************************************************************************
-      
+
       // *****************************************************************************************
       // This section will need a re-write since we have more than one plane
       // *****************************************************************************************
       // Make Fuel List that's determined by the plane's max fuel ***************
-      // 
+      //
       // ====================================
       // -------------- PCF -----------------
       // ====================================
@@ -710,10 +688,6 @@ Details GUI Object
         $seating.val(state.PCF.reg)
       }
       // *****************************************************************************************
-
-
-
-
 
       const _crew = []
       pilots.list.forEach((pilot, i) => {
