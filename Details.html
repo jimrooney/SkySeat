@@ -284,6 +284,11 @@ Details GUI Object
       // ====================
       // Details Close Button
       // ====================
+      this.close = function(_this){
+        _this.$root.hide()
+        _this.root.updateBoards()
+        console.log("==Closing==")
+      }
       const $pop = $(`<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`)
       const $popLeft = $(`<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`)
       const $SAD = $(`<span class="SAD WeightClass relativeLeft MobileButton"></span>`).click(function () {
@@ -291,11 +296,10 @@ Details GUI Object
         _this.changeWeightClass($(this))
         _this.update()
       })
-      const _$root = this.$root
       this.$root.append($pop).append($popLeft)
       this.$root.find(".MenuBar").prepend($SAD)
-      $pop.click(() => _$root.hide())
-      $popLeft.click(() => _$root.hide())
+      $pop.click(() => _this.close(_this))
+      $popLeft.click(() => _this.close(_this))
       return this
     }
 

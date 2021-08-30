@@ -16,6 +16,9 @@
     getBoards: function () {
       return $(".Board").map((i, board) => $(board).data("root"))
     },
+    updateBoards : function (){
+      this.boards.forEach( board => board.update())
+    },
     //
     // Example function, changes all boards to today.
     //

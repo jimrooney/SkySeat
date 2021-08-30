@@ -92,6 +92,7 @@
     addPax(pax,cellID){
       const cell = this.data[cellID]
       cell?.passengers.push(pax)
+      return cell?.passengers
     }
     // -----------------------------------------------------------------------------------------------------
     //
