@@ -287,7 +287,6 @@ Details GUI Object
       this.close = function(_this){
         _this.$root.hide()
         _this.root.updateBoards()
-        console.log("==Closing==")
       }
       const $pop = $(`<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`)
       const $popLeft = $(`<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`)
@@ -577,7 +576,7 @@ Details GUI Object
 
       const pax = new Pax(droppedPaxFields)
       _this.state.removePax([pax])
-      _this.state.addPax(pax,newCellID) // can add the booking leg to this (since we already know that) ***
+      console.log(_this.state.addPax(pax,newCellID)) // can add the booking leg to this (since we already know that) ***
 
       _this.assignSeat($(this), $newPax, droppedPaxFields)
       _this.update()

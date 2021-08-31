@@ -62,13 +62,30 @@
         this.data[cell_ID] = { ...this.data[cell_ID], ...data }
       }
     }
+    getPlanes(){
+      const list = Object.values(this.data).filter(entry=>entry.cellID.split("_")[0] == 0)
+      return list
+    }
     getRow(number){
       // Get each cell {} for the row
       // Returns an [] of {}
+      let row = {}
+      const planes = this.getPlanes()
+      planes.forEach(plane =>{
+        const id = number + "_" + plane.cellID.split("_")[1]
+        const cell = new CellData(id)
+        row[id] = cell
+      })
       // iterate over this.data extracting all that match the row number (split the ID on _ )
       number = number.toString()
       const list = Object.values(this.data).filter(entry=>entry.cellID.split("_")[0] == number)
-      return list
+      //
+      // overwrite empty cells with pax cells
+      // the row is the empty plane cells by default... replace with existing data for that cell
+      list.forEach(cell=>{
+        row[cell.cellID] = cell
+      })
+      return Object.values(row)
     }
     getPlane(cell){
       const [r,c] = cell.split("_")
@@ -90,9 +107,11 @@
     //   return true
     // }
     addPax(pax,cellID){
-      const cell = this.data[cellID]
-      cell?.passengers.push(pax)
-      return cell?.passengers
+      if (!this.data[cellID]){
+        this.data[cellID] = new CellData(cellID)
+      }
+      this.data[cellID].passengers.push(pax)
+      return this.data[cellID].passengers
     }
     // -----------------------------------------------------------------------------------------------------
     //

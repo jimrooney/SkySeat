@@ -19,28 +19,20 @@ Drop on plane plots on board
 Currently
 -------------------------------
 In {state}
-  addPax() and removePax() need to expand.
-  Need to plot in and out legs.
+  Auto-Plot legs here... Need to plot in and out legs in {state} rather than having the Calendar do it.
+  addPax() and removePax()
   Likely need error scenario handling.
-  
+  Find the current logic handling this and move it into {state}
+
+  in {details}... call this new {state} update from handleDrop()
+  Add the trip leg to the {state}.addPax() call in Details 
+  // can add the booking leg to this (since we already know that) ***
+
 Working in Details.show()
 All available planes need to be shown.
 Later, it could be interesting to block planes that are away. That would take a lot of logic though.
 
-  in handleDrop... working on manipulating {state} data when dropping into different planes... 
-    we're moving pax into the new cell, so they need to move in {state}, then they'll reflect on the Calendar page
-    Just got this working (for the current leg, not the associated leg)
-    Will need logic to plot the whole board from state, inclusive of out legs... doesn't matter if they've been moved... they need to be handled.
-    When pax are moved in the wedding planner, they need to be evaluated in the state... 
-    None of the out leg logic should live in the calendar view... all should be in the state.
-
-Add the trip leg to the {state}.addPax() call in Details 
-// can add the booking leg to this (since we already know that) ***
-
-
-  Because each pax list is pulled out of {state}, the planes don't do WB correctly.
-    We either need to reflect pax drops into {state} or calculate them based on DOM (or some other way)
-
+Get WB reports working
 Crew List still not displaying
 
 
