@@ -18,6 +18,20 @@ Drop on plane plots on board
 -------------------------------
 Currently
 -------------------------------
+
+Just got pods working again.
+Moved a bunch of it into {details}.Airplane class... need to move all the airplane stuff into that class.
+  might rename it to not confuse it with the "Airplane" class as this is a Details Airplane (and different)
+  
+
+Digging into reset Airplane ... shouldn't be referencing this.airplane anymore (should be per plane)
+//Update WB Reports
+// Add an airplane object for each airplane on the table's row...
+Get WB reports working
+Crew List still not displaying
+
+
+
 In {state}
   Auto-Plot legs here... Need to plot in and out legs in {state} rather than having the Calendar do it.
   addPax() and removePax()
@@ -28,12 +42,15 @@ In {state}
   Add the trip leg to the {state}.addPax() call in Details 
   // can add the booking leg to this (since we already know that) ***
 
+Dropping pax on assigned seats removes the jQuery pax but not the {state} pax.
+  Need to put the jQuery pax back in the holding pen.
+
+
 Working in Details.show()
 All available planes need to be shown.
 Later, it could be interesting to block planes that are away. That would take a lot of logic though.
 
-Get WB reports working
-Crew List still not displaying
+
 
 
   Changing to load each plane, not just the TableCell plane... 
