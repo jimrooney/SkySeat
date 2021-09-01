@@ -203,7 +203,6 @@
         get$Pod() {
           const $ret = $(`<div id="CargoPod_${this.id}" class="CargoPod">Pod_${this.id}</div>`)
           this.airplane.stations.filter(station => station.type.includes("podBay")).forEach((station) => {
-            console.log("Cargo Station: %o",station)
               const $bay = $("<div></div>")
                 .appendTo($ret)
                 .addClass("grid-placeholder")
@@ -237,7 +236,6 @@
         reset() {
           this.$seating.empty()
           this.$seating.append(`<div class="Report Report_${this.id}" /><br>`)
-          console.log("Resetting Plane: %o", this.$seating.prop("id"))
           const $Airplane = this.$seating
           // ------------
           // Pilot's seat
@@ -442,7 +440,7 @@ Details GUI Object
       this.setWeightClass("D")
       $(".SAD").text(this.SAD.txt)
       this.count = 0
-      this.airplane = this.state.getPlane($TableCell.data("_script").id)
+      //this.airplane = this.state.getPlane($TableCell.data("_script").id)
       const _this = this
       $("#PaxList").empty()
       $("#CrewList").empty()
@@ -583,6 +581,7 @@ Details GUI Object
     // --------------------------------------
     show($TableCell) {
       this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
+      this.setWeightClass("D") // Set the initial SAD to Declared
 
       console.log("{details}.show row: %o", $TableCell.data("_script").row)
       //
