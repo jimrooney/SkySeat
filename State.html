@@ -94,18 +94,21 @@
       const plane = planes.getPlane(PCF.reg)
       return plane
     }
-    // addOrder(cell_ID, booking) {
-    //   let cell = this.data[cell_ID]
+    getPlaneFromState(cell){ // may need to pass in or get the CellData
+      const [r,c] = cell.cellID.split("_")
+      const key = "0_" + c
+      const PCF = this.data[key].PCF
 
-    //   cell.leg = booking.getLeg()
-    //   let orderNumber = booking.orderNumber
-    //   let product = booking.itemNumber
-    //   let key = orderNumber + "_" + product
-    //   if (!!key && !cell.bookingOrders.includes(key)) {
-    //     cell.bookingOrders.push(key)
-    //   }
-    //   return true
-    // }
+      console.log("{state}this.data: %o",this.data)
+      console.log("data[key]: %o",this.data[key])
+
+      let airplane
+      if (!!PCF.type) {
+        let dynamic_class = eval(PCF.type)
+        airplane = new dynamic_class(PCF,cell) // pass in the cell data from {state}
+      }
+      return airplane.getLoadedPlane()
+    }
     addPax(pax,cellID){
       if (!this.data[cellID]){
         this.data[cellID] = new CellData(cellID)

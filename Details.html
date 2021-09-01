@@ -185,7 +185,7 @@
         constructor(cell, i) {
           this.id = i
           this.parent = _this
-          this.airplane = _this.state.getPlane(cell.cellID)
+          this.airplane = _this.state.getPlane(cell.cellID) // Airplane Object based on {state}
           this.airplane.state = cell
           this.$seating = $(`<div id="Airplane_${i}" class="grid-container Airplane ${this.airplane.reg}"></div>`)
             .data("_this", this) // backreference
@@ -356,24 +356,23 @@ Details GUI Object
 
       // Update WB reports
       console.log("\n\nUpdate WB Reports")
-
       const _row = this.state.getRow(this._TableCell.row)
-      console.log("Row: %o", _row)
       _row.forEach((cell, i) => {
-        //          const plane = $(`#Airplane_${i}`).data("_this")
 
-        console.log("This State: %o", _this.state)
-        const plane = _this.state.getPlane(cell.cellID)
-        console.log("Plane: %o", plane)
 
-        const loadedPlane = plane.getLoadedPlane() // retunrs a loaded airplane object
+        console.log("Cell: %o",cell)
+        const loadedPlane = _this.state.getPlaneFromState(cell)
         const WB = loadedPlane.getWB(this.SAD)
 
-        console.log("Loaded PLane: %o", loadedPlane)
-        console.log("WB plane: %o %o", i, WB)
 
-        const report = this.$root.find(`.Report_${i}`)
+        const report = $(`.Report_${i}`)
         const color = WB.cg.balanced ? "blue" : "red"
+
+
+        console.log("\nloadedPlane: %o", loadedPlane)
+        console.log("WB plane: %o %o\n", i, WB)
+
+
         //
         // Update the "red/notRed" report bar above the seats
         //
