@@ -94,20 +94,12 @@
       const plane = planes.getPlane(PCF.reg)
       return plane
     }
-    getPlaneFromState(cell){ // may need to pass in or get the CellData
+    getPlaneFromState(cell){
       const [r,c] = cell.cellID.split("_")
       const key = "0_" + c
-      const PCF = this.data[key].PCF
-
-      console.log("{state}this.data: %o",this.data)
-      console.log("data[key]: %o",this.data[key])
-
-      let airplane
-      if (!!PCF.type) {
-        let dynamic_class = eval(PCF.type)
-        airplane = new dynamic_class(PCF,cell) // pass in the cell data from {state}
-      }
-      return airplane.getLoadedPlane()
+      const PCF = this.data[key].PCF // *** should check here for cell specific plane ***
+      const plane = planes.getPlane(PCF.reg)
+      return plane.getLoadedPlane(this.data[cell.cellID])
     }
     addPax(pax,cellID){
       if (!this.data[cellID]){

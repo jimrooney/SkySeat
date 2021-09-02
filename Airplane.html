@@ -55,7 +55,7 @@
       this.fuel = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight(), burnRate: 60 }
       this.state = state // breaks things if not set last (maybe because getFuelWeight() depends on it?)
     }
-    getLoadedPlane() {
+    getLoadedPlane(data) {
       console.log("getLoadedPlane this: %o",this)
       const _this = this
       //
@@ -68,8 +68,9 @@
       // -- Load Fuel --
       this.loadFuelWeightFromSate()
 
+      let _state = !!data? data : this.state // override state with passed in data
       // -- Load Passengers -- // cheeky shortcut (?) around undefined state
-      this.state?.passengers.forEach((pax) => {
+      _state?.passengers.forEach((pax) => {
         _this.seatPax(pax)
       })
       return this
