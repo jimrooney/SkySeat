@@ -8,21 +8,27 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Before Launch
 -------------------------------
-Spliting Bookings / Moving pax between planes in Details
-"Does W/B work" (cells go red if overloaded)
+Printing Loadsheets
+Plot out legs (through {state})
 Pickups
+Save {state}
 Flight Data Logging
 Drop on plane plots on board
+Drop pax on pen (in Wedding planner)
 -------------------------------
 
 -------------------------------
 Currently
 -------------------------------
+Need to clear all airplane stations on opening Details (or plot the pax)
+PCF per plane (currently working on fuel, but need GUI too)
+Crew List still not displaying
 
-// *** should check here for cell specific plane ***
+Still need to get Printing Loadsheets working
 
-Airplanes now being called in Wedding Planner... don't have plane data in them though.
-  but do have the right pax
+Adding fuel to Details planes (through PCF)
+  Need a way to override the top cell PCF with cell specific settings... 
+  // *** should check here for cell specific plane ***
 
 Just got pods working again.
 Moved a bunch of it into {details}.Airplane class... need to move all the airplane stuff into that class.
@@ -32,8 +38,8 @@ Moved a bunch of it into {details}.Airplane class... need to move all the airpla
 Digging into reset Airplane ... shouldn't be referencing this.airplane anymore (should be per plane)
 //Update WB Reports
 // Add an airplane object for each airplane on the table's row...
-Get WB reports working
-Crew List still not displaying
+
+Eventually, in the Wedding Planner, add the ability to move pax between planes by dropping them on that plane's pen
 
 
 
