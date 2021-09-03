@@ -218,10 +218,10 @@
       // Map the passenger data to _paxList- classes
       //
       seats.map((station, index) => {
-        if (!!station.pax) {
-          const firstName = station.pax.find((px) => px.label == "First Name").value
-          const lastName = station.pax.find((px) => px.label == "Last Name").value
-          let seatNum = station.pax.find((px) => px.label == "seat").value
+        if (!!station.px) {
+          const firstName = station.px.fields.find((px) => px.label == "First Name").value
+          const lastName = station.px.fields.find((px) => px.label == "Last Name").value
+          let seatNum = station.px.fields.find((px) => px.label == "seat").value
           seatNum = Number(seatNum) - 1
           const regex = new RegExp("weight", "gi")
           const weight = station.weight
