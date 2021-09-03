@@ -41,10 +41,8 @@
     // ---------------------------
     // Show
     // ---------------------------
-    show(TableCell) {
-      console.log("Called by cell:",TableCell.id)
-      // *** We'll need this to get planes for the whole row. ***
-      this.plane = TableCell.getPlane()
+    show(TableCell,plane,WB) {
+      console.log("Called by cell:",TableCell)
       //
       // Clear out old values
       //
@@ -70,14 +68,9 @@
       // ------------------
       // Get the plane data
       // ------------------
-      this.plane = TableCell.getPlane() // calls {TableCell}.getLoadedPlane()
-      const _thisPlane = this.plane
-      const WB = _thisPlane.getWB(root.details.SAD) // ** testing **
-
-      console.log("{Loadsheet} WB: %o",WB) // correct to here ***
-
-
-
+      
+      const _thisPlane = plane
+      console.log("{Loadsheet} WB: %o",WB)
       let seats = WB.POB
       // ***************** Disabling all crew checks ******************************
       //

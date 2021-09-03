@@ -107,6 +107,9 @@
   <body>
     <div id="Loadsheet" class="ToPrint"><?!= include('Loadsheet'); ?></div>
     <script>
+      //
+      // Create the first Board (calls {root} which calls {Board})
+      //
       $(document).ready(function () {
         root.makeNewBoard()
         LOADSHEET = new Loadsheet($("#Loadsheet"))

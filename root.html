@@ -39,7 +39,7 @@
       const _board = new Board($this)
       $this.data("root", _board)
       $("#Boards").append($this)
-      $this.data("root").writeBoard()
+      _board.writeBoard()
       //
       // Set to next day
       //

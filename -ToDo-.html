@@ -20,6 +20,35 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
+
+In Details... 
+$Print.click(function () {
+  console.log("Print Click")
+  LOADSHEET.show(cell)
+})
+  ... change (cell) to pass in the correct TableCell (JS object) 
+
+
+
+Printing Loadsheets
+  Passing in TableCell and LoadedPlane.
+    Pax not processing correctly.
+    No fuel yet.
+
+Crew Checks.
+
+
+
+
+
+in {TableCell}
+  Move all this logic (and possibly more) into {state}
+    // --------------
+    // Plot B Legs
+    // --------------
+
+Can look at moving the "Print" button in Details to the top and moving all the airplane stuff down a bit
+
 Need to clear all airplane stations on opening Details (or plot the pax)
 PCF per plane (currently working on fuel, but need GUI too)
 Crew List still not displaying

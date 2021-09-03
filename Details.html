@@ -238,6 +238,7 @@
         reset() {
           this.$seating.empty()
           this.$seating.append(`<div class="Report Report_${this.id}" /><br>`)
+          .append(`<div class="Report Print" /><br>`)
           const $Airplane = this.$seating
           // ------------
           // Pilot's seat
@@ -371,6 +372,7 @@ Details GUI Object
         //
         // Update the "red/notRed" report bar above the seats
         //
+        report.data("plane", loadedPlane)
         report.prop("loadedPlane", loadedPlane)
         report.css("background-color", color)
         report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
@@ -572,9 +574,9 @@ Details GUI Object
     setRevert($obj) {
       $obj.draggable({ revert: true })
     }
-    // --------------------------------------
+    // ======================================
     // Show
-    // --------------------------------------
+    // ======================================
     show($TableCell) {
       this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
       this.setWeightClass("D") // Set the initial SAD to Declared
@@ -591,16 +593,31 @@ Details GUI Object
 
       // Get the entire row
       const _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
-      // Todo:
-      // Add an airplane object for each airplane on the table's row...
-      // Next, get a plane either from the cell or from the state (currently just pulls from {state})
-
-      // -------------------------------------------
-      // New Plane
-      // -------------------------------------------
+      // ==========
+      // Each Plane
+      // ==========
       // Each of these will be a different plane (and have it's own PCF)
       //
       _row.forEach((cell, i) => {
+
+      // ---------------------------
+      // Print Button
+      // ---------------------------
+      const $Print = $("<div />",{
+        text: "Print",
+        class: "MenuButton MobileButton Print",
+        })
+      $Print.click(function () {
+        console.log("Print Click")
+        const loadedPlane = _this.state.getPlaneFromState(cell)
+        const WB = loadedPlane.getWB(this.SAD)
+
+        console.log("Cell: %o", cell)
+        console.log("WB: %o", WB)
+        LOADSHEET.show(_this._TableCell, loadedPlane, WB)
+      })
+
+
         const _plane = new _this.Airplane(cell, i) // backlink is in data.this
         const $plane = $(`<div />`, {
           id: `AirplanePlotter_${i}`,
@@ -612,6 +629,8 @@ Details GUI Object
           .append(_plane.get$Pod())
           .append(`</span><span class="SpacerPod"></span>`)
         _plane.reset()
+        //_plane.$seating.find(".Print").append($Print) // can use this to put the print button at the top
+        _plane.$seating.append($Print)
         $plane.find(`CargoPod_${i}`).append()
         _this.$root.find(".content").append($plane)
 
@@ -628,6 +647,8 @@ Details GUI Object
           const barcode = pax.getValue("Barcode")
           const $pax = new this.Pax(this, pax, "Pax", i)
         })
+
+
       })
 
       // ****** Moving everything below into the loop above ******
