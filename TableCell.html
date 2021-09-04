@@ -322,7 +322,7 @@
     getState() {
       let state = this.board.state.getData(this.$this) // get the CellData Object from the state object
       // Check for an assigned plane. If none, get from the PlaneCell
-    if (state?.PCF?.reg) {
+      if (state?.PCF?.reg) {
         return state
       }
       const PlaneCellState = this.$PlaneCell.data("_script").getData()
@@ -352,7 +352,7 @@
       let airplane
       if (!!PCF.type) {
         let dynamic_class = eval(PCF.type)
-        airplane = new dynamic_class(PCF,state) // pass in the cell data from {state}
+        airplane = new dynamic_class(PCF, state) // pass in the cell data from {state}
       }
       //
       // Get Loaded Plane
@@ -434,12 +434,28 @@
 
         let codes = []
         let numPax = 0
-        for (const a in cellData.passengers) {
-          const pax = cellData.passengers[a].fields
+
+        //const crew = cellData.passengers.filter((px) => px.fields.find((f) => f.label == "Role"))
+
+
+        // Parse code list (4FCF) from cell's passenger list (excluding crew) ** might need to be excluding just PIC **
+        const passengers = cellData.passengers.filter((px) => !px.fields.some((f) => f.label == "Role"))
+        passengers.forEach(data => {
+          const pax = data.fields
           const pc = pax.find((item) => item.label === "productCode").value
           codes = [...new Set([...codes, ...[pc]])]
           numPax++
-        }
+        })
+
+
+
+
+        // for (const a in cellData.passengers) {
+        //   const pax = cellData.passengers[a].fields
+        //   const pc = pax.find((item) => item.label === "productCode").value
+        //   codes = [...new Set([...codes, ...[pc]])]
+        //   numPax++
+        // }
         const GYACodes = codes.map((c) => gya.getProduct(c).GYACode)
         $this.html(`(${numPax})  ${GYACodes.join("<BR>")}`)
         $this.draggable({

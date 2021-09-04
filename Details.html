@@ -298,7 +298,7 @@ Details GUI Object
         `<div class="MenuBar"><span class="MenuButton MobileButton Print">Print</span></div>`
       ).append(`
         <div id="detailsContents" class="WeightClass detailsContents content" />
-        <div id="CrewList" class="CrewList" />`)
+        <div id="CrewList_" class="CrewList" />`)
       this.$this = this.$root
       this.PCFSelectorString = `<span class="PCF_Selector" id="PCF_Selector">
           <select class="Plane" name="plane" />
@@ -454,6 +454,7 @@ Details GUI Object
       //
     }
     handleDrop(event, ui) {
+      console.log("HandleDrop")
       // in this context, this is the seat and $(this) is the jQuery seat
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
       const $root = ui.draggable.closest(".detailsDiv")
@@ -540,9 +541,13 @@ Details GUI Object
       }
       // done figuring everying out, move the pax in {state}
       const pax = new Pax(droppedPaxFields)
+      console.log("Dropped (new Pax): %o",pax)
+      console.log("This State: %o",_this.state)
       _this.state.removePax([pax])
+      console.log("Pax removed")
       _this.state.addPax(pax, newCellID)
       _this.assignSeat($(this), $newPax, droppedPaxFields)
+      console.log("Update...")
       _this.update()
     }
     assignSeat($seat, $pax, droppedPaxFields) {
@@ -740,7 +745,7 @@ Details GUI Object
       // ]
 
       // --------------------
-      // Build Pax/Crew icons
+      // Build Pax/Crew icons (are auto-attached to their list on creation)
       // --------------------
       // ===========================================
       // -------------- Crew -----------------
@@ -749,7 +754,7 @@ Details GUI Object
         const pax = new Pax(crew)
         const firstName = pax.firstName
         const weight = pax.weight
-        const $pax = new this.Pax(_this, pax, "Crew")
+        const $pax = new this.Pax(_this, pax, "Crew", "") 
       })
       // ===========================================
       // -------------- Passengers -----------------
