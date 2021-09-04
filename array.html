@@ -20,9 +20,9 @@
       return [
         ...new Map(
           newArr.map((item) => {
-              const orderNumber = item.fields.find(row =>!!row.label && row.label == "orderNumber").value
-              const itemIndex = item.fields.find(row =>!!row.label && row.label == "itemIndex").value
-              const paxIndex = item.fields.find(row =>!!row.label && row.label == "paxIndex").value
+              const orderNumber = item.fields.find(row =>!!row.label && row.label == "orderNumber")?.value
+              const itemIndex = item.fields.find(row =>!!row.label && row.label == "itemIndex")?.value
+              const paxIndex = item.fields.find(row =>!!row.label && row.label == "paxIndex")?.value
               const _key = `${orderNumber}"_"${itemIndex}_${paxIndex}`
               return [_key,item]
           })
