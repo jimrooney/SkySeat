@@ -233,8 +233,6 @@
           return $ret
           }
 
-
-
         reset() {
           $("#CrewList_").empty()
           this.$seating.empty()
@@ -287,26 +285,16 @@
       this._TableCell = ""
       this.airplane // placholder (gets built in resetAirplane())
       /*
-
-
-
-
-Details GUI Object 
-
-
-*/
-      this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`).append(
-        `<div class="MenuBar"><span class="MenuButton MobileButton Print">Print</span></div>`
-      ).append(`
-        <div id="detailsContents" class="WeightClass detailsContents content" />
+        Details GUI Object 
+      */
+      this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`)
+      .append(`<div id="detailsContents" class="WeightClass detailsContents content" />
         <div id="CrewList_" class="CrewList" />`)
       this.$this = this.$root
       this.PCFSelectorString = `<span class="PCF_Selector" id="PCF_Selector">
           <select class="Plane" name="plane" />
           <select class="Fuel" name="fuel" /> Liters
         </span>`
-      this.$PCFSelector = $(this.PCFSelectorString)
-      this.$root.find(".MenuBar").prepend(this.$PCFSelector)
       this.$root.data("root", this) // Access this object through $([Selector]).data('root')
       // ---------------------------
       // Print Button
@@ -623,8 +611,9 @@ Details GUI Object
         LOADSHEET.show(_this._TableCell, loadedPlane, WB)
       })
 
-
+      
         const _plane = new _this.Airplane(cell, i) // backlink is in data.this
+        const $menubar = $(`<div class="MenuBar"></div>`).prepend($(this.PCFSelectorString))
         const $plane = $(`<div />`, {
           id: `AirplanePlotter_${i}`,
           class: "AirplanePlotter",
@@ -635,6 +624,8 @@ Details GUI Object
           .append(_plane.get$Pod())
           .append(`</span><span class="SpacerPod"></span>`)
         _plane.reset()
+        $plane.prepend($menubar)
+
         //_plane.$seating.find(".Print").append($Print) // can use this to put the print button at the top
         _plane.$seating.append($Print)
         $plane.find(`CargoPod_${i}`).append()
