@@ -189,10 +189,10 @@
           this.airplane.state = cell
           this.$seating = $(`<div id="Airplane_${i}" class="grid-container Airplane ${this.airplane.reg}"></div>`)
             .data("_this", this) // backreference
-            .click((event)=>{
+            .click((event) => {
               // in this context, this is {airplane}
               // _this is {Details}
-              console.log("AirplaneClick: this: %o",this)
+              console.log("AirplaneClick: this: %o", this)
               // $(".station")
               //   .children()
               //   .each(function (i, child) {
@@ -204,7 +204,9 @@
         }
         get$Pod() {
           const $ret = $(`<div id="CargoPod_${this.id}" class="CargoPod">Pod_${this.id}</div>`)
-          this.airplane.stations.filter(station => station.type.includes("podBay")).forEach((station) => {
+          this.airplane.stations
+            .filter((station) => station.type.includes("podBay"))
+            .forEach((station) => {
               const $bay = $("<div></div>")
                 .appendTo($ret)
                 .addClass("grid-placeholder")
@@ -229,15 +231,16 @@
                 station.weight = this.value
                 _this.update()
               })
-          })
+            })
           return $ret
-          }
+        }
 
         reset() {
           $("#CrewList_").empty()
           this.$seating.empty()
-          this.$seating.append(`<div class="Report Report_${this.id}" /><br>`)
-          .append(`<div class="Report Print" /><br>`)
+          this.$planePlotter.find(".MenuBar")
+            .prepend(`<span class="Report Report_${this.id}" />`)
+            .prepend(`<span class="Print" />`)
           const $Airplane = this.$seating
           // ------------
           // Pilot's seat
@@ -288,7 +291,7 @@
         Details GUI Object 
       */
       this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`)
-      .append(`<div id="detailsContents" class="WeightClass detailsContents content" />
+        .append(`<div id="detailsContents" class="WeightClass detailsContents content" />
         <div id="CrewList_" class="CrewList" />`)
       this.$this = this.$root
       this.PCFSelectorString = `<span class="PCF_Selector" id="PCF_Selector">
@@ -350,7 +353,6 @@
       console.log("\n\nUpdate WB Reports")
       const _row = this.state.getRow(this._TableCell.row)
       _row.forEach((CellData, i) => {
-
         const loadedPlane = _this.state.getPlaneFromState(CellData)
         const WB = loadedPlane.getWB(this.SAD)
 
@@ -530,8 +532,8 @@
       }
       // done figuring everying out, move the pax in {state}
       const pax = new Pax(droppedPaxFields)
-      console.log("Dropped (new Pax): %o",pax)
-      console.log("This State: %o",_this.state)
+      console.log("Dropped (new Pax): %o", pax)
+      console.log("This State: %o", _this.state)
       _this.state.removePax([pax])
       console.log("Pax removed")
       _this.state.addPax(pax, newCellID)
@@ -593,25 +595,23 @@
       // Each of these will be a different plane (and have it's own PCF)
       //
       _row.forEach((cell, i) => {
-
-      // ---------------------------
-      // Print Button
-      // ---------------------------
-      const $Print = $("<div />",{
-        text: "Print",
-        class: "MenuButton MobileButton Print",
+        // ---------------------------
+        // Print Button
+        // ---------------------------
+        const $Print = $("<div />", {
+          text: "Print",
+          class: "MenuButton MobileButton Print",
         })
-      $Print.click(function () {
-        console.log("Print Click")
-        const loadedPlane = _this.state.getPlaneFromState(cell)
-        const WB = loadedPlane.getWB(this.SAD)
+        $Print.click(function () {
+          console.log("Print Click")
+          const loadedPlane = _this.state.getPlaneFromState(cell)
+          const WB = loadedPlane.getWB(this.SAD)
 
-        console.log("Cell: %o", cell)
-        console.log("WB: %o", WB)
-        LOADSHEET.show(_this._TableCell, loadedPlane, WB)
-      })
+          console.log("Cell: %o", cell)
+          console.log("WB: %o", WB)
+          LOADSHEET.show(_this._TableCell, loadedPlane, WB)
+        })
 
-      
         const _plane = new _this.Airplane(cell, i) // backlink is in data.this
         const $menubar = $(`<div class="MenuBar"></div>`).prepend($(this.PCFSelectorString))
         const $plane = $(`<div />`, {
@@ -623,8 +623,11 @@
           .append(`<span id="PaxList_${i}" class="PaxList">`)
           .append(_plane.get$Pod())
           .append(`</span><span class="SpacerPod"></span>`)
-        _plane.reset()
         $plane.prepend($menubar)
+        _plane.$planePlotter = $plane // Backreference
+        _plane.reset()
+
+
 
         //_plane.$seating.find(".Print").append($Print) // can use this to put the print button at the top
         _plane.$seating.append($Print)
@@ -644,8 +647,6 @@
           const barcode = pax.getValue("Barcode")
           const $pax = new this.Pax(this, pax, "Pax", i)
         })
-
-
       })
 
       // ****** Moving everything below into the loop above ******
@@ -746,7 +747,7 @@
         const pax = new Pax(crew)
         const firstName = pax.firstName
         const weight = pax.weight
-        const $pax = new this.Pax(_this, pax, "Crew", "") 
+        const $pax = new this.Pax(_this, pax, "Crew", "")
       })
       // ===========================================
       // -------------- Passengers -----------------
