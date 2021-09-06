@@ -163,14 +163,19 @@
               _parent.update()
             })
 
-          let hue
-          if (parent.bgColors[orderNumber]) {
-            hue = parent.bgColors[orderNumber]
+          // Color Pax / Crew Sprites
+          if (_type == "Crew") {
+            $pax.css("background-color", "rgba(64,64,64,.8)")
           } else {
-            hue = parent.colorNumbers.pop()
-            parent.bgColors[orderNumber] = hue
+            let hue
+            if (parent.bgColors[orderNumber]) {
+              hue = parent.bgColors[orderNumber]
+            } else {
+              hue = parent.colorNumbers.pop()
+              parent.bgColors[orderNumber] = hue
+            }
+            $pax.css("background-color", hue)
           }
-          $pax.css("background-color", hue)
 
           if (!!firstName && firstName.length >= 7) {
             $pax.css("font-size", "8px")
@@ -238,7 +243,8 @@
         reset() {
           $("#CrewList_").empty()
           this.$seating.empty()
-          this.$planePlotter.find(".MenuBar")
+          this.$planePlotter
+            .find(".MenuBar")
             .prepend(`<span class="Report Report_${this.id}" />`)
             .prepend(`<span class="Print" />`)
           const $Airplane = this.$seating
@@ -283,7 +289,7 @@
                 index++
               }
             })
-            this.$planePlotter.css({"background":utility.hexToRgbA(this.airplane.regcolor,.5)})
+          this.$planePlotter.css({ background: utility.hexToRgbA(this.airplane.regcolor, 0.5) })
         }
       }
       this._TableCell = ""
@@ -291,8 +297,7 @@
       /*
         Details GUI Object 
       */
-      this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`)
-        .append(`
+      this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`).append(`
         <div id="CrewList_" class="CrewList" />
         <div id="detailsContents" class="WeightClass detailsContents content" />
         `)
@@ -447,14 +452,15 @@
       // in ZEA's case, add the pod to the WB if attached (need a POD/NOPOD button at the top)
       //
     }
-    getPax(droppedPaxFields){
+    getPax(droppedPaxFields) {
       // Maybe incorperate this into the manifext.getPax() method?
       const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
       let pax = this._TableCell.board.manifest.getPax(barcode)
-      if (!pax){ // crew
+      if (!pax) {
+        // crew
         pax = new Pax(droppedPaxFields)
       }
-      console.log("getPax: ",pax)
+      console.log("getPax: ", pax)
       return pax
     }
     handleDrop(event, ui) {
@@ -496,10 +502,7 @@
         // Rassigning Seat
         const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
 
-
         const manifestPax = _this.getPax(droppedPaxFields)
-
-
 
         let statePax = _this._TableCell.board.state.getPax(barcode)
         if (!!manifestPax) {
@@ -644,11 +647,9 @@
           .append(_plane.get$Pod())
           .append(`</span><span class="SpacerPod"></span>`)
         $plane.prepend($menubar)
-        $plane.find(".PaxList").css("background", utility.hexToRgbA(_plane.airplane.regcolor,.5))
+        $plane.find(".PaxList").css("background", utility.hexToRgbA(_plane.airplane.regcolor, 0.5))
         _plane.$planePlotter = $plane // Backreference
         _plane.reset()
-
-
 
         //_plane.$seating.find(".Print").append($Print) // can use this to put the print button at the top
         _plane.$seating.append($Print)
@@ -786,8 +787,6 @@
       if (visible) {
         this.$root.hide()
       } else {
-        this.$root.css("width", "800px")
-        this.$root.css("heigh", "600px")
         this.$root.show()
       }
       this.seatPax() // load pax into seats if possible (pax might have duplicate seats) ****
