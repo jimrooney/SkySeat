@@ -283,6 +283,7 @@
                 index++
               }
             })
+            this.$planePlotter.css({"background":utility.hexToRgbA(this.airplane.regcolor,.5)})
         }
       }
       this._TableCell = ""
@@ -291,8 +292,10 @@
         Details GUI Object 
       */
       this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`)
-        .append(`<div id="detailsContents" class="WeightClass detailsContents content" />
-        <div id="CrewList_" class="CrewList" />`)
+        .append(`
+        <div id="CrewList_" class="CrewList" />
+        <div id="detailsContents" class="WeightClass detailsContents content" />
+        `)
       this.$this = this.$root
       this.PCFSelectorString = `<span class="PCF_Selector" id="PCF_Selector">
           <select class="Plane" name="plane" />
@@ -357,7 +360,7 @@
         const WB = loadedPlane.getWB(this.SAD)
 
         const report = $(`.Report_${i}`)
-        const color = WB.cg.balanced ? "blue" : "red"
+        const color = WB.cg.balanced ? "green" : "red"
 
         console.log("\nWB plane: %o %o\n", i, WB)
         //
@@ -444,6 +447,16 @@
       // in ZEA's case, add the pod to the WB if attached (need a POD/NOPOD button at the top)
       //
     }
+    getPax(droppedPaxFields){
+      // Maybe incorperate this into the manifext.getPax() method?
+      const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
+      let pax = this._TableCell.board.manifest.getPax(barcode)
+      if (!pax){ // crew
+        pax = new Pax(droppedPaxFields)
+      }
+      console.log("getPax: ",pax)
+      return pax
+    }
     handleDrop(event, ui) {
       console.log("HandleDrop")
       // in this context, this is the seat and $(this) is the jQuery seat
@@ -465,6 +478,7 @@
       let $newPax = ui.draggable.detach()
       let droppedPaxFields = $newPax.data("pax") // array of Rezdy fields
       let droppedPaxSeat = droppedPaxFields.find((p) => !!p && p.label === "seat")
+      const isCrew = !!droppedPaxFields.some((f) => f.label == "Role")
       // sets the seat value (also below if changing seats)
       let thisSeat = {
         label: "seat",
@@ -478,9 +492,15 @@
         // If not from a seat, just assign it this one.
         droppedPaxFields.push(thisSeat)
       } else {
+        // Pax has seat
         // Rassigning Seat
         const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
-        const manifestPax = _this._TableCell.board.manifest.getPax(barcode)
+
+
+        const manifestPax = _this.getPax(droppedPaxFields)
+
+
+
         let statePax = _this._TableCell.board.state.getPax(barcode)
         if (!!manifestPax) {
           // Capture it's last seat before assigning it this one.
@@ -624,6 +644,7 @@
           .append(_plane.get$Pod())
           .append(`</span><span class="SpacerPod"></span>`)
         $plane.prepend($menubar)
+        $plane.find(".PaxList").css("background", utility.hexToRgbA(_plane.airplane.regcolor,.5))
         _plane.$planePlotter = $plane // Backreference
         _plane.reset()
 

@@ -15,6 +15,7 @@
       ["Reuben", "Horsley", "021-182-4156", "Reubenhorsley@gmail.com", 115],
     ],
     getPilot: function (name) {
+      name = name.replace(/\*/i, '').split('_')[0] // removes leading * and last name when name is a barcode (pilots have no order number)
       for (let a in this.matrix) {
         if (this.matrix[a][0] == name) {
           return this.matrix[a]

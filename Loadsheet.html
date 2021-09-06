@@ -72,26 +72,27 @@
       const _thisPlane = plane
       console.log("{Loadsheet} WB: %o",WB)
       let seats = WB.POB
-      // ***************** Disabling all crew checks ******************************
+      let CrewNames
       //
       // Find PIC
       //
       let PIC = seats.filter((station) => station.id == 1)
       console.log("PIC: %o",PIC)
-      // **** Disabling the PIC check for now ******
-      // if (!PIC.length) {
-      //   console.log("[error] No PIC")
-      //   PIC = null
-      //   utility.alert("No PIC", $("#Details > .Print"))
-      //   return
-      //   // If no PIC... this should all fail (and throw an error)
-      // }
+      if (!PIC.length) {
+        console.log("[error] No PIC")
+        PIC = null
+        utility.alert("No PIC", $("#Details"))
+        return
+        // If no PIC... this should all fail (and throw an error)
+      }
       const SIC = seats.filter((station) => station.id == 2)
       const CREW = [...PIC, ...SIC]
-      let CrewNames = `
-      ${PIC[0].px.fullName}
-      (${PIC[0].weight})
-      `
+      if (PIC.length>0){      
+        CrewNames = `
+        ${PIC[0].px.fullName}
+        (${PIC[0].weight})
+        `
+      }
       if (SIC.length > 0) {
         CrewNames += `
         <span style="font-size: xx-small;">/ (

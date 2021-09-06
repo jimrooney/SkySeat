@@ -301,6 +301,26 @@
       $("#PickupList").focus()
       window.print()
     },
+    convertHex: function (hex, opacity) {
+      hex = hex.replace("#", "")
+      r = parseInt(hex.substring(0, 2), 16)
+      g = parseInt(hex.substring(2, 4), 16)
+      b = parseInt(hex.substring(4, 6), 16)
+      result = "rgba(" + r + "," + g + "," + b + "," + opacity / 100 + ")"
+      return result
+    },
+    hexToRgbA: function (hex, alpha = 1) {
+      let c
+      if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+        c = hex.substring(1).split("")
+        if (c.length == 3) {
+          c = [c[0], c[0], c[1], c[1], c[2], c[2]]
+        }
+        c = "0x" + c.join("")
+        return "rgba(" + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(",") + `,${alpha})`
+      }
+      throw new Error("Bad Hex")
+    },
   }
   root.utility = utility
 

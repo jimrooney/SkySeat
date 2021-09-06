@@ -62,7 +62,7 @@
     get barcode() {
       let code = this.getValue("Barcode")
       if (!code) {
-        code = this.orderNumber + "*" + this.firstName + "_" + this.lastName
+        code = `${this.orderNumber||''}*${this.firstName}_${this.lastName}`
         this.fields.push({ label: "Barcode", value: code })
       }
       return code
