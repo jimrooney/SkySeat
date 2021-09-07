@@ -189,7 +189,7 @@
       this.Airplane = class {
         constructor(cell, i) {
           this.id = i
-          this.parent = _this
+          this.parent = _this // {Details}
           this.airplane = _this.state.getPlane(cell.cellID) // Airplane Object based on {state}
           this.airplane.state = cell
           this.$seating = $(`<div id="Airplane_${i}" class="grid-container Airplane ${this.airplane.reg}"></div>`)
@@ -324,15 +324,22 @@
       }
       const $pop = $(`<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`)
       const $popLeft = $(`<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`)
-      const $SAD = $(`<span class="SAD WeightClass relativeLeft MobileButton"></span>`).click(function () {
-        let txt = $(this).text().charAt(0)
-        _this.changeWeightClass($(this))
-        _this.update()
-      })
+
+
+
+
+
+
+
       this.$root.append($pop).append($popLeft)
-      this.$root.find(".MenuBar").prepend($SAD)
+
+
+
+
       $pop.click(() => _this.close(_this))
       $popLeft.click(() => _this.close(_this))
+
+
       return this
     }
 
@@ -636,7 +643,8 @@
         })
 
         const _plane = new _this.Airplane(cell, i) // backlink is in data.this
-        const $menubar = $(`<div class="MenuBar"></div>`).prepend($(this.PCFSelectorString))
+
+
         const $plane = $(`<div />`, {
           id: `AirplanePlotter_${i}`,
           class: "AirplanePlotter",
@@ -646,9 +654,18 @@
           .append(`<span id="PaxList_${i}" class="PaxList">`)
           .append(_plane.get$Pod())
           .append(`</span><span class="SpacerPod"></span>`)
-        $plane.prepend($menubar)
+        $plane.prepend($(`<div class="MenuBar"></div>`).prepend($(this.PCFSelectorString)))
         $plane.find(".PaxList").css("background", utility.hexToRgbA(_plane.airplane.regcolor, 0.5))
-        _plane.$planePlotter = $plane // Backreference
+
+      // SAD Button
+      const $SAD = $(`<span class="SAD WeightClass relativeLeft MobileButton">SAD</span>`).click(function () {
+        let txt = $(this).text().charAt(0)
+        _this.changeWeightClass($(this))
+        _this.update()
+      })
+      $plane.find(".MenuBar").prepend($SAD)
+
+        _plane.$planePlotter = $plane // Backreference ****** 
         _plane.reset()
 
         //_plane.$seating.find(".Print").append($Print) // can use this to put the print button at the top

@@ -23,6 +23,14 @@ Currently
 Make fuel work
 Ability to change SAD (and change crew colour to match SAD)
 
+When changing to Actual:
+  Uncaught TypeError: Cannot read property 'weight' of undefined userCodeAppPanel:109
+  
+Get rid of $planePlotter (make it just $plane)
+  _plane.$planePlotter = $plane // Backreference ****** 
+
+
+
 Filter copilot out of loadsheet when it's not crew
 In {Details} filter already assinged pilots out of _CrewList (so when we start auto-seating them, it's already done)
 
