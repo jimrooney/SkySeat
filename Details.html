@@ -686,8 +686,55 @@
           const barcode = pax.getValue("Barcode")
           const $pax = new this.Pax(this, pax, "Pax", i)
         })
-      })
 
+
+
+
+        const $PCF = $plane.find(".PCF_Selector")
+        $PCF.empty()
+
+        const $selector = $("<select />")
+                .appendTo($PCF)
+                .append(`<option value="0">0</option>`)
+
+
+
+                // $fuel.append(`<option value="0">0</option>`)
+                // for (let i = 10; i <= 1260; i += 10) {
+                //   $fuel.append(`<option value="${i}">${i}</option>`)
+                // }
+                // $fuel.change(function () {
+                //   // fuel change ***
+                // })
+
+              // Limit the selector by the max limit of the pod bay ********
+              for (let i = 10; i <= 1260; i += 10) {
+                $selector.append(`<option value="${i}">${i}</option>`)
+              }
+
+
+
+              $selector.change(function () {
+                // station.weight = this.value
+                // _this.update()
+                console.log("Fuel Change: %o",this)
+              })
+
+
+      // ====================================
+      // -------------- PCF -----------------
+      // ====================================
+      // $("> .Plane", this.$PCFSelector) shorthand for this.$PCFSelector.find(".Plane")
+
+      // const $fuel = $("> .Fuel", $plane)
+      // console.log("Fuel: %o",$fuel)
+      // *** Change to match the plane's capacity and default to "standard fuel" *** 
+
+
+
+
+      })
+      
       // ****** Moving everything below into the loop above ******
 
       const passengers = this._TableCell.getPassengers() || []
@@ -702,45 +749,7 @@
       // *****************************************************************************************
       // Make Fuel List that's determined by the plane's max fuel ***************
       //
-      // ====================================
-      // -------------- PCF -----------------
-      // ====================================
-      // $("> .Plane", this.$PCFSelector) shorthand for this.$PCFSelector.find(".Plane")
-      const $seating = $("> .Plane", this.$PCFSelector)
-      const $pilot = $("> .Pilot", this.$PCFSelector)
-      const $coPilot = $("> .CoPilot", this.$PCFSelector)
-      const $fuel = $("> .Fuel", this.$PCFSelector)
-      PlaneManager.planes.data.forEach((plane, i) => {
-        if (!!plane.weight) {
-          $seating.append(`<option value="${plane.reg}">${plane.reg}</option>`)
-        }
-      })
-      $seating.change(function () {
-        this._TableCell.setPlaneData("reg", this.value)
-        _this.show(_this.$TableCell)
-        _this.$this.show()
-      })
-      $fuel.append(`<option value="0">0</option>`)
-      for (let i = 10; i <= 1260; i += 10) {
-        $fuel.append(`<option value="${i}">${i}</option>`)
-      }
-      $fuel.change(function () {
-        this._TableCell.setPlaneData("fuel", this.value)
-        _this.update()
-      })
-      //
-      // Load PCF into selectors
-      //
-      if (Object.keys(state.PCF).length > 0) {
-        if (!!state.PCF.coPilot) {
-          $coPilot.val(state.PCF.coPilot)
-        } else {
-          $coPilot.val("")
-        }
-        $pilot.val(state.PCF.pilot)
-        $fuel.val(state.PCF.fuel)
-        $seating.val(state.PCF.reg)
-      }
+
       // *****************************************************************************************
 
       const _crew = []
