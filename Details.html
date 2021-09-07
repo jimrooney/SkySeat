@@ -189,6 +189,7 @@
       this.Airplane = class {
         constructor(cell, i) {
           this.id = i
+          this.cell = cell
           this.parent = _this // {Details}
           this.airplane = _this.state.getPlane(cell.cellID) // Airplane Object based on {state}
           this.airplane.state = cell
@@ -324,21 +325,9 @@
       }
       const $pop = $(`<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`)
       const $popLeft = $(`<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`)
-
-
-
-
-
-
-
       this.$root.append($pop).append($popLeft)
-
-
-
-
       $pop.click(() => _this.close(_this))
       $popLeft.click(() => _this.close(_this))
-
 
       return this
     }
@@ -600,9 +589,16 @@
     setRevert($obj) {
       $obj.draggable({ revert: true })
     }
+    //
+    //
+    //
     // ======================================
     // Show
     // ======================================
+    //
+    //  [This is the first function called]
+    //
+    // --------------------------------------
     show($TableCell) {
       this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
       this.setWeightClass("D") // Set the initial SAD to Declared
@@ -619,9 +615,9 @@
 
       // Get the entire row
       const _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
-      // ==========
+      // ======================================
       // Each Plane
-      // ==========
+      // ======================================
       // Each of these will be a different plane (and have it's own PCF)
       //
       _row.forEach((cell, i) => {
@@ -636,15 +632,15 @@
           console.log("Print Click")
           const loadedPlane = _this.state.getPlaneFromState(cell)
           const WB = loadedPlane.getWB(this.SAD)
-
           console.log("Cell: %o", cell)
           console.log("WB: %o", WB)
           LOADSHEET.show(_this._TableCell, loadedPlane, WB)
         })
 
+        // ======================================
+        // New this.Airplane
+        // ======================================
         const _plane = new _this.Airplane(cell, i) // backlink is in data.this
-
-
         const $plane = $(`<div />`, {
           id: `AirplanePlotter_${i}`,
           class: "AirplanePlotter",
@@ -657,15 +653,15 @@
         $plane.prepend($(`<div class="MenuBar"></div>`).prepend($(this.PCFSelectorString)))
         $plane.find(".PaxList").css("background", utility.hexToRgbA(_plane.airplane.regcolor, 0.5))
 
-      // SAD Button
-      const $SAD = $(`<span class="SAD WeightClass relativeLeft MobileButton">SAD</span>`).click(function () {
-        let txt = $(this).text().charAt(0)
-        _this.changeWeightClass($(this))
-        _this.update()
-      })
-      $plane.find(".MenuBar").prepend($SAD)
+        // SAD Button
+        const $SAD = $(`<span class="SAD WeightClass relativeLeft MobileButton">SAD</span>`).click(function () {
+          let txt = $(this).text().charAt(0)
+          _this.changeWeightClass($(this))
+          _this.update()
+        })
+        $plane.find(".MenuBar").prepend($SAD)
 
-        _plane.$planePlotter = $plane // Backreference ****** 
+        _plane.$planePlotter = $plane // Backreference ******
         _plane.reset()
 
         //_plane.$seating.find(".Print").append($Print) // can use this to put the print button at the top
@@ -687,54 +683,49 @@
           const $pax = new this.Pax(this, pax, "Pax", i)
         })
 
-
-
-
         const $PCF = $plane.find(".PCF_Selector")
         $PCF.empty()
+        // ===========================================
+        // Fuel Selector
+        // ===========================================
+        const $selector = $("<select />").appendTo($PCF).append(`<option value="0">0</option>`)
 
-        const $selector = $("<select />")
-                .appendTo($PCF)
-                .append(`<option value="0">0</option>`)
+        // $fuel.append(`<option value="0">0</option>`)
+        // for (let i = 10; i <= 1260; i += 10) {
+        //   $fuel.append(`<option value="${i}">${i}</option>`)
+        // }
+        // $fuel.change(function () {
+        //   // fuel change ***
+        // })
 
+        // Limit the selector by the max limit of the pod bay ********
+        const fuelCap = _plane.airplane.fuel.capacity || 350
+        for (let i = 10; i <= fuelCap; i += 10) {
+          $selector.append(`<option value="${i}">${i}</option>`)
+        }
+        $selector.val(_plane.airplane.standardFuel) // set in Company Data Spreadsheet
+        $selector.change( function (){
+          console.log("Fuel Change")
+          // station.weight = this.value
+          // _this.update()
+          console.log("$(this).value: ",$(this).val())
+          console.log("this: ", this)
+          console.log("cell: ", cell)
+          console.log("_this: ", _this)
+          console.log("Airplane: %o", _plane)
+          console.log("$plane: ", $plane)
+        })
 
+        // ====================================
+        // -------------- PCF -----------------
+        // ====================================
+        // $("> .Plane", this.$PCFSelector) shorthand for this.$PCFSelector.find(".Plane")
 
-                // $fuel.append(`<option value="0">0</option>`)
-                // for (let i = 10; i <= 1260; i += 10) {
-                //   $fuel.append(`<option value="${i}">${i}</option>`)
-                // }
-                // $fuel.change(function () {
-                //   // fuel change ***
-                // })
-
-              // Limit the selector by the max limit of the pod bay ********
-              for (let i = 10; i <= 1260; i += 10) {
-                $selector.append(`<option value="${i}">${i}</option>`)
-              }
-
-
-
-              $selector.change(function () {
-                // station.weight = this.value
-                // _this.update()
-                console.log("Fuel Change: %o",this)
-              })
-
-
-      // ====================================
-      // -------------- PCF -----------------
-      // ====================================
-      // $("> .Plane", this.$PCFSelector) shorthand for this.$PCFSelector.find(".Plane")
-
-      // const $fuel = $("> .Fuel", $plane)
-      // console.log("Fuel: %o",$fuel)
-      // *** Change to match the plane's capacity and default to "standard fuel" *** 
-
-
-
-
+        // const $fuel = $("> .Fuel", $plane)
+        // console.log("Fuel: %o",$fuel)
+        // *** Change to match the plane's capacity and default to "standard fuel" ***
       })
-      
+
       // ****** Moving everything below into the loop above ******
 
       const passengers = this._TableCell.getPassengers() || []
