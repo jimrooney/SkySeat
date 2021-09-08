@@ -359,11 +359,11 @@
       _row.forEach((CellData, i) => {
         const loadedPlane = _this.state.getPlaneFromState(CellData)
         const WB = loadedPlane.getWB(this.SAD)
-
         const report = $(`.Report_${i}`)
         const color = WB.cg.balanced ? "green" : "red"
 
         console.log("\nWB plane: %o %o\n", i, WB)
+        console.log("loadedPlane: %o", loadedPlane)
         //
         // Update the "red/notRed" report bar above the seats
         //
@@ -628,7 +628,6 @@
           text: "P",
           class: "MenuButton MobileButton Print",
         })
-
         $Print.click(function () {
           console.log("Print Click")
           const loadedPlane = _this.state.getPlaneFromState(cell)
@@ -637,7 +636,6 @@
           console.log("WB: %o", WB)
           LOADSHEET.show(_this._TableCell, loadedPlane, WB)
         })
-
         // ======================================
         // New this.Airplane
         // ======================================
@@ -653,15 +651,15 @@
           .append(`</span><span class="SpacerPod"></span>`)
         $plane.prepend($(`<div class="MenuBar"></div>`).prepend($(this.PCFSelectorString)))
         $plane.find(".PaxList").css("background", utility.hexToRgbA(_plane.airplane.regcolor, 0.5))
-
+        //
         // SAD Button
+        //
         const $SAD = $(`<span class="SAD WeightClass relativeLeft MobileButton">SAD</span>`).click(function () {
           let txt = $(this).text().charAt(0)
           _this.changeWeightClass($(this))
           _this.update()
         })
         $plane.find(".MenuBar").prepend($SAD)
-
         _plane.$planePlotter = $plane // Backreference ******
         _plane.reset()
 
@@ -690,60 +688,28 @@
         // Fuel Selector
         // ===========================================
         const $selector = $("<select />").appendTo($PCF).append(`<option value="0">0</option>`)
-
-        // $fuel.append(`<option value="0">0</option>`)
-        // for (let i = 10; i <= 1260; i += 10) {
-        //   $fuel.append(`<option value="${i}">${i}</option>`)
-        // }
-        // $fuel.change(function () {
-        //   // fuel change ***
-        // })
-
-        // Limit the selector by the max limit of the pod bay ********
-        const fuelCap = _plane.airplane.fuel.capacity || 350
+        const fuelCap = _plane.airplane.fuel.capacity || 350 // Limit the selector by the max fuel limit
         for (let i = 10; i <= fuelCap; i += 10) {
           $selector.append(`<option value="${i}">${i}</option>`)
         }
         $selector.val(_plane.airplane.standardFuel) // set in Company Data Spreadsheet
         $selector.change( function (){
           console.log("Fuel Change")
-          // station.weight = this.value
-          // _this.update()
+
+          cell.PCF = {fuel: $(this).val()}
           console.log("$(this).value: ",$(this).val())
           console.log("this: ", this)
           console.log("cell: ", cell)
           console.log("_this: ", _this)
           console.log("Airplane: %o", _plane)
           console.log("$plane: ", $plane)
+          _this.update()
         })
 
-        // ====================================
-        // -------------- PCF -----------------
-        // ====================================
-        // $("> .Plane", this.$PCFSelector) shorthand for this.$PCFSelector.find(".Plane")
-
-        // const $fuel = $("> .Fuel", $plane)
-        // console.log("Fuel: %o",$fuel)
-        // *** Change to match the plane's capacity and default to "standard fuel" ***
       })
-
-      // ****** Moving everything below into the loop above ******
-
-      const passengers = this._TableCell.getPassengers() || []
-      const state = this._TableCell.getState() // Returns State {CellData}
-
-      // this.resetAirplane($TableCell)
-      //
-      //******************************************************************************************
-
-      // *****************************************************************************************
-      // This section will need a re-write since we have more than one plane
-      // *****************************************************************************************
-      // Make Fuel List that's determined by the plane's max fuel ***************
-      //
-
-      // *****************************************************************************************
-
+      // ===========================================
+      // -------------- Crew -----------------
+      // ===========================================
       const _crew = []
       pilots.list.forEach((pilot, i) => {
         _crew.push({
@@ -755,52 +721,16 @@
           ],
         })
       })
-
-      // const _crew = [
-      //   {
-      //     fields: [
-      //       { label: "Role", value: "PIC" },
-      //       { label: "First Name", value: "Zapps" },
-      //       { label: "Last Name", value: "Brannigan" },
-      //       { label: "Full Name", value: "Zapp Brannigan" },
-      //       { label: "Weight", value: "79" },
-      //     ],
-      //   },
-      //   {
-      //     fields: [
-      //       { label: "Role", value: "SIC" },
-      //       { label: "First Name", value: "Kif" },
-      //       { label: "Last Name", value: "Kroker" },
-      //       { label: "Full Name", value: "Kif Kroker" },
-      //       { label: "Weight", value: "42" },
-      //     ],
-      //   },
-      // ]
-
-      // --------------------
-      // Build Pax/Crew icons (are auto-attached to their list on creation)
-      // --------------------
-      // ===========================================
-      // -------------- Crew -----------------
-      // ===========================================
       _crew.forEach((crew, index) => {
         const pax = new Pax(crew)
         const firstName = pax.firstName
         const weight = pax.weight
         const $pax = new this.Pax(_this, pax, "Crew", "")
       })
+
       // ===========================================
-      // -------------- Passengers -----------------
+      // -------------- Init -----------------
       // ===========================================
-      passengers.forEach((p, index) => {
-        const pax = new Pax(p, index)
-        const firstName = pax.getValue("First Name")
-        const weight = pax.weight
-        const orderNumber = pax.getValue("orderNumber")
-        const barcode = pax.getValue("Barcode")
-        const $pax = new this.Pax(this, pax, "Pax")
-      })
-      //this.seatPax() *********************************************
       this.init() // initialize jQuery drag/drop code
       if (visible) {
         this.$root.hide()

@@ -82,6 +82,9 @@
       // crude linear function to force loading of the fuel data from state
       this.getFuelWeight()
     }
+    //
+    // Also need to check top row defaults? *** 
+    //
     getFuelWeight() {
       if (!!this.state) {
         const fuelStations = this.stations.find((station) => station.type.includes("fuel"))
