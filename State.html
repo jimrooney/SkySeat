@@ -15,6 +15,17 @@
       // data is an object that holds booking keys key'd by their keys
       //
       this.data = {}
+      this.com = {
+        success: (args) => {
+          console.log("success: ", args)
+          if(!!args.json){
+            console.log(JSON.parse(args.json))
+          }
+        },
+        failure: (err) => {
+          console.log("failure: ", err)
+        },
+      }
     }
     clear() {
       console.log("Cleared State")
@@ -62,47 +73,47 @@
         this.data[cell_ID] = { ...this.data[cell_ID], ...data }
       }
     }
-    getPlanes(){
-      const list = Object.values(this.data).filter(entry=>entry.cellID.split("_")[0] == 0)
+    getPlanes() {
+      const list = Object.values(this.data).filter((entry) => entry.cellID.split("_")[0] == 0)
       return list
     }
-    getRow(number){
+    getRow(number) {
       // Get each cell {} for the row
       // Returns an [] of {}
       let row = {}
       const planes = this.getPlanes()
-      planes.forEach(plane =>{
+      planes.forEach((plane) => {
         const id = number + "_" + plane.cellID.split("_")[1]
         const cell = new CellData(id)
         row[id] = cell
       })
       // iterate over this.data extracting all that match the row number (split the ID on _ )
       number = number.toString()
-      const list = Object.values(this.data).filter(entry=>entry.cellID.split("_")[0] == number)
+      const list = Object.values(this.data).filter((entry) => entry.cellID.split("_")[0] == number)
       //
       // overwrite empty cells with pax cells
       // the row is the empty plane cells by default... replace with existing data for that cell
-      list.forEach(cell=>{
+      list.forEach((cell) => {
         row[cell.cellID] = cell
       })
       return Object.values(row)
     }
-    getPlane(cell){
-      const [r,c] = cell.split("_")
+    getPlane(cell) {
+      const [r, c] = cell.split("_")
       const key = "0_" + c
       const PCF = this.data[key].PCF
       const plane = planes.getPlane(PCF.reg)
       return plane
     }
-    getPlaneFromState(cell){
-      const [r,c] = cell.cellID.split("_")
+    getPlaneFromState(cell) {
+      const [r, c] = cell.cellID.split("_")
       const key = "0_" + c
       const PCF = this.data[key].PCF // *** should check here for cell specific plane ***
       const plane = planes.getPlane(PCF.reg)
       return plane.getLoadedPlane(this.data[cell.cellID])
     }
-    addPax(pax,cellID){
-      if (!this.data[cellID]){
+    addPax(pax, cellID) {
+      if (!this.data[cellID]) {
         this.data[cellID] = new CellData(cellID)
       }
       this.data[cellID].passengers.push(pax)
@@ -210,13 +221,24 @@
       const _date = this.getDate().toLocaleString("en-NZ", { dateStyle: "medium" })
 
       console.log("Date: %o", _date)
-      google.script.run.saveState(_date, this.data)
+
+      console.log("Data: %o", this.data)
+
+      //google.script.run.saveState(_date, this.data)
+      google.script.run
+      .withSuccessHandler(this.com.success)
+      .withFailureHandler(this.com.failure)
+      .saveState(_date, this.data)
 
       //
       // google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).saveBoard( dataArry )
       // function saveBoard(_array) { ... in Code.js
       //
       // Can just try calling the root save() function.
+    }
+
+    test(args) {
+      console.log("Test: ", args)
     }
   }
 </script>

@@ -152,7 +152,11 @@ function saveState(date, data) {
   Logger.log("New Values")
   Logger.log(values)
   range.setValues(values)
-  return date
+  const ret = {
+    date:date,
+    json:JSON.stringify(values),
+  }
+  return ret
 }
 function saveBoard(_array) {
   var date = new Date()
