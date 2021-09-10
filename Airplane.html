@@ -53,8 +53,14 @@
         // {},
         // {}
       ]
-      this.fuel = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight(), burnRate: 60 }
+      this.fuelData = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight(), burnRate: 60 }
       this.state = state // breaks things if not set last (maybe because getFuelWeight() depends on it?)
+    }
+    get fuel(){
+      return this.fuelData
+    }
+    set fuel(fuel){
+      this.fuelData = {...this.fuelData,...fuel}
     }
     getLoadedPlane(data) {
       const _this = this
@@ -75,6 +81,7 @@
       })
       return this
     }
+    
     getSeats() {
       return this.stations((item) => item.type.includes("seat"))
     }
@@ -86,10 +93,21 @@
     // Also need to check top row defaults? *** 
     //
     getFuelWeight() {
+      // ********************************************************************************************
+      // finds the first fuel station and calculates data... this will break with multiple stations.
+      // ********************************************************************************************
+      //
+      // Doesn't look like any of this needs to go back into the fuel stations
+      //
       if (!!this.state) {
         const fuelStations = this.stations.find((station) => station.type.includes("fuel"))
         fuelStations.weight = this.state.PCF?.fuel * this.fuel.factor || 0
-        return fuelStations.weight
+        fuelStations.endurance = this.state.PCF?.fuel / this.fuel.burnRate
+        
+        console.log("\nState: %o", this.state)
+        console.log("fuelStations %o",fuelStations)
+        this.fuel.endurance = this.state.PCF?.fuel / this.fuel.burnRate
+        return fuelStations
       }
       return null
     }
@@ -176,6 +194,7 @@
       const ZFW = stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
       const fuel = stations.filter((station) => station.type.includes("fuel"))
       const fuelQuantity = fuel.reduce((acc, station) => station.quantity, 0)
+      const fuelEndurance =  fuelQuantity / this.fuel.burnRate
 
       const CREW = pob.filter((station) => {
         if (!!station.pax) {
@@ -236,6 +255,7 @@
         fuel: {
           liters: fuelQuantity,
           kg: 0,
+          endurance: fuelEndurance
         },
         rounded: {
           AUW: roundAUW,
