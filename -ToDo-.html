@@ -23,22 +23,33 @@ Main (Calendar) Board needs to indicate WB-Good/WB-Bad
 Currently
 -------------------------------
 
-Fix me:
-
-// ********************************************************************************************
-// finds the first fuel station and calculates data... this will break with multiple stations.
-// ********************************************************************************************
-
-
 Fuel calculations on Loadsheet
+Changing seats doesn't change seats (looks like just swapping seats doesn't work)
 Pax removed from wedding planner planes don't always have their seats removed (in {state}). (they still show in loadsheet)
 Saving calendar plots (even moreso than out legs?)
+
+// will need to remove their seat here ***
 
 Make fuel work
 "Standard Fuel" is auto-selected on popup, but it's not calculated... need to decide how to add it... 
   Trouble is, if we auto add it, that cell will forever be branded with it even if we set nothing (and will ignore the top cell)
 
 // Also need to check top row defaults? *** 
+
+
+
+Fix this.state in {details}.{Airplane}
+  Currently, {details}.{Airplane}.cell and {details}.{Airplane}.state are the same thing.
+  I've added {details}.{Airplane}._state (via {state}.getPlaneFromState) which points at the correct {state}
+  If we replace all the erroneous {details}.{Airplane}.state with .cell, then it shoudl all work.
+  We need the correct {state} to load in the passengers
+  The passengers are correct in the {state}
+
+Fix me:
+
+// ********************************************************************************************
+// finds the first fuel station and calculates data... this will break with multiple stations.
+// ********************************************************************************************
 
 Limit pod bay values to the limit of that pod bay (maybe have checks for overall weight in multipods)
 

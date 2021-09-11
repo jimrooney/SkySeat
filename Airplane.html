@@ -56,32 +56,16 @@
       this.fuelData = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight(), burnRate: 60 }
       this.state = state // breaks things if not set last (maybe because getFuelWeight() depends on it?)
     }
-    get fuel(){
+    get fuel() {
       return this.fuelData
     }
-    set fuel(fuel){
-      this.fuelData = {...this.fuelData,...fuel}
+    set fuel(fuel) {
+      this.fuelData = { ...this.fuelData, ...fuel }
     }
     getLoadedPlane(data) {
-      const _this = this
-      //
-      // (return the resulting airplane)
-      //
-      //
-      // Called by TableCell
-      //
-
-      // -- Load Fuel --
-      this.loadFuelWeightFromSate()
-
-      let _state = !!data? data : this.state // override state with passed in data
-      // -- Load Passengers -- // cheeky shortcut (?) around undefined state
-      _state?.passengers.forEach((pax) => {
-        _this.seatPax(pax)
-      })
       return this
     }
-    
+
     getSeats() {
       return this.stations((item) => item.type.includes("seat"))
     }
@@ -90,7 +74,7 @@
       this.getFuelWeight()
     }
     //
-    // Also need to check top row defaults? *** 
+    // Also need to check top row defaults? ***
     //
     getFuelWeight() {
       // ********************************************************************************************
@@ -103,9 +87,6 @@
         const fuelStations = this.stations.find((station) => station.type.includes("fuel"))
         fuelStations.weight = this.state.PCF?.fuel * this.fuel.factor || 0
         fuelStations.endurance = this.state.PCF?.fuel / this.fuel.burnRate
-        
-        console.log("\nState: %o", this.state)
-        console.log("fuelStations %o",fuelStations)
         this.fuel.endurance = this.state.PCF?.fuel / this.fuel.burnRate
         return fuelStations
       }
@@ -175,6 +156,15 @@
       // calculate CG based on load (simple WAM)
       // returns {wb} Object
       // --------------------------------------
+
+      // This should be able to be reworked (it shouldn't need to be called)
+      // -- Load Fuel --
+      this.loadFuelWeightFromSate()
+
+      this.state?.passengers.forEach((pax) => {
+        this.seatPax(pax)
+      })
+
       //
       // Calculate all moments
       //
@@ -194,7 +184,7 @@
       const ZFW = stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
       const fuel = stations.filter((station) => station.type.includes("fuel"))
       const fuelQuantity = fuel.reduce((acc, station) => station.quantity, 0)
-      const fuelEndurance =  fuelQuantity / this.fuel.burnRate
+      const fuelEndurance = fuelQuantity / this.fuel.burnRate
 
       const CREW = pob.filter((station) => {
         if (!!station.pax) {
@@ -255,7 +245,7 @@
         fuel: {
           liters: fuelQuantity,
           kg: 0,
-          endurance: fuelEndurance
+          endurance: fuelEndurance,
         },
         rounded: {
           AUW: roundAUW,

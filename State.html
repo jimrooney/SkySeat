@@ -110,7 +110,9 @@
       const key = "0_" + c
       const PCF = this.data[key].PCF // *** should check here for cell specific plane ***
       const plane = planes.getPlane(PCF.reg)
-      return plane.getLoadedPlane(this.data[cell.cellID])
+      plane.cell = cell
+      plane._state = this
+      return plane
     }
     addPax(pax, cellID) {
       if (!this.data[cellID]) {

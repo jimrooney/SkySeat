@@ -355,15 +355,16 @@
 
       // Update WB reports
       console.log("\n\nUpdate WB Reports")
+      const WBPlanes = []
       const _row = this.state.getRow(this._TableCell.row)
       _row.forEach((CellData, i) => {
-        const loadedPlane = _this.state.getPlaneFromState(CellData)
+        const plane = _this.state.getPlaneFromState(CellData)
+        const loadedPlane = plane.getLoadedPlane()
         const WB = loadedPlane.getWB(this.SAD)
         const report = $(`.Report_${i}`)
         const color = WB.cg.balanced ? "green" : "red"
-
-        console.log("\nWB plane: %o %o\n", i, WB)
-        console.log("loadedPlane: %o", loadedPlane)
+        //
+        WBPlanes.push(loadedPlane)
         //
         // Update the "red/notRed" report bar above the seats
         //
@@ -372,6 +373,7 @@
         report.css("background-color", color)
         report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
       })
+      console.log("WBPlanes: ", WBPlanes)
     }
     //
     // .stations are tagged in their data with seat number ... .data("number", i)
@@ -388,7 +390,7 @@
       $(".PaxList").droppable({
         accept: ".Pax",
         hoverClass: "hovered",
-        drop: this.removePax,
+        drop: this.handlePaxListDrop,
       })
       $(".CrewList").droppable({
         accept: ".Crew",
@@ -459,6 +461,20 @@
       console.log("getPax: ", pax)
       return pax
     }
+    handlePaxListDrop(even, ui) {
+      console.log("PaxList Drop: %o",$(this).data("cell"))
+      const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
+
+      let $newPax = ui.draggable.detach()
+      let fields = $newPax.data("pax") // array of Rezdy fields
+
+      fields = fields.filter((x) => JSON.stringify(x) != JSON.stringify(fields)) // filter out the seat (remove it)
+
+      const pax = new Pax(fields)
+      _this.state.removePax([pax])
+      _this.state.addPax(pax, $(this).data("cell").cellID)
+      $newPax.appendTo($(this))
+    }
     handleDrop(event, ui) {
       console.log("HandleDrop")
       // in this context, this is the seat and $(this) is the jQuery seat
@@ -507,12 +523,13 @@
           manifestPax.fields = manifestPax.fields.filter((x) => x.label != "seat")
           manifestPax.fields.push(thisSeat)
           droppedPaxFields = manifestPax.fields
-          statePax.seat = thisSeat.value // sets the seat value
+          statePax.seat = thisSeat.value // sets the seat value in {state}
         }
       }
       // ============================================
       // Seat's occupied
       // ============================================
+      let alreadySeatedPax
       if ($(this).children().length > 0) {
         //
         // Swap with any existing seated pax
@@ -531,33 +548,36 @@
           //
           // Remove the source seat field and rebrand with the old seat
           //
-          let alreadySeatedPaxFields = $alreadySeatedPax.data("pax")
-          //
-          // Filter out the current seat
-          // Remove seat field
-          //
-          alreadySeatedPaxFields = alreadySeatedPaxFields.filter((x) => JSON.stringify(x) != JSON.stringify(thisSeat))
-          alreadySeatedPaxFields.push(oldSeat)
+          alreadySeatedPax = {
+            fields: $alreadySeatedPax.data("pax"),
+          }
+          alreadySeatedPax.fields = alreadySeatedPax.fields.filter((x) => JSON.stringify(x) != JSON.stringify(thisSeat)) // filter out the seat (remove it)
+          alreadySeatedPax.fields.push(oldSeat)
           //
           // Save
           //
-          $alreadySeatedPax.data("pax", alreadySeatedPaxFields)
+          $alreadySeatedPax.data("pax", alreadySeatedPax.fields)
         } else {
           //
           // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
           //
-          $alreadySeatedPax.appendTo($("#PaxList"))
+          $alreadySeatedPax.appendTo($("#PaxList")) // will need to remove their seat here ***
         }
       }
+      // ---------------------------------------------------
       // done figuring everying out, move the pax in {state}
+      // ---------------------------------------------------
+      // update existing pax that have swapped seats
+      if (!!alreadySeatedPax) {
+        const pax = new Pax(alreadySeatedPax.fields)
+        _this.state.removePax([pax])
+        _this.state.addPax(pax, newCellID)
+      }
+      // save the dropped pax
       const pax = new Pax(droppedPaxFields)
-      console.log("Dropped (new Pax): %o", pax)
-      console.log("This State: %o", _this.state)
       _this.state.removePax([pax])
-      console.log("Pax removed")
       _this.state.addPax(pax, newCellID)
       _this.assignSeat($(this), $newPax, droppedPaxFields)
-      console.log("Update...")
       _this.update()
     }
     assignSeat($seat, $pax, droppedPaxFields) {
@@ -646,7 +666,12 @@
         })
           .data("cell", cell) // Backreference to which calendar cell it's plotting
           .append(_plane.$seating)
-          .append(`<span id="PaxList_${i}" class="PaxList">`)
+          .append(
+            $(`<span />`, {
+              id: `PaxList_${i}`,
+              class: "PaxList",
+            }).data("cell", cell)
+          )
           .append(_plane.get$Pod())
           .append(`</span><span class="SpacerPod"></span>`)
         $plane.prepend($(`<div class="MenuBar"></div>`).prepend($(this.PCFSelectorString)))
@@ -693,11 +718,11 @@
           $selector.append(`<option value="${i}">${i}</option>`)
         }
         $selector.val(_plane.airplane.standardFuel) // set in Company Data Spreadsheet
-        $selector.change( function (){
+        $selector.change(function () {
           console.log("Fuel Change")
 
-          cell.PCF = {fuel: $(this).val()}
-          console.log("$(this).value: ",$(this).val())
+          cell.PCF = { fuel: $(this).val() }
+          console.log("$(this).value: ", $(this).val())
           console.log("this: ", this)
           console.log("cell: ", cell)
           console.log("_this: ", _this)
@@ -705,7 +730,6 @@
           console.log("$plane: ", $plane)
           _this.update()
         })
-
       })
       // ===========================================
       // -------------- Crew -----------------
