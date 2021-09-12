@@ -463,14 +463,16 @@
     }
     handlePaxListDrop(even, ui) {
       console.log("PaxList Drop: %o",$(this).data("cell"))
+
+
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
 
       let $newPax = ui.draggable.detach()
       let fields = $newPax.data("pax") // array of Rezdy fields
+      const newFields = fields.filter((x) => x.label != "seat")
+      console.log("New Fields: %o", newFields)
 
-      fields = fields.filter((x) => JSON.stringify(x) != JSON.stringify(fields)) // filter out the seat (remove it)
-
-      const pax = new Pax(fields)
+      const pax = new Pax(newFields)
       _this.state.removePax([pax])
       _this.state.addPax(pax, $(this).data("cell").cellID)
       $newPax.appendTo($(this))
@@ -656,6 +658,16 @@
           console.log("WB: %o", WB)
           LOADSHEET.show(_this._TableCell, loadedPlane, WB)
         })
+        // ---------------------------
+        // State Button
+        // ---------------------------
+        const $State = $("<div />", {
+          text: "S",
+          class: "MenuButton MobileButton",
+        })
+        $State.click(function () {
+          console.log("State data:",_this.state.data)
+        })
         // ======================================
         // New this.Airplane
         // ======================================
@@ -689,7 +701,7 @@
         _plane.reset()
 
         //_plane.$seating.find(".Print").append($Print) // can use this to put the print button at the top
-        _plane.$seating.append($Print)
+        _plane.$seating.append([$Print,$State])
         $plane.find(`CargoPod_${i}`).append()
         _this.$root.find(".content").append($plane)
 

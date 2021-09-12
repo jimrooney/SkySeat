@@ -22,6 +22,10 @@ Main (Calendar) Board needs to indicate WB-Good/WB-Bad
 -------------------------------
 Currently
 -------------------------------
+handlePaxListDrop(even, ui) { ... 
+  Removes pax seats but isn't always called when pax are removed (you have to put them on the pen)
+  Could be handled by putting them back in the seat when they're moved but not placed in the pen (ideal?)
+  Likely means they're not being attached right? Or maybe their "drag" function needs to be re-initilalized.
 
 Fuel calculations on Loadsheet
 Changing seats doesn't change seats (looks like just swapping seats doesn't work)
