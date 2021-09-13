@@ -22,6 +22,19 @@ Main (Calendar) Board needs to indicate WB-Good/WB-Bad
 -------------------------------
 Currently
 -------------------------------
+
+Cleaning up {Airplane}.getLoadedPlane()
+  Aiming to have a function that can be called from anywhere and the plane will tell you it's WB
+  Currenly when we call {state}.getPlane(), it just gives you a blank copy of that plane (based on the top row in Calendar)
+
+{Airplane}.getLoadedPlane(CellData) loads the plane... need to add things like fuel
+  Pax don't always clear (just their weight)
+  Probably something in the handleDrop in the Pen.
+
+  Still need to clear the pilots from the Pax Pen onShow.
+
+
+
 handlePaxListDrop(even, ui) { ... 
   Removes pax seats but isn't always called when pax are removed (you have to put them on the pen)
   Could be handled by putting them back in the seat when they're moved but not placed in the pen (ideal?)

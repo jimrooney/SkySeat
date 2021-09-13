@@ -62,7 +62,9 @@
     set fuel(fuel) {
       this.fuelData = { ...this.fuelData, ...fuel }
     }
-    getLoadedPlane(data) {
+    getLoadedPlane(CellData) {
+
+      CellData.passengers.forEach(pax=>this.seatPax(pax))
       return this
     }
 

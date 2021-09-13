@@ -354,13 +354,35 @@
       })
 
       // Update WB reports
-      console.log("\n\nUpdate WB Reports")
+      console.log("\nUpdate WB Reports")
+      console.log("_this.state: %o",_this.state)
       const WBPlanes = []
       const _row = this.state.getRow(this._TableCell.row)
+
+      console.log("Row: ",_row)
       _row.forEach((CellData, i) => {
-        const plane = _this.state.getPlaneFromState(CellData)
-        const loadedPlane = plane.getLoadedPlane()
+        const plane = _this.state.getPlaneFromState(CellData) // Top row (PlaneCell) ** should change.. get the cell's plane.
+        console.log("plane: %o",plane)
+
+
+        const loadedPlane = plane.getLoadedPlane(CellData)
+
+
+
+
+
+
+
+
+        // console.log("loadedPlane: %o",loadedPlane)
         const WB = loadedPlane.getWB(this.SAD)
+        // console.log("WB: %o",WB)
+
+
+
+
+
+
         const report = $(`.Report_${i}`)
         const color = WB.cg.balanced ? "green" : "red"
         //
