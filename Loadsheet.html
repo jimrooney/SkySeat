@@ -52,9 +52,9 @@
         $("._paxList-" + i + "-fullName").html("")
         $("._paxList-" + i + "-weight").html("")
       }
-      //
+      // ------------------
       // Time and Date
-      //
+      // ------------------
       const date = TableCell.getDate()
       const options = {
         weekday: "short",
@@ -73,9 +73,9 @@
       console.log("{Loadsheet} WB: %o",WB)
       let seats = WB.POB
       let CrewNames
-      //
+      // ------------------
       // Find PIC
-      //
+      // ------------------
       let PIC = seats.filter((station) => station.id == 1)
       console.log("PIC: %o",PIC)
       if (!PIC.length) {

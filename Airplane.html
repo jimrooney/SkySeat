@@ -63,7 +63,7 @@
       this.fuelData = { ...this.fuelData, ...fuel }
     }
     getLoadedPlane(CellData) {
-
+      this.getFuelWeight() // Load fuel weight based on {state}
       CellData.passengers.forEach(pax=>this.seatPax(pax))
       return this
     }
@@ -153,6 +153,7 @@
       }
     }
     getWB(SAD) {
+      console.log("GetWB this: ", this)
       // Standard Actual Declared
       //---------------------------------------
       // calculate CG based on load (simple WAM)
@@ -163,7 +164,7 @@
       // -- Load Fuel --
       this.loadFuelWeightFromSate()
 
-      this.state?.passengers.forEach((pax) => {
+      this.state.data[this.cell.cellID]?.passengers?.forEach((pax) => {
         this.seatPax(pax)
       })
 

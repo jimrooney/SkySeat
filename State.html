@@ -108,9 +108,16 @@
     getPlaneFromState(cell) {
       const [r, c] = cell.cellID.split("_")
       const key = "0_" + c
-      const PCF = this.data[key].PCF // *** should check here for cell specific plane ***
-      const plane = planes.getPlane(PCF.reg)
+      const PCF = this.data[key].PCF
+      const type = planes.getPlane(PCF.reg)
+
+      type.state = this
+      const plane = type.getLoadedPlane(cell)
+
+      console.log("Plane: ", plane)
+
       plane.cell = cell
+
       plane._state = this
       return plane
     }

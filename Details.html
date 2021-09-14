@@ -308,14 +308,6 @@
           <select class="Fuel" name="fuel" /> Liters
         </span>`
       this.$root.data("root", this) // Access this object through $([Selector]).data('root')
-      // ---------------------------
-      // Print Button
-      // ---------------------------
-      this.$Print = this.$root.find(".Print")
-      this.$Print.click(function () {
-        console.log("Print Click")
-        LOADSHEET.show(_this._TableCell)
-      })
       // ====================
       // Details Close Button
       // ====================
@@ -334,6 +326,8 @@
 
     update() {
       const _this = this
+      console.log("== update() == \n{details}.update()")
+      console.log("_this.state: %o", _this.state)
 
       // Reflect PAX weights as per SAD
       $(".Pax").each(function () {
@@ -354,17 +348,17 @@
       })
 
       // Update WB reports
-      console.log("\nUpdate WB Reports")
-      console.log("_this.state: %o",_this.state)
-      const WBPlanes = []
       const _row = this.state.getRow(this._TableCell.row)
+      console.log("Row: ", _row)
 
-      console.log("Row: ",_row)
+      const WBPlanes = []
+      const loadedPlanes = []
       _row.forEach((CellData, i) => {
+
+
+        // *** Combining these two functions ***
+
         const plane = _this.state.getPlaneFromState(CellData) // Top row (PlaneCell) ** should change.. get the cell's plane.
-        console.log("plane: %o",plane)
-
-
         const loadedPlane = plane.getLoadedPlane(CellData)
 
 
@@ -372,21 +366,9 @@
 
 
 
-
-
-        // console.log("loadedPlane: %o",loadedPlane)
         const WB = loadedPlane.getWB(this.SAD)
-        // console.log("WB: %o",WB)
-
-
-
-
-
-
         const report = $(`.Report_${i}`)
         const color = WB.cg.balanced ? "green" : "red"
-        //
-        WBPlanes.push(loadedPlane)
         //
         // Update the "red/notRed" report bar above the seats
         //
@@ -394,7 +376,11 @@
         report.prop("loadedPlane", loadedPlane)
         report.css("background-color", color)
         report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
+        //
+        loadedPlanes.push(plane)
+        WBPlanes.push(loadedPlane)
       })
+      console.log("Planes: ", loadedPlanes)
       console.log("WBPlanes: ", WBPlanes)
     }
     //
@@ -484,8 +470,7 @@
       return pax
     }
     handlePaxListDrop(even, ui) {
-      console.log("PaxList Drop: %o",$(this).data("cell"))
-
+      console.log("PaxList Drop: %o", $(this).data("cell"))
 
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
 
@@ -673,11 +658,21 @@
           class: "MenuButton MobileButton Print",
         })
         $Print.click(function () {
-          console.log("Print Click")
-          const loadedPlane = _this.state.getPlaneFromState(cell)
-          const WB = loadedPlane.getWB(this.SAD)
-          console.log("Cell: %o", cell)
+          console.log("\nPrint Click (cellID: %o)",cell.cellID) // correct ID (no other data than ID)
+          console.log("State: ",_this.state) // correct {state}
+          console.log("SAD: ",_this.SAD)
+
+
+        const plane = _this.state.getPlaneFromState(cell) // Top row (PlaneCell) ** should change.. get the cell's plane.
+        const loadedPlane = plane.getLoadedPlane(cell)
+        const WB = loadedPlane.getWB(_this.SAD)
+
+          console.log("loadedPlane: %o", loadedPlane)
           console.log("WB: %o", WB)
+          console.log("\n")
+
+
+
           LOADSHEET.show(_this._TableCell, loadedPlane, WB)
         })
         // ---------------------------
@@ -688,7 +683,7 @@
           class: "MenuButton MobileButton",
         })
         $State.click(function () {
-          console.log("State data:",_this.state.data)
+          console.log("State data:", _this.state.data)
         })
         // ======================================
         // New this.Airplane
@@ -723,7 +718,7 @@
         _plane.reset()
 
         //_plane.$seating.find(".Print").append($Print) // can use this to put the print button at the top
-        _plane.$seating.append([$Print,$State])
+        _plane.$seating.append([$Print, $State])
         $plane.find(`CargoPod_${i}`).append()
         _this.$root.find(".content").append($plane)
 
