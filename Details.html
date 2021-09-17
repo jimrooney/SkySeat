@@ -354,17 +354,16 @@
       const WBPlanes = []
       const loadedPlanes = []
       _row.forEach((CellData, i) => {
-
-
         // *** Combining these two functions ***
+
+        //
+        // Load Fuel
+        //
+        console.log("This: ", $(this))
+
 
         const plane = _this.state.getPlaneFromState(CellData) // Top row (PlaneCell) ** should change.. get the cell's plane.
         const loadedPlane = plane.getLoadedPlane(CellData)
-
-
-
-
-
 
         const WB = loadedPlane.getWB(this.SAD)
         const report = $(`.Report_${i}`)
@@ -658,21 +657,11 @@
           class: "MenuButton MobileButton Print",
         })
         $Print.click(function () {
-          console.log("\nPrint Click (cellID: %o)",cell.cellID) // correct ID (no other data than ID)
-          console.log("State: ",_this.state) // correct {state}
-          console.log("SAD: ",_this.SAD)
-
-
-        const plane = _this.state.getPlaneFromState(cell) // Top row (PlaneCell) ** should change.. get the cell's plane.
-        const loadedPlane = plane.getLoadedPlane(cell)
-        const WB = loadedPlane.getWB(_this.SAD)
-
-          console.log("loadedPlane: %o", loadedPlane)
-          console.log("WB: %o", WB)
-          console.log("\n")
-
-
-
+          console.log("\nPrint Click (cellID: %o)", cell.cellID) // correct ID (no other data than ID)
+          console.log("State: ", _this.state) // correct {state}
+          const plane = _this.state.getPlaneFromState(cell) // Top row (PlaneCell) ** should change.. get the cell's plane.
+          const loadedPlane = plane.getLoadedPlane(cell)
+          const WB = loadedPlane.getWB(_this.SAD)
           LOADSHEET.show(_this._TableCell, loadedPlane, WB)
         })
         // ---------------------------

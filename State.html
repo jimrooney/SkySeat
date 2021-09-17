@@ -110,14 +110,9 @@
       const key = "0_" + c
       const PCF = this.data[key].PCF
       const type = planes.getPlane(PCF.reg)
-
       type.state = this
       const plane = type.getLoadedPlane(cell)
-
-      console.log("Plane: ", plane)
-
       plane.cell = cell
-
       plane._state = this
       return plane
     }

@@ -80,16 +80,18 @@
     //
     getFuelWeight() {
       // ********************************************************************************************
-      // finds the first fuel station and calculates data... this will break with multiple stations.
+      // is this.state CellData or the {state} (should be {state})
       // ********************************************************************************************
-      //
-      // Doesn't look like any of this needs to go back into the fuel stations
-      //
+      let fuel = this.cell?.PCF?.fuel || this.state?.PCF?.fuel || 0
+      // ********************************************************************************************
+      // finds the first fuel station and calculates data... this will break with multiple fuel stations.
+      // ********************************************************************************************
+
       if (!!this.state) {
         const fuelStations = this.stations.find((station) => station.type.includes("fuel"))
-        fuelStations.weight = this.state.PCF?.fuel * this.fuel.factor || 0
-        fuelStations.endurance = this.state.PCF?.fuel / this.fuel.burnRate
-        this.fuel.endurance = this.state.PCF?.fuel / this.fuel.burnRate
+        fuelStations.weight = fuel * this.fuel.factor || 0
+        fuelStations.endurance = fuel / this.fuel.burnRate
+        this.fuel.endurance = fuel / this.fuel.burnRate
         return fuelStations
       }
       return null
