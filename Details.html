@@ -739,13 +739,16 @@
         $selector.change(function () {
           console.log("Fuel Change")
 
-          cell.PCF = { fuel: $(this).val() }
-          console.log("$(this).value: ", $(this).val())
+          const PCF = { fuel: $(this).val() }
+          console.log("PCF: ",PCF)
+          _this.state.setFuel(cell?.cellID,PCF)
+          console.log("\n$(this).value: ", $(this).val())
           console.log("this: ", this)
           console.log("cell: ", cell)
           console.log("_this: ", _this)
           console.log("Airplane: %o", _plane)
           console.log("$plane: ", $plane)
+          console.log("\n")
           _this.update()
         })
       })

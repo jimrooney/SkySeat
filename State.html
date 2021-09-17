@@ -123,6 +123,15 @@
       this.data[cellID].passengers.push(pax)
       return this.data[cellID].passengers
     }
+    getFuel(CellId){
+      // if no fuel set in the cell, look at the planeCell for data ***************
+      return this.data[CellId]?.PCF?.fuel
+    }
+    setFuel(cellId,PCF){
+      if (!!this.data[cellId]){
+        this.data[cellId].PCF = {...this.data[cellId]?.PCF, ...PCF}
+      }
+    }
     // -----------------------------------------------------------------------------------------------------
     //
     //

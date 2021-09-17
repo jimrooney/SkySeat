@@ -82,7 +82,11 @@
       // ********************************************************************************************
       // is this.state CellData or the {state} (should be {state})
       // ********************************************************************************************
-      let fuel = this.cell?.PCF?.fuel || this.state?.PCF?.fuel || 0
+      const id = this.cell?.cellID
+      let fuel = this.cell?.PCF?.fuel || this.state?.getFuel(id) || 0
+      console.log("cell: ", this.cell)
+      console.log("state: ", this.state)
+      console.log("Fuel: ", fuel)
       // ********************************************************************************************
       // finds the first fuel station and calculates data... this will break with multiple fuel stations.
       // ********************************************************************************************
