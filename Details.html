@@ -323,12 +323,13 @@
 
       return this
     }
-
+    // ============================================================================
+    // Update
+    // ============================================================================
     update() {
+      console.log("{details}.update()")
+      //
       const _this = this
-      console.log("== update() == \n{details}.update()")
-      console.log("_this.state: %o", _this.state)
-
       // Reflect PAX weights as per SAD
       $(".Pax").each(function () {
         const _pax = $(this).data("this").pax
@@ -346,25 +347,22 @@
         }
         $(this).html(`${_pax.firstName}<br><span class="weight" style="font-size:large;">${weight}</span>`)
       })
-
+      //
       // Update WB reports
+      //
       const _row = this.state.getRow(this._TableCell.row)
-      console.log("Row: ", _row)
-
       const WBPlanes = []
       const loadedPlanes = []
+      console.log("Row: ", _row)
       _row.forEach((CellData, i) => {
-        // *** Combining these two functions ***
-
         //
         // Load Fuel
         //
-        console.log("This: ", $(this))
-
-
         const plane = _this.state.getPlaneFromState(CellData) // Top row (PlaneCell) ** should change.. get the cell's plane.
         const loadedPlane = plane.getLoadedPlane(CellData)
-
+        const $selectedFuel =  $(`#AirplanePlotter_${i}`).find('.PCF_Selector :selected').text()
+        plane.fuel = $selectedFuel
+        //
         const WB = loadedPlane.getWB(this.SAD)
         const report = $(`.Report_${i}`)
         const color = WB.cg.balanced ? "green" : "red"
@@ -382,10 +380,16 @@
       console.log("Planes: ", loadedPlanes)
       console.log("WBPlanes: ", WBPlanes)
     }
+    // ============================================================================
+    // End Update
+    // ============================================================================
     //
     // .stations are tagged in their data with seat number ... .data("number", i)
     // numbered 1 - 8 (1=pilot)
     //
+    // ============================================================================
+    // Init
+    // ============================================================================
     init() {
       let _this = this // used to reference this Details object from within the $body element's function
       $(".station").droppable({
@@ -418,6 +422,9 @@
         drop: this.handleDrop,
       })
     }
+    // ============================================================================
+    // End Init
+    // ============================================================================
     removePax(event, ui) {
       //
       // Add baggage removal code here ***
@@ -643,9 +650,10 @@
 
       // Get the entire row
       const _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
-      // ======================================
+      //
+      // =========================================================================================
       // Each Plane
-      // ======================================
+      // =========================================================================================
       // Each of these will be a different plane (and have it's own PCF)
       //
       _row.forEach((cell, i) => {
@@ -735,23 +743,28 @@
         for (let i = 10; i <= fuelCap; i += 10) {
           $selector.append(`<option value="${i}">${i}</option>`)
         }
-        $selector.val(_plane.airplane.standardFuel) // set in Company Data Spreadsheet
+        //
+        $selector.val(_plane.airplane.standardFuel) // Select standard fuel by default // set in Company Data Spreadsheet
+        //
         $selector.change(function () {
           console.log("Fuel Change")
-
           const PCF = { fuel: $(this).val() }
-          console.log("PCF: ",PCF)
-          _this.state.setFuel(cell?.cellID,PCF)
-          console.log("\n$(this).value: ", $(this).val())
-          console.log("this: ", this)
-          console.log("cell: ", cell)
-          console.log("_this: ", _this)
-          console.log("Airplane: %o", _plane)
-          console.log("$plane: ", $plane)
-          console.log("\n")
+          _this.state.setFuel(cell?.cellID, PCF)
+          // console.log("PCF: ",PCF)
+          // console.log("\n$(this).value: ", $(this).val())
+          // console.log("this: ", this)
+          // console.log("cell: ", cell)
+          // console.log("_this: ", _this)
+          // console.log("Airplane: %o", _plane)
+          // console.log("$plane: ", $plane)
+          // console.log("\n")
           _this.update()
         })
       })
+      // =========================================================================================
+      // End (Each Plane)
+      // =========================================================================================
+
       // ===========================================
       // -------------- Crew -----------------
       // ===========================================

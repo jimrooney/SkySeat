@@ -17,65 +17,50 @@ Drop on plane plots on board
 Drop pax on pen (in Wedding planner)
 -------------------------------
 
+
 Main (Calendar) Board needs to indicate WB-Good/WB-Bad 
   Will require "ideal seating" of some sort. Likely sorting by weight both directions and picking any possible solution.
 -------------------------------
 Currently
 -------------------------------
 
-in {state}.setFuel() ... decide what to do if there's no cellData... 
-  either make one, or make the dropPax or update trigger setFuel (probably do that)
-  
-// if no fuel set in the cell, look at the planeCell for data ***************
-
-Need to set the fuel weight when opening {details}
-Getting fuel to work again.... this might be wrong... 
-// ********************************************************************************************
-// is this.state CellData or the {state} (should be {state})
-// ********************************************************************************************
-
-
-
+Fuel calculations on Loadsheet
 Pax only remove if you drop them on the pen
-
-
-In Airplane... getWB(SAD) { // could use a bit more attention.
-  we were pointing at the wrong state.data[] (cuz we used to pass in CellData)
-  That's fixed, but could be cleaner.
-  Likely still needs the same treatment for fuel (which isn't likely getting updated)
-   
-// *** Combining these two functions ***
-
-Cleaning up {Airplane}.getLoadedPlane()
-  Aiming to have a function that can be called from anywhere and the plane will tell you it's WB
-  Currenly when we call {state}.getPlane(), it just gives you a blank copy of that plane (based on the top row in Calendar)
-
-{Airplane}.getLoadedPlane(CellData) loads the plane... need to add things like fuel
-  Pax don't always clear (just their weight)
-  Probably something in the handleDrop in the Pen.
-
-  Still need to clear the pilots from the Pax Pen onShow.
-
+Still need to clear the pilots from the Pax Pen onShow.
+Closing details doesn't reset the airplanes
 Add airplane REG to the top of each plane in Wedding Planner ({Details})
 
+Limit pod bay values to the limit of that pod bay (maybe have checks for overall weight in multipods)
+
+--
 handlePaxListDrop(even, ui) { ... 
   Removes pax seats but isn't always called when pax are removed (you have to put them on the pen)
   Could be handled by putting them back in the seat when they're moved but not placed in the pen (ideal?)
   Likely means they're not being attached right? Or maybe their "drag" function needs to be re-initilalized.
 
-Fuel calculations on Loadsheet
+  {Airplane}.getLoadedPlane(CellData) loads the plane... need to add things like fuel
+  Pax don't always clear (just their weight)
+  Probably something in the handleDrop in the Pen.
+--
+
+Filter copilot out of loadsheet when it's not crew
+  In {Details} filter already assinged pilots out of _CrewList (so when we start auto-seating them, it's already done)
+
+In Airplane... getWB(SAD) { // could use a bit more attention.
+  we were pointing at the wrong state.data[] (cuz we used to pass in CellData)
+  That's fixed, but could be cleaner.
+  Likely still needs the same treatment for fuel (which isn't likely getting updated)
+
+Cleaning up {Airplane}.getLoadedPlane()
+  Aiming to have a function that can be called from anywhere and the plane will tell you it's WB
+  Currenly when we call {state}.getPlane(), it just gives you a blank copy of that plane (based on the top row in Calendar)
+
+
+
 Changing seats doesn't change seats (looks like just swapping seats doesn't work)
 Pax removed from wedding planner planes don't always have their seats removed (in {state}). (they still show in loadsheet)
 Saving calendar plots (even moreso than out legs?)
-
-// will need to remove their seat here ***
-
-Make fuel work
-"Standard Fuel" is auto-selected on popup, but it's not calculated... need to decide how to add it... 
-  Trouble is, if we auto add it, that cell will forever be branded with it even if we set nothing (and will ignore the top cell)
-
-// Also need to check top row defaults? *** 
-
+  // will need to remove their seat here ***
 
 
 Fix this.state in {details}.{Airplane}
@@ -85,13 +70,7 @@ Fix this.state in {details}.{Airplane}
   We need the correct {state} to load in the passengers
   The passengers are correct in the {state}
 
-Fix me:
 
-// ********************************************************************************************
-// finds the first fuel station and calculates data... this will break with multiple stations.
-// ********************************************************************************************
-
-Limit pod bay values to the limit of that pod bay (maybe have checks for overall weight in multipods)
 
 Ability to change SAD (and change crew colour to match SAD)
 When changing to Actual:
@@ -102,8 +81,6 @@ Get rid of $planePlotter (make it just $plane)
 
 
 
-Filter copilot out of loadsheet when it's not crew
-In {Details} filter already assinged pilots out of _CrewList (so when we start auto-seating them, it's already done)
 
 Fantom (0)pax trips need to be filtered out.
 
