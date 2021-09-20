@@ -42,7 +42,9 @@
     // Show
     // ---------------------------
     show(TableCell,plane,WB) {
-      console.log("Called by cell:",TableCell)
+      console.log("{Loadsheet}: TableCell",TableCell)
+      console.log("{Loadsheet} plane:", plane)
+      console.log("{Loadsheet} WB:", WB)
       //
       // Clear out old values
       //
@@ -70,14 +72,12 @@
       // ------------------
       
       const _thisPlane = plane
-      console.log("{Loadsheet} WB: %o",WB)
       let seats = WB.POB
       let CrewNames
       // ------------------
       // Find PIC
       // ------------------
       let PIC = seats.filter((station) => station.id == 1)
-      console.log("PIC: %o",PIC)
       if (!PIC.length) {
         console.log("[error] No PIC")
         PIC = null
@@ -113,34 +113,32 @@
         ${utility.round(WB.weights.fuel)} 
       <span style="font-size:x-small">( ${utility.round(WB.cg.imperial.fuelWeight)} )lbs</span>`
       }
-
-
-
+      //
       const cargoW = WB.stations
         .filter((station) => station.type.includes("cargo"))
         .reduce((accumulator, station) => {
           return accumulator + Number(station.weight)
         }, 0)
-
+        //
       const fuel = {
         time: {
-          decimal: WB.fuel.liters / _thisPlane.fuel.burnRate,
+          decimal: plane.fuel.endurance,
           get hrs() {
-            return time.decimalToHours(WB.fuel.liters / _thisPlane.fuel.burnRate)
+            return time.decimalToHours(plane.fuel.endurance)
           },
           get string() {
             return `${this.hrs.join(":")}(hrs)`
           },
         },
         quantity: {
-          liters: WB.fuel.liters,
+          liters: plane.fuel.liters,
         },
         landing: {
           toBurn: {
-            kg: WB.TotalWeight - _thisPlane.limits.weight.Landing,
-            lbs: (WB.TotalWeight - _thisPlane.limits.weight.Landing) * 2.2,
+            kg: WB.TotalWeight - plane.limits.weight.Landing,
+            lbs: (WB.TotalWeight - plane.limits.weight.Landing) * 2.2,
             get liters() {
-              return this.kg * _thisPlane.fuel.factor
+              return this.kg * plane.fuel.factor
               //return `${Math.round((litersToBurn + Number.EPSILON) * 100) / 100}L`
             },
             get gallons() {
@@ -169,7 +167,7 @@
         },
       }
       this.fuel = fuel
-
+      //
       let toBurnString = ""
       if (fuel.landing.toBurn.kg > 0) {
         toBurnString = `${utility.round(fuel.landing.toBurn.liters, 0)}L ${fuel.landing.toBurn.time.string}`
@@ -185,7 +183,7 @@
         reg: _thisPlane.reg,
         type: _thisPlane.type,
         regColor: _thisPlane.regcolor,
-        fuel: `${WB.fuel.liters}(L) ${fuel.time.string}`, // Liters
+        fuel: `${plane.fuel.liters}(L) ${fuel.time.string}`, // Liters
         EmptyWeight: utility.round(_thisPlane.weight),
         AUW: utility.round(WB.weights.auw),
         ZFW: utility.round(WB.weights.zfw),
@@ -209,6 +207,9 @@
       console.log("\n\nLoadSheet Plane:")
       console.log("WB %o", WB)
       $(".reg").css("background-color", this.displayPlane.regColor)
+      // =====================================================================================================
+      // This is the magic...
+      // =====================================================================================================
       //
       // Map _plane object into classes
       //
