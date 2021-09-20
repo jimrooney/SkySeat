@@ -86,6 +86,7 @@
         // If no PIC... this should all fail (and throw an error)
       }
       const SIC = seats.filter((station) => station.id == 2)
+      const hasSIC = SIC[0]?.px.fields.some(field => field.label == "Role")
       const CREW = [...PIC, ...SIC]
       if (PIC.length>0){      
         CrewNames = `
@@ -93,7 +94,7 @@
         (${PIC[0].weight})
         `
       }
-      if (SIC.length > 0) {
+      if (SIC.length > 0 && hasSIC) {
         CrewNames += `
         <span style="font-size: xx-small;">/ (
       ${SIC[0].px.fullName}
