@@ -8,7 +8,7 @@
       this.type = data.type || ""
       this.weight = data.weight > 0 ? data.weight : 0
       this.arm = data.arm || 0
-      this.moment = this.weight * this.arm
+      this.moment = this.weight * this.arm || 0
       this.id = data.id
     }
   }
@@ -131,7 +131,7 @@
         case "Actual":
           POB = pob.map((station) => {
             // Straight Copy, calculate arms
-            const w = station.weight.actualstation.weight.actual
+            const w = station.weight.actual
             station.weight = !!w ? w : 0
             station.moment = station.weight * station.arm || "NaN"
             return station
@@ -173,7 +173,6 @@
       }
     }
     getWB(SAD) {
-      console.log("GetWB this: ", this)
       // Standard Actual Declared
       //---------------------------------------
       // calculate CG based on load (simple WAM)

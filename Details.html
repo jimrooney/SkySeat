@@ -352,6 +352,7 @@
       //
       const _row = this.state.getRow(this._TableCell.row)
       const WBPlanes = []
+      const _WB = []
       const loadedPlanes = []
       console.log("Row: ", _row)
       _row.forEach((CellData, i) => {
@@ -376,8 +377,10 @@
         //
         loadedPlanes.push(plane)
         WBPlanes.push(loadedPlane)
+        _WB.push(WB)
       })
       console.log("Planes: ", loadedPlanes)
+      console.log("_WB: ",_WB)
       console.log("WBPlanes: ", WBPlanes)
     }
     // ============================================================================

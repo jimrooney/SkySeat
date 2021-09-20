@@ -17,6 +17,10 @@ Drop on plane plots on board
 Drop pax on pen (in Wedding planner)
 -------------------------------
 
+Something about handleDrop is breaking this... 
+  Changing actual weight adds a {"Actual Weight:"} field to the pax fields (and the CG goes NaN)
+  Changing the actual weight again makes it work (till it hits handleDrop again)
+  Only increasing weight in Actual Weight works (trying to lower it increases it)
 
 Main (Calendar) Board needs to indicate WB-Good/WB-Bad 
   Will require "ideal seating" of some sort. Likely sorting by weight both directions and picking any possible solution.
@@ -25,6 +29,9 @@ Currently
 -------------------------------
 
 Fuel calculations on Loadsheet
+Copilot seat shows up as seat #1 in Loadsheet, so can likely just tweak the copilot to be visible if it's crew... 
+  Cuz if it's crew, they'll show in both places. If not, they'll just show in seat #1. 
+
 Pax only remove if you drop them on the pen
 Still need to clear the pilots from the Pax Pen onShow.
 Closing details doesn't reset the airplanes
