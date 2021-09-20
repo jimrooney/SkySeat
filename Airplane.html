@@ -8,6 +8,14 @@
       this.type = data.type || ""
       this.weight = data.weight > 0 ? data.weight : 0
       this.arm = data.arm || 0
+
+
+      const moment_ = this.weight * this.arm
+      if (moment_ < 0){
+        console.log("Bad Moment, weight: %o arm: %o moment: %o", this.weight, this.arm, moment_)
+      }
+
+
       this.moment = this.weight * this.arm || 0
       this.id = data.id
     }
