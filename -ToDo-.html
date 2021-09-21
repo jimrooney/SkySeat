@@ -20,20 +20,11 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
-This function in {time} is wrong (gives 3:8 in Caravan)
-
-decimalToHours : (time) => {
-  const hour = Math.floor(time)
-  const minutes = Math.round((time % 1 * 60))
-  return [hour,minutes]
-},
-
-
-
 Only increasing weight in Actual Weight works (trying to lower it increases it)
 
 Main (Calendar) Board needs to indicate WB-Good/WB-Bad 
   Will require "ideal seating" of some sort. Likely sorting by weight both directions and picking any possible solution.
+
 
 Pax only remove if you drop them on the pen
 Still need to clear the pilots from the Pax Pen onShow.
@@ -41,7 +32,7 @@ Closing details doesn't reset the airplanes
 Add airplane REG to the top of each plane in Wedding Planner ({Details})
 
 Limit pod bay values to the limit of that pod bay (maybe have checks for overall weight in multipods)
-
+Burnrate isn't being loaded (it's hardcoded into the board)
 --
 handlePaxListDrop(even, ui) { ... 
   Removes pax seats but isn't always called when pax are removed (you have to put them on the pen)

@@ -4,10 +4,13 @@
     // We can make getTime pseudo-polymorphic by examining what's passed in and replying accordingly.
     // So if we pass in a in12hr boolean, we give it back in AM/PM
     //
-    decimalToHours : (time) => {
-      const hour = Math.floor(time)
-      const minutes = Math.round((time % 1 * 60))
-      return [hour,minutes]
+    decimalToHours: (time) => {
+      time = time + "" // force string
+      time = time.split(".")
+      time[1] = time[1].substring(0, 1)
+      time[1] = Math.floor(time[1] * 6)
+      time[1] = time[1] < 10 ? `0${time[1]}` : time[1]
+      return time
     },
     getTime: function (string, in12hr) {
       let date = new Date(string)
@@ -54,7 +57,7 @@
                               This is to make the 11:30 bookings plot at 12
                           *********************************************
       */
-      if (hour == 11){
+      if (hour == 11) {
         hour = 12
       }
       // Array of all TimeCells
