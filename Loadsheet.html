@@ -146,7 +146,7 @@
             return time.decimalToHours(WB.fuel.liters / _thisPlane.fuel.burnRate)
           },
           get string() {
-            return `${this.hrs.join(".")}(hrs)`
+            return `${this.hrs.join(":")}(hrs)`
           },
         },
         quantity: {
