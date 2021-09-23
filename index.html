@@ -2,8 +2,6 @@
 <html>
   <?!= include('root'); ?>
   <script>
-    let debug = {}
-    // list of root variables (so they're easier to find in debug)
     // testBoard needs to exist before writeboard is called (so it has somewhere to write to)
     // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
 
@@ -17,7 +15,9 @@
     //
     // root object to attach debug info to so it's easy to find in console.
     //
-    console.log(`To see the debug object, change the Javascript Context to userFrame(blank) and type debug`)
+    console.log("=== Debug Object ===")
+    console.log(": Change the Javascript Context to userFrame(blank)")
+    console.log(": debug.show()\n")
     // To use:
     // Change the "Javascript: context" at the top of the debug console to "userFrame(blank)Iframe"
     // and type "debug" into the console.
@@ -96,10 +96,10 @@
 
     <script>
       //
-      $(document).ready(function () {
-        // Put the DOM into debug
-        root.debug.DOM = this
-      })
+      // $(document).ready(function () {
+      //   // Put the DOM into debug
+      //   root.debug.DOM = this
+      // })
       //
     </script>
     <base target="_top" />
@@ -198,9 +198,7 @@
             </div>
           </span>
         </div>
-        <div>
-          <button onClick="theBoard.load()">&#10226;</button><br />
-        </div>
+        <div><button onClick="theBoard.load()">&#10226;</button><br /></div>
       </div>
       <!-- Popups -->
       <div id="Roster"></div>
@@ -225,7 +223,7 @@
     testBoard: testBoard,
     LOADSHEET: LOADSHEET,
     gya: gya,
-    debug: debug,
+    debug: {},
     colors: colors,
     // CSS,
     // date,
@@ -267,4 +265,7 @@
       style
       isDevMode
       */
+
+  let debug = root.debug
+  // list of root variables (so they're easier to find in debug)
 </script>

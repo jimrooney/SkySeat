@@ -20,7 +20,6 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
-Only increasing weight in Actual Weight works (trying to lower it increases it)
 
 Main (Calendar) Board needs to indicate WB-Good/WB-Bad 
   Will require "ideal seating" of some sort. Likely sorting by weight both directions and picking any possible solution.
@@ -33,6 +32,7 @@ Add airplane REG to the top of each plane in Wedding Planner ({Details})
 
 Limit pod bay values to the limit of that pod bay (maybe have checks for overall weight in multipods)
 Burnrate isn't being loaded (it's hardcoded into the board)
+PetCollect (and similar) can't be plotted... not a big deal for now as they're not associated with a plane.
 --
 handlePaxListDrop(even, ui) { ... 
   Removes pax seats but isn't always called when pax are removed (you have to put them on the pen)

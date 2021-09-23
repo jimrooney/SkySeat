@@ -58,20 +58,25 @@
         }
       })
     },
+    //
+    // currently calling debug.clear() on Rezdy load (so not to overload this variable)
+    //
     debug: {
       logs: [],
       log: function (...msg) {
         const _this = this
-        if (this.show) {
-          console.log("{Debug} %o", msg)
-        }
         _this.logs.push(msg)
       },
       clear: function () {
         this.logs = []
         return "Logs Cleared"
       },
-      show: false,
+      show: function () {
+        this.logs.forEach(entry => {
+          console.log(entry)
+        })
+        return "[end]"
+      },
     },
     getItem(barcode) {
 			let ret = ""

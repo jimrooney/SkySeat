@@ -60,7 +60,7 @@
         _this.load()
       })
       this.$this.find("#debug").click(function () {
-        console.log(_this)
+        debug.log(_this)
       })
 
       //
@@ -225,10 +225,8 @@
       let dayPax = this.countPax(bookings)
 
       // -------------------------------------------------------------------------------------------
-      // console.log("Month Total $%o", monthCost)
       this.$this.find("#Totals").text(
         "Manifest Pax(" + dayParticipants + ")(" + dayPax + ") "
-        //"month(P" + monthParticipants + ")(X" + monthPax + ")"
       )
       // -------------------------------------------------------------------------------------------
       //
@@ -316,7 +314,7 @@
       //
       // returns an array of (rezdy) order objects
       //
-      console.log("Manifest.getOrders() data: %o", data) // array of order numbers
+      debug.log("Manifest.getOrders() data: %o", data) // array of order numbers
       // [ Recursive ]
       // If it's a CellData object, re-run with just the CellData.orders[] array
       if (!!data && typeof data == "object" && !!data.orders) {

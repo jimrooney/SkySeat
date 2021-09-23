@@ -42,9 +42,9 @@
     // Show
     // ---------------------------
     show(TableCell,plane,WB) {
-      console.log("{Loadsheet}: TableCell",TableCell)
-      console.log("{Loadsheet} plane:", plane)
-      console.log("{Loadsheet} WB:", WB)
+      debug.log("{Loadsheet}: TableCell",TableCell)
+      debug.log("{Loadsheet} plane:", plane)
+      debug.log("{Loadsheet} WB:", WB)
       //
       // Clear out old values
       //
@@ -204,8 +204,6 @@
         totalFreightWeight: "",
         totalBagWeight: utility.round(cargoW),
       }
-      console.log("\n\nLoadSheet Plane:")
-      console.log("WB %o", WB)
       $(".reg").css("background-color", this.displayPlane.regColor)
       // =====================================================================================================
       // This is the magic...
@@ -244,8 +242,6 @@
       $(".Notes").html(notes)
       Events.init() // for Mobile Click
       this.$this.show()
-
-      console.log("{Loadsheet}.show() end")
     }
   }
 </script>

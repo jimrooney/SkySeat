@@ -135,6 +135,9 @@
               if (_parent.SAD.SAD != "Actual") {
                 return
               }
+              //
+              // set starting weight... order of preference: actual / declared / standard
+              //
               let weight = _pax.weight.actual || _pax.weight.declared
               if (!parseInt(weight) > 0) {
                 weight = root.standard.weight.adult
@@ -142,23 +145,30 @@
               // Find the midpoint of the sprite
               const margin = 5
               const x = e.pageX - this.offsetLeft
-              const y = e.pageY - this.offsetTop - 50
+              const y = e.pageY - this.offsetTop - 30
               const h = $(this).outerHeight(true)
               const midpoint = (h + margin) / 2
-              const deadzone = 15
+              const deadzone = 10
               // --------------------------------
-
-              if (y < midpoint - deadzone) {
+              if (y < -deadzone) {
                 const w = weight + 1
                 _pax.weight = { actual: w }
               }
-              if (y > midpoint + deadzone) {
+              if (y > deadzone) {
                 const w = weight - 1
                 _pax.weight = { actual: w }
               }
 
               if (!!_pax.weight.actual) {
                 $pax.find(".weight").text(_pax.weight.actual)
+                const pax_ = _parent.state.getPax(_pax.barcode)
+                if (pax_.fields.find((f) => f.label == "Acual Weight")?.length == 0) {
+                  pax_.fields.push({ label: "Actual Weight", value: _pax.weight.actual })
+                }
+                debug.log(
+                  "Actual Weight",
+                  pax_.fields.find((f) => f.label == "Acual Weight")
+                )
               }
               _parent.update()
             })
@@ -193,20 +203,22 @@
           this.parent = _this // {Details}
           this.airplane = _this.state.getPlane(cell.cellID) // Airplane Object based on {state}
           this.airplane.state = cell
-          this.$seating = $(`<div id="Airplane_${i}" class="grid-container Airplane ${this.airplane.reg}"></div>`)
-            .data("_this", this) // backreference
-            .click((event) => {
-              // in this context, this is {airplane}
-              // _this is {Details}
-              console.log("AirplaneClick: this: %o", this)
-              // $(".station")
-              //   .children()
-              //   .each(function (i, child) {
-              //     console.log("Child: %o", child)
-              //     console.log("Station: %o", $(this).closest(".station").data("seat"))
-              //     console.log("Pax: %o", $(this))
-              //   })
-            })
+          this.$seating = $(`<div id="Airplane_${i}" class="grid-container Airplane ${this.airplane.reg}"></div>`).data(
+            "_this",
+            this
+          ) // backreference
+          // .click((event) => {
+          //   // in this context, this is {airplane}
+          //   // _this is {Details}
+          //   console.log("AirplaneClick: this: %o", this)
+          //   // $(".station")
+          //   //   .children()
+          //   //   .each(function (i, child) {
+          //   //     console.log("Child: %o", child)
+          //   //     console.log("Station: %o", $(this).closest(".station").data("seat"))
+          //   //     console.log("Pax: %o", $(this))
+          //   //   })
+          // })
         }
         get$Pod() {
           const $ret = $(`<div id="CargoPod_${this.id}" class="CargoPod">Pod_${this.id}</div>`)
@@ -327,8 +339,6 @@
     // Update
     // ============================================================================
     update() {
-      console.log("{details}.update()")
-      //
       const _this = this
       // Reflect PAX weights as per SAD
       $(".Pax").each(function () {
@@ -361,7 +371,7 @@
         //
         const plane = _this.state.getPlaneFromState(CellData) // Top row (PlaneCell) ** should change.. get the cell's plane.
         const loadedPlane = plane.getLoadedPlane(CellData)
-        const $selectedFuel =  $(`#AirplanePlotter_${i}`).find('.PCF_Selector :selected').text()
+        const $selectedFuel = $(`#AirplanePlotter_${i}`).find(".PCF_Selector :selected").text()
         plane.fuel = $selectedFuel
         //
         const WB = loadedPlane.getWB(this.SAD)
@@ -379,9 +389,9 @@
         WBPlanes.push(loadedPlane)
         _WB.push(WB)
       })
-      console.log("Planes: ", loadedPlanes)
-      console.log("_WB: ",_WB)
-      console.log("WBPlanes: ", WBPlanes)
+      // console.log("Planes: ", loadedPlanes)
+      // console.log("_WB: ",_WB)
+      // console.log("WBPlanes: ", WBPlanes)
     }
     // ============================================================================
     // End Update
@@ -475,26 +485,20 @@
         // crew
         pax = new Pax(droppedPaxFields)
       }
-      console.log("getPax: ", pax)
       return pax
     }
     handlePaxListDrop(even, ui) {
-      console.log("PaxList Drop: %o", $(this).data("cell"))
-
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
 
       let $newPax = ui.draggable.detach()
       let fields = $newPax.data("pax") // array of Rezdy fields
       const newFields = fields.filter((x) => x.label != "seat")
-      console.log("New Fields: %o", newFields)
-
       const pax = new Pax(newFields)
       _this.state.removePax([pax])
       _this.state.addPax(pax, $(this).data("cell").cellID)
       $newPax.appendTo($(this))
     }
     handleDrop(event, ui) {
-      console.log("HandleDrop")
       // in this context, this is the seat and $(this) is the jQuery seat
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
       const $root = ui.draggable.closest(".detailsDiv")
@@ -599,8 +603,6 @@
       _this.update()
     }
     assignSeat($seat, $pax, droppedPaxFields) {
-      // console.log("Assign Seat: %o \npax: %o\nfields: %o", $seat, $pax, droppedPaxFields)
-      // this should take a pax object instead of feilds *******************
       $pax.appendTo($seat)
       $pax.draggable({ revert: false })
       $pax.position({ of: $seat, my: "left top", at: "left top" })
@@ -640,8 +642,6 @@
     show($TableCell) {
       this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
       this.setWeightClass("D") // Set the initial SAD to Declared
-
-      console.log("{details}.show row: %o", $TableCell.data("_script").row)
       //
       const _this = this
       const visible = this.$root.css("display") !== "none"
@@ -733,7 +733,7 @@
           const weight = pax.weight
           const orderNumber = pax.getValue("orderNumber")
           const barcode = pax.getValue("Barcode")
-          const $pax = new this.Pax(this, pax, "Pax", i)
+          const $pax = new this.Pax(_this, pax, "Pax", i)
         })
 
         const $PCF = $plane.find(".PCF_Selector")
@@ -750,17 +750,8 @@
         $selector.val(_plane.airplane.standardFuel) // Select standard fuel by default // set in Company Data Spreadsheet
         //
         $selector.change(function () {
-          console.log("Fuel Change")
           const PCF = { fuel: $(this).val() }
           _this.state.setFuel(cell?.cellID, PCF)
-          // console.log("PCF: ",PCF)
-          // console.log("\n$(this).value: ", $(this).val())
-          // console.log("this: ", this)
-          // console.log("cell: ", cell)
-          // console.log("_this: ", _this)
-          // console.log("Airplane: %o", _plane)
-          // console.log("$plane: ", $plane)
-          // console.log("\n")
           _this.update()
         })
       })
