@@ -340,6 +340,7 @@
     // ============================================================================
     update() {
       const _this = this
+      $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
       // Reflect PAX weights as per SAD
       $(".Pax").each(function () {
         const _pax = $(this).data("this").pax
@@ -642,6 +643,7 @@
     show($TableCell) {
       this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
       this.setWeightClass("D") // Set the initial SAD to Declared
+
       //
       const _this = this
       const visible = this.$root.css("display") !== "none"
@@ -790,6 +792,7 @@
         this.$root.show()
       }
       this.seatPax() // load pax into seats if possible (pax might have duplicate seats) ****
+      $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
     }
   }
 </script>
