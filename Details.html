@@ -440,6 +440,7 @@
     // End Init
     // ============================================================================
     removePax(event, ui) {
+      return // ****
       //
       // Add baggage removal code here ***
       //
@@ -502,6 +503,7 @@
     handleDrop(event, ui) {
       // in this context, this is the seat and $(this) is the jQuery seat
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
+      //
       const $root = ui.draggable.closest(".detailsDiv")
       const _root = $root.data("root")
       //
@@ -509,8 +511,51 @@
       //
       const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // $droppedAirplanePlotter.data("cell")
       const $thisAirplanePlotter = $(this).closest(".AirplanePlotter")
-      const clickedCell = $thisAirplanePlotter.data("cell")
+      //
+      const oldCellID = $droppedAirplanePlotter.data("cell").cellID
       const newCellID = $thisAirplanePlotter.data("cell").cellID
+      //
+      console.log("oldCellID: ",oldCellID)
+      console.log("newCellID: ",newCellID)
+
+      //_this.state.handleDrop([oldCellID,newCellID],[alreadySeatedPax?.fields,droppedPaxFields])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       //
       // this.airplane.stations updates via getWB which searches the .station classes
       //
@@ -587,9 +632,9 @@
           $alreadySeatedPax.appendTo($("#PaxList")) // will need to remove their seat here ***
         }
       }
-      // ---------------------------------------------------
-      // done figuring everying out, move the pax in {state}
-      // ---------------------------------------------------
+
+
+
       // update existing pax that have swapped seats
       if (!!alreadySeatedPax) {
         const pax = new Pax(alreadySeatedPax.fields)
@@ -600,16 +645,27 @@
       const pax = new Pax(droppedPaxFields)
       _this.state.removePax([pax])
       _this.state.addPax(pax, newCellID)
+
+
+      // don't think we need this now (the state handles it) ***
       _this.assignSeat($(this), $newPax, droppedPaxFields)
-      _this.update()
+      
+      
+      
+      _this.show(_this.$TableCell,true)
     }
+
+
     assignSeat($seat, $pax, droppedPaxFields) {
       $pax.appendTo($seat)
       $pax.draggable({ revert: false })
       $pax.position({ of: $seat, my: "left top", at: "left top" })
       $pax.data("pax", droppedPaxFields)
     }
-    seatPax() {
+    seatPax($pax) {
+      console.log(".data:  ", $pax.data("_pax"))
+
+
       // $(".Pax").each((index, pax) => {
       //   const fields = $(pax).data("_pax")
       //   if (fields.seat > 0) {
@@ -630,6 +686,32 @@
     setRevert($obj) {
       $obj.draggable({ revert: true })
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //
     //
     //
@@ -640,7 +722,7 @@
     //  [This is the first function called]
     //
     // --------------------------------------
-    show($TableCell) {
+    show($TableCell,notInitial) {
       this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
       this.setWeightClass("D") // Set the initial SAD to Declared
 
@@ -661,7 +743,8 @@
       // =========================================================================================
       // Each of these will be a different plane (and have it's own PCF)
       //
-      _row.forEach((cell, i) => {
+      console.log("Details.show() row: ", _row)
+      _row.some((cell, i) => {
         // ---------------------------
         // Print Button
         // ---------------------------
@@ -729,13 +812,14 @@
         // ===========================================
         // -------------- Passengers -----------------
         // ===========================================
+        //
+        // Need to seat the pax (visually) ***
+        //
+        // HERE
         passengers.forEach((p, index) => {
           const pax = new Pax(p, index)
-          const firstName = pax.getValue("First Name")
-          const weight = pax.weight
-          const orderNumber = pax.getValue("orderNumber")
-          const barcode = pax.getValue("Barcode")
-          const $pax = new this.Pax(_this, pax, "Pax", i)
+          const $pax = new this.Pax(_this, pax, "Pax", i) // create pax Sprite
+          this.seatPax($pax)
         })
 
         const $PCF = $plane.find(".PCF_Selector")
@@ -756,6 +840,7 @@
           _this.state.setFuel(cell?.cellID, PCF)
           _this.update()
         })
+        return false
       })
       // =========================================================================================
       // End (Each Plane)
@@ -786,13 +871,15 @@
       // -------------- Init -----------------
       // ===========================================
       this.init() // initialize jQuery drag/drop code
-      if (visible) {
-        this.$root.hide()
-      } else {
-        this.$root.show()
+      
+      console.log("Initial: ",notInitial)
+      if (!notInitial){
+        if (visible) {
+          this.$root.hide()
+        } else {
+          this.$root.show()
+        }
       }
-      this.seatPax() // load pax into seats if possible (pax might have duplicate seats) ****
-
       $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
     }
   }

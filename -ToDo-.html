@@ -8,7 +8,6 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 -------------------------------
 Before Launch
 -------------------------------
-Printing Loadsheets
 Plot out legs (through {state})
 Pickups
 Save {state}
@@ -20,8 +19,51 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
-SAD button initially is wrong display type (class?).. doesn't look like a button. 
-  It does work though. $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
+
+In {details}.update() ... seating pax
+
+
+Changing the Wedding Planner handleDrop() to register in {state}
+  Drops move pax, needs to auto-seat now.
+  Drops need to deal with out legs
+  Wedding planner should indicate IN/OUT visually?
+
+Marking edits: // ****
+
+
+Kids weights aren't going to kids in Standard Weights
+
+Considering changing layout of Wedding Planner to simply reflect the {state}
+  That way all updates to moves are just moves within {state} and the Calendar and Wedding Planner are the same data
+
+Wedding Planner needs to become IN/OUT aware.
+    Will also probably need to become IN/OUT aware of out legs
+  Must make sure a pax drop is "IN/OUT legal" before moving pax.
+  Otherwise {state} actions get really complex... you move the pax and then {state} says "no". 
+
+
+in {details}... 
+  handleDrop() 
+  dropped pax move in {state} for the in cell, but not the out cell.
+  The logic that handles the out cell could be consolidated into 
+  the {state} object rather than the Calendar handleDrop AND Details handleDrop.
+
+  {state} handleDrop... 
+    takes a cellID... looks in {state}, need to know in or out, then figure out if
+    the original out cell needs to move and if the new out cell needs to be plotted.
+
+    So each pax object in {details} will need to know if it's an in or an out pax.
+
+
+Indicate on manifest when bookings are pending/onhold/etc
+
+
+
+
+
+
+
+
 
 Main (Calendar) Board needs to indicate WB-Good/WB-Bad 
   Will require "ideal seating" of some sort. Likely sorting by weight both directions and picking any possible solution.
@@ -31,6 +73,10 @@ Pax only remove if you drop them on the pen
 Still need to clear the pilots from the Pax Pen onShow.
 Closing details doesn't reset the airplanes
 Add airplane REG to the top of each plane in Wedding Planner ({Details})
+
+
+  SAD button initially is wrong display type (class?).. doesn't look like a button. 
+  It does work though. $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
 
 Limit pod bay values to the limit of that pod bay (maybe have checks for overall weight in multipods)
 Burnrate isn't being loaded (it's hardcoded into the board)

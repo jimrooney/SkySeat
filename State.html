@@ -46,6 +46,9 @@
     //
     // Returns a {CellData} object based on the provided id
     //
+    getCell(cell){
+      return this.getData(cell)
+    }
     getData($cell) {
       let id = $cell
       typeof $cell == "string" ? (id = $cell) : (id = $cell.prop("id"))
@@ -252,6 +255,46 @@
 
     test(args) {
       console.log("Test: ", args)
+    }
+
+/*
+  Logic to plot pax in cells... either moving or original drops
+  Need to know if this is an in or an out drop... the details of the booking so we can determine the outs (if needed)
+  Probably leave the "ferry leg" logic to post processing or even just Calendar display updates
+
+    need to know:
+    pax fields and cellID + in/out
+    origin cellID and target cellID (so we can also move associated out cells)
+
+
+
+
+
+*/
+    handleDrop(cells,passengers){ // [oldcell, newcell],[oldpax,newpax]
+      console.log("{State}handleDrop()")
+
+
+      const oldCell = this.getCell(cells[0])
+      const newCell = this.getCell(cells[1])
+      console.log("Leg1: ", oldCell.leg)
+      console.log("Leg2: ", newCell.leg)
+
+
+      const alreadySeatedPax = passengers[0]
+      if (!!alreadySeatedPax) {
+        const pax = new Pax(alreadySeatedPax.fields)
+        this.removePax([pax])
+        this.addPax(pax, cells[1])
+      }
+
+
+
+      // Is Legal Drop?
+      // In or Out?
+      // Does out need to be brought over as well?
+      // Does out need to be plotted (if manifest plot for example)
+      
     }
   }
 </script>
