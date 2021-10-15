@@ -21,6 +21,10 @@ Currently
 -------------------------------
 
 In {details}.update() ... seating pax
+handleDrop() creates a new Pax and currently the crew "become" regular pax objects at that point
+Need to fix it so they're still Crew and still go home to the crew list
+const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
+const newCellID = $thisAirplanePlotter.data("cell")?.cellID
 
 
 Changing the Wedding Planner handleDrop() to register in {state}

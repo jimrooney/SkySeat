@@ -512,8 +512,8 @@
       const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // $droppedAirplanePlotter.data("cell")
       const $thisAirplanePlotter = $(this).closest(".AirplanePlotter")
       //
-      const oldCellID = $droppedAirplanePlotter.data("cell").cellID
-      const newCellID = $thisAirplanePlotter.data("cell").cellID
+      const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
+      const newCellID = $thisAirplanePlotter.data("cell")?.cellID
       //
       console.log("oldCellID: ",oldCellID)
       console.log("newCellID: ",newCellID)
@@ -662,23 +662,17 @@
       $pax.position({ of: $seat, my: "left top", at: "left top" })
       $pax.data("pax", droppedPaxFields)
     }
-    seatPax($pax) {
-      console.log(".data:  ", $pax.data("_pax"))
-
-
-      // $(".Pax").each((index, pax) => {
-      //   const fields = $(pax).data("_pax")
-      //   if (fields.seat > 0) {
-      //     const $assignedSeat = $(`#SeatNumber${fields.seat}`)
-      //     $(pax).detach().appendTo($assignedSeat)
-      //     $(pax).position({
-      //       my: "left top",
-      //       at: "left top",
-      //       of: $assignedSeat,
-      //     })
-      //   }
-      // })
-      // this.update()
+    seatPax($pax,$plane) {
+      const pax = $pax.data("_pax")
+        if (pax.seat > 0) {
+          const $assignedSeat = $plane.find(`.SeatNumber${pax.seat}`)
+          $pax.detach().appendTo($assignedSeat)
+          $pax.position({
+            my: "left top",
+            at: "left top",
+            of: $assignedSeat,
+          })
+        }
     }
     // =============== Workaround for that stupid position bug ========================
     // revert always reverts from an offset from it's previous anchor... when you reattach it to a different node, it "reverts" graphically every time
@@ -725,16 +719,13 @@
     show($TableCell,notInitial) {
       this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
       this.setWeightClass("D") // Set the initial SAD to Declared
-
       //
       const _this = this
       const visible = this.$root.css("display") !== "none"
-
       // Store the clicked cell
       this.$TableCell = $TableCell
       this._TableCell = $TableCell.data("_script")
       this.state = this._TableCell.board.state
-
       // Get the entire row
       const _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
       //
@@ -815,13 +806,12 @@
         //
         // Need to seat the pax (visually) ***
         //
-        // HERE
         passengers.forEach((p, index) => {
           const pax = new Pax(p, index)
           const $pax = new this.Pax(_this, pax, "Pax", i) // create pax Sprite
-          this.seatPax($pax)
+          this.seatPax($pax,$plane)
         })
-
+        this.update()//?***
         const $PCF = $plane.find(".PCF_Selector")
         $PCF.empty()
         // ===========================================
