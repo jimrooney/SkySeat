@@ -87,6 +87,10 @@
           if (!pax) {
             return
           }
+          if (pax.fields.some(field => field.label == "Role")){
+            _type = "Crew"
+            id = ""
+          }
           const _this = this
           const index = parent.count || 0
           parent.count++
@@ -207,18 +211,6 @@
             "_this",
             this
           ) // backreference
-          // .click((event) => {
-          //   // in this context, this is {airplane}
-          //   // _this is {Details}
-          //   console.log("AirplaneClick: this: %o", this)
-          //   // $(".station")
-          //   //   .children()
-          //   //   .each(function (i, child) {
-          //   //     console.log("Child: %o", child)
-          //   //     console.log("Station: %o", $(this).closest(".station").data("seat"))
-          //   //     console.log("Pax: %o", $(this))
-          //   //   })
-          // })
         }
         get$Pod() {
           const $ret = $(`<div id="CargoPod_${this.id}" class="CargoPod">Pod_${this.id}</div>`)
@@ -365,7 +357,6 @@
       const WBPlanes = []
       const _WB = []
       const loadedPlanes = []
-      console.log("Row: ", _row)
       _row.forEach((CellData, i) => {
         //
         // Load Fuel
@@ -390,9 +381,6 @@
         WBPlanes.push(loadedPlane)
         _WB.push(WB)
       })
-      // console.log("Planes: ", loadedPlanes)
-      // console.log("_WB: ",_WB)
-      // console.log("WBPlanes: ", WBPlanes)
     }
     // ============================================================================
     // End Update
@@ -515,48 +503,6 @@
       const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
       const newCellID = $thisAirplanePlotter.data("cell")?.cellID
       //
-      console.log("oldCellID: ",oldCellID)
-      console.log("newCellID: ",newCellID)
-
-      //_this.state.handleDrop([oldCellID,newCellID],[alreadySeatedPax?.fields,droppedPaxFields])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      //
       // this.airplane.stations updates via getWB which searches the .station classes
       //
       let $alreadySeatedPax
@@ -645,13 +591,7 @@
       const pax = new Pax(droppedPaxFields)
       _this.state.removePax([pax])
       _this.state.addPax(pax, newCellID)
-
-
-      // don't think we need this now (the state handles it) ***
-      _this.assignSeat($(this), $newPax, droppedPaxFields)
-      
-      
-      
+      //
       _this.show(_this.$TableCell,true)
     }
 
@@ -734,7 +674,7 @@
       // =========================================================================================
       // Each of these will be a different plane (and have it's own PCF)
       //
-      console.log("Details.show() row: ", _row)
+//      console.log("Details.show() row: ", _row)
       _row.some((cell, i) => {
         // ---------------------------
         // Print Button
@@ -803,15 +743,37 @@
         // ===========================================
         // -------------- Passengers -----------------
         // ===========================================
-        //
-        // Need to seat the pax (visually) ***
-        //
         passengers.forEach((p, index) => {
           const pax = new Pax(p, index)
           const $pax = new this.Pax(_this, pax, "Pax", i) // create pax Sprite
           this.seatPax($pax,$plane)
         })
+        // HERE
+
+
+
+
+
+
+
+
         this.update()//?***
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         const $PCF = $plane.find(".PCF_Selector")
         $PCF.empty()
         // ===========================================
@@ -856,13 +818,12 @@
         const weight = pax.weight
         const $pax = new this.Pax(_this, pax, "Crew", "")
       })
+      // HERE
 
       // ===========================================
       // -------------- Init -----------------
       // ===========================================
       this.init() // initialize jQuery drag/drop code
-      
-      console.log("Initial: ",notInitial)
       if (!notInitial){
         if (visible) {
           this.$root.hide()

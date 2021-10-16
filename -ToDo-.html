@@ -20,11 +20,13 @@ Drop pax on pen (in Wedding planner)
 Currently
 -------------------------------
 
+Plotting out legs from {state} is probably the biggest issue right now.
+Pilots can only be removed right now by putting them in the pen
+
 In {details}.update() ... seating pax
-handleDrop() creates a new Pax and currently the crew "become" regular pax objects at that point
-Need to fix it so they're still Crew and still go home to the crew list
-const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
-const newCellID = $thisAirplanePlotter.data("cell")?.cellID
+  Moving people in Calendar view should maybe clear their seats... easy fix to avoid seating conflict resolution.
+  We'll still want to have that, but clearing it in Calendar gets things working faster.
+  Once that's working, conflict resolution can be added and the clearing can be removed.
 
 
 Changing the Wedding Planner handleDrop() to register in {state}
@@ -36,9 +38,6 @@ Marking edits: // ****
 
 
 Kids weights aren't going to kids in Standard Weights
-
-Considering changing layout of Wedding Planner to simply reflect the {state}
-  That way all updates to moves are just moves within {state} and the Calendar and Wedding Planner are the same data
 
 Wedding Planner needs to become IN/OUT aware.
     Will also probably need to become IN/OUT aware of out legs
@@ -59,7 +58,7 @@ in {details}...
     So each pax object in {details} will need to know if it's an in or an out pax.
 
 
-Indicate on manifest when bookings are pending/onhold/etc
+> Indicate on manifest when bookings are pending/onhold/etc
 
 
 
