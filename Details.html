@@ -573,9 +573,13 @@
           $alreadySeatedPax.data("pax", alreadySeatedPax.fields)
         } else {
           //
-          // Dropping onto a seated pax from the Passenger List, take seated pax out of plane and back into Passenger List
+          // Dropping onto a seated pax from the Passenger List
+          // Remove the pax seat and it'll revert to it's origin list (CrewList or PaxList) since layout is by {state}
           //
-          $alreadySeatedPax.appendTo($("#PaxList")) // will need to remove their seat here ***
+          $alreadySeatedPax.data("pax",$alreadySeatedPax.data("pax").filter(key=>key.label !='seat'))
+          alreadySeatedPax = {
+            fields: $alreadySeatedPax.data("pax"),
+          }
         }
       }
 
