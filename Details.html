@@ -671,7 +671,10 @@
       this._TableCell = $TableCell.data("_script")
       this.state = this._TableCell.board.state
       // Get the entire row
-      const _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
+      let _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
+      _row = _row.sort( (a, b) => {
+        return a.cellID.split("_")[1] - b.cellID.split("_")[1]
+      })
       //
       // =========================================================================================
       // Each Plane
