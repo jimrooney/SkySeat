@@ -170,6 +170,22 @@
       }
       return ret
     }
+    clearoutPax(paxList){
+      if (!paxList.length){ // force array
+        paxList = [paxList]
+      }
+      paxList.forEach((pax) => {
+          for (const key in this.data) {
+            this.data[key].passengers.forEach((p, index) => {
+              const px = new Pax(p)
+              if (pax.barcode == px.barcode) {
+                this.data[key].passengers.splice(index, 1)
+              }
+            })
+          }
+        })
+        this.clearEmpties()
+    }
     removePax(paxList) {
       if (!!paxList.length) {
         // require an array be passed in
@@ -186,6 +202,9 @@
         this.clearEmpties()
         //this.board.update()
       }
+    }
+    removePassenger(pax,cell){
+
     }
     getPax(barcode) {
       let ret
@@ -284,7 +303,7 @@
       const alreadySeatedPax = passengers[0]
       if (!!alreadySeatedPax) {
         const pax = new Pax(alreadySeatedPax.fields)
-        this.removePax([pax])
+        this.clearoutPax([pax])
         this.addPax(pax, cells[1])
       }
 

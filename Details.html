@@ -484,7 +484,7 @@
       let fields = $newPax.data("pax") // array of Rezdy fields
       const newFields = fields.filter((x) => x.label != "seat")
       const pax = new Pax(newFields)
-      _this.state.removePax([pax])
+      _this.state.clearoutPax([pax])
       _this.state.addPax(pax, $(this).data("cell").cellID)
       $newPax.appendTo($(this))
     }
@@ -584,16 +584,16 @@
       }
 
 
-
+      // HERE
       // update existing pax that have swapped seats
       if (!!alreadySeatedPax) {
         const pax = new Pax(alreadySeatedPax.fields)
-        _this.state.removePax([pax])
+        _this.state.clearoutPax([pax])
         _this.state.addPax(pax, newCellID)
       }
       // save the dropped pax
       const pax = new Pax(droppedPaxFields)
-      _this.state.removePax([pax])
+      _this.state.clearoutPax([pax])
       _this.state.addPax(pax, newCellID)
       //
       _this.show(_this.$TableCell,true)
@@ -694,7 +694,9 @@
           console.log("\nPrint Click (cellID: %o)", cell.cellID) // correct ID (no other data than ID)
           console.log("State: ", _this.state) // correct {state}
           const plane = _this.state.getPlaneFromState(cell) // Top row (PlaneCell) ** should change.. get the cell's plane.
+          console.log("print plane: ", plane)
           const loadedPlane = plane.getLoadedPlane(cell)
+          console.log("loaded plane: ", loadedPlane)
           const WB = loadedPlane.getWB(_this.SAD)
           LOADSHEET.show(_this._TableCell, loadedPlane, WB)
         })
