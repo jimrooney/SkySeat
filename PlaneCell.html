@@ -113,7 +113,7 @@
       let state = JSON.parse(JSON.stringify(s))
       state.PCF[key] = val
       console.log("Set State: %o", state)
-      this.setState(state)
+      this.setStateCellData(state)
     }
     getState() {
       return (state = this.board.state.getData(this.$this)) // get the CellData Object from the state object

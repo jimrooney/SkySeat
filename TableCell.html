@@ -142,7 +142,7 @@
       const droppedPaxList = list.filter((px) => _dropped.board.manifest.getBooking(px)) // [{Pax}{Pax}]
       //
       // ------------
-      // Record Drop
+      // Record Drop (if Legal)
       // ------------
       if (_this.isLegalDrop(_this.leg, _dropped.leg)) {
         // ---------------
@@ -155,10 +155,20 @@
         // ---------------
         // Add Passengers
         // ---------------
-        _this.addPax(droppedPaxList, _dropped.leg)
+        // *** change this to pass the _dropped cell, not just the leg
+        console.log("Dropped: ", _dropped)
+        _this.addPax(droppedPaxList, _dropped)
+
+        /*
+
+        // *********************************************************
+        // This section plots B legs based on already plotted B legs (replace me)
+        // *********************************************************
+        //
         // --------------
         // Plot B Legs
         // --------------
+        console.log("droppedPaxList: ",droppedPaxList)
         droppedPaxList.forEach((pax) => {
           if (_dropped.leg != "B") {
             let plotOut = true
@@ -166,10 +176,12 @@
               // if TableCell drop (not manifest)
               const $sourceOut = _this.board.$this.find(`.${_dropped.row + pax.times.duration}_${_dropped.column}`)
               const _sourceOut = $sourceOut.data("_script")
-              const cellList = _this.board.state.getPaxCells(pax, "B")
+              const cellList = _this.board.state.getPaxCells(pax, "B") // list of cells with associate B legs plotted already
+              console.log("cellList: ",cellList)
               if (!!_sourceOut && !cellList.includes(_sourceOut.id)) {
                 plotOut = false
               }
+              console.log("PlotOut? ", plotOut)
               // if (!!$sourceOut.data("_script")._this.pax && $sourceOut.data("_script")._this.pax.some((p) => p.barcode === pax.barcode)) {
               //   console.log("Dropped Pax Match")
               // }
@@ -199,6 +211,9 @@
             }
           }
         })
+
+*/
+
         //
         // === Update ===
         //
@@ -213,21 +228,25 @@
       _this.board.state.clearEmpties()
       _this.board.update() // board.update() calls update() on each TableCell.
     }
-    addPax(pax, leg) {
-      // handles both {pax} or [passengers]
+    addPax(pax, droppedCell) {
+      console.log("TableCell droppedPaxList: ", pax)
+      pax.forEach((p) => this.board.state.movePax(p, droppedCell, this.cellData))
+
+      // **************************************************
+      // Moving all this into {state} (above)
+      // **************************************************
       // ------------------
       // Merge Dropped Pax
       // ------------------
-      let cellData = this.cellData
-      cellData.passengers = root.array.uniquePax(cellData.passengers, pax)
-      //this.cellData = cellData
+      // let cellData = this.cellData
+      // cellData.passengers = root.array.uniquePax(cellData.passengers, pax) // handles both {pax} or [passengers]
 
-      !!cellData.leg ? null : (cellData.leg = leg)
-      // -----
-      // Save
-      // -----
-      this.cellData = cellData // saves in {state}
-      return cellData
+      // !!cellData.leg ? null : (cellData.leg = droppedCell.leg)
+      // // -----
+      // // Save
+      // // -----
+      // this.cellData = cellData // saves in {state}... this.cellData points to the cellData in {state}
+      // return cellData
     }
     removePax(pax) {
       this.board.state.clearoutPax(pax)
@@ -311,15 +330,15 @@
       return this.board.state.getData(this.$this) // get the CellData Object from the state object
     }
     setPlaneData(key, val) {
-      let s = this.getState() // get copy of current State
+      let s = this.getStateCellData() // get copy of current State
       let state = JSON.parse(JSON.stringify(s))
       state.PCF[key] = val
       this.setState(state)
     }
-    setState(state) {
-      this.board.state.data[state.cellID] = state
+    setStateCellData(cellData) {
+      this.board.state.data[cellData.cellID] = cellData
     }
-    getState() {
+    getStateCellData() {
       let state = this.board.state.getData(this.$this) // get the CellData Object from the state object
       // Check for an assigned plane. If none, get from the PlaneCell
       if (state?.PCF?.reg) {
@@ -339,7 +358,7 @@
       return null
     }
     getPlane() {
-      let state = this.getState()
+      let state = this.getStateCellData()
       //
       // Get the airplane raw data
       //
@@ -372,14 +391,14 @@
     // get Plane Crew Fuel
     //
     getPCF() {
-      return this.getState()
+      return this.getStateCellData()
     }
     getHour() {}
     // ----------------------------------------------------------------------------
     // Update
     // ----------------------------------------------------------------------------
     update() {
-      let cellData = this.getState() // Get the data from the state object
+      let cellData = this.getStateCellData() // Get the data from the state object
       let $this = this.$this // simplify the reference to the jQuery object
       // --------------
       // Make Draggable
@@ -434,18 +453,14 @@
 
         //const crew = cellData.passengers.filter((px) => px.fields.find((f) => f.label == "Role"))
 
-
         // Parse code list (4FCF) from cell's passenger list (excluding crew) ** might need to be excluding just PIC **
         const passengers = cellData.passengers.filter((px) => !px.fields.some((f) => f.label == "Role"))
-        passengers.forEach(data => {
+        passengers.forEach((data) => {
           const pax = data.fields
           const pc = pax.find((item) => item.label === "productCode").value
           codes = [...new Set([...codes, ...[pc]])]
           numPax++
         })
-
-
-
 
         // for (const a in cellData.passengers) {
         //   const pax = cellData.passengers[a].fields

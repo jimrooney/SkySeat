@@ -18,7 +18,7 @@
       this.com = {
         success: (args) => {
           console.log("success: ", args)
-          if(!!args.json){
+          if (!!args.json) {
             console.log(JSON.parse(args.json))
           }
         },
@@ -46,7 +46,7 @@
     //
     // Returns a {CellData} object based on the provided id
     //
-    getCell(cell){
+    getCell(cell) {
       return this.getData(cell)
     }
     getData($cell) {
@@ -126,13 +126,13 @@
       this.data[cellID].passengers.push(pax)
       return this.data[cellID].passengers
     }
-    getFuel(CellId){
+    getFuel(CellId) {
       // if no fuel set in the cell, look at the planeCell for data ***************
       return this.data[CellId]?.PCF?.fuel
     }
-    setFuel(cellId,PCF){
-      if (!!this.data[cellId]){
-        this.data[cellId].PCF = {...this.data[cellId]?.PCF, ...PCF}
+    setFuel(cellId, PCF) {
+      if (!!this.data[cellId]) {
+        this.data[cellId].PCF = { ...this.data[cellId]?.PCF, ...PCF }
       }
     }
     // -----------------------------------------------------------------------------------------------------
@@ -170,42 +170,36 @@
       }
       return ret
     }
-    clearoutPax(paxList){
-      if (!paxList.length){ // force array
+    //
+    // Clear all references to pax
+    //
+    clearoutPax(paxList) {
+      if (!paxList.length) {
+        // force array
         paxList = [paxList]
       }
       paxList.forEach((pax) => {
-          for (const key in this.data) {
-            this.data[key].passengers.forEach((p, index) => {
-              const px = new Pax(p)
-              if (pax.barcode == px.barcode) {
-                this.data[key].passengers.splice(index, 1)
-              }
-            })
-          }
-        })
-        this.clearEmpties()
+        for (const key in this.data) {
+          this.removePax(pax,key)
+        }
+      })
+      this.clearEmpties()
     }
-    removePax(paxList) {
-      if (!!paxList.length) {
-        // require an array be passed in
-        paxList.forEach((pax) => {
-          for (const key in this.data) {
-            this.data[key].passengers.forEach((p, index) => {
-              const px = new Pax(p)
-              if (pax.barcode == px.barcode) {
-                this.data[key].passengers.splice(index, 1)
-              }
-            })
-          }
-        })
-        this.clearEmpties()
-        //this.board.update()
-      }
+    //
+    // Remove single reference of pax
+    //
+    removePax(pax, key) {
+      this.data[key].passengers.forEach((p, index) => {
+        const px = new Pax(p)
+        if (pax.barcode == px.barcode) {
+          this.data[key].passengers.splice(index, 1)
+        }
+      })
+      this.clearEmpties()
     }
-    removePassenger(pax,cell){
-
-    }
+    //
+    // Returns a list of all pax with the supplied barcode
+    //
     getPax(barcode) {
       let ret
       for (const key in this.data) {
@@ -261,9 +255,9 @@
 
       //google.script.run.saveState(_date, this.data)
       google.script.run
-      .withSuccessHandler(this.com.success)
-      .withFailureHandler(this.com.failure)
-      .saveState(_date, this.data)
+        .withSuccessHandler(this.com.success)
+        .withFailureHandler(this.com.failure)
+        .saveState(_date, this.data)
 
       //
       // google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).saveBoard( dataArry )
@@ -276,7 +270,7 @@
       console.log("Test: ", args)
     }
 
-/*
+    /*
   Logic to plot pax in cells... either moving or original drops
   Need to know if this is an in or an out drop... the details of the booking so we can determine the outs (if needed)
   Probably leave the "ferry leg" logic to post processing or even just Calendar display updates
@@ -290,15 +284,46 @@
 
 
 */
-    handleDrop(cells,passengers){ // [oldcell, newcell],[oldpax,newpax]
-      console.log("{State}handleDrop()")
+    //
+    // A function to move a pax so the B leg can be handled as well.
+    //
+    movePax(pax,oldCell,newCell){
+      // *******************************************************
+      // might add some checks before actually moving things ***
+      // *******************************************************
 
+      // if oldCell.leg is A, then we see if the B is plotted and move it too if it is
+      !!newCell.leg ? null : (newCell.leg = oldCell.leg) // copy .leg to newCell
+      newCell.passengers = root.array.uniquePax(newCell.passengers, pax) // copy pax... handles both {pax} or [passengers]
+      this.data[newCell.cellID] = newCell
+
+      this.getBCell(pax,oldCell)
+
+      console.log("\n")
+      console.log("oldCell: ",oldCell)
+      console.log("newCell: ", newCell)
+      console.log("this.data[newCell.cellID]:", this.data[newCell.cellID])
+    }
+    getBCell(pax,cell){
+      // cell is the current cell
+      // this returns the cell where the B leg would normally plot
+      //
+      // get pax product code
+      // get duration based on the code... pass code to gya.getProduct("[codehere]").duration
+      // find new cellID by adding the duration to the current cellID
+      // return the B cell
+      //
+      let duration = gya.getProduct(pax.getValue("productCode"))?.Duration
+
+    }
+    handleDrop(cells, passengers) {
+      // [oldcell, newcell],[oldpax,newpax]
+      console.log("{State}handleDrop()")
 
       const oldCell = this.getCell(cells[0])
       const newCell = this.getCell(cells[1])
       // console.log("Leg1: ", oldCell.leg)
       // console.log("Leg2: ", newCell.leg)
-
 
       const alreadySeatedPax = passengers[0]
       if (!!alreadySeatedPax) {
@@ -307,13 +332,10 @@
         this.addPax(pax, cells[1])
       }
 
-
-
       // Is Legal Drop?
       // In or Out?
       // Does out need to be brought over as well?
       // Does out need to be plotted (if manifest plot for example)
-      
     }
   }
 </script>

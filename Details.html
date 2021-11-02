@@ -588,12 +588,12 @@
       // update existing pax that have swapped seats
       if (!!alreadySeatedPax) {
         const pax = new Pax(alreadySeatedPax.fields)
-        _this.state.clearoutPax([pax])
+        _this.state.removePax(pax, oldCellID)
         _this.state.addPax(pax, newCellID)
       }
       // save the dropped pax
       const pax = new Pax(droppedPaxFields)
-      _this.state.clearoutPax([pax])
+      _this.state.removePax(pax, oldCellID)
       _this.state.addPax(pax, newCellID)
       //
       _this.show(_this.$TableCell,true)

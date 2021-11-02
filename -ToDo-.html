@@ -19,7 +19,41 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
+
+// **************************************************
+// Moving all this into {state} (above)
+// **************************************************
+
+In TableCell handleDrop (which just passes to {state} now)
+  Getting the duration for trips... need to figure out the B plots (follow the logic/notes in {state})
+
+
+{state}.removePax() fails on pilots
+  Uncaught TypeError: Cannot read properties of undefined (reading 'passengers')
+
+
+For Back/FWD buttons (date), disable the button when clicked until the data loads... fixes the Rueben thing
 Sort is causing some funny fuel issues.
+
+Combining single pax drop in Wedding Planner with Calendar pax drop...
+  Both will now call {state}.handleDrop()
+
+
+
+
+In TableCell.addPax() and .handleDrop()...
+  Commented out the B leg plotting code (to move it into {state})
+  {state} should then find B legs and move them if needed.
+  {state} knows which cells are A legs and which ones are B legs.
+  It'll need to look at each A leg pax and determine if the B leg is plotted and needs to be moved or not.
+
+  Made a movePax() function in {state}... that can handle moving pax and B legs
+  This way, update in {state} only displays, it doesn't move things around.
+
+
+Reworked handleDrop (discretely removes pax in state rather than all cells)
+  But that means that now the outs don't get removed (nor should they)
+  And moving outs in Wedding Planner changes them to Ins (WP just needs to become in/out aware... or rather {state})
 
 Loaded pax and fuel not registering correctly (sometimes NaN fuel, sometimes no PIC)
 
