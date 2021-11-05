@@ -293,21 +293,28 @@
       // *******************************************************
 
       // if oldCell.leg is A, then we see if the B is plotted and move it too if it is
+      newCell.id = newCell.cellID
 
       if (oldCell.leg == "A") {
-        console.log("A leg, Find B?")
+        // console.log("A leg, Find B?")
         // console.log("oldCell id: ", oldCell.id)
         // console.log("newCell: ", newCell)
         // console.log("this.data[newCell.cellID]:", this.data[newCell.cellID])
         if (!!oldCell.id) { // if no id, then it's a manifest drop
           const bCell = this.getBCell(pax, oldCell)
-          console.log("bCell: ", bCell)
+          // console.log("bCell: ", bCell)
+          // console.log("Pax: ",pax)
         }
+        // console.log("NewCell: ", newCell)
+        const newBCell = this.getBCell(pax, newCell)
+        this.addPax(pax,newCell.cellID)
+        this.addPax(pax,newBCell.cellID)
+        // console.log("New BCell: ", newBCell)
       }
 
       !!newCell.leg ? null : (newCell.leg = oldCell.leg) // copy .leg to newCell
-      newCell.passengers = root.array.uniquePax(newCell.passengers, pax) // copy pax... handles both {pax} or [passengers]
-      this.data[newCell.cellID] = newCell
+      // newCell.passengers = root.array.uniquePax(newCell.passengers, pax) // copy pax... handles both {pax} or [passengers]
+      // this.data[newCell.cellID] = newCell
     }
     getBCell(pax, cell) {
       // cell is the current cell
