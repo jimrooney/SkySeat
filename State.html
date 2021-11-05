@@ -180,7 +180,7 @@
       }
       paxList.forEach((pax) => {
         for (const key in this.data) {
-          this.removePax(pax,key)
+          this.removePax(pax, key)
         }
       })
       this.clearEmpties()
@@ -287,24 +287,29 @@
     //
     // A function to move a pax so the B leg can be handled as well.
     //
-    movePax(pax,oldCell,newCell){
+    movePax(pax, oldCell, newCell) {
       // *******************************************************
       // might add some checks before actually moving things ***
       // *******************************************************
 
       // if oldCell.leg is A, then we see if the B is plotted and move it too if it is
+
+      if (oldCell.leg == "A") {
+        console.log("A leg, Find B?")
+        // console.log("oldCell id: ", oldCell.id)
+        // console.log("newCell: ", newCell)
+        // console.log("this.data[newCell.cellID]:", this.data[newCell.cellID])
+        if (!!oldCell.id) { // if no id, then it's a manifest drop
+          const bCell = this.getBCell(pax, oldCell)
+          console.log("bCell: ", bCell)
+        }
+      }
+
       !!newCell.leg ? null : (newCell.leg = oldCell.leg) // copy .leg to newCell
       newCell.passengers = root.array.uniquePax(newCell.passengers, pax) // copy pax... handles both {pax} or [passengers]
       this.data[newCell.cellID] = newCell
-
-      this.getBCell(pax,oldCell)
-
-      console.log("\n")
-      console.log("oldCell: ",oldCell)
-      console.log("newCell: ", newCell)
-      console.log("this.data[newCell.cellID]:", this.data[newCell.cellID])
     }
-    getBCell(pax,cell){
+    getBCell(pax, cell) {
       // cell is the current cell
       // this returns the cell where the B leg would normally plot
       //
@@ -314,28 +319,12 @@
       // return the B cell
       //
       let duration = gya.getProduct(pax.getValue("productCode"))?.Duration
-
-    }
-    handleDrop(cells, passengers) {
-      // [oldcell, newcell],[oldpax,newpax]
-      console.log("{State}handleDrop()")
-
-      const oldCell = this.getCell(cells[0])
-      const newCell = this.getCell(cells[1])
-      // console.log("Leg1: ", oldCell.leg)
-      // console.log("Leg2: ", newCell.leg)
-
-      const alreadySeatedPax = passengers[0]
-      if (!!alreadySeatedPax) {
-        const pax = new Pax(alreadySeatedPax.fields)
-        this.clearoutPax([pax])
-        this.addPax(pax, cells[1])
-      }
-
-      // Is Legal Drop?
-      // In or Out?
-      // Does out need to be brought over as well?
-      // Does out need to be plotted (if manifest plot for example)
+      const row = cell.id?.split("_")[0]
+      const col = cell.id?.split("_")[1]
+      const newRow = parseInt(row) + parseInt(duration)
+      const outID = newRow + "_" + col
+      const out = this.getCell(outID)
+      return out
     }
   }
 </script>
