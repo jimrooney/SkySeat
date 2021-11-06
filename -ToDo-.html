@@ -22,22 +22,17 @@ Currently
 
 Add AUW left to Wedding Planner and the loadsheet
 
-
-Building getBCell() in {state}
-  It finds the Bcell for TableCell drops so the associated BCells (if any) can be moved.
-  Haven't started setting it up to plot B cells yet though.
-
-// **************************************************
-// Moving all this into {state} (above)
-// **************************************************
+Building BCell plots... 
+In {TableCell}.addPax()
+  working on rebuilding A and B cell plotting so that Calendar and Wedding Planner use the same functions
+  Everything moves in {state} now.
+  BCell moves don't plot yet.
 
 In TableCell handleDrop (which just passes to {state} now)
-  Getting the duration for trips... need to figure out the B plots (follow the logic/notes in {state})
 
-
-{state}.removePax() fails on pilots
-  Uncaught TypeError: Cannot read properties of undefined (reading 'passengers')
-
+Removing pax from seats in Wedding Planner doesn't auto recalculate WB
+Pilots revert to holding pen if they're already seated when you open WP... can be "worked around" by dropping them from the pilot list
+Moving pax in WP doesn't plot outs in Calendar yet
 
 For Back/FWD buttons (date), disable the button when clicked until the data loads... fixes the Rueben thing
 Sort is causing some funny fuel issues.
