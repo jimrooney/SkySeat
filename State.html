@@ -189,7 +189,7 @@
     // Remove single reference of pax
     //
     removePax(pax, key) {
-      this.data[key].passengers.forEach((p, index) => {
+      this.data[key]?.passengers.forEach((p, index) => {
         const px = new Pax(p)
         if (pax.barcode == px.barcode) {
           this.data[key].passengers.splice(index, 1)
@@ -288,27 +288,25 @@
     // A function to move a pax so the B leg can be handled as well.
     //
     movePax(pax, oldCell, newCell) {
-      // *******************************************************
-      // might add some checks before actually moving things ***
-      // *******************************************************
-
-      // if oldCell.leg is A, then we see if the B is plotted and move it too if it is
-      newCell.id = newCell.cellID
-
+      // find B legs for A cells, move them if needed
+      // (if a B is plotted where it should be, it hasn't been moved yet)
+      console.log("OldACell: ", oldCell)
       if (oldCell.leg == "A") {
-        // console.log("A leg, Find B?")
-        // console.log("oldCell id: ", oldCell.id)
-        // console.log("newCell: ", newCell)
-        // console.log("this.data[newCell.cellID]:", this.data[newCell.cellID])
-        if (!!oldCell.id) { // if no id, then it's a manifest drop
+        if (!!oldCell.id) {
+          // if no id, then it's a manifest drop
           const bCell = this.getBCell(pax, oldCell)
-          // console.log("bCell: ", bCell)
-          // console.log("Pax: ",pax)
+          // See if the pax is plotted in this B cell
+          console.log("OldBCell: ", bCell)
+          const match = bCell.passengers.find((px) => px.barcode == pax.barcode)
+          if (!!match) {
+            this.removePax(match, bCell.id)
+          } //console.log("Bcell Match: ",match)
+          // bCell.passengers [{pax}{pax}{pax}]
         }
         // console.log("NewCell: ", newCell)
         const newBCell = this.getBCell(pax, newCell)
-        this.addPax(pax,newCell.cellID)
-        this.addPax(pax,newBCell.cellID)
+        this.addPax(pax, newCell.id)
+        this.addPax(pax, newBCell.id)
         // console.log("New BCell: ", newBCell)
       }
 
