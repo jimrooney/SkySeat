@@ -19,8 +19,7 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
-
-Add AUW left to Wedding Planner and the loadsheet
+? Pax removed from wedding planner planes don't always have their seats removed (in {state}). (they still show in loadsheet)
 
 Building BCell plots... 
 In {TableCell}.addPax()
@@ -41,23 +40,23 @@ Combining single pax drop in Wedding Planner with Calendar pax drop...
   Both will now call {state}.handleDrop()
 
 
+=================================================
+Eventually
+=================================================
+SAD button initially is wrong display type (class?).. doesn't look like a button. 
+It does work though. $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
 
+Main (Calendar) Board needs to indicate WB-Good/WB-Bad 
+  Will require "ideal seating" of some sort. Likely sorting by weight both directions and picking any possible solution.
 
-In TableCell.addPax() and .handleDrop()...
-  Commented out the B leg plotting code (to move it into {state})
-  {state} should then find B legs and move them if needed.
-  {state} knows which cells are A legs and which ones are B legs.
-  It'll need to look at each A leg pax and determine if the B leg is plotted and needs to be moved or not.
+  Pax only remove if you drop them on the pen
+  Still need to clear the pilots from the Pax Pen onShow.
+  Closing details doesn't reset the airplanes
+  Add airplane REG to the top of each plane in Wedding Planner ({Details})
 
-  Made a movePax() function in {state}... that can handle moving pax and B legs
-  This way, update in {state} only displays, it doesn't move things around.
-
-
-Reworked handleDrop (discretely removes pax in state rather than all cells)
-  But that means that now the outs don't get removed (nor should they)
-  And moving outs in Wedding Planner changes them to Ins (WP just needs to become in/out aware... or rather {state})
-
-Loaded pax and fuel not registering correctly (sometimes NaN fuel, sometimes no PIC)
+Add AUW left to Wedding Planner and the loadsheet
+Kids weights aren't going to kids in Standard Weights
+> Indicate on manifest when bookings are pending/onhold/etc
 
 Fuel needs to fall back to the top cell if unspecified
 Need to be able to remove pilots from planes.
@@ -77,57 +76,7 @@ In {details}.update() ... seating pax
   Once that's working, conflict resolution can be added and the clearing can be removed.
 
 
-Changing the Wedding Planner handleDrop() to register in {state}
-  Drops move pax, needs to auto-seat now.
-  Drops need to deal with out legs
-  Wedding planner should indicate IN/OUT visually?
 
-Marking edits: // ****
-
-
-Kids weights aren't going to kids in Standard Weights
-
-Wedding Planner needs to become IN/OUT aware.
-    Will also probably need to become IN/OUT aware of out legs
-  Must make sure a pax drop is "IN/OUT legal" before moving pax.
-  Otherwise {state} actions get really complex... you move the pax and then {state} says "no". 
-
-
-in {details}... 
-  handleDrop() 
-  dropped pax move in {state} for the in cell, but not the out cell.
-  The logic that handles the out cell could be consolidated into 
-  the {state} object rather than the Calendar handleDrop AND Details handleDrop.
-
-  {state} handleDrop... 
-    takes a cellID... looks in {state}, need to know in or out, then figure out if
-    the original out cell needs to move and if the new out cell needs to be plotted.
-
-    So each pax object in {details} will need to know if it's an in or an out pax.
-
-
-> Indicate on manifest when bookings are pending/onhold/etc
-
-
-
-
-
-
-
-
-
-Main (Calendar) Board needs to indicate WB-Good/WB-Bad 
-  Will require "ideal seating" of some sort. Likely sorting by weight both directions and picking any possible solution.
-
-
-Pax only remove if you drop them on the pen
-Still need to clear the pilots from the Pax Pen onShow.
-Closing details doesn't reset the airplanes
-Add airplane REG to the top of each plane in Wedding Planner ({Details})
-
-
-  SAD button initially is wrong display type (class?).. doesn't look like a button. 
-  It does work though. $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
 
 Limit pod bay values to the limit of that pod bay (maybe have checks for overall weight in multipods)
 Burnrate isn't being loaded (it's hardcoded into the board)
@@ -160,10 +109,6 @@ Cleaning up {Airplane}.getLoadedPlane()
 
 
 
-Changing seats doesn't change seats (looks like just swapping seats doesn't work)
-Pax removed from wedding planner planes don't always have their seats removed (in {state}). (they still show in loadsheet)
-Saving calendar plots (even moreso than out legs?)
-  // will need to remove their seat here ***
 
 
 Fix this.state in {details}.{Airplane}

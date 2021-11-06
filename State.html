@@ -120,14 +120,8 @@
       return plane
     }
     addPax(pax, cellID) {
-      console.log("{state}.addPax()")
-      console.log("pax: ", pax)
-      console.log("cellID: ", cellID)
       if (!this.data[cellID]) {
         this.data[cellID] = new CellData(cellID)
-      }
-      if (!this.data[cellID].passengers){
-        this.data[cellID].passengers = []
       }
       this.data[cellID].passengers.push(pax)
       return this.data[cellID].passengers
@@ -301,7 +295,6 @@
           // if no id, then it's a manifest drop
           const bCell = this.getBCell(pax, oldCell)
           // See if the pax is plotted in this B cell
-          console.log("OldBCell: ", bCell)
           const match = bCell.passengers.find((px) => px.barcode == pax.barcode)
           if (!!match) {
             this.removePax(match, bCell.id)
