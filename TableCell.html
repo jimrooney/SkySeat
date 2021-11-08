@@ -122,6 +122,7 @@
         // ignore blank drops
         return
       }
+
       // -----------------------------------------
       // $dropped [jQuery dropped Sprite]
       // _dropped [JS dropped Sprite]
@@ -140,7 +141,6 @@
       const _this = $(this).data("_script") // This JS Object
       const list = ui.draggable.data("_script").getPax() // From Manifest
       const droppedPaxList = list.filter((px) => _dropped.board.manifest.getBooking(px)) // [{Pax}{Pax}]
-      //
       // ------------
       // Record Drop (if Legal)
       // ------------
@@ -155,70 +155,12 @@
         // ---------------
         // Add Passengers
         // ---------------
-        // *** change this to pass the _dropped cell, not just the leg
         console.log("Dropped: ", _dropped)
         _this.addPax(droppedPaxList, _dropped)
-
-        /*
-
-        // *********************************************************
-        // This section plots B legs based on already plotted B legs (replace me)
-        // *********************************************************
-        //
-        // --------------
-        // Plot B Legs
-        // --------------
-        console.log("droppedPaxList: ",droppedPaxList)
-        droppedPaxList.forEach((pax) => {
-          if (_dropped.leg != "B") {
-            let plotOut = true
-            if (!!_dropped.row) {
-              // if TableCell drop (not manifest)
-              const $sourceOut = _this.board.$this.find(`.${_dropped.row + pax.times.duration}_${_dropped.column}`)
-              const _sourceOut = $sourceOut.data("_script")
-              const cellList = _this.board.state.getPaxCells(pax, "B") // list of cells with associate B legs plotted already
-              console.log("cellList: ",cellList)
-              if (!!_sourceOut && !cellList.includes(_sourceOut.id)) {
-                plotOut = false
-              }
-              console.log("PlotOut? ", plotOut)
-              // if (!!$sourceOut.data("_script")._this.pax && $sourceOut.data("_script")._this.pax.some((p) => p.barcode === pax.barcode)) {
-              //   console.log("Dropped Pax Match")
-              // }
-            }
-
-            const $target = _this.board.$this.find(`.${_this.row + pax.times.duration}_${_this.column}`)
-            const _target = $target.data("_script")
-            if (!!_target && plotOut) {
-              _target._this.addPax(pax, "B")
-              //
-              // Cleanup
-              //
-              if (!!_dropped.row) {
-                // Manifest drops won't have rows
-                const oldPlotId = `${_dropped.row + pax.times.duration}_${_dropped.column}`
-                const oldData = _dropped.board.state.data //.manifest.state.data[oldPlotId]
-                if (!!oldData[oldPlotId]) {
-                  oldData[oldPlotId].passengers.forEach((px, index) => {
-                    if (px.barcode == pax.barcode) {
-                      oldData[oldPlotId].passengers.splice(index, 1)
-                    }
-                  })
-                }
-                _dropped.board.update()
-              }
-              _target.board.update()
-            }
-          }
-        })
-
-*/
-
         //
         // === Update ===
         //
-        _this.removeBookings(ui, _this)
-
+        _this.removeBookings(ui, _this) // cleanup
         $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
       } else {
         let msg = "Wrong Type: DroppedIsOut" + _dropped.leg + " CellLeg: " + _this.leg
@@ -231,22 +173,6 @@
     addPax(pax, droppedCell) {
       console.log("TableCell droppedPaxList: ", pax)
       pax.forEach((p) => this.board.state.movePax(p, droppedCell, this.cellData))
-
-      // **************************************************
-      // Moving all this into {state} (above)
-      // **************************************************
-      // ------------------
-      // Merge Dropped Pax
-      // ------------------
-      // let cellData = this.cellData
-      // cellData.passengers = root.array.uniquePax(cellData.passengers, pax) // handles both {pax} or [passengers]
-
-      // !!cellData.leg ? null : (cellData.leg = droppedCell.leg)
-      // // -----
-      // // Save
-      // // -----
-      // this.cellData = cellData // saves in {state}... this.cellData points to the cellData in {state}
-      // return cellData
     }
     removePax(pax) {
       this.board.state.clearoutPax(pax)
