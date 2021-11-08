@@ -8,7 +8,7 @@
       time = time + "" // force string
       time = time.split(".")
       time[1] = time[1]?.substring(0, 1)
-      time[1] = Math.floor(time[1] * 6)
+      time[1] = Math.floor(time[1] * 6) || 0
       time[1] = time[1] < 10 ? `0${time[1]}` : time[1]
       return time
     },
