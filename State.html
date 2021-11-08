@@ -171,6 +171,14 @@
       return ret
     }
     //
+    // Remove all pax plots based on their barcode
+    //
+    removeAllBarcode(pax) {
+      for (const key in this.data) {
+        this.removePax(pax, key)
+      }
+    }
+    //
     // Clear all references to pax
     //
     clearoutPax(paxList) {
@@ -290,19 +298,28 @@
     movePax(pax, oldCell, newCell) {
       // find B legs for A cells, move them if needed
       // (if a B is plotted where it should be, it hasn't been moved yet)
+      let plotB = false
       if (oldCell.leg == "A") {
         if (!!oldCell.id) {
-          // if no id, then it's a manifest drop
+          // TableCell Drop
           const bCell = this.getBCell(pax, oldCell)
           // See if the pax is plotted in this B cell
           const match = bCell.passengers.find((px) => px.barcode == pax.barcode)
-          if (!!match) {
+          //
+          if (!!match) { // plotted (and not moved, remove and replot)
             this.removePax(match, bCell.id)
+            plotB = true
           }
+        } else {
+          // Manifest Drop (no cell.id)
+          plotB = true
         }
-        const newBCell = this.getBCell(pax, newCell)
-        this.addPax(pax, newBCell.id)
+        if (plotB) {
+          const newBCell = this.getBCell(pax, newCell)
+          this.addPax(pax, newBCell.id)
+        }
       }
+      //
       this.addPax(pax, newCell.id)
       !!newCell.leg ? null : (newCell.leg = oldCell.leg) // copy .leg to newCell
       // newCell.passengers = root.array.uniquePax(newCell.passengers, pax) // copy pax... handles both {pax} or [passengers]
