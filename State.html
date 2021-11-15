@@ -51,7 +51,7 @@
     }
     getData($cell) {
       let id = $cell
-      typeof $cell == "string" ? (id = $cell) : (id = $cell.prop("id"))
+      typeof $cell == "string" ? (id = $cell) : (id = $cell?.prop("id"))
       let data = this.data[id]
       if (!data) {
         data = new CellData(id)
