@@ -19,15 +19,20 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
-Moving passengers in WP that have adjusted out legs doesn't move their out legs in Calendar
-  (FOCs going on a Stewie for example... plot as 4hrs and adjust to 6)
-  
 Dropping pax resets fuel in WP
-Check that seats get cleared on Calendar moves
-? Pax removed from wedding planner planes don't always have their seats removed (in {state}). (they still show in loadsheet)
 
 Loadsheet pulling fuel from table wrong with any loaded data (the sort screws with things)
 Saved then reloaded plots read the wrong fuel cell (reloading-sort isn't changing the "top cell")
+
+
+Seats do not get removed on Calendar moves.
+  Maybe clear them for now?
+  Need checks for when we combine pax (same seat) or change planes (no seat)
+
+
+Moving passengers in WP that have adjusted out legs doesn't move their out legs in Calendar
+  (FOCs going on a Stewie for example... plot as 4hrs and adjust to 6)
+
 
 B-Cell in/out error (moving an in leg up to a point where the out leg conflicts with the in leg borks)
 Show the In/Out error message again... it won't let you drop an in on an out, but it doesn't tell you anymore
