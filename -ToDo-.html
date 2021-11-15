@@ -19,22 +19,26 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
+Moving passengers in WP that have adjusted out legs doesn't move their out legs in Calendar
+  (FOCs going on a Stewie for example... plot as 4hrs and adjust to 6)
+  
+Dropping pax resets fuel in WP
+Check that seats get cleared on Calendar moves
+? Pax removed from wedding planner planes don't always have their seats removed (in {state}). (they still show in loadsheet)
+
+Loadsheet pulling fuel from table wrong with any loaded data (the sort screws with things)
+Saved then reloaded plots read the wrong fuel cell (reloading-sort isn't changing the "top cell")
+
 B-Cell in/out error (moving an in leg up to a point where the out leg conflicts with the in leg borks)
+Show the In/Out error message again... it won't let you drop an in on an out, but it doesn't tell you anymore
 
 Reminder to add ability to change weights to Declared Weights
 
 Add "Finished Loading" notification (when you load a day)
   Would work off the same trigger that the < > arrow blocking would.
-WP doesn't yet use the {state} pax moving code... causes funkiness in Calendar.
-Check that seats get cleared on Calendar moves
-Dropping pax resets fuel in WP
-Show the In/Out error message again... it won't let you drop an in on an out, but it doesn't tell you anymore
-
-Saved then reloaded plots read the wrong fuel cell (reloading-sort isn't changing the "top cell")
 
 Check that the same pax on two different products gets two different barcodes.
 
-? Pax removed from wedding planner planes don't always have their seats removed (in {state}). (they still show in loadsheet)
 
 Building BCell plots... 
 In {TableCell}.addPax()
