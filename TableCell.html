@@ -171,7 +171,6 @@
       _this.board.update() // board.update() calls update() on each TableCell.
     }
     addPax(pax, droppedCell) {
-      console.log("TableCell droppedPaxList: ", pax)
       pax.forEach((p) => this.board.state.movePax(p, droppedCell, this.cellData))
     }
     removePax(pax) {

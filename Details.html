@@ -527,9 +527,7 @@
         // Pax has seat
         // Rassigning Seat
         const barcode = droppedPaxFields.find((field) => field.label == "Barcode").value
-
         const manifestPax = _this.getPax(droppedPaxFields)
-
         let statePax = _this._TableCell.board.state.getPax(barcode)
         if (!!manifestPax) {
           // Capture it's last seat before assigning it this one.
@@ -582,24 +580,16 @@
           }
         }
       }
-
-
-      // HERE
       // update existing pax that have swapped seats
       if (!!alreadySeatedPax) {
         const pax = new Pax(alreadySeatedPax.fields)
-        _this.state.removePax(pax, oldCellID)
-        _this.state.addPax(pax, newCellID)
+        _this.state.movePax(pax, _this.state.getCell(oldCellID), _this.state.getCell(newCellID))
       }
       // save the dropped pax
       const pax = new Pax(droppedPaxFields)
-      _this.state.removePax(pax, oldCellID)
-      _this.state.addPax(pax, newCellID)
-      //
+      _this.state.movePax(pax, _this.state.getCell(oldCellID), _this.state.getCell(newCellID))
       _this.show(_this.$TableCell,true)
     }
-
-
     assignSeat($seat, $pax, droppedPaxFields) {
       $pax.appendTo($seat)
       $pax.draggable({ revert: false })

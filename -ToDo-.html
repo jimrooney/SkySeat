@@ -19,10 +19,18 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
-1FEF on 1/10 doesn't tag it's B leg as a B 
+B-Cell in/out error (moving an in leg up to a point where the out leg conflicts with the in leg borks)
+
+Reminder to add ability to change weights to Declared Weights
+
+Add "Finished Loading" notification (when you load a day)
+  Would work off the same trigger that the < > arrow blocking would.
 WP doesn't yet use the {state} pax moving code... causes funkiness in Calendar.
 Check that seats get cleared on Calendar moves
 Dropping pax resets fuel in WP
+Show the In/Out error message again... it won't let you drop an in on an out, but it doesn't tell you anymore
+
+Saved then reloaded plots read the wrong fuel cell (reloading-sort isn't changing the "top cell")
 
 Check that the same pax on two different products gets two different barcodes.
 
@@ -50,6 +58,8 @@ Combining single pax drop in Wedding Planner with Calendar pax drop...
 =================================================
 Eventually
 =================================================
+Add a thing to keep track of outs (for commissions in office)
+Pickup List
 SAD button initially is wrong display type (class?).. doesn't look like a button. 
 It does work though. $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
 

@@ -119,11 +119,16 @@
       plane._state = this
       return plane
     }
-    addPax(pax, cellID) {
+    addPax(pax, cellID, leg) {
       if (!this.data[cellID]) {
         this.data[cellID] = new CellData(cellID)
       }
-      this.data[cellID].passengers.push(pax)
+      !!leg ? (this.data[cellID].leg = leg) : null
+      // If Pax Exists, ignore
+      const existingPax = this.data[cellID].passengers.find(p=> p.barcode == pax.barcode)
+      if (!existingPax){
+        this.data[cellID].passengers.push(pax)
+      }
       return this.data[cellID].passengers
     }
     getFuel(CellId) {
@@ -296,18 +301,21 @@
     // A function to move a pax so the B leg can be handled as well.
     //
     movePax(pax, oldCell, newCell) {
+      !!newCell.leg ? null : (newCell.leg = oldCell.leg) // copy .leg to newCell
       // find B legs for A cells, move them if needed
       // (if a B is plotted where it should be, it hasn't been moved yet)
       let plotB = false
+      let match = false
+      let bCell
       if (oldCell.leg == "A") {
         if (!!oldCell.id) {
           // TableCell Drop
-          const bCell = this.getBCell(pax, oldCell)
+          bCell = this.getBCell(pax, oldCell)
           // See if the pax is plotted in this B cell
-          const match = bCell.passengers.find((px) => px.barcode == pax.barcode)
+          match = bCell.passengers.find((px) => px.barcode == pax.barcode)
           //
-          if (!!match) { // plotted (and not moved, remove and replot)
-            this.removePax(match, bCell.id)
+          if (!!match) {
+            // plotted (and not moved, remove and replot)
             plotB = true
           }
         } else {
@@ -316,15 +324,17 @@
         }
         if (plotB) {
           const newBCell = this.getBCell(pax, newCell)
-          this.addPax(pax, newBCell.id)
-          newBCell.leg = "B"
+          this.addPax(pax, newBCell.id, "B") // *** Brand the cell... could be done better (rather than passing it in)
+          if (!!bCell) {
+            this.removePax(match, bCell.id)
+          }
         }
       }
-      //
-      this.addPax(pax, newCell.id)
       !!newCell.leg ? null : (newCell.leg = oldCell.leg) // copy .leg to newCell
-      // newCell.passengers = root.array.uniquePax(newCell.passengers, pax) // copy pax... handles both {pax} or [passengers]
-      // this.data[newCell.cellID] = newCell
+      this.addPax(pax, newCell.id, newCell.leg) // explicitly pass in the leg for now *** could just pass in newCell, but Details uses this too
+      if (oldCell.id != newCell.id){
+        this.removePax(pax,oldCell.id)
+      }
     }
     getBCell(pax, cell) {
       // cell is the current cell
