@@ -477,15 +477,38 @@
       }
       return pax
     }
+    //
+    // Check to see if dropped from another plane... *** 
+    //
     handlePaxListDrop(even, ui) {
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
+      const cellID = $(this).data("cell").cellID
 
       let $newPax = ui.draggable.detach()
       let fields = $newPax.data("pax") // array of Rezdy fields
-      const newFields = fields.filter((x) => x.label != "seat")
+
+      const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // $droppedAirplanePlotter.data("cell")
+      const $thisAirplanePlotter = $(this).closest(".AirplanePlotter")
+      //
+      const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
+
+      const barcode = fields.find((field) => field.label == "Barcode").value
+      let statePax = _this._TableCell.board.state.getPax(barcode)
+      // probably need to actually remove the seat (or re-save in {state})
+
+      // === Maybe use statePax? ===
+      // const barcode = fields.find((field) => field.label == "Barcode").value
+      // let statePax = _this._TableCell.board.state.getPax(barcode)
+
+
+      // If this works, then combine the statePax and pax
+      const newFields = fields.filter((x) => x.label != "seat") // remove seat
+      statePax.fields = newFields
+
       const pax = new Pax(newFields)
-      _this.state.clearoutPax([pax])
-      _this.state.addPax(pax, $(this).data("cell").cellID)
+      //
+      _this.state.movePax(pax, oldCellID, cellID)
+      //_this.show(_this.$TableCell,true)
       $newPax.appendTo($(this))
     }
     handleDrop(event, ui) {

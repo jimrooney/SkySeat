@@ -29,6 +29,13 @@
       }
       return
     }
+    removeValue(label) {
+      const rgxp = new RegExp(label, "i")
+      const result = this.fields.findIndex((x) => x.label.match(rgxp))
+      if (!!result){
+        delete this.fields[result]
+      }
+    }
     // ==============================================
     // Getters/Setters
     // ==============================================
