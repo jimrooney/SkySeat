@@ -494,20 +494,9 @@
 
       const barcode = fields.find((field) => field.label == "Barcode").value
       let statePax = _this._TableCell.board.state.getPax(barcode)
-      // probably need to actually remove the seat (or re-save in {state})
-
-      // === Maybe use statePax? ===
-      // const barcode = fields.find((field) => field.label == "Barcode").value
-      // let statePax = _this._TableCell.board.state.getPax(barcode)
-
-
-      // If this works, then combine the statePax and pax
-      const newFields = fields.filter((x) => x.label != "seat") // remove seat
-      statePax.fields = newFields
-
-      const pax = new Pax(newFields)
+      statePax.fields = fields.filter((x) => x.label != "seat") // remove seat
       //
-      _this.state.movePax(pax, oldCellID, cellID)
+      _this.state.movePax(statePax, oldCellID, cellID)
       //_this.show(_this.$TableCell,true)
       $newPax.appendTo($(this))
     }

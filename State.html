@@ -125,8 +125,8 @@
       }
       !!leg ? (this.data[cellID].leg = leg) : null
       // If Pax Exists, ignore
-      const existingPax = this.data[cellID].passengers.find(p=> p.barcode == pax.barcode)
-      if (!existingPax){
+      const existingPax = this.data[cellID].passengers.find((p) => p.barcode == pax.barcode)
+      if (!existingPax) {
         this.data[cellID].passengers.push(pax)
       }
       return this.data[cellID].passengers
@@ -306,10 +306,10 @@
       // console.log("oldCell: ", oldCell)
       // console.log("newCell: ", newCell)
 
-      if (oldCell?.id == newCell?.id){
+      if (oldCell?.id == newCell?.id) {
         return // If it's the same cell, skip everything (they're just changing seats)
       }
-      !!newCell.leg ? null : (newCell.leg = oldCell.leg) // copy .leg to newCell
+      !!newCell.leg ? null : (newCell.leg = oldCell.leg) // if blank, copy .leg to newCell
       // find B legs for A cells, move them if needed
       // (if a B is plotted where it should be, it hasn't been moved yet)
       let plotB = false
@@ -332,16 +332,39 @@
         }
         if (plotB) {
           const newBCell = this.getBCell(pax, newCell)
-          this.addPax(pax, newBCell.id, "B") // *** Brand the cell... could be done better (rather than passing it in)
-          if (!!oldBCell) {
-            this.removePax(match, oldBCell.id)
+
+          // First, check if it can be moved (conflicts)... if not, throw an error ***
+          // Check for .leg?
+          //
+          // check if target is branded
+          // check new B cell matches
+          //
+          let conflict = false
+
+
+          if (!!newBCell.leg && !!oldBCell?.leg && oldBCell?.leg != newBCell.leg) {
+            conflict = true
+          } 
+          
+
+
+
+          
+          if (!conflict) {
+            this.addPax(pax, newBCell.id, "B") // *** Brand the cell... could be done better (rather than passing it in)
+            if (!!oldBCell) {
+              this.removePax(match, oldBCell.id)
+            }
+          }
+          else {
+            utility.error("In/Out Leg Conflict \nNew: " + newBCell.leg + " \nOld: " + oldBCell?.leg)
           }
         }
       }
       !!newCell.leg ? null : (newCell.leg = oldCell.leg) // copy .leg to newCell
       this.addPax(pax, newCell.id, newCell.leg) // explicitly pass in the leg for now *** could just pass in newCell, but Details uses this too
-      if (oldCell.id != newCell.id){
-        this.removePax(pax,oldCell.id)
+      if (oldCell.id != newCell.id) {
+        this.removePax(pax, oldCell.id)
       }
     }
     getBCell(pax, cell) {
