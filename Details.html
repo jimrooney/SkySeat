@@ -517,7 +517,7 @@
       //
       // this.airplane.stations updates via getWB which searches the .station classes
       //
-      let $alreadySeatedPax
+      
       const DroppedStation = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
       let $newPax = ui.draggable.detach()
       let droppedPaxFields = $newPax.data("pax") // array of Rezdy fields
@@ -553,6 +553,7 @@
       // ============================================
       // Seat's occupied
       // ============================================
+      let $alreadySeatedPax
       let alreadySeatedPax
       if ($(this).children().length > 0) {
         //
@@ -594,12 +595,10 @@
       }
       // update existing pax that have swapped seats
       if (!!alreadySeatedPax) {
-        const pax = new Pax(alreadySeatedPax.fields)
-        _this.state.movePax(pax, _this.state.getCell(oldCellID), _this.state.getCell(newCellID))
+        _this.state.movePax(alreadySeatedPax, _this.state.getCell(oldCellID), _this.state.getCell(newCellID))
       }
       // save the dropped pax
-      const pax = new Pax(droppedPaxFields)
-      _this.state.movePax(pax, _this.state.getCell(oldCellID), _this.state.getCell(newCellID))
+      _this.state.movePax(droppedPaxFields, _this.state.getCell(oldCellID), _this.state.getCell(newCellID))
       _this.show(_this.$TableCell,true)
     }
     assignSeat($seat, $pax, droppedPaxFields) {
@@ -626,34 +625,6 @@
     setRevert($obj) {
       $obj.draggable({ revert: true })
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //
-    //
     //
     // ======================================
     // Show
@@ -663,6 +634,7 @@
     //
     // --------------------------------------
     show($TableCell,notInitial) {
+      this.$this.show()
       this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
       this.setWeightClass("D") // Set the initial SAD to Declared
       //
@@ -759,32 +731,7 @@
           const $pax = new this.Pax(_this, pax, "Pax", i) // create pax Sprite
           this.seatPax($pax,$plane)
         })
-        // HERE
-
-
-
-
-
-
-
-
-        this.update()//?***
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        this.update() // Updates the SAD bar
         const $PCF = $plane.find(".PCF_Selector")
         $PCF.empty()
         // ===========================================
@@ -829,18 +776,18 @@
         const weight = pax.weight
         const $pax = new this.Pax(_this, pax, "Crew", "")
       })
-      // HERE
-
       // ===========================================
       // -------------- Init -----------------
       // ===========================================
       this.init() // initialize jQuery drag/drop code
       if (!notInitial){
-        if (visible) {
-          this.$root.hide()
-        } else {
-          this.$root.show()
-        }
+        // if (visible) {
+        //   this.$root.hide()
+        // } else {
+        //   this.$root.show()
+        // }
+
+        // this.$root.show()
       }
       $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
     }
