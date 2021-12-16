@@ -314,14 +314,13 @@
     // A function to move a pax so the B leg can be handled as well.
     //
     movePax(pax, oldCell, newCell) {
-      if (!!pax.length){
-        pax = new Pax(pax)
-      }
 
-
-
-
-
+    if (!!pax.length){
+      pax = new Pax(pax)
+    }
+    if (!(pax instanceof Pax)){
+      pax = new Pax(pax.fields)
+    }
 
 /*
         *** This is a hack fix.... passing the fields to savePax() to force the creation of the Pax object.
@@ -360,6 +359,14 @@
           plotB = true
         }
         if (plotB) {
+
+          console.log("plotB pax instandceof {Pax}: ", pax instanceof Pax)
+
+if (!(pax instanceof Pax)){
+  return
+}
+
+
           const newBCell = this.getBCell(pax, newCell)
 
           // First, check if it can be moved (conflicts)... if not, throw an error ***
