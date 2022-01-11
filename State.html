@@ -327,6 +327,10 @@
         It makes moving between planes work, but it's not clean
 
 */
+    if (!oldCell){
+      console.log("No oldCell, pax: ",pax)
+      return
+    }
       if (oldCell?.id == newCell?.id) {
         this.savePax(pax.fields,oldCell.cellID,oldCell.leg) // same cell, so doesn't matter if you use oldCell or newCell
         return // If it's the same cell, skip everything (they're just changing seats)

@@ -19,6 +19,41 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
+
+Working in {Details}.handlePaxListDrop(even, ui) {
+  changing what happens during a pen drop so that seats get cleared and pax get assigned to the right pen.
+  Made notes in the function that describe things better than here.
+  
+Added oldCell check to {state}.movePax() to deal with dropping on Pens... 
+  works but needs to actually remove the seat (which it doesn't do at present)
+  It doesn't remove the seat because the seat was set in the last drop and movePax() just returns (thus does nothing to the {sate})
+
+
+// AirplanePlotter:  undefined
+
+working in {Details} ... 
+  // console.log("AirplanePlotter: ", $droppedAirplanePlotter.prop("id"))
+  // if ($droppedAirplanePlotter == $thisAirplanePlotter ){
+  //   utility.alert("Same Plotter")
+  // } else {
+  //   utility.alert("Different Plotter")
+  // }
+
+
+
+Find pen drop code entry point... 
+  Dropping onto pens doesn't work (uses old code I think)
+  //
+  // Check to see if dropped from another plane... *** 
+  //
+  handlePaxListDrop(even, ui) {
+
+
+
+Double booked seats
+Dropping onto occupied seats from other planes/pens places both in one seat.
+
+
 auto seating
 
 Move drop error front and center

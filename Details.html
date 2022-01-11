@@ -477,18 +477,38 @@
       }
       return pax
     }
-    //
-    // Check to see if dropped from another plane... *** 
-    //
+    // ============================
+    // Dropped on the Pen (PaxList)
+    // ============================
     handlePaxListDrop(even, ui) {
+      
+      console.log("Dropped on Pen")
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
       const cellID = $(this).data("cell").cellID
+
+      const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // $droppedAirplanePlotter.data("cell")
+/*
+
+      Since we've moved $droppedAirplanePlotter above the detach() method,
+      {state}.movePax() no longer skip-returns because oldCell is no longer null (the null check used to just return)
+      The next idea is now to flag the movePax() maybe by passing in a variable? so it knows that it was called
+      by a pen drop... then it can clean up the {state} and skip-return so the sprite puts itself into the pen.
+
+      */
+
 
       let $newPax = ui.draggable.detach()
       let fields = $newPax.data("pax") // array of Rezdy fields
 
-      const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // $droppedAirplanePlotter.data("cell")
-      const $thisAirplanePlotter = $(this).closest(".AirplanePlotter")
+    const $thisAirplanePlotter = $(this).closest(".AirplanePlotter")
+
+      console.log("AirplanePlotter: ", $droppedAirplanePlotter.prop("id"))
+
+      // if ($droppedAirplanePlotter == $thisAirplanePlotter ){
+      //   utility.alert("Same Plotter")
+      // } else {
+      //   utility.alert("Different Plotter")
+      // }
       //
       const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
 
