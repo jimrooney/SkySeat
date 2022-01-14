@@ -314,33 +314,28 @@
     // A function to move a pax so the B leg can be handled as well.
     //
     movePax(pax, oldCell, newCell) {
-
     if (!!pax.length){
       pax = new Pax(pax)
     }
     if (!(pax instanceof Pax)){
       pax = new Pax(pax.fields)
     }
-
 /*
         *** This is a hack fix.... passing the fields to savePax() to force the creation of the Pax object.
         It makes moving between planes work, but it's not clean
 
 */
-    if (!oldCell){
-      console.log("No oldCell, pax: ",pax)
-      return
+    //
+    // oldCell sometimes gets passed in as just the CellID (string) so covert to and Object
+    //
+    if(typeof oldCell == "string"){
+      oldCell = this.getCell(oldCell)
+      newCell = this.getCell(newCell)
     }
-      if (oldCell?.id == newCell?.id) {
+      if (!!oldCell.id && oldCell.id == newCell.id) {
         this.savePax(pax.fields,oldCell.cellID,oldCell.leg) // same cell, so doesn't matter if you use oldCell or newCell
         return // If it's the same cell, skip everything (they're just changing seats)
       }
-
-
-
-
-
-
       !!newCell.leg ? null : (newCell.leg = oldCell.leg) // if blank, copy .leg to newCell
       // find B legs for A cells, move them if needed
       // (if a B is plotted where it should be, it hasn't been moved yet)
@@ -364,7 +359,7 @@
         }
         if (plotB) {
 
-          console.log("plotB pax instandceof {Pax}: ", pax instanceof Pax)
+        //  console.log("plotB pax instandceof {Pax}: ", pax instanceof Pax)
 
 if (!(pax instanceof Pax)){
   return
