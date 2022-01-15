@@ -482,14 +482,14 @@
     // ============================
     handlePaxListDrop(even, ui) {
       
-      console.log("Dropped on Pen $(this): ", $(this))
-      console.log("Paxlist: ", $(this).prop("id"))
+      // console.log("Dropped on Pen $(this): ", $(this))
+      // console.log("Paxlist: ", $(this).prop("id"))
 
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
       const cellID = $(this).data("cell").cellID
 
       const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // $droppedAirplanePlotter.data("cell")
-      console.log("droppedAirplanePlotter: ", $droppedAirplanePlotter.prop("id"))
+      //console.log("droppedAirplanePlotter: ", $droppedAirplanePlotter.prop("id"))
 
 
       // const oldID = ui.draggable.data("cell")
@@ -507,35 +507,18 @@
       let $newPax = ui.draggable.detach()
       let fields = $newPax.data("pax") // array of Rezdy fields
 
-    const $thisAirplanePlotter = $(this).closest(".AirplanePlotter")
-    console.log("thisAirplanePlotter: ", $thisAirplanePlotter.prop("id"))
-      
+    // const $thisAirplanePlotter = $(this).closest(".AirplanePlotter")
+    // console.log("thisAirplanePlotter: ", $thisAirplanePlotter.prop("id"))
 
-      // if ($droppedAirplanePlotter == $thisAirplanePlotter ){
-      //   utility.alert("Same Plotter")
-      // } else {
-      //   utility.alert("Different Plotter")
-      // }
-      //
       const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
-
-        console.log("oldCellID: ", oldCellID)
       const barcode = fields.find((field) => field.label == "Barcode").value
       let statePax = _this._TableCell.board.state.getPax(barcode)
       statePax.fields = fields.filter((x) => x.label != "seat") // remove seat
 
-      //save the pax with no seat
+      // save the pax with no seat (incase the movePax skips )
       // Keeps them in the same pen, but the "movePax" method below should handle the swap to the new pen.
       _this._TableCell.board.state.savePax(statePax,oldCellID)
-
-
-        //
-        //
-        // Pax was dropped on the pen... doesn't need to "move", but does need it's removed seat state set.
-        //
-        //
       _this.state.movePax(statePax, oldCellID, cellID)
-      //_this.show(_this.$TableCell,true)
       $newPax.appendTo($(this))
     }
     handleDrop(event, ui) {
@@ -555,7 +538,6 @@
       //
       // this.airplane.stations updates via getWB which searches the .station classes
       //
-      
       const DroppedStation = ui.draggable.closest(".station") // If dragging from a Station, not the Manifest
       let $newPax = ui.draggable.detach()
       let droppedPaxFields = $newPax.data("pax") // array of Rezdy fields
