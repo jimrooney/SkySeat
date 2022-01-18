@@ -112,7 +112,7 @@
       const [r, c] = cell.cellID.split("_")
       const key = "0_" + c
       const PCF = this.data[key].PCF
-      const type = planes.getPlane(PCF.reg)
+      const type = planes.getPlane(PCF.reg) || planes.getPlane("GA8")
       type.state = this
       const plane = type.getLoadedPlane(cell)
       plane.cell = cell
@@ -295,21 +295,6 @@
     test(args) {
       console.log("Test: ", args)
     }
-
-    /*
-  Logic to plot pax in cells... either moving or original drops
-  Need to know if this is an in or an out drop... the details of the booking so we can determine the outs (if needed)
-  Probably leave the "ferry leg" logic to post processing or even just Calendar display updates
-
-    need to know:
-    pax fields and cellID + in/out
-    origin cellID and target cellID (so we can also move associated out cells)
-
-
-
-
-
-*/
     //
     // A function to move a pax so the B leg can be handled as well.
     //

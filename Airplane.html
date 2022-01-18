@@ -81,7 +81,7 @@
       this.fuelData = { ...this.fuelData, ...fuel }
     }
     getLoadedPlane(CellData) {
-      this.getFuelWeight() // Load fuel weight based on {state}
+      this.getFuelWeight(CellData) // Load fuel weight based on {state} if no CellData fuel is specified
       CellData.passengers.forEach(pax=>this.seatPax(pax))
       return this
     }
@@ -93,28 +93,31 @@
       // crude linear function to force loading of the fuel data from state
       this.getFuelWeight()
     }
-    //
-    // Also need to check top row defaults? ***
-    //
-    getFuelWeight() {
-
-
-
-      // // ********************************************************************************************
-      // // is this.state CellData or the {state} (should be {state})
-      // // ********************************************************************************************
-      // const id = this.cell?.cellID
-      // let fuel = this.cell?.PCF?.fuel || this.state?.getFuel(id) || 0
-      // // ********************************************************************************************
-      // // finds the first fuel station and calculates data... this will break with multiple fuel stations.
-      // // ********************************************************************************************
-
-
-
-
-
+    // ***
+    // Maybe set the fuel upon fuel changes or loaded states rather than setting it when asking for Fuel Weight.
+    // ***
+          /*
+        Check CellData for fuel in PCF. If not there, then look to the plane cell. ***
+      */
+    setFuel(CellData){
       if (!!this.state) {
         const fuelStations = this.stations.find((station) => station.type.includes("fuel"))
+              // Check CellData for fuel
+              if (!!CellData && !!CellData.PCF){
+                this.fuel.liters = CellData.PCF.fuel
+              }
+      }
+    }
+    getFuelWeight(CellData) {
+      //
+      this.setFuel(CellData) // set the fuel before calculating things
+        //
+        // Find the first fuel station // Will ignore any other fuel stations
+        // calculate and set it's weight and endurance
+        // set the {airplane} fuel.endurance
+        //
+      if (!!this.state) {
+        const fuelStations = this.stations.find((station) => station.type.includes("fuel")) // assumes just one fuel station
         fuelStations.weight = this.fuel.liters * this.fuel.factor || 0
         fuelStations.endurance = this.fuel.liters / this.fuel.burnRate || 0
         this.fuel.endurance = this.fuel.liters / this.fuel.burnRate || 0
@@ -123,6 +126,7 @@
       return null
     }
     seatPax(pax) {
+      pax = new Pax(pax) // Convert any JSON pax to {Pax}
       if (!!pax.seat) {
         const stations = this.stations.find((station) => station.type.includes("seat") && station.id == pax.seat)
         if (!!stations) {

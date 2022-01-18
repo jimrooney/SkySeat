@@ -362,6 +362,7 @@
         // Load Fuel
         //
         const plane = _this.state.getPlaneFromState(CellData) // Top row (PlaneCell) ** should change.. get the cell's plane.
+                
         const loadedPlane = plane.getLoadedPlane(CellData)
         const $selectedFuel = $(`#AirplanePlotter_${i}`).find(".PCF_Selector :selected").text()
         plane.fuel = $selectedFuel
@@ -676,7 +677,7 @@
       // Each of these will be a different plane (and have it's own PCF)
       //
 //      console.log("Details.show() row: ", _row)
-      _row.some((cell, i) => {
+      _row.some((cell, i) => { // why some? ***
         // ---------------------------
         // Print Button
         // ---------------------------
@@ -686,12 +687,26 @@
         })
         $Print.click(function () {
           console.log("\nPrint Click (cellID: %o)", cell.cellID) // correct ID (no other data than ID)
+          console.log("cell: ", cell)
+          
+          
           console.log("State: ", _this.state) // correct {state}
+          
+          
+          // This is currently getting the wrong fuel ***
           const plane = _this.state.getPlaneFromState(cell) // Top row (PlaneCell) ** should change.. get the cell's plane.
           console.log("print plane: ", plane)
+          
+          
+          
+          
           const loadedPlane = plane.getLoadedPlane(cell)
           console.log("loaded plane: ", loadedPlane)
           const WB = loadedPlane.getWB(_this.SAD)
+          console.log("WB: ", WB)
+
+
+
           LOADSHEET.show(_this._TableCell, loadedPlane, WB)
         })
         // ---------------------------
