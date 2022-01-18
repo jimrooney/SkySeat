@@ -23,9 +23,19 @@ Currently
 // Moving pax in Calendar view clears the CellData
 // Dropping pax from the pen does not.
 
-
+Loaded Pax can't change seats till they're put into a different plane.
+  can change once if put into pen.
+  suspect the "seat" field isn't clearing.
+  
+Loaded fuel needs to set the fuel selectors when {Details} is opened.
+  Currently it sets to default, but loaded values are used until it's changed.
+  (maybe even still used after changes?... need to check)
 
 Working on Fuel... both in loaded data and just in general
+  Loaded data seems to be working. Fuel is.
+  Pax sill can have conflicted seats.
+  Check to see if plotted planes are referencing zero-row to determine type... especially on loaded boards
+
   in {Airplane}.getFuelWeight
   in if (!!this.state) {
       put a check in for CellData that overrides whatever's set in the station fuel quantity.
