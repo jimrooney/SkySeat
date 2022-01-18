@@ -19,6 +19,48 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
+
+// Moving pax in Calendar view clears the CellData
+// Dropping pax from the pen does not.
+
+Loaded Pax can't change seats till they're put into a different plane.
+  can change once if put into pen.
+  suspect the "seat" field isn't clearing.
+  
+Loaded fuel needs to set the fuel selectors when {Details} is opened.
+  Currently it sets to default, but loaded values are used until it's changed.
+  (maybe even still used after changes?... need to check)
+
+Working on Fuel... both in loaded data and just in general
+  Loaded data seems to be working. Fuel is.
+  Pax sill can have conflicted seats.
+  Check to see if plotted planes are referencing zero-row to determine type... especially on loaded boards
+
+  in {Airplane}.getFuelWeight
+  in if (!!this.state) {
+      put a check in for CellData that overrides whatever's set in the station fuel quantity.
+      This sorta works and sorta doesn't... needs to be fleshed out.
+      Like if there's a CellData, but no set fuel, it still overrides the station data
+
+After loading data, {Details} starts calculating WB for the first plane and pulls fuel from two slots to the right.
+Save/Load fuel issue .. seems to be a Loadsheet only thing.
+
+Changing pax resets fuel load.
+
+Need to add seat conflict resolution and autoseating
+
+Dropping Pen Pax on occupied seats doesn't swap (just stacks)
+Happens on Calendar View as well if you combine seat assigned pax flights (needs seat conflict resolution)
+  
+working in {Details} ... 
+  // console.log("AirplanePlotter: ", $droppedAirplanePlotter.prop("id"))
+  // if ($droppedAirplanePlotter == $thisAirplanePlotter ){
+  //   utility.alert("Same Plotter")
+  // } else {
+  //   utility.alert("Different Plotter")
+  // }
+
+
 auto seating
 
 Move drop error front and center

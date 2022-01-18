@@ -48,6 +48,7 @@
       //
       // Clear out old values
       //
+      $(".PaxLine").empty() // clears out each pax line
       $("._plane_pilot").html("")
       $("._plane_copilot").html("")
       for (let i = 0; i < 11; i++) {
@@ -227,7 +228,7 @@
           const regex = new RegExp("weight", "gi")
           const weight = station.weight
           //
-          $("._paxList-" + seatNum + "-fullName").html(
+          $("._paxList-" + seatNum + "-fullName , PaxLine").html(
             `<span style="font-size:x-small">(${seatNum})</span> ${firstName} ${lastName}`
           )
           $("._paxList-" + seatNum + "-weight").html(weight)
