@@ -135,13 +135,13 @@
       if (!!pax.length){
         pax = new Pax(pax)
       }
-      const key = this.data[cellID].passengers.findIndex(p=>p.barcode == pax.barcode)
+      const key = this.data[cellID].passengers.findIndex(p=>p.fields.some(f => f.label == "Barcode" && f.value == pax.barcode)  )
       if (key > -1)
       {
         this.data[cellID].passengers[key] = pax
         }
       else {
-        //this.addPax(pax, cellID, leg)
+        this.addPax(pax, cellID, leg) // if pax doesn't exist, add them... but they should exist.
       }
     }
     getFuel(CellId) {
@@ -299,17 +299,9 @@
     // A function to move a pax so the B leg can be handled as well.
     //
     movePax(pax, oldCell, newCell) {
-    if (!!pax.length){
-      pax = new Pax(pax)
-    }
-    if (!(pax instanceof Pax)){
+    if (!(pax instanceof Pax)){ // force {Pax} object
       pax = new Pax(pax.fields)
     }
-/*
-        *** This is a hack fix.... passing the fields to savePax() to force the creation of the Pax object.
-        It makes moving between planes work, but it's not clean
-
-*/
     //
     // oldCell sometimes gets passed in as just the CellID (string) so covert to and Object
     //

@@ -152,5 +152,18 @@
     getGroupColor() {
       Color.getByBooking()
     }
+    removeSeat(){
+      this.fields = this.fields.filter((x) => x.label != "seat")
+      return this
+    }
+    setSeat(number){
+      this.removeSeat()
+      const thisSeat = {
+        label: "seat",
+        value: number,
+      }
+      this.fields.push(thisSeat)
+      return this
+    }
   }
 </script>
