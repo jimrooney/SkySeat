@@ -184,13 +184,27 @@
         this.stations.push(station)
       }
     }
-    getWB(SAD) {
+    getWB(ARGS) {
       // Standard Actual Declared
       //---------------------------------------
       // calculate CG based on load (simple WAM)
       // returns {wb} Object
       // --------------------------------------
 
+      // Reworking ***
+      // Changing all this so that it operates on loaded or passed in "stations" rather than this object's stations
+      // It can load the data from this object or {state} if nothing's passed in.
+      // Fuel can be handled the same way.
+      // This will allow theoretical calculations of WB.. so when we want to check if WB will work (for example)
+      let data = ARGS
+      if (!data.SAD){
+        data = {
+          sad:ARGS, // legacy support, assume SAD is passed in if ARGS isn't {data}
+          passengers: this.state.data[this.cell.cellID]?.passengers
+        }
+      }
+      const SAD = data.SAD // legacy support... plan to remove and replace with {data}.sad
+      
       // This should be able to be reworked (it shouldn't need to be called)
       // -- Load Fuel --
       this.loadFuelWeightFromSate()
@@ -198,6 +212,15 @@
       this.state.data[this.cell.cellID]?.passengers?.forEach((pax) => {
         this.seatPax(pax)
       })
+
+
+
+
+
+
+
+
+
 
       //
       // Calculate all moments
