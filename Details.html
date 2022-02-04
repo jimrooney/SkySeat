@@ -710,10 +710,14 @@
       $pax.data("pax", droppedPaxFields);
     }
     seatPax($pax, $plane) {
+      //
+      // check to make sure the assigned seat is within the number of available seats before assigning
+      //
       const pax = $pax.data("_pax");
       const plane = $plane.data("_plane").airplane;
-      const seats = plane.stations.filter((s) => s.type == "seat").length;
-
+      const seats = plane.stations.filter((s) =>
+        s.type.some((t) => t == "seat")
+      ).length;
       if (pax.seat > 0 && pax.seat <= seats) {
         const $assignedSeat = $plane.find(`.SeatNumber${pax.seat}`);
         if (!!$assignedSeat) {
