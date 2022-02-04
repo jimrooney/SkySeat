@@ -21,6 +21,11 @@ Currently
 -------------------------------
 
 In {Details}.handleDrop()...
+
+Overloaded seats barfing.
+This check seems to fail on caravans
+if (pax.seat > 0 && pax.seat <= seats) {
+
   Swap seats between planes not swapping (just dumps on top of)
   need to remove commented code block (big one... bottom of handlDrop)
 
