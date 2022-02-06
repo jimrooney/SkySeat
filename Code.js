@@ -134,10 +134,16 @@ function saveState(date, data) {
   const newVals = new Array(numCols)
   newVals[0] = stateDate
   let count = 1
-  for (let item in data) {
-    newVals[count] = JSON.stringify(data[item])
+  Object.entries(data).forEach(entry => {
+    const [key, value] = entry;
+    newVals[count] = value
     count++
-  }
+  });
+
+  // for (let item in data) {
+  //   newVals[count] = JSON.stringify(data[item])
+  //   count++
+  // }
 
   // If not recorded and no blanks...
   if (nextKey < 0 && key < 0) {
@@ -148,10 +154,10 @@ function saveState(date, data) {
     return date
   }
   key = key >= 0 ? key : nextKey
-  values[key] = newVals
+  values[key] = newVals // put the new row into the array (or overwrite the existing row)
   Logger.log("New Values")
-  Logger.log(values)
-  range.setValues(values)
+  Logger.log(newVals)
+  range.setValues(values) // write the edited spreadsheet
   const ret = {
     date:date,
     json:JSON.stringify(values),

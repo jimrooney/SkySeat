@@ -19,23 +19,25 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
+Saving big days pukes still.
+Curious if it's mis-saving or mis-loading.
+Loaded but removed bookings make plots puke.
+Moving pax plane doens't move out cell.
 
-In {Details}.handleDrop()...
+in Code.js
+Logger.log(newVals)
+loop over newVals entries (it's an object) and print rather than just printing it.
+Then load big data set (save complex board) and see if it's puking somewhere.
 
-Overloaded seats barfing.
-This check seems to fail on caravans
-if (pax.seat > 0 && pax.seat <= seats) {
+Load/Save failing on large data sets.
+  spread out the save data over many cells and it fails (doesn't care how many pax in each cell)
 
-  Swap seats between planes not swapping (just dumps on top of)
-  need to remove commented code block (big one... bottom of handlDrop)
+Overloaded seats
+  Moving pax between planes doesn't swap seats.
 
 // Moving pax in Calendar view clears the CellData
 // Dropping pax from the pen does not.
 
-Loaded Pax can't change seats till they're put into a different plane.
-  can change once if put into pen.
-  suspect the "seat" field isn't clearing.
-  
 Loaded fuel needs to set the fuel selectors when {Details} is opened.
   Currently it sets to default, but loaded values are used until it's changed.
   (maybe even still used after changes?... need to check)
