@@ -19,7 +19,7 @@
         success: (args) => {
           console.log("success: ", args);
           if (!!args.json) {
-            console.log(JSON.parse(args.json));
+            console.log("JSON: ", JSON.parse(args.json));
           }
         },
         failure: (err) => {
@@ -51,7 +51,15 @@
     }
     getData($cell) {
       let id = $cell;
-      typeof $cell == "string" ? (id = $cell) : (id = $cell?.prop("id"));
+      if (typeof $cell == "string") {
+        id = $cell;
+      } else {
+        if ($cell?.id) {
+          id = $cell.id;
+        } else {
+          id = $cell?.prop("id");
+        }
+      }
       let data = this.data[id];
       if (!data) {
         data = new CellData(id);
@@ -107,18 +115,16 @@
       });
       // iterate over this.data extracting all that match the row number (split the ID on _ )
       number = number.toString();
-      const list = Object.values(this.data).filter(
-        (entry) => {
-          let cellID = entry.cellID
-          if (!!cellID){
-            cellID = cellID.split("_")
-            if (cellID.length > 0){
-              cellID = cellID[0]
-            }
+      const list = Object.values(this.data).filter((entry) => {
+        let cellID = entry.cellID;
+        if (!!cellID) {
+          cellID = cellID.split("_");
+          if (cellID.length > 0) {
+            cellID = cellID[0];
           }
-          return cellID == number        
         }
-      );
+        return cellID == number;
+      });
       //
       // overwrite empty cells with pax cells
       // the row is the empty plane cells by default... replace with existing data for that cell
@@ -290,6 +296,8 @@
         .loadState(_date);
     }
     onLoad(args, _this) {
+      console.log("{state}onLoad");
+      console.log("args: ", args);
       const _args = JSON.parse(args);
       if (!!_args) {
         const date = _args.shift();
@@ -297,6 +305,7 @@
         _args.forEach((element) => {
           if (!!element) {
             const JS = JSON.parse(element);
+            console.log(JS);
             st[JS.cellID] = JS;
           }
         });
@@ -349,7 +358,9 @@
       // oldCell sometimes gets passed in as just the CellID (string) so covert to and Object
       //
       if (typeof oldCell == "string") {
+        const id = oldCell
         oldCell = this.getCell(oldCell);
+        oldCell = JSON.parse(JSON.stringify(oldCell)) // copy by value since this data is about to change
         newCell = this.getCell(newCell);
       }
       if (!!oldCell.id && oldCell.id == newCell.id) {
@@ -362,12 +373,20 @@
       let plotB = false;
       let match = false;
       let oldBCell;
+      // oldCell.leg is being passed in as null from data loads... this is the check that's failing ***
       if (oldCell.leg == "A") {
         if (!!oldCell.id) {
           // TableCell Drop
+          console.log("A-leg, moving pax: ",pax)
           oldBCell = this.getBCell(pax, oldCell);
+          console.log("oldBCell: ", oldBCell)
+
           // See if the pax is plotted in this B cell
-          match = oldBCell.passengers.find((px) => px.barcode == pax.barcode);
+          match = oldBCell.passengers.find((px) => {
+            px = new Pax(px) // force {Pax} object so it will have a .barcode
+            return px.barcode == pax.barcode
+          });
+          console.log("Match: ", match)
           //
           if (!!match) {
             // plotted (and not moved, remove and replot)

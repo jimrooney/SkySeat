@@ -117,6 +117,7 @@
     // Drop
     // -------------------------------------------
     handleDrop(event, ui) {
+      console.log("{TableCell}.handleDrop()")
       if (!ui.draggable.data("_script").getPassengers()) {
         // Plottable
         // ignore blank drops
@@ -170,7 +171,10 @@
       _this.board.update() // board.update() calls update() on each TableCell.
     }
     addPax(pax, droppedCell) {
-      pax.forEach((p) => this.board.state.movePax(p, droppedCell, this.cellData))
+      console.log("{TableCell}.addPax")
+      console.log("this.cellData: ", this.cellData)
+      console.log("droppedCell id: ", droppedCell.id)
+      pax.forEach((p) => this.board.state.movePax(p, droppedCell.id, this.cellData))
     }
     removePax(pax) {
       this.board.state.clearoutPax(pax)
@@ -280,6 +284,9 @@
         return this.getData().leg
       }
       return null
+    }
+    set leg(leg){
+      this.setData(leg)
     }
     getPlane() {
       let state = this.getStateCellData()

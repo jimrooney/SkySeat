@@ -58,7 +58,7 @@ function getLastSave() {
 function loadState(date) {
   const DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
   const sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
-  const range = sheet.getRange("A:K")
+  const range = sheet.getRange("A:AZ")
   const values = range.getValues()
   //
   // Change the date to US format so we can create a Date Object
@@ -155,8 +155,10 @@ function saveState(date, data) {
   }
   key = key >= 0 ? key : nextKey
   values[key] = newVals // put the new row into the array (or overwrite the existing row)
-  Logger.log("New Values")
-  Logger.log(newVals)
+  Logger.log("New Values \n")
+  newVals.forEach(val=>{
+    Logger.log(val)
+  })
   range.setValues(values) // write the edited spreadsheet
   const ret = {
     date:date,
@@ -175,7 +177,7 @@ function saveBoard(_array) {
 
   var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
   var sheet = SpreadsheetApp.openById(DataID).getSheetByName("state")
-  var range = sheet.getRange("A:K") // Number of columns needs to match getRange below... last number is the number of rows. // needs to match (below) *********************!!!!!!!!!!
+  var range = sheet.getRange("A:AZ") // Number of columns needs to match getRange below... last number is the number of rows. // needs to match (below) *********************!!!!!!!!!!
   var values = range.getValues()
   var numRows = range.getNumRows()
   var numCols = range.getNumColumns()

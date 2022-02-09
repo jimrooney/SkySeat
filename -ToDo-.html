@@ -19,18 +19,43 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
-Saving big days pukes still.
-Curious if it's mis-saving or mis-loading.
+{Details}.show() array.some error (6/1/21) replot (old planes problem)
+
+In/Out of loaded plots don't move together until they're moved seperately (not objects yet?)
+// oldCell.leg is being passed in as null from data loads... this is the check that's failing ***
+
+
+Loading days limit was because range was still A:K
+  Should move spreadsheet range to a var... 
+  const range = sheet.getRange("A:K")
+
+
+
+This might be the timing issue we're seeing... old pax removing and cleaning before new pax added?
+this.removePax(pax, oldCell.id);
+
+
+
+
 Loaded but removed bookings make plots puke.
-Moving pax plane doens't move out cell.
+Changing pax's plane (seating view) doens't move out cell.
+
+
+
+
+/* ***************************************************************************
+Rewire all this (below) so that we pass the data into Details.show()
+Right now, we're passing in the jQuery for it to extract the data from.
+pass this cell's id... Details can then pull this cell plus all it's sister cells based on matrix
+*/
+
+
+
+
 
 in Code.js
 Logger.log(newVals)
 loop over newVals entries (it's an object) and print rather than just printing it.
-Then load big data set (save complex board) and see if it's puking somewhere.
-
-Load/Save failing on large data sets.
-  spread out the save data over many cells and it fails (doesn't care how many pax in each cell)
 
 Overloaded seats
   Moving pax between planes doesn't swap seats.

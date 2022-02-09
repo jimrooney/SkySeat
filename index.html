@@ -16,47 +16,13 @@
     // root object to attach debug info to so it's easy to find in console.
     //
     console.log("=== Debug Object ===")
-    console.log(": Change the Javascript Context to userFrame(blank)")
-    console.log(": debug.show()\n")
+    console.log(": To use, change the Javascript Context to userFrame(blank)")
+    console.log(": and call debug.show()\n")
     // To use:
     // Change the "Javascript: context" at the top of the debug console to "userFrame(blank)Iframe"
     // and type "debug" into the console.
     //
-    /*
-      ___________root objects______________
-      {root}
-      {testBoard}
-      {LOADSHEET}
-      {gya}
-      {debug}
-      {colors}
-      {CSS} ... for CSS utility functions. Not currently used.
-      {date}
-      {debug}
-      {Events}
-      {pilots}
-      {planes}
-      {PlaneManager}
-      {time}
-      {utility}
-      {arrays}
-      {wb}
-      
 
-      __________root vars_______________
-      in Global.html...
-      isLive
-      isMobile
-      style
-      isDevMode
-
-  ==== Necessary? ====
-  {_plane} In Loadsheet.html... necessary?
-  var {_trip}
-  var _paxList = []
-  var _loadsheetData = []
-
-  */
   </script>
 
   <head>
@@ -144,16 +110,7 @@
         $("body").append(root.details.$root)
         Events.init() // for Mobile Click
       })
-
-      // --------------------------------- OnLoad --------------------------------------------------
-      // (Moved to INIT)
-
-      /*
-  These functions are first called in planemanager ->
-  
-      Rezdy.load()
-    theBoard.load()
-    */
+      
     </script>
     <div class="NoPrint">
       <div id="TheBoard" class="NoPrint" style="float: none; margin: 10px">
@@ -236,36 +193,5 @@
     wb: wb,
     isIOS: isIOS,
   }
-
-  /*
-        ___________root objects______________
-      {root}
-      {testBoard}
-      {LOADSHEET}
-      {gya}
-      {debug}
-      {colors}
-      {CSS} ... for CSS utility functions. Not currently used.
-      {date}
-      {debug}
-      {Events}
-      {pilots}
-      {planes}
-      {PlaneManager}
-      {time}
-      {utility}
-      {arrays}
-      {wb}
-      
-
-      __________root vars_______________
-      in Global.html...
-      isLive
-      isMobile
-      style
-      isDevMode
-      */
-
   let debug = root.debug
-  // list of root variables (so they're easier to find in debug)
 </script>
