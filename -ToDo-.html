@@ -19,11 +19,11 @@ Drop pax on pen (in Wedding planner)
 -------------------------------
 Currently
 -------------------------------
+Finish B-leg move... doesn't remove old B-leg after the move.
+Cleanup B-leg pilot (0) plots.
+
 {Details}.show() array.some error (6/1/21) replot (old planes problem)
-
-In/Out of loaded plots don't move together until they're moved seperately (not objects yet?)
-// oldCell.leg is being passed in as null from data loads... this is the check that's failing ***
-
+Loaded but removed bookings make plots puke.
 
 Loading days limit was because range was still A:K
   Should move spreadsheet range to a var... 
@@ -31,14 +31,65 @@ Loading days limit was because range was still A:K
 
 
 
-This might be the timing issue we're seeing... old pax removing and cleaning before new pax added?
-this.removePax(pax, oldCell.id);
 
 
 
 
-Loaded but removed bookings make plots puke.
+
 Changing pax's plane (seating view) doens't move out cell.
+
+
+
+
+
+in {TableCell}... 
+/*
+We'll use hover to test things.....
+Get the plane _this.getPlane()
+Get the passengers _this.getData().passengers
+
+---- Load the plane ----
+Assign the pilot and then the pax
+Have different ways to load the plane to see if things work... possibly have different colours based on the results?
+So a loading that works easily, green... but something that's contingent on seating or something could be yellow?
+Red for "will not work, don't bother"
+Maybe magenta for "Will not work the way you want it (based on seats), but it could be done if you shift thing around"
+
+highlighting / colouring could be accomplished by adding and removing classes.
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

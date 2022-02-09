@@ -82,24 +82,9 @@
         }
         //_this.show()
       })
-      /*
-
-
-      We'll use hover to test things.....
-
-      Get the plane _this.getPlane()
-      Get the passengers _this.getData().passengers
-
-      ---- Load the plane ----
-      Assign the pilot and then the pax
-      Have different ways to load the plane to see if things work... possibly have different colours based on the results?
-      So a loading that works easily, green... but something that's contingent on seating or something could be yellow?
-      Red for "will not work, don't bother"
-      Maybe magenta for "Will not work the way you want it (based on seats), but it could be done if you shift thing around"
-
-      highlighting / colouring could be accomplished by adding and removing classes.
-
-*/
+      //
+      // Stub for hover function
+      //
       // $this.hover(
       //   function () {
 
@@ -117,13 +102,11 @@
     // Drop
     // -------------------------------------------
     handleDrop(event, ui) {
-      console.log("{TableCell}.handleDrop()")
       if (!ui.draggable.data("_script").getPassengers()) {
         // Plottable
         // ignore blank drops
         return
       }
-
       // -----------------------------------------
       // $dropped [jQuery dropped Sprite]
       // _dropped [JS dropped Sprite]
@@ -141,7 +124,9 @@
       //
       const _this = $(this).data("_script") // This JS Object
       const list = ui.draggable.data("_script").getPax() // From Manifest
-      const droppedPaxList = list.filter((px) => _dropped.board.manifest.getBooking(px)) // [{Pax}{Pax}]
+      const droppedPaxList = list.filter((px) =>
+        _dropped.board.manifest.getBooking(px)
+      ) // [{Pax}{Pax}]
       // ------------
       // Record Drop (if Legal)
       // ------------
@@ -163,7 +148,8 @@
         _this.removeBookings(ui, _this) // cleanup
         $dropped.css("background-color", "var(--main-bg-color)") // Color the manifest object
       } else {
-        let msg = "Wrong Type: DroppedIsOut" + _dropped.leg + " CellLeg: " + _this.leg
+        let msg =
+          "Wrong Type: DroppedIsOut" + _dropped.leg + " CellLeg: " + _this.leg
         utility.error(msg)
         console.log("Error: %o", msg)
       }
@@ -171,10 +157,8 @@
       _this.board.update() // board.update() calls update() on each TableCell.
     }
     addPax(pax, droppedCell) {
-      console.log("{TableCell}.addPax")
-      console.log("this.cellData: ", this.cellData)
-      console.log("droppedCell id: ", droppedCell.id)
-      pax.forEach((p) => this.board.state.movePax(p, droppedCell.id, this.cellData))
+      const id = droppedCell?.id || droppedCell
+      pax.forEach((p) => this.board.state.movePax(p, id, this.cellData))
     }
     removePax(pax) {
       this.board.state.clearoutPax(pax)
@@ -208,7 +192,11 @@
       ***************************************************************************
       */
       let legal
-      cellLeg == null ? (legal = true) : cellLeg == droppedLeg ? (legal = true) : (legal = false)
+      cellLeg == null
+        ? (legal = true)
+        : cellLeg == droppedLeg
+        ? (legal = true)
+        : (legal = false)
       return legal
     }
     // ------------------------------
@@ -285,7 +273,7 @@
       }
       return null
     }
-    set leg(leg){
+    set leg(leg) {
       this.setData(leg)
     }
     getPlane() {
@@ -385,7 +373,9 @@
         //const crew = cellData.passengers.filter((px) => px.fields.find((f) => f.label == "Role"))
 
         // Parse code list (4FCF) from cell's passenger list (excluding crew) ** might need to be excluding just PIC **
-        const passengers = cellData.passengers.filter((px) => !px.fields.some((f) => f.label == "Role"))
+        const passengers = cellData.passengers.filter(
+          (px) => !px.fields.some((f) => f.label == "Role")
+        )
         passengers.forEach((data) => {
           const pax = data.fields
           const pc = pax.find((item) => item.label === "productCode").value

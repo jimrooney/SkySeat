@@ -9,30 +9,30 @@
   // =====================================================================================================
   class State {
     constructor(Board) {
-      this.board = Board;
-      this.date = this.getDate();
+      this.board = Board
+      this.date = this.getDate()
       //
       // data is an object that holds booking keys key'd by their keys
       //
-      this.data = {};
+      this.data = {}
       this.com = {
         success: (args) => {
-          console.log("success: ", args);
-          if (!!args.json) {
-            console.log("JSON: ", JSON.parse(args.json));
-          }
+          console.log("Load Success")
+          // if (!!args.json) {
+          //   debug.log("JSON: ", JSON.parse(args.json))
+          // }
         },
         failure: (err) => {
-          console.log("failure: ", err);
+          console.log("Load Failure: ", err)
         },
-      };
+      }
     }
     clear() {
-      console.log("Cleared State");
-      this.data = {};
+      console.log("Cleared State")
+      this.data = {}
     }
     getDate() {
-      return this.board.manifest.getDate();
+      return this.board.manifest.getDate()
     }
     /*
       ************************************************************************************
@@ -47,144 +47,144 @@
     // Returns a {CellData} object based on the provided id
     //
     getCell(cell) {
-      return this.getData(cell);
+      return this.getData(cell)
     }
     getData($cell) {
-      let id = $cell;
+      let id = $cell
       if (typeof $cell == "string") {
-        id = $cell;
+        id = $cell
       } else {
         if ($cell?.id) {
-          id = $cell.id;
+          id = $cell.id
         } else {
-          id = $cell?.prop("id");
+          id = $cell?.prop("id")
         }
       }
-      let data = this.data[id];
+      let data = this.data[id]
       if (!data) {
-        data = new CellData(id);
+        data = new CellData(id)
       }
-      return data;
+      return data
     }
     setData(id, data) {
-      console.log("{state}.setData(): %o %o", id, data);
-      let cell = this.data[id];
-      !cell ? (cell = new CellData(id)) : null;
-      cell.bookingOrders = data;
-      this.data[id] = cell;
-      return cell;
+      console.log("{state}.setData(): %o %o", id, data)
+      let cell = this.data[id]
+      !cell ? (cell = new CellData(id)) : null
+      cell.bookingOrders = data
+      this.data[id] = cell
+      return cell
     }
     addData($cell, data) {
-      let cell_ID = $cell.prop("id");
+      let cell_ID = $cell.prop("id")
       if (!this.data[cell_ID]) {
-        this.data[cell_ID] = new CellData(cell_ID);
+        this.data[cell_ID] = new CellData(cell_ID)
       }
       if (!!data) {
         // also check that data is an object ****************
-        this.data[cell_ID] = { ...this.data[cell_ID], ...data };
+        this.data[cell_ID] = { ...this.data[cell_ID], ...data }
       }
     }
     getPlanes() {
       const list = Object.values(this.data).filter((entry) => {
-        let cellID = entry.cellID;
+        let cellID = entry.cellID
         if (!!cellID) {
-          cellID = cellID.split("_");
+          cellID = cellID.split("_")
           if (cellID.length > 0) {
-            cellID = cellID[0];
+            cellID = cellID[0]
           }
         }
-        return cellID == 0;
-      });
-      return list;
+        return cellID == 0
+      })
+      return list
     }
     getRow(number) {
       // Get each cell {} for the row
       // Returns an [] of {}
-      let row = {};
-      const planes = this.getPlanes();
+      let row = {}
+      const planes = this.getPlanes()
       planes.forEach((plane) => {
-        let ID = plane.cellID;
+        let ID = plane.cellID
         if (!!ID) {
-          ID = plane.cellID.split("_");
+          ID = plane.cellID.split("_")
           if (ID.length > 0) {
-            const id = number + "_" + ID[1];
-            const cell = new CellData(id);
-            row[id] = cell;
+            const id = number + "_" + ID[1]
+            const cell = new CellData(id)
+            row[id] = cell
           }
         }
-      });
+      })
       // iterate over this.data extracting all that match the row number (split the ID on _ )
-      number = number.toString();
+      number = number.toString()
       const list = Object.values(this.data).filter((entry) => {
-        let cellID = entry.cellID;
+        let cellID = entry.cellID
         if (!!cellID) {
-          cellID = cellID.split("_");
+          cellID = cellID.split("_")
           if (cellID.length > 0) {
-            cellID = cellID[0];
+            cellID = cellID[0]
           }
         }
-        return cellID == number;
-      });
+        return cellID == number
+      })
       //
       // overwrite empty cells with pax cells
       // the row is the empty plane cells by default... replace with existing data for that cell
       list.forEach((cell) => {
-        row[cell.cellID] = cell;
-      });
-      return Object.values(row);
+        row[cell.cellID] = cell
+      })
+      return Object.values(row)
     }
     getPlane(cell) {
-      const [r, c] = cell.split("_");
-      const key = "0_" + c;
-      const PCF = this.data[key].PCF;
-      const plane = planes.getPlane(PCF.reg);
-      return plane;
+      const [r, c] = cell.split("_")
+      const key = "0_" + c
+      const PCF = this.data[key].PCF
+      const plane = planes.getPlane(PCF.reg)
+      return plane
     }
     getPlaneFromState(cell) {
-      const [r, c] = cell.cellID.split("_");
-      const key = "0_" + c;
-      const PCF = this.data[key].PCF;
-      const type = planes.getPlane(PCF.reg) || planes.getPlane("GA8");
-      type.state = this;
-      const plane = type.getLoadedPlane(cell);
-      plane.cell = cell;
-      plane._state = this;
-      return plane;
+      const [r, c] = cell.cellID.split("_")
+      const key = "0_" + c
+      const PCF = this.data[key].PCF
+      const type = planes.getPlane(PCF.reg) || planes.getPlane("GA8")
+      type.state = this
+      const plane = type.getLoadedPlane(cell)
+      plane.cell = cell
+      plane._state = this
+      return plane
     }
     addPax(pax, cellID, leg) {
       if (!this.data[cellID]) {
-        this.data[cellID] = new CellData(cellID);
+        this.data[cellID] = new CellData(cellID)
       }
-      !!leg ? (this.data[cellID].leg = leg) : null;
+      !!leg ? (this.data[cellID].leg = leg) : null
       // If Pax Exists, ignore
       const existingPax = this.data[cellID].passengers.find(
         (p) => p.barcode == pax.barcode
-      );
+      )
       if (!existingPax) {
-        this.data[cellID].passengers.push(pax);
+        this.data[cellID].passengers.push(pax)
       }
-      return this.data[cellID].passengers;
+      return this.data[cellID].passengers
     }
     savePax(pax, cellID, leg) {
       if (!!pax.length) {
-        pax = new Pax(pax);
+        pax = new Pax(pax)
       }
       const key = this.data[cellID].passengers.findIndex((p) =>
         p.fields.some((f) => f.label == "Barcode" && f.value == pax.barcode)
-      );
+      )
       if (key > -1) {
-        this.data[cellID].passengers[key] = pax;
+        this.data[cellID].passengers[key] = pax
       } else {
-        this.addPax(pax, cellID, leg); // if pax doesn't exist, add them... but they should exist.
+        this.addPax(pax, cellID, leg) // if pax doesn't exist, add them... but they should exist.
       }
     }
     getFuel(CellId) {
       // if no fuel set in the cell, look at the planeCell for data ***************
-      return this.data[CellId]?.PCF?.fuel;
+      return this.data[CellId]?.PCF?.fuel
     }
     setFuel(cellId, PCF) {
       if (!!this.data[cellId]) {
-        this.data[cellId].PCF = { ...this.data[cellId]?.PCF, ...PCF };
+        this.data[cellId].PCF = { ...this.data[cellId]?.PCF, ...PCF }
       }
     }
     // -----------------------------------------------------------------------------------------------------
@@ -197,7 +197,7 @@
       // look in remove function ************
       // Will need reference to originating board on multiboard?... might come with context though ********
 
-      delete this.data[$cell.prop("id")];
+      delete this.data[$cell.prop("id")]
 
       // let ret = this.data[$cell.prop("id")].removeOrder()
       // if (ret == 0) {
@@ -208,26 +208,26 @@
     containsPax(pax) {} //
     getPaxCells(pax, leg) {
       // return a list of [{CellData}] for any cells with that barcode/pax
-      let ret = [];
+      let ret = []
       for (const key in this.data) {
         this.data[key].passengers.forEach((p, index) => {
-          let px = p;
+          let px = p
           if (p.constructor.name != "Pax") {
-            px = new Pax(p);
+            px = new Pax(p)
           }
           if (pax.barcode === px.barcode && leg == this.data[key].leg) {
-            ret.push(key);
+            ret.push(key)
           }
-        });
+        })
       }
-      return ret;
+      return ret
     }
     //
     // Remove all pax plots based on their barcode
     //
     removeAllBarcode(pax) {
       for (const key in this.data) {
-        this.removePax(pax, key);
+        this.removePax(pax, key)
       }
     }
     //
@@ -236,105 +236,104 @@
     clearoutPax(paxList) {
       if (!paxList.length) {
         // force array
-        paxList = [paxList];
+        paxList = [paxList]
       }
       paxList.forEach((pax) => {
         for (const key in this.data) {
-          this.removePax(pax, key);
+          this.removePax(pax, key)
         }
-      });
-      this.clearEmpties();
+      })
+      this.clearEmpties()
     }
     //
     // Remove single reference of pax
     //
     removePax(pax, key) {
       this.data[key]?.passengers.forEach((p, index) => {
-        const px = new Pax(p);
+        const px = new Pax(p)
         if (pax.barcode == px.barcode) {
-          this.data[key].passengers.splice(index, 1);
+          this.data[key].passengers.splice(index, 1)
         }
-      });
-      this.clearEmpties();
+      })
+      this.clearEmpties()
     }
     //
     // Returns a list of all pax with the supplied barcode
     //
     getPax(barcode) {
-      let ret;
+      let ret
       for (const key in this.data) {
         ret = this.data[key].passengers.find((pax) =>
           pax.fields.find((f) => f.label == "Barcode" && f.value == barcode)
-        );
+        )
         if (!!ret) {
-          break;
+          break
         }
       }
-      return ret;
+      return ret
     }
     clearEmpties() {
       for (const key in this.data) {
-        let arry = this.data[key].passengers.filter((n) => n);
+        let arry = this.data[key].passengers.filter((n) => n)
         if (arry.length < 1 && !this.data[key].PCF) {
-          delete this.data[key];
+          delete this.data[key]
         }
       }
     }
     getState() {
-      return this;
+      return this
     }
     load() {
-      console.log("{state}.load()");
+      console.log("{state}.load()")
       const _date = this.getDate().toLocaleString("en-NZ", {
         dateStyle: "medium",
-      });
+      })
 
-      console.log("Date: %o", _date);
+      console.log("Date: %o", _date)
       google.script.run
         .withSuccessHandler(this.onLoad)
         .withUserObject(this)
-        .loadState(_date);
+        .loadState(_date)
     }
+    // OnLoad, parse into JSON and update the board
     onLoad(args, _this) {
-      console.log("{state}onLoad");
-      console.log("args: ", args);
-      const _args = JSON.parse(args);
+      console.log("{state}onLoad")
+      const _args = JSON.parse(args)
       if (!!_args) {
-        const date = _args.shift();
-        const st = {};
+        const date = _args.shift()
+        const st = {}
         _args.forEach((element) => {
           if (!!element) {
-            const JS = JSON.parse(element);
-            console.log(JS);
-            st[JS.cellID] = JS;
+            const JS = JSON.parse(element)
+            st[JS.cellID] = JS
           }
-        });
-        _this.data = st;
-        _this.board.update();
+        })
+        _this.data = st
+        _this.board.update()
       }
     }
     save() {
-      console.log("{state}.save()");
+      console.log("{state}.save()")
       const _date = this.getDate().toLocaleString("en-NZ", {
         dateStyle: "medium",
-      });
+      })
 
-      console.log("Date: %o", _date);
+      console.log("Date: %o", _date)
 
-      console.log("Data: %o", this.data);
+      console.log("Data: %o", this.data)
 
-      const sendData = [];
+      const sendData = []
       Object.entries(this.data).forEach((entry) => {
-        const [key, value] = entry;
-        sendData.push(JSON.stringify(value));
-      });
+        const [key, value] = entry
+        sendData.push(JSON.stringify(value))
+      })
 
-      console.log("sendData: ", sendData);
+      console.log("sendData: ", sendData)
       //google.script.run.saveState(_date, this.data)
       google.script.run
         .withSuccessHandler(this.com.success)
         .withFailureHandler(this.com.failure)
-        .saveState(_date, sendData);
+        .saveState(_date, sendData)
 
       //
       // google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).saveBoard( dataArry )
@@ -344,7 +343,7 @@
     }
 
     test(args) {
-      console.log("Test: ", args);
+      console.log("Test: ", args)
     }
     //
     // A function to move a pax so the B leg can be handled as well.
@@ -352,58 +351,53 @@
     movePax(pax, oldCell, newCell) {
       if (!(pax instanceof Pax)) {
         // force {Pax} object
-        pax = new Pax(pax.fields);
+        pax = new Pax(pax.fields)
       }
       //
       // oldCell sometimes gets passed in as just the CellID (string) so covert to and Object
       //
       if (typeof oldCell == "string") {
         const id = oldCell
-        oldCell = this.getCell(oldCell);
+        oldCell = this.getCell(oldCell)
         oldCell = JSON.parse(JSON.stringify(oldCell)) // copy by value since this data is about to change
-        newCell = this.getCell(newCell);
+        newCell = this.getCell(newCell)
       }
       if (!!oldCell.id && oldCell.id == newCell.id) {
-        this.savePax(pax.fields, oldCell.cellID, oldCell.leg); // same cell, so doesn't matter if you use oldCell or newCell
-        return; // If it's the same cell, skip everything (they're just changing seats)
+        this.savePax(pax.fields, oldCell.cellID, oldCell.leg) // same cell, so doesn't matter if you use oldCell or newCell
+        return // If it's the same cell, skip everything (they're just changing seats)
       }
-      !!newCell.leg ? null : (newCell.leg = oldCell.leg); // if blank, copy .leg to newCell
+      !!newCell.leg ? null : (newCell.leg = oldCell.leg) // if blank, copy .leg to newCell
       // find B legs for A cells, move them if needed
       // (if a B is plotted where it should be, it hasn't been moved yet)
-      let plotB = false;
-      let match = false;
-      let oldBCell;
-      // oldCell.leg is being passed in as null from data loads... this is the check that's failing ***
+      let plotB = false
+      let match = false
+      let oldBCell
       if (oldCell.leg == "A") {
         if (!!oldCell.id) {
           // TableCell Drop
-          console.log("A-leg, moving pax: ",pax)
-          oldBCell = this.getBCell(pax, oldCell);
-          console.log("oldBCell: ", oldBCell)
-
+          oldBCell = this.getBCell(pax, oldCell)
           // See if the pax is plotted in this B cell
           match = oldBCell.passengers.find((px) => {
             px = new Pax(px) // force {Pax} object so it will have a .barcode
             return px.barcode == pax.barcode
-          });
-          console.log("Match: ", match)
+          })
           //
           if (!!match) {
             // plotted (and not moved, remove and replot)
-            plotB = true;
+            plotB = true
           }
         } else {
           // Manifest Drop (no cell.id)
-          plotB = true;
+          plotB = true
         }
         if (plotB) {
           //  console.log("plotB pax instandceof {Pax}: ", pax instanceof Pax)
 
           if (!(pax instanceof Pax)) {
-            return;
+            return
           }
 
-          const newBCell = this.getBCell(pax, newCell);
+          const newBCell = this.getBCell(pax, newCell)
 
           // First, check if it can be moved (conflicts)... if not, throw an error ***
           // Check for .leg?
@@ -411,18 +405,18 @@
           // check if target is branded
           // check new B cell matches
           //
-          let conflict = false;
+          let conflict = false
           if (
             !!newBCell.leg &&
             !!oldBCell?.leg &&
             oldBCell?.leg != newBCell.leg
           ) {
-            conflict = true;
+            conflict = true
           }
           if (!conflict) {
-            this.addPax(pax, newBCell.id, "B"); // *** Brand the cell... could be done better (rather than passing it in)
+            this.addPax(pax, newBCell.id, "B") // *** Brand the cell... could be done better (rather than passing it in)
             if (!!oldBCell) {
-              this.removePax(match, oldBCell.id);
+              this.removePax(match, oldBCell.id)
             }
           } else {
             utility.error(
@@ -430,14 +424,14 @@
                 newBCell.leg +
                 " \nOld: " +
                 oldBCell?.leg
-            );
+            )
           }
         }
       }
-      !!newCell.leg ? null : (newCell.leg = oldCell.leg); // copy .leg to newCell
-      this.addPax(pax, newCell.id, newCell.leg); // explicitly pass in the leg for now *** could just pass in newCell, but Details uses this too
+      !!newCell.leg ? null : (newCell.leg = oldCell.leg) // copy .leg to newCell
+      this.addPax(pax, newCell.id, newCell.leg) // explicitly pass in the leg for now *** could just pass in newCell, but Details uses this too
       if (oldCell.id != newCell.id) {
-        this.removePax(pax, oldCell.id);
+        this.removePax(pax, oldCell.id)
       }
     }
     getBCell(pax, cell) {
@@ -449,13 +443,13 @@
       // find new cellID by adding the duration to the current cellID
       // return the B cell
       //
-      let duration = gya.getProduct(pax.getValue("productCode"))?.Duration;
-      const row = cell.id?.split("_")[0];
-      const col = cell.id?.split("_")[1];
-      const newRow = parseInt(row) + parseInt(duration);
-      const outID = newRow + "_" + col;
-      const out = this.getCell(outID);
-      return out;
+      let duration = gya.getProduct(pax.getValue("productCode"))?.Duration
+      const row = cell.id?.split("_")[0]
+      const col = cell.id?.split("_")[1]
+      const newRow = parseInt(row) + parseInt(duration)
+      const outID = newRow + "_" + col
+      const out = this.getCell(outID)
+      return out
     }
   }
 </script>
