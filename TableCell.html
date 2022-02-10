@@ -173,9 +173,13 @@
       }
     }
     clear() {
-      this.$this.removeClass("inCell")
+      // --------------
+      // Blank the cell
+      // --------------
+      this.$this.text("")
+      this.$this.css("background-image", "")
       this.$this.removeClass("outCell")
-      this.update()
+      this.$this.removeClass("inCell")
     }
 
     // -------------------------------------------------------------------
@@ -332,17 +336,15 @@
         revert: true,
         helper: "clone",
       })
-      // --------------
-      // Blank the cell
-      // --------------
-      $this.text("")
-      $this.css("background-image", "")
-      $this.removeClass("outCell")
-      $this.removeClass("inCell")
+      this.clear() // blank the cell
+
+      const cellPax = cellData?.passengers.filter((p)=>{
+        return !p.fields.some((f)=> f.label == "Role")
+      })
       // --------
       // If Data
       // --------
-      if (!!cellData?.passengers.length > 0) {
+      if (cellPax.length > 0) {
         //
         // In/Out Chevrons
         //
@@ -400,5 +402,6 @@
         $this.draggable("disable")
       }
     }
+
   }
 </script>

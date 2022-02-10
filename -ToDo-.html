@@ -10,39 +10,22 @@ Before Launch
 -------------------------------
 Auto-Seating
 Pickups
-Save {state}
 Flight Data Logging
 Drop on plane plots on board
-Drop pax on pen (in Wedding planner)
 -------------------------------
 
 -------------------------------
 Currently
 -------------------------------
-These are part of the same problem since only loaded B-Legs don't move... pilots never do.
-  Finish B-leg move... doesn't remove old B-leg after the move.
-  Cleanup B-leg pilot (0) plots.
-
+Seated pilots remain in cells after pax have been moved... need to clear them somehow. Perhaps if a cell has no pax, just clear the pilot.
 
 {Details}.show() array.some error (6/1/21) replot (old planes problem)
 Loaded but removed bookings make plots puke.
 
-Loading days limit was because range was still A:K
+Look at externalizing spreadsheet range for load/save.
+  Loading days limit was because range was still A:K
   Should move spreadsheet range to a var... 
   const range = sheet.getRange("A:K")
-
-
-
-
-
-
-
-
-Changing pax's plane (seating view) doens't move out cell.
-
-
-
-
 
 in {TableCell}... 
 /*
