@@ -249,6 +249,7 @@
     // Remove single reference of pax
     //
     removePax(pax, key) {
+      pax = new Pax(pax)
       this.data[key]?.passengers.forEach((p, index) => {
         const px = new Pax(p)
         if (pax.barcode == px.barcode) {
@@ -370,19 +371,19 @@
       // find B legs for A cells, move them if needed
       // (if a B is plotted where it should be, it hasn't been moved yet)
       let plotB = false
-      let match = false
+      let oldPax = false
       let oldBCell
       if (oldCell.leg == "A") {
         if (!!oldCell.id) {
           // TableCell Drop
           oldBCell = this.getBCell(pax, oldCell)
           // See if the pax is plotted in this B cell
-          match = oldBCell.passengers.find((px) => {
+          oldPax = oldBCell.passengers.find((px) => {
             px = new Pax(px) // force {Pax} object so it will have a .barcode
             return px.barcode == pax.barcode
           })
           //
-          if (!!match) {
+          if (!!oldPax) {
             // plotted (and not moved, remove and replot)
             plotB = true
           }
@@ -416,7 +417,7 @@
           if (!conflict) {
             this.addPax(pax, newBCell.id, "B") // *** Brand the cell... could be done better (rather than passing it in)
             if (!!oldBCell) {
-              this.removePax(match, oldBCell.id)
+              this.removePax(oldPax, oldBCell.id)
             }
           } else {
             utility.error(
