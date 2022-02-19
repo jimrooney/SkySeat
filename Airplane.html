@@ -1,26 +1,4 @@
 <script>
-  //
-  // Weight in KG
-  // Arm in Meter
-  //
-  class Station {
-    constructor(data) {
-      this.type = data.type || ""
-      this.weight = data.weight > 0 ? data.weight : 0
-      this.arm = data.arm || 0
-      //this.moment = this.weight * this.arm || 0
-      this.id = data.id
-    }
-    set moment(x){}
-    get moment(){
-      const moment_ = this.weight * this.arm
-      if (moment_ < 0){
-        console.log("Bad Moment, weight: %o arm: %o moment: %o", this.weight, this.arm, moment_)
-      }
-      return moment_
-    }
-  }
-
   class Airplane {
     constructor(data, state) {
       // data.REG data.Weight,data.ARM,data.Moment,data.Type,data.RegColor] *** update with new signature ***
@@ -61,24 +39,29 @@
         // {},
         // {}
       ]
-      this.fuelData = { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight(), burnRate: 60 }
-      this.state = state // breaks things if not set last (maybe because getFuelWeight() depends on it?)
+      this.state = state // *** (maybe fixed with new {WB} object) breaks things if not set last (maybe because getFuelWeight() depends on it?)
     }
+    /* ***
+    Are these backwards?
+    Should we not be getting fuel weight when we ask for the fuel object?    
+    */
     get fuel() {
-      return this.fuelData
+      if (!this._fuel){
+        return { capacity: 0, type: "100LL", factor: 0.72, weight: this.getFuelWeight(), burnRate: 60 }
+      }
+      return this._fuel
     }
     set fuel(fuel) {
       //
       // Accepts any {} data, but assumes any string is a quantity (in liters)
       //
-      // could improve this by doing more checks. ***
-      //
       if (typeof fuel == "string"){
-        const fuelStation = this.stations.find((station) => station.type.includes("fuel"))
-        fuelStation.liters = fuel
-        fuel = {liters: fuel}
+        const fuelStation = this.stations.find((station) => station.type.includes("fuel")) // get the station
+        fuelStation.liters = fuel // modify the station
+        fuel = {liters: fuel} // build the object to modify the fuel object (spread into)
+        console.log("GetFuelWeight: ", this.getFuelWeight())
       }
-      this.fuelData = { ...this.fuelData, ...fuel }
+      this._fuel = { ...this._fuel, ...fuel } // merge the new values via spread
     }
     getLoadedPlane(CellData) {
       this.getFuelWeight(CellData) // Load fuel weight based on {state} if no CellData fuel is specified
@@ -110,7 +93,7 @@
     }
     getFuelWeight(CellData) {
       //
-      this.setFuel(CellData) // set the fuel before calculating things
+      this.setFuel(CellData) // set the fuel before calculating things ***
         //
         // Find the first fuel station // Will ignore any other fuel stations
         // calculate and set it's weight and endurance
@@ -120,7 +103,7 @@
         const fuelStations = this.stations.find((station) => station.type.includes("fuel")) // assumes just one fuel station
         fuelStations.weight = this.fuel.liters * this.fuel.factor || 0
         fuelStations.endurance = this.fuel.liters / this.fuel.burnRate || 0
-        this.fuel.endurance = this.fuel.liters / this.fuel.burnRate || 0
+        this.fuel.endurance = this.fuel.liters / this.fuel.burnRate || 0 // *** sets value outside this scope
         return fuelStations
       }
       return null
@@ -184,6 +167,19 @@
         this.stations.push(station)
       }
     }
+    //
+    // Given a load ({passengers, fuel}), return a WB object
+    // If not given, load from {state}
+    //
+    getWeightAndBalance(load){
+      // Fuel
+      // Bags
+      // Pax
+      // Crew
+
+
+
+    }
     getWB(ARGS) {
       // Standard Actual Declared
       //---------------------------------------
@@ -191,27 +187,40 @@
       // returns {wb} Object
       // --------------------------------------
 
+
+
+
+
+
       // Reworking ***
-      // Changing all this so that it operates on loaded or passed in "stations" rather than this object's stations
+      // Changing all this so that it operates on loaded or passed in loads (pax/fuel) rather than this object's stations
       // It can load the data from this object or {state} if nothing's passed in.
       // Fuel can be handled the same way.
       // This will allow theoretical calculations of WB.. so when we want to check if WB will work (for example)
       let data = ARGS
-      if (!data.SAD){
+      
+      if (!data.SAD){ // spread passed in ARGS over data rather than explicitely setting them ***
         data = {
           sad:ARGS, // legacy support, assume SAD is passed in if ARGS isn't {data}
           passengers: this.state.data[this.cell.cellID]?.passengers
         }
       }
       const SAD = data.SAD // legacy support... plan to remove and replace with {data}.sad
+      if (!!ARGS.passengers){
+        // Override this plane's loading with passed in load
+        data.passengers = ARGS.passengers
+      } else {
+        this.state.data[this.cell.cellID]?.passengers?.forEach((pax) => {
+        this.seatPax(pax)
+      })
+      }
+      
       
       // This should be able to be reworked (it shouldn't need to be called)
       // -- Load Fuel --
       this.loadFuelWeightFromSate()
 
-      this.state.data[this.cell.cellID]?.passengers?.forEach((pax) => {
-        this.seatPax(pax)
-      })
+
 
 
 

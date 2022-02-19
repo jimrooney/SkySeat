@@ -706,6 +706,34 @@
           console.log("State data:", _this.state.data)
           _this.state.save()
         })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // ======================================
         // New this.Airplane
         // ======================================
@@ -731,6 +759,10 @@
         $plane
           .find(".PaxList")
           .css("background", utility.hexToRgbA(_plane.airplane.regcolor, 0.5))
+        $plane.click(()=>{
+          console.log("Airplane Click: ", _plane)
+          _plane.airplane.WB.getWB()
+        })
         //
         // SAD Button
         //
