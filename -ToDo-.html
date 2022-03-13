@@ -17,6 +17,33 @@ Drop on plane plots on board
 -------------------------------
 Currently
 -------------------------------
+
+Rebuilding {Airplane}.getWB() to allow for passed in data (rather than loading from {state})
+  pax/plane working. Fuel broken? (might be fixed)
+
+  Adding "Stations" data to PlaneAndPilot Google spreadsheet (likely as JSON)
+
+
+
+Airplane WB doesn't recalculate when pax are removed and put in the pen.
+Fuel selector's broken
+
+
+
+
+
+In {Airplane}.... 
+// HERE ***
+//       console.log("GetFuelWeight: ", this.getFuelWeight())
+
+// ***
+// not sure we need nor want this... {Airplane} should get pax seat data when it does the calculation
+        // shouldn't need to "seat" them, but rather grab their seat data
+
+
+
+
+
 Auto seating
 Save success indictation (on Details)
 Stop fuel from auto-resetting
