@@ -1,6 +1,7 @@
 <script>
   class Airplane {
-    constructor(data, state) {
+    constructor(data, state, stations) {
+      console.log("New Airplane: %o \n %o \n %o", data, state, stations)
       // data.REG data.Weight,data.ARM,data.Moment,data.Type,data.RegColor] *** update with new signature ***
       this.reg = data.reg
       this.regcolor = data.regcolor
@@ -40,6 +41,12 @@
         // {}
       ]
       this.state = state // *** (maybe fixed with new {WB} object) breaks things if not set last (maybe because getFuelWeight() depends on it?)
+      if(!!stations){
+        this.updateStations(stations)
+      }
+    }
+    updateStations(stations){
+      console.log("Stations: ", stations)
     }
     /* ***
     Are these backwards?
