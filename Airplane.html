@@ -1,7 +1,6 @@
 <script>
   class Airplane {
     constructor(data, state, stations) {
-      console.log("New Airplane: %o \n %o \n %o", data, state, stations)
       // data.REG data.Weight,data.ARM,data.Moment,data.Type,data.RegColor] *** update with new signature ***
       this.reg = data.reg
       this.regcolor = data.regcolor
@@ -41,12 +40,16 @@
         // {}
       ]
       this.state = state // *** (maybe fixed with new {WB} object) breaks things if not set last (maybe because getFuelWeight() depends on it?)
-      if(!!stations){
+      if (!!stations) {
         this.updateStations(stations)
       }
     }
-    updateStations(stations){
-      console.log("Stations: ", stations)
+    updateStations(stations) {
+      // clear old stations and repopulate (could maybe do selective later so you can just pass in seats)
+      this.stations = []
+      stations.forEach((station) => {
+        this.stations.push(new Station(station))
+      })
     }
     /* ***
     Are these backwards?
@@ -74,14 +77,14 @@
         ) // get the station
         fuelStation.liters = fuel // modify the station
         fuel = { liters: fuel } // build the object to modify the fuel object (spread into)
-/*
+        /*
 
 
 
 */
         // HERE ***
-       //console.log("GetFuelWeight: ", this.getFuelWeight())
-/*
+        //console.log("GetFuelWeight: ", this.getFuelWeight())
+        /*
 
 
 
@@ -191,11 +194,11 @@
     // Get Weight and Balance
     // -----------------------------------------------------------------------------------------------
     //
-      //---------------------------------------
-      // calculate CG based on load (WAM)
-      // returns {wb} Object
-      // --------------------------------------
-      //
+    //---------------------------------------
+    // calculate CG based on load (WAM)
+    // returns {wb} Object
+    // --------------------------------------
+    //
     // Given a load ({passengers, fuel}), return a WB object
     // If not given, load from {state}
     //
@@ -207,7 +210,7 @@
       // {txt: 'Declared Weights', SAD: 'Declared', class: 'declaredWeights'}
       //
       // so like this (to override {state} pax):
-      // 
+      //
       /*
 
         {
@@ -217,14 +220,14 @@
         }
       */
 
-      if (!ARGS.SAD){
+      if (!ARGS.SAD) {
         data = {
           sad: ARGS, // legacy support, assume SAD is passed in if ARGS isn't {data}
         }
       }
       const SAD = data.SAD // legacy support... plan to remove and replace with {data}.sad
       //
-      if (!!data.passengers){
+      if (!!data.passengers) {
         data.passengers = this.state.data[this.cell.cellID]?.passengers
       }
 
@@ -242,15 +245,11 @@
       //   }
       // }
 
+      // ***
+      // not sure we need nor want this... {Airplane} should get pax seat data when it does the calculation
+      // shouldn't need to "seat" them, but rather grab their seat data
 
-
-
-
-// ***
-// not sure we need nor want this... {Airplane} should get pax seat data when it does the calculation
-        // shouldn't need to "seat" them, but rather grab their seat data
-
-        /*
+      /*
 
         So what we're doing currently is loading the .passengers data into the plane's stations.
         Be better to build the WB out of the passenger data based on the plane's stations rather than modifying the plane's station data.
@@ -260,7 +259,6 @@
 
         (see below, you've already set this up... things are copied into the local passengers variable)
         */
-
 
       if (!!ARGS.passengers) {
         // Override this plane's loading with passed in load
@@ -275,11 +273,7 @@
       // -- Load Fuel --
       this.loadFuelWeightFromSate()
 
-
-
-
-
-/*
+      /*
       Change this... *** 
       Copy the .stations before loading them and then calculate the moments.
 
@@ -290,15 +284,13 @@
       // })
 
       // *** change this... have calculatePlaneMoment() return a station rather than altering this plane's .stations
-      
-      
+
       // -- Override plane moment calculation. --
       // ***
       // pull all the calcualtePlaneMoment code back into this function.
       // All it's really doing is putting this.moment into a plane station if it isn't already there.
 
-//---      //this.calculatePlaneMoment() // Plane moments inexplicably don't equal W*M for GY Air
-
+      //---      //this.calculatePlaneMoment() // Plane moments inexplicably don't equal W*M for GY Air
 
       //
       // copy so we don't change the original data
@@ -327,7 +319,7 @@
         station.moment = this.moment
         stations.push(station)
       }
-/*
+      /*
 
 
       Most of the calculation code below shouldn't specifically need to change (yet?)

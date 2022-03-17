@@ -281,15 +281,15 @@
       this.setData(leg)
     }
     getPlane() {
-      let state = this.getStateCellData()
+      let CellData = this.getStateCellData()
       //
       // Get the airplane raw data
       //
       let Data = PlaneManager.planes.data.find(function (element) {
-        return element.reg == state.PCF.reg
+        return element.reg == CellData.PCF.reg
       })
       let PlaneData = root.planes.rawData.find(function (element) {
-        return element.reg == state.PCF.reg
+        return element.reg == CellData.PCF.reg
       })
       //
       // convert to Airplane Object
@@ -297,8 +297,7 @@
       let airplane
       if (!!Data.type) {
         let dynamic_class = eval(Data.type)
-        console.log("PlaneData: ", PlaneData)
-        airplane = new dynamic_class(Data, state, PlaneData.stations) // pass in the cell data from {state}
+        airplane = new dynamic_class(Data, CellData, PlaneData.stations) // pass in the cell data from {state}
       }
       return airplane
     }
