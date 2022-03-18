@@ -691,6 +691,7 @@
           const loadedPlane = plane.getLoadedPlane(cell)
           console.log("loaded plane: ", loadedPlane)
           const WB = loadedPlane.getWB(_this.SAD)
+          console.log("SAD: ", _this.SAD)
           console.log("WB: ", WB)
 
           LOADSHEET.show(_this._TableCell, loadedPlane, WB)

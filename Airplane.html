@@ -159,8 +159,21 @@
     }
     convertToSAD(pob, SAD) {
       // takes a list of passenger stations and converts their weights based on SAD
+      console.log("convertToSAD SAD: ", SAD)
+
       let POB
-      const _SAD = !!SAD ? SAD : root.details.SAD
+      let _SAD = !!SAD ? SAD : root.details.SAD
+      if (!_SAD.SAD){
+        console.log("No _SAD")
+        _SAD = {
+          SAD: SAD
+        }
+      }
+
+
+
+
+      console.log("Switch SAD: ", _SAD.SAD)
       switch (_SAD.SAD) {
         case "Actual":
           POB = pob.map((station) => {
@@ -173,6 +186,7 @@
           break
         case "Standard":
           POB = pob.map((station) => {
+            console.log("POB Map")
             station.weight = root.standard.weight.adult // Everyone's an adult for now ******
             // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
             station.moment = station.weight * station.arm
@@ -219,7 +233,7 @@
           fuel: {quantity: x, weight x,}
         }
       */
-
+        console.log("getWB ARGS: ", ARGS)
       if (!ARGS.SAD) {
         data = {
           sad: ARGS, // legacy support, assume SAD is passed in if ARGS isn't {data}
@@ -296,6 +310,30 @@
       // copy so we don't change the original data
       //
       let stations = Array.from(this.stations)
+
+
+
+
+
+
+// ------------------ HERE -----------------------------
+
+// make pax weights in the new [stations] convert to SAD
+// we're not currenlty following SAD for pax in the loadsheet
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       // calculate moments *** could be a getter/setter in station instead so it's automagic
       // would need to be overridden by code below for the airplane moment (cuz NZ)
       stations.forEach((station) => {
@@ -343,7 +381,11 @@
         (station) => station.type.includes("cargo") && station.weight > 0
       )
 
+      console.log("Convert to SAD: ", SAD)
+      
       pob = this.convertToSAD(pob, SAD)
+
+      console.log("pob: ", pob)
 
       const ZFW = stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
       const fuel = stations.filter((station) => station.type.includes("fuel"))
