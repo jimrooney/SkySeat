@@ -326,16 +326,16 @@
         Details GUI Object 
       */
       const $S = $("<div />", {
-          text: "Save",
-          class: "MenuButton MobileButton",
-        })
-        $S.click(function () {
-          console.log("State data:", _this.state.data)
-          _this.state.save()
-        })
-      this.$root = $(`<div  id="Details"  class="detailsDiv NoPrint" />`)
-        .append($S)
-        .append(`
+        text: "Save",
+        class: "MenuButton MobileButton",
+      })
+      $S.click(function () {
+        console.log("State data:", _this.state.data)
+        _this.state.save()
+      })
+      this.$root = $(
+        `<div  id="Details"  class="detailsDiv NoPrint" />`
+      ).append($S).append(`
         <div id="CrewList_" class="CrewList" />
         <div id="detailsContents" class="WeightClass detailsContents content" />
         `)
@@ -404,11 +404,29 @@
         //
         const plane = _this.state.getPlaneFromState(CellData) // Top row (PlaneCell) ** should change.. get the cell's plane.
 
+        // if (!!CellData) {
+        //   if (!!this.state.data[CellData.cellID]) {
+        //     console.log("CellData: ", CellData)
+        //     console.log("plane: ", plane)
+        //     console.log("state: ", this.state.data[CellData.cellID])
+        //   }
+        // }
+
         const loadedPlane = plane.getLoadedPlane(CellData)
+
+        // get the PCF selector
+        // Set it to match the {state} data
+
+        const $PCF_Selector = $(`#AirplanePlotter_${i}`).find(".PCF_Selector")
+
+        if (!!CellData.PCF?.fuel) {
+          $PCF_Selector.val(0)
+        }
         const $selectedFuel = $(`#AirplanePlotter_${i}`)
           .find(".PCF_Selector :selected")
           .text()
-        plane.fuel = $selectedFuel
+        plane.fuel = CellData.PCF?.fuel //$selectedFuel
+
         //
         const WB = loadedPlane.getWB(this.SAD)
         const report = $(`.Report_${i}`)
@@ -683,6 +701,7 @@
           console.log("cell: ", cell)
 
           console.log("State: ", _this.state) // correct {state}
+          // correct here, incorrect below
 
           // This is currently getting the wrong fuel ***
           const plane = _this.state.getPlaneFromState(cell) // Top row (PlaneCell) ** should change.. get the cell's plane.
@@ -707,33 +726,6 @@
           console.log("State data:", _this.state.data)
           _this.state.save()
         })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         // ======================================
         // New this.Airplane
@@ -760,7 +752,7 @@
         $plane
           .find(".PaxList")
           .css("background", utility.hexToRgbA(_plane.airplane.regcolor, 0.5))
-        $plane.click(()=>{
+        $plane.click(() => {
           // console.log("Airplane Click: ", _plane)
           // _plane.airplane.WB.getWB()
         })
@@ -807,7 +799,16 @@
           $selector.append(`<option value="${i}">${i}</option>`)
         }
         //
-        $selector.val(_plane.airplane.standardFuel) // Select standard fuel by default // set in Company Data Spreadsheet
+        //
+        // if the cell has fuel, load that. If not, then use standardFuel. 
+        // standardFuel is set in the Company Data Spreadsheet
+        //
+        const fuel = cell.PCF?.fuel > -1 ? cell.PCF.fuel : _plane.airplane.standardFuel
+        $selector.val(fuel)
+        {
+          const PCF = { fuel: fuel }
+          _this.state.setFuel(cell?.cellID, PCF)
+        }
         //
         $selector.change(function () {
           const PCF = { fuel: $(this).val() }

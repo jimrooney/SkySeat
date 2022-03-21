@@ -25,14 +25,10 @@ Added a column to PlandAndPilotData spreadsheet to allow for loading in differen
 -------------------------------
 Currently
 -------------------------------
-
-Fuel resets on all changes...
-// HERE ***
-//console.log("GetFuelWeight: ", this.getFuelWeight())
-
-
 Airplane WB doesn't recalculate when pax are removed and put in the pen.
-Fuel selector's broken
+
+Still rebuilding Airplane WB to calculate on a copy of the data rather than setting that airplane's data.
+  (might be done already?)
 
 Looking to get Airplane stations argument to trigger updateSations() (and print to console)
   New Airplane gets triggered when Details gets opened.
@@ -43,15 +39,18 @@ Rebuilding {Airplane}.getWB() to allow for passed in data (rather than loading f
 
 
 
+  Set the board to auto-load previous saves.
+  Make "Loaded" (manifest) and "Saved" and "Loaded" (boards) prompts
+  Add difference between Weight on Loadsheet display.
+  Make acutal weights save between ins and outs.
+  
+  Build "Pickup/Dropoff" indicators.
+  Maybe make Rezdy link/customer info not be "click to display" but rather "on mouseover"
+  Disable the print loadsheet button if trying to print Declared Weights with a 125 plane.
+  
+  
+  // *** We're still setting the endurance in the {Airplane} object for some reason.
 
-
-
-
-
-
-In {Airplane}.... 
-// HERE ***
-//       console.log("GetFuelWeight: ", this.getFuelWeight())
 
 // ***
 // not sure we need nor want this... {Airplane} should get pax seat data when it does the calculation

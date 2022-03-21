@@ -18,6 +18,7 @@
       this.com = {
         success: (args) => {
           console.log("Load Success")
+          utility.alert("Success")
           // if (!!args.json) {
           //   debug.log("JSON: ", JSON.parse(args.json))
           // }
@@ -144,7 +145,7 @@
       const [r, c] = cell.cellID.split("_")
       const key = "0_" + c
       const PCF = this.data[key].PCF
-      const type = planes.getPlane(PCF.reg) || planes.getPlane("GA8")
+      const type = planes.getPlane(PCF.reg) || planes.getPlane("GA8") // loads raw plane data from PlaneManager
       type.state = this
       const plane = type.getLoadedPlane(cell)
       plane.cell = cell
