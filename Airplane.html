@@ -77,17 +77,6 @@
         ) // get the station
         fuelStation.liters = fuel // modify the station
         fuel = { liters: fuel } // build the object to modify the fuel object (spread into)
-        /*
-
-
-
-*/
-        // HERE ***
-        //console.log("GetFuelWeight: ", this.getFuelWeight())
-        /*
-
-
-*/
       }
       this._fuel = { ...this._fuel, ...fuel } // merge the new values via spread
     }
@@ -121,21 +110,25 @@
         }
       }
     }
+    //
+    // Only reads the first fuel station. // Will ignore any other fuel stations
+    //
     getFuelWeight(CellData) {
       //
-      this.setFuel(CellData) // set the fuel before calculating things ***
+      let liters = this.fuel.liters
+      if (!!CellData && !!CellData.PCF){
+        liters = CellData.PCF.liters || CellData.PCF.fuel
+      }
       //
-      // Find the first fuel station // Will ignore any other fuel stations
-      // calculate and set it's weight and endurance
-      // set the {airplane} fuel.endurance
+      // *** We're still setting the endurance in the {Airplane} object for some reason.
       //
       if (!!this.state) {
         const fuelStations = this.stations.find((station) =>
           station.type.includes("fuel")
         ) // assumes just one fuel station
-        fuelStations.weight = this.fuel.liters * this.fuel.factor || 0
-        fuelStations.endurance = this.fuel.liters / this.fuel.burnRate || 0
-        this.fuel.endurance = this.fuel.liters / this.fuel.burnRate || 0 // *** sets value outside this scope
+        fuelStations.weight = liters * this.fuel.factor || 0
+        fuelStations.endurance = liters / this.fuel.burnRate || 0
+        this.fuel.endurance = liters / this.fuel.burnRate || 0 // *** sets value outside this scope
         return fuelStations
       }
       return null
