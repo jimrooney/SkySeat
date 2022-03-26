@@ -46,22 +46,16 @@
       
       console.log("{Loadsheet} WB:", WB)
 
+      // Clear old PIC and CoPilot
+      $("._plane_pilot").html("")
+      $("._plane_copilot").html("")
+
       // Hack ***
       const fuelStation = WB.stations.filter((station) =>
         station.type.includes("fuel")
       )
       plane.fuel = {...plane.fuel, ...fuelStation}
       console.log("{Loadsheet} plane:", plane)
-      //
-      // Clear out old values
-      //
-      $(".PaxLine").empty() // clears out each pax line
-      $("._plane_pilot").html("")
-      $("._plane_copilot").html("")
-      for (let i = 0; i < 11; i++) {
-        $("._paxList-" + i + "-fullName").html("")
-        $("._paxList-" + i + "-weight").html("")
-      }
       // ------------------
       // Time and Date
       // ------------------
@@ -119,7 +113,7 @@
 
       // *** HERE *** needs update for all 208s
       let fuelWeightString = `${utility.round(WB.weights.fuel)}`
-      if (_thisPlane.reg == "MMZ") {
+      if (_thisPlane.reg == "MMZ" || _thisPlane.reg == "PPR") {
         fuelWeightString = `
         ${utility.round(WB.weights.fuel)} 
       <span style="font-size:x-small">( ${utility.round(WB.cg.imperial.fuelWeight)} )lbs</span>`
@@ -229,6 +223,14 @@
       //
       // Map the passenger data to _paxList- classes
       //
+      //
+      // Clear out old pax values
+      //
+      $(".PaxLine").empty() // clears out each pax line
+      for (let i = 0; i < 13; i++) {
+        $("._paxList-" + i + "-fullName").html("")
+        $("._paxList-" + i + "-weight").html("")
+      }
       seats.map((station, index) => {
         if (!!station.px) {
           const firstName = station.px.fields.find((px) => px.label == "First Name").value
@@ -560,12 +562,12 @@
         </tr>
         <tr>
           <td colspan="2">
-            <span class="_paxList-13-fullName"></span>
-            <span class="_paxList-13-product"></span>
-            <span class="_paxList-13-pickup"></span>
+            <span class="_paxList-13-fullName, PaxLine"></span>
+            <span class="_paxList-13-product, PaxLine"></span>
+            <span class="_paxList-13-pickup, PaxLine"></span>
           </td>
           <td>
-            <span class="_paxList-13-weight"></span>
+            <span class="_paxList-13-weight, PaxLine"></span>
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>

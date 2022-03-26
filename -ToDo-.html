@@ -25,32 +25,26 @@ Added a column to PlandAndPilotData spreadsheet to allow for loading in differen
 -------------------------------
 Currently
 -------------------------------
-
-In Details.Print() working on passing fuel to LOADSHEET
-Fuel only works if you change the selector... but then it's fine.
-
-
-// *** HERE *** needs update for all 208s
-
-
-
-Loadsheet not calculating fuel... showing fuel in the L/HR top bar, but not in WB
+Add "self drive and notes" to pax manifest click info display
+Add pickups to board
 Airplane WB doesn't recalculate when pax are removed and put in the pen.
 
-Still rebuilding Airplane WB to calculate on a copy of the data rather than setting that airplane's data.
-  (might be done already?)
+If you hit "Save" on Details, it saves the entire board.
+  This will likely confuse people as they're thinking (rightly) that they're only saving that plane.
+  Perhaps move the save button?
+  ...
+  Rename the S (state) button so it doesn't look like save.
+
+This has been hack fixed for now... 
+// *** HERE *** needs update for all 208s
+
 
 Looking to get Airplane stations argument to trigger updateSations() (and print to console)
   New Airplane gets triggered when Details gets opened.
 
-Rebuilding {Airplane}.getWB() to allow for passed in data (rather than loading from {state})
-  pax/plane working. Fuel broken? (might be fixed)
-
-
-
 
   Set the board to auto-load previous saves.
-  Make "Loaded" (manifest) and "Saved" and "Loaded" (boards) prompts
+  Make "Loaded" (manifest) and "Saved" and "Loaded" (boards) prompts (Improve them)
   Add difference between Weight on Loadsheet display.
   Make acutal weights save between ins and outs.
   
