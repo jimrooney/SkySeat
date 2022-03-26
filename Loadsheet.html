@@ -42,9 +42,16 @@
     // Show
     // ---------------------------
     show(TableCell,plane,WB) {
-      debug.log("{Loadsheet}: TableCell",TableCell)
-      debug.log("{Loadsheet} plane:", plane)
-      debug.log("{Loadsheet} WB:", WB)
+      console.log("{Loadsheet}: TableCell",TableCell)
+      
+      console.log("{Loadsheet} WB:", WB)
+
+      // Hack ***
+      const fuelStation = WB.stations.filter((station) =>
+        station.type.includes("fuel")
+      )
+      plane.fuel = {...plane.fuel, ...fuelStation}
+      console.log("{Loadsheet} plane:", plane)
       //
       // Clear out old values
       //
@@ -108,6 +115,9 @@
       // For some reason, this needs to be set as a const before putting into this.displayPlane ? *
       const _displayLimits = _thisPlane.limits.CG.aft + "" + _thisPlane.limits.CG.forward
       //
+
+
+      // *** HERE *** needs update for all 208s
       let fuelWeightString = `${utility.round(WB.weights.fuel)}`
       if (_thisPlane.reg == "MMZ") {
         fuelWeightString = `
@@ -199,7 +209,7 @@
         CGLimits: `${Math.round((WB.cg.fwdLimit + Number.EPSILON) * 1000) / 1000} <br> ${_thisPlane.limits.CG.aft}`,
         OutOfLimits: "",
         CREW: "CREW",
-        KGLBS: `${WB.SAD} [KG]`,
+        KGLBS: `${WB.SAD.SAD} [KG]`,
         pobWeight: WB.weights.pob,
         totalPaxWeight: WB.weights.pax,
         totalFreightWeight: "",

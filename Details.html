@@ -689,43 +689,7 @@
       //      console.log("Details.show() row: ", _row)
       _row.some((cell, i) => {
         // why some? ***
-        // ---------------------------
-        // Print Button
-        // ---------------------------
-        const $Print = $("<div />", {
-          text: "P",
-          class: "MenuButton MobileButton Print",
-        })
-        $Print.click(function () {
-          console.log("\nPrint Click (cellID: %o)", cell.cellID) // correct ID (no other data than ID)
-          console.log("cell: ", cell)
 
-          console.log("State: ", _this.state) // correct {state}
-          // correct here, incorrect below
-
-          // This is currently getting the wrong fuel ***
-          const plane = _this.state.getPlaneFromState(cell) // Top row (PlaneCell) ** should change.. get the cell's plane.
-          console.log("print plane: ", plane)
-
-          const loadedPlane = plane.getLoadedPlane(cell)
-          console.log("loaded plane: ", loadedPlane)
-          const WB = loadedPlane.getWB(_this.SAD)
-          console.log("SAD: ", _this.SAD)
-          console.log("WB: ", WB)
-
-          LOADSHEET.show(_this._TableCell, loadedPlane, WB)
-        })
-        // ---------------------------
-        // State Button
-        // ---------------------------
-        const $State = $("<div />", {
-          text: "S",
-          class: "MenuButton MobileButton",
-        })
-        $State.click(function () {
-          console.log("State data:", _this.state.data)
-          _this.state.save()
-        })
 
         // ======================================
         // New this.Airplane
@@ -753,9 +717,54 @@
           .find(".PaxList")
           .css("background", utility.hexToRgbA(_plane.airplane.regcolor, 0.5))
         $plane.click(() => {
-          // console.log("Airplane Click: ", _plane)
+          console.log("Airplane Click: ", _plane)
           // _plane.airplane.WB.getWB()
         })
+        // ---------------------------
+        // Print Button
+        // ---------------------------
+        const $Print = $("<div />", {
+          text: "P",
+          class: "MenuButton MobileButton Print",
+        })
+        $Print.click(function () {
+          console.log("\nPrint Click (cellID: %o)", cell.cellID) // correct ID (no other data than ID)
+
+          console.log("_plane: ", _plane)
+          const ARGS = {
+            SAD: _this.SAD,
+            CellData: cell 
+          }
+          console.log("WB: ", _plane.airplane.getWB(ARGS)) // need to add ARGS to getWB()
+
+
+          //console.log("State: ", _this.state) // correct {state}
+          // correct here, incorrect below
+
+          // This is currently getting the wrong fuel ***
+          //const plane = _this.state.getPlaneFromState(cell) // Top row (PlaneCell) ** should change.. get the cell's plane.
+          // console.log("print plane: ", plane)
+
+          // const loadedPlane = plane.getLoadedPlane(cell)
+          // console.log("loaded plane: ", loadedPlane)
+          const WB = _plane.airplane.getWB(ARGS)
+          // console.log("SAD: ", _this.SAD)
+          // console.log("WB: ", WB)
+
+          LOADSHEET.show(_this._TableCell, _plane.airplane, WB)
+        })
+        // ---------------------------
+        // State Button
+        // ---------------------------
+        const $State = $("<div />", {
+          text: "S",
+          class: "MenuButton MobileButton",
+        })
+        $State.click(function () {
+          console.log("State data:", _this.state.data)
+          _this.state.save()
+        })
+
         //
         // SAD Button
         //
@@ -808,6 +817,7 @@
         {
           const PCF = { fuel: fuel }
           _this.state.setFuel(cell?.cellID, PCF)
+          _this.update()
         }
         //
         $selector.change(function () {

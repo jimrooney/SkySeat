@@ -112,11 +112,11 @@
     }
     //
     // Only reads the first fuel station. // Will ignore any other fuel stations
-    //
+    // Returns {station}
     getFuelWeight(CellData) {
       //
       let liters = this.fuel.liters
-      if (!!CellData && !!CellData.PCF){
+      if (!!CellData && !!CellData.PCF) {
         liters = CellData.PCF.liters || CellData.PCF.fuel
       }
       //
@@ -126,6 +126,7 @@
         const fuelStations = this.stations.find((station) =>
           station.type.includes("fuel")
         ) // assumes just one fuel station
+        fuelStations.liters = liters
         fuelStations.weight = liters * this.fuel.factor || 0
         fuelStations.endurance = liters / this.fuel.burnRate || 0
         this.fuel.endurance = liters / this.fuel.burnRate || 0 // *** sets value outside this scope
@@ -149,9 +150,10 @@
       // takes a list of passenger stations and converts their weights based on SAD
       let POB
       let _SAD = !!SAD ? SAD : root.details.SAD
-      if (!_SAD.SAD){ // *** Hack fix ***
+      if (!_SAD.SAD) {
+        // *** Hack fix ***
         _SAD = {
-          SAD: SAD
+          SAD: SAD,
         }
       }
       switch (_SAD.SAD) {
@@ -263,13 +265,28 @@
 
       // This should be able to be reworked (it shouldn't need to be called)
       // -- Load Fuel --
-      this.loadFuelWeightFromSate()
+      if (!ARGS.PCF) {
+        data.PCF = {
+          fuel: this.loadFuelWeightFromSate(),
+        }
+      }
+      this.fuel = data.PCF.fuel
+      // console.log(
+      //   "Fuel Stations: ",
+      //   this.stations.filter((station) => station.type.includes("fuel"))
+      // )
+      // console.log("data.CellData: ", data.CellData)
+
+      // HERE *** Hack fix
+      this.fuel.liters = this.getFuelWeight(data.CellData)?.liters
+
+      //const fuelStation = stations.filter((station) => station.type.includes("fuel"))
+
 
       /*
       Change this... *** 
       Copy the .stations before loading them and then calculate the moments.
-
-*/
+      */
 
       // this.stations.forEach((station) => {
       //   station.moment = station.weight * station.arm
@@ -288,6 +305,11 @@
       // copy so we don't change the original data
       //
       let stations = Array.from(this.stations)
+
+      let fuelStation = stations.filter((station) =>
+        station.type.includes("fuel")
+      )
+      fuelStation = {...fuelStation, ...this.getFuelWeight(data.CellData)}
 
       // calculate moments *** could be a getter/setter in station instead so it's automagic
       // would need to be overridden by code below for the airplane moment (cuz NZ)
@@ -312,19 +334,13 @@
         station.moment = this.moment
         stations.push(station)
       }
-      /*
 
+      /*
 
       Most of the calculation code below shouldn't specifically need to change (yet?)
       since it's all working on a copy of the .stations already :)
-
-
-
-
-
-
-
-*/
+      
+      */
 
       //
       // Sum all Weights and Moments
