@@ -40,29 +40,27 @@
         // {}
       ]
       this.state = state // *** (maybe fixed with new {WB} object) breaks things if not set last (maybe because getFuelWeight() depends on it?)
-      if (!!stations) {
-        this.updateStations(stations)
-      }
+      // if (!!stations) {
+      //   this.updateStations(stations)
+      // }
     }
     updateStations(stations) {
-      // clear old stations and repopulate (could maybe do selective later so you can just pass in seats)
-      this.stations = []
-      stations.forEach((station) => {
-        this.stations.push(new Station(station))
-      })
+      // console.log("this.stations: ", this.stations)
+      // console.log("replace with: ", stations)
+      // // clear old stations and repopulate (could maybe do selective later so you can just pass in seats)
+      // this.stations = []
+      // stations.forEach((station) => {
+      //   this.stations.push(new Station(station))
+      // })
     }
-    /* ***
-    Are these backwards?
-    Should we not be getting fuel weight when we ask for the fuel object?    
-    */
     get fuel() {
       if (!this._fuel) {
         return {
           capacity: 0,
           type: "100LL",
           factor: 0.72,
-          weight: this.getFuelWeight(),
-          burnRate: 60,
+          weight: 0,
+          burnRate: 60, // this is wrong for the 206 ***
         }
       }
       return this._fuel
@@ -71,68 +69,47 @@
       //
       // Accepts any {} data, but assumes any string is a quantity (in liters)
       //
-      if (typeof fuel == "string") {
+      if (fuel < 0) {
         const fuelStation = this.stations.find((station) =>
           station.type.includes("fuel")
         ) // get the station
         fuelStation.liters = fuel // modify the station
-        fuel = { liters: fuel } // build the object to modify the fuel object (spread into)
+        fuel = { liters: fuel, weight: this.getFuelWeight() } // build the object to modify the fuel object (spread into)
+        console.log("Set fuel: ", fuel)
+        this._fuel = { ...this._fuel, ...fuel } // merge the new values via spread
       }
-      this._fuel = { ...this._fuel, ...fuel } // merge the new values via spread
-    }
-    getLoadedPlane(CellData) {
-      this.getFuelWeight(CellData) // Load fuel weight based on {state} if no CellData fuel is specified
-      CellData.passengers.forEach((pax) => this.seatPax(pax))
-      return this
     }
 
+    getLoadedPlane(CellData) {
+      const liters = this.getFuelQuantity(CellData)
+      this.fuel = liters // this is setting weight not liters ***
+      CellData.passengers.forEach((pax) => this.seatPax(pax)) // seat pax
+      return this
+    }
     getSeats() {
       return this.stations((item) => item.type.includes("seat"))
     }
-    loadFuelWeightFromSate() {
-      // crude linear function to force loading of the fuel data from state
-      this.getFuelWeight()
-    }
-    // ***
-    // Maybe set the fuel upon fuel changes or loaded states rather than setting it when asking for Fuel Weight.
-    // ***
-    /*
-        Check CellData for fuel in PCF. If not there, then look to the plane cell. ***
-      */
-    setFuel(CellData) {
-      if (!!this.state) {
-        const fuelStations = this.stations.find((station) =>
-          station.type.includes("fuel")
-        )
-        // Check CellData for fuel
-        if (!!CellData && !!CellData.PCF) {
-          this.fuel.liters = CellData.PCF.fuel
-        }
-      }
-    }
-    //
-    // Only reads the first fuel station. // Will ignore any other fuel stations
-    // Returns {station}
-    getFuelWeight(CellData) {
-      //
-      let liters = this.fuel.liters
+    getFuelQuantity(CellData) {
+      let liters = 0
       if (!!CellData && !!CellData.PCF) {
         liters = CellData.PCF.liters || CellData.PCF.fuel
       }
-      //
-      // *** We're still setting the endurance in the {Airplane} object for some reason.
-      //
-      if (!!this.state) {
-        const fuelStations = this.stations.find((station) =>
-          station.type.includes("fuel")
-        ) // assumes just one fuel station
-        fuelStations.liters = liters
-        fuelStations.weight = liters * this.fuel.factor || 0
-        fuelStations.endurance = liters / this.fuel.burnRate || 0
-        this.fuel.endurance = liters / this.fuel.burnRate || 0 // *** sets value outside this scope
-        return fuelStations
+      return liters
+    }
+    getFuelWeight(CellData) {
+      console.log("getFuelWeight CellData: ", CellData)
+      const liters = this.getFuelQuantity(CellData)
+      const weight = liters * this.fuel.factor || 0 // this is what's going cyclical ***
+      return weight
+    }
+    getFuelEndurance(liters) {
+      const decimal = liters / this.fuel.burnRate
+      const hrs = time.decimalToHours(decimal)
+      return {
+        decimal: decimal,
+        hrs: hrs,
+        string: `${hrs.join(":")}(hrs)`,
       }
-      return null
     }
     seatPax(pax) {
       pax = new Pax(pax) // Convert any JSON pax to {Pax}
@@ -198,130 +175,53 @@
     // If not given, load from {state}
     //
     getWB(ARGS) {
-      let data = ARGS
-
-      // *** Add parameters to the passed in object to allow for passing in pax and fuel
-      // Data is currently passed in like this:
-      // {txt: 'Declared Weights', SAD: 'Declared', class: 'declaredWeights'}
-      //
-      // so like this (to override {state} pax):
-      //
+      console.log("GetWB ARGS: ", ARGS)
       /*
-
         {
           sad: {txt: 'Declared Weights', SAD: 'Declared', class: 'declaredWeights'}
           passengers: [{Pax},{Pax},{Pax}]
           fuel: {quantity: x, weight x,}
         }
       */
-      if (!ARGS.SAD) {
-        data = {
-          sad: ARGS, // legacy support, assume SAD is passed in if ARGS isn't {data}
-        }
-      }
-      const SAD = data.SAD // legacy support... plan to remove and replace with {data}.sad
-      //
+      let data = ARGS // eventually just swap ARGS for data (once we're done rooting out all the ARGS uses)
+      
+      // Build data.fuel (copy by value) with default 0 liters.
+      data.fuel = {...{liters: data.PCF?.fuel || data.liters || 0},...this.fuel, ...data.fuel}
+      data.fuel.kg = this.getFuelWeight(data.fuel.liters) // needs to be done after we have the "for sure" fuel quantity *** 
+
+      console.log("data.fuel: ", data.fuel)
+      // if no passengers, look into state (is this necessary?) ***
       if (!!data.passengers) {
         data.passengers = this.state.data[this.cell.cellID]?.passengers
       }
-
-      //
-      //
-      // [Here] is where we load in passengers... swap this to either load (if passed in)...
-      //  or look to the cell data if nothing's passed in.
-      //
-
-      // if (!data.SAD) {
-      //   // spread passed in ARGS over data rather than explicitely setting them ***
-      //   data = {
-      //     sad: ARGS, // legacy support, assume SAD is passed in if ARGS isn't {data}
-      //     passengers: this.state.data[this.cell.cellID]?.passengers,
-      //   }
-      // }
-
-      // ***
-      // not sure we need nor want this... {Airplane} should get pax seat data when it does the calculation
-      // shouldn't need to "seat" them, but rather grab their seat data
-
-      /*
-
-        So what we're doing currently is loading the .passengers data into the plane's stations.
-        Be better to build the WB out of the passenger data based on the plane's stations rather than modifying the plane's station data.
-
-        So, abstract the calculations below to read from a data set rather than the plane's stations.
-        Then change the loading to load .passenger into that abstract
-
-        (see below, you've already set this up... things are copied into the local passengers variable)
-        */
-
-      if (!!ARGS.passengers) {
-        // Override this plane's loading with passed in load
-        data.passengers = ARGS.passengers
-      } else {
+      // Probably can remove this but need to remove PIC check first (dependant on it) ***
+      // Seat passengers
+      if (!data.passengers) {
+        //if none are passed in
         this.state.data[this.cell.cellID]?.passengers?.forEach((pax) => {
           this.seatPax(pax)
         })
       }
-
-      // This should be able to be reworked (it shouldn't need to be called)
-      // -- Load Fuel --
-      if (!ARGS.PCF) {
-        data.PCF = {
-          fuel: this.loadFuelWeightFromSate(),
-        }
-      }
-      this.fuel = data.PCF.fuel
-      // console.log(
-      //   "Fuel Stations: ",
-      //   this.stations.filter((station) => station.type.includes("fuel"))
-      // )
-      // console.log("data.CellData: ", data.CellData)
-
-      // HERE *** Hack fix
-      this.fuel.liters = this.getFuelWeight(data.CellData)?.liters
-
-      //const fuelStation = stations.filter((station) => station.type.includes("fuel"))
-
-
-      /*
-      Change this... *** 
-      Copy the .stations before loading them and then calculate the moments.
-      */
-
-      // this.stations.forEach((station) => {
-      //   station.moment = station.weight * station.arm
-      // })
-
-      // *** change this... have calculatePlaneMoment() return a station rather than altering this plane's .stations
-
-      // -- Override plane moment calculation. --
-      // ***
-      // pull all the calcualtePlaneMoment code back into this function.
-      // All it's really doing is putting this.moment into a plane station if it isn't already there.
-
-      //---      //this.calculatePlaneMoment() // Plane moments inexplicably don't equal W*M for GY Air
-
       //
       // copy so we don't change the original data
       //
       let stations = Array.from(this.stations)
-
-      let fuelStation = stations.filter((station) =>
+      let fuelStation = stations.find((station) =>
         station.type.includes("fuel")
       )
-      fuelStation = {...fuelStation, ...this.getFuelWeight(data.CellData)}
-
-      // calculate moments *** could be a getter/setter in station instead so it's automagic
-      // would need to be overridden by code below for the airplane moment (cuz NZ)
-      stations.forEach((station) => {
+      fuelStation.liters = data.fuel.liters // load in fuel liters from data object
+          stations.forEach((station) => {
         station.moment = station.weight * station.arm
       })
+      console.log("Stations:: ", stations)
       // override the plane's moment
       // *** I don't think there's ever a plane station, so this gets called every time.
       const planeStation = stations.filter((station) =>
         station.type.includes("airplane")
       )
+      // -----------------------------
       // if no plane station, make one
+      // -----------------------------
       if (planeStation.length <= 0) {
         //
         // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
@@ -334,14 +234,6 @@
         station.moment = this.moment
         stations.push(station)
       }
-
-      /*
-
-      Most of the calculation code below shouldn't specifically need to change (yet?)
-      since it's all working on a copy of the .stations already :)
-      
-      */
-
       //
       // Sum all Weights and Moments
       //
@@ -351,12 +243,15 @@
       const cargo = stations.filter(
         (station) => station.type.includes("cargo") && station.weight > 0
       )
-      pob = this.convertToSAD(pob, SAD)
+      pob = this.convertToSAD(pob, data.SAD)
 
       const ZFW = stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
       const fuel = stations.filter((station) => station.type.includes("fuel"))
-      const fuelQuantity = fuel.reduce((acc, station) => station.quantity, 0)
-      const fuelEndurance = fuelQuantity / this.fuel.burnRate
+
+      // HERE ***
+      const fuelQuantity = fuel.reduce((acc, station) => station.liters, 0)
+      // update station
+      fuel[0].weight = fuelQuantity * this.fuel.factor // one fuel station ***
 
       const CREW = pob.filter((station) => {
         if (!!station.pax) {
@@ -404,8 +299,8 @@
       // Build {wb} Object
       //
       const wb = {
-        SAD: SAD,
-        stations: this.stations,
+        SAD: data.SAD,
+        stations: stations,
         POB: pob,
         crew: {
           stations: CREW,
@@ -437,14 +332,15 @@
         },
         fuel: {
           liters: fuelQuantity,
-          kg: 0,
-          endurance: fuelEndurance,
+          kg: fuelQuantity * data.fuel.factor,
+          endurance: fuelQuantity / data.fuel.burnRate,
         },
         rounded: {
           AUW: roundAUW,
           CG: roundCG,
         },
       }
+      console.log("Returned WB: ", wb) // getting 0 fuel weigh here ***
       return wb
     }
 

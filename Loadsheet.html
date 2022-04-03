@@ -42,9 +42,10 @@
     // Show
     // ---------------------------
     show(TableCell,plane,WB) {
-      console.log("{Loadsheet}: TableCell",TableCell)
-      
-      console.log("{Loadsheet} WB:", WB)
+      console.log("{Loadsheet}.show()")
+      console.log("TableCell:",TableCell)
+      console.log("plane: ", plane)
+      console.log("WB:", WB)
 
       // Clear old PIC and CoPilot
       $("._plane_pilot").html("")
@@ -126,15 +127,7 @@
         }, 0)
         //
       const fuel = {
-        time: {
-          decimal: plane.fuel.endurance,
-          get hrs() {
-            return time.decimalToHours(plane.fuel.endurance)
-          },
-          get string() {
-            return `${this.hrs.join(":")}(hrs)`
-          },
-        },
+        time: plane.getFuelEndurance(plane.fuel.liters),
         quantity: {
           liters: plane.fuel.liters,
         },
@@ -255,6 +248,17 @@
       $(".Notes").html(notes)
       Events.init() // for Mobile Click
       this.$this.show()
+
+      //
+      // Block Declared weights fom 208 use
+      //
+      $(".Signature").html("")
+        if (plane.type == "C208" && WB.SAD.SAD == "Declared"){
+          $(".Signature").html("Not Valid For Use <br>(208) with Declared Weights")
+        }
+        if (!WB.cg.balanced){
+          $(".Signature").html("Not Valid For Use <br>Out of limits")
+        }
     }
   }
 </script>
@@ -584,7 +588,7 @@
           </td>
         </tr>
         <tr>
-          <td colspan="8" height="80">
+          <td colspan="8" height="80" class="Signature">
             <center>
               <h2><span class="_plane_OutOfLimits"></span></h2>
             </center>
@@ -909,7 +913,7 @@
           </td>
         </tr>
         <tr>
-          <td colspan="8" height="80">
+          <td colspan="8" height="80" class="Signature">
             <center>
               <h2><span class="_plane_OutOfLimits"></span></h2>
             </center>

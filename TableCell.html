@@ -297,7 +297,8 @@
       let airplane
       if (!!Data.type) {
         let dynamic_class = eval(Data.type)
-        airplane = new dynamic_class(Data, CellData, PlaneData.stations) // pass in the cell data from {state}
+        const stations = Array.from(PlaneData.stations) // copy not by reference
+        airplane = new dynamic_class(Data, CellData, stations) // pass in the cell data from {state}
       }
       return airplane
     }
