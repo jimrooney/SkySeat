@@ -405,7 +405,6 @@
         //
         const plane = _this.state.getPlaneFromState(CellData)
         const loadedPlane = plane.getLoadedPlane(CellData)
-        console.log("Each loadedPlane: ", loadedPlane) // stations are correct, .fuel is not
         // get the PCF selector
         // Set it to match the {state} data (or standard fuel if no state fuel)
         const $PCF_Selector = $(`#AirplanePlotter_${i}`).find(".PCF_Selector")
@@ -413,6 +412,10 @@
           .find(".PCF_Selector :selected")
           .text()
         const WB = loadedPlane.getWB({...this.SAD,...CellData})
+
+        if (WB.POB.length > 0){
+          console.log("WB: ", WB)
+        }
         const report = $(`.Report_${i}`)
         const color = WB.cg.balanced ? "green" : "red"
         //
@@ -704,7 +707,8 @@
           const ARGS = {
             SAD: _this.SAD,
             CellData: cell,
-            liters: airplanePlotter.airplane.getFuelQuantity(cell)
+            liters: airplanePlotter.airplane.getFuelQuantity(cell),
+            airplane: airplanePlotter.airplane
           }
           console.log("Airplane Click")
           console.log("ARGS: ", ARGS)
@@ -729,26 +733,7 @@
           }
           console.log("Print WB: ", airplanePlotter.airplane.getWB(ARGS)) // need to add ARGS to getWB()
 
-
-          //console.log("State: ", _this.state) // correct {state}
-          // correct here, incorrect below
-
-          // This is currently getting the wrong fuel ***
-          //const plane = _this.state.getPlaneFromState(cell) // Top row (PlaneCell) ** should change.. get the cell's plane.
-          // console.log("print plane: ", plane)
-
-          // const loadedPlane = plane.getLoadedPlane(cell)
-          // console.log("loaded plane: ", loadedPlane)
-
-
-          // HERE ***
-          // This is where it falls over...
-          // airplanePlotter.airplane.fuel is correct, but getWB returns incorrect fuel.
-          //
           const WB = airplanePlotter.airplane.getWB(ARGS)
-          // console.log("SAD: ", _this.SAD)
-          // console.log("WB: ", WB)
-
           LOADSHEET.show(_this._TableCell, airplanePlotter.airplane, WB)
         })
         // ---------------------------

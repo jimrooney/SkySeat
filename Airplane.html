@@ -66,16 +66,15 @@
       return this._fuel
     }
     set fuel(fuel) {
-      //
-      // Accepts any {} data, but assumes any string is a quantity (in liters)
-      //
+      if (typeof fuel == "object" && !!fuel.burnRate) {
+        this._fuel = { ...this._fuel, ...fuel }
+      }
       if (fuel < 0) {
         const fuelStation = this.stations.find((station) =>
           station.type.includes("fuel")
         ) // get the station
         fuelStation.liters = fuel // modify the station
         fuel = { liters: fuel, weight: this.getFuelWeight() } // build the object to modify the fuel object (spread into)
-        console.log("Set fuel: ", fuel)
         this._fuel = { ...this._fuel, ...fuel } // merge the new values via spread
       }
     }
@@ -97,9 +96,8 @@
       return liters
     }
     getFuelWeight(CellData) {
-      console.log("getFuelWeight CellData: ", CellData)
       const liters = this.getFuelQuantity(CellData)
-      const weight = liters * this.fuel.factor || 0 // this is what's going cyclical ***
+      const weight = liters * this.fuel.factor || 0
       return weight
     }
     getFuelEndurance(liters) {
@@ -175,7 +173,6 @@
     // If not given, load from {state}
     //
     getWB(ARGS) {
-      console.log("GetWB ARGS: ", ARGS)
       /*
         {
           sad: {txt: 'Declared Weights', SAD: 'Declared', class: 'declaredWeights'}
@@ -184,12 +181,15 @@
         }
       */
       let data = ARGS // eventually just swap ARGS for data (once we're done rooting out all the ARGS uses)
-      
-      // Build data.fuel (copy by value) with default 0 liters.
-      data.fuel = {...{liters: data.PCF?.fuel || data.liters || 0},...this.fuel, ...data.fuel}
-      data.fuel.kg = this.getFuelWeight(data.fuel.liters) // needs to be done after we have the "for sure" fuel quantity *** 
 
-      console.log("data.fuel: ", data.fuel)
+      // Build data.fuel (copy by value) with default 0 liters.
+      data.fuel = {
+        ...{ liters: data.PCF?.fuel || data.liters || 0 },
+        ...this.fuel,
+        ...data.fuel,
+      }
+      data.fuel.kg = this.getFuelWeight(data.fuel.liters) // needs to be done after we have the "for sure" fuel quantity ***
+
       // if no passengers, look into state (is this necessary?) ***
       if (!!data.passengers) {
         data.passengers = this.state.data[this.cell.cellID]?.passengers
@@ -210,11 +210,12 @@
         station.type.includes("fuel")
       )
       fuelStation.liters = data.fuel.liters // load in fuel liters from data object
-          stations.forEach((station) => {
+      stations.forEach((station) => {
         station.moment = station.weight * station.arm
       })
-      console.log("Stations:: ", stations)
+      // ---------------------------
       // override the plane's moment
+      // ---------------------------
       // *** I don't think there's ever a plane station, so this gets called every time.
       const planeStation = stations.filter((station) =>
         station.type.includes("airplane")
@@ -234,9 +235,9 @@
         station.moment = this.moment
         stations.push(station)
       }
-      //
+      // ---------------------------
       // Sum all Weights and Moments
-      //
+      // ---------------------------
       let pob = stations.filter(
         (station) => station.type.includes("seat") && !!station.weight
       ) // only occupied seats
@@ -248,10 +249,9 @@
       const ZFW = stations.filter((station) => !station.type.includes("fuel")) // Everything but fuel
       const fuel = stations.filter((station) => station.type.includes("fuel"))
 
-      // HERE ***
+      // update fuel station
       const fuelQuantity = fuel.reduce((acc, station) => station.liters, 0)
-      // update station
-      fuel[0].weight = fuelQuantity * this.fuel.factor // one fuel station ***
+      fuel[0].weight = fuelQuantity * this.fuel.factor // only one fuel station ***
 
       const CREW = pob.filter((station) => {
         if (!!station.pax) {
@@ -340,7 +340,6 @@
           CG: roundCG,
         },
       }
-      console.log("Returned WB: ", wb) // getting 0 fuel weigh here ***
       return wb
     }
 

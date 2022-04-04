@@ -127,9 +127,9 @@
         }, 0)
         //
       const fuel = {
-        time: plane.getFuelEndurance(plane.fuel.liters),
+        time: WB.fuel.endurance,
         quantity: {
-          liters: plane.fuel.liters,
+          liters: WB.fuel.liters,
         },
         landing: {
           toBurn: {
@@ -143,7 +143,7 @@
               return this.liters / 3.79
             },
             get time() {
-              const d = this.liters / _thisPlane.fuel.burnRate
+              const d = WB.fuel.liters / _thisPlane.fuel.burnRate
               const hrs = time.decimalToHours(d)
               let str = hrs.join(":") + "(hrs)"
               if (!!d && d < 0) {
@@ -181,7 +181,7 @@
         reg: _thisPlane.reg,
         type: _thisPlane.type,
         regColor: _thisPlane.regcolor,
-        fuel: `${plane.fuel.liters}(L) ${fuel.time.string}`, // Liters
+        fuel: `${WB.fuel.liters}(L) ${fuel.time.string}`, // Liters
         EmptyWeight: utility.round(_thisPlane.weight),
         AUW: utility.round(WB.weights.auw),
         ZFW: utility.round(WB.weights.zfw),
@@ -220,7 +220,7 @@
       // Clear out old pax values
       //
       $(".PaxLine").empty() // clears out each pax line
-      for (let i = 0; i < 13; i++) {
+      for (let i = 0; i <= 14; i++) {
         $("._paxList-" + i + "-fullName").html("")
         $("._paxList-" + i + "-weight").html("")
       }
@@ -234,13 +234,12 @@
           const weight = station.weight
           //
           $("._paxList-" + seatNum + "-fullName , PaxLine").html(
-            `<span style="font-size:x-small">(${seatNum})</span> ${firstName} ${lastName}`
+            `<span style="font-size:x-small">(${seatNum})</span> ${firstName} ${lastName}</span>`
           )
           $("._paxList-" + seatNum + "-weight").html(weight)
           //
         }
       })
-
       let notes = []
       notes.push(`CG in Inches: ${WB.cg.imperial.CG}`)
       notes.push(`AUW in LBS: ${WB.cg.imperial.TotalWeight}`)
@@ -566,12 +565,12 @@
         </tr>
         <tr>
           <td colspan="2">
-            <span class="_paxList-13-fullName, PaxLine"></span>
-            <span class="_paxList-13-product, PaxLine"></span>
-            <span class="_paxList-13-pickup, PaxLine"></span>
+            <span class="_paxList-13-fullName"></span>
+            <span class="_paxList-13-product"></span>
+            <span class="_paxList-13-pickup"></span>
           </td>
           <td>
-            <span class="_paxList-13-weight, PaxLine"></span>
+            <span class="_paxList-13-weight"></span>
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>

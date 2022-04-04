@@ -12,17 +12,15 @@ burnRate: 60, // this is wrong for the 206 ***
 -------------------------------
 Currently
 -------------------------------
+Endurance not showing (undefined) on LOADSHEET
+Pax still stack if same seat. (when moved in calendar)
 
+// *** HERE *** needs update for all 208s
 
-Fuel finally being passed into LOADSHEET correctly.
-Now need to reflect it correctly in the UI (dropmenu and top loadsheet liters)
-// HERE ***
-// This is where it falls over...
-// airplanePlotter.airplane.fuel is correct, but getWB returns incorrect fuel.
-//
+In Details onShow, reflect current fuel value in dropmenu (standard fuel typically)
+$plane.click(() =>  gets wrong fuel data (always airvan)
 
-
-
+updateStations(stations) { <-- consider removing
 
 Stripped Details down to one update() call _this.update("PostPlane")
 // HERE *** 

@@ -3,8 +3,8 @@
   // Max weight in cargo area 680kg
   //
   class GA8 extends Airplane {
-    constructor(data,state) {
-      super(data,state)
+    constructor(...args) {
+      super(...args)
       /*
 
 1219 mm (48 in) aft of datum at 1089 kg (2400 lb) and below;
@@ -22,7 +22,12 @@ between these points.
           bounds: [{ fwd1: [1.219, 1089], fwd2: [1.448, 1905] }],
         },
       }
-      ;(this.fuel = {capacity : 330, burnRate : 60}),
+      ;(this.fuel = {
+        capacity: 330,
+        burnRate: 60,
+        factor: 0.72,
+        type: "100LL",
+      }),
         (this.stations = [
           new Station({ type: ["seat"], arm: 0.965, id: 1 }),
           new Station({ type: ["seat"], arm: 0.965, id: 2 }),

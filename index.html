@@ -22,7 +22,6 @@
     // Change the "Javascript: context" at the top of the debug console to "userFrame(blank)Iframe"
     // and type "debug" into the console.
     //
-
   </script>
 
   <head>
@@ -87,21 +86,31 @@
     <div
       id="HoverBar"
       class="NoPrint"
-      style="float: top; width: 100%; text-align: center; background: #737373; color: white"
+      style="
+        float: top;
+        width: 100%;
+        text-align: center;
+        background: #737373;
+        color: white;
+      "
     >
-    <div id="Alert"></div>
-    <div id="Error"></div>
-      [[ 3.3.5 ]] [ Loadsheet Fix ]
-      <a href="https://docs.google.com/spreadsheets/d/1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c/edit#gid=1155160317"
+      <div id="Alert"></div>
+      <div id="Error"></div>
+      [[ 3.3.6 ]] [ Fuel Fix (initial) ]
+      <a
+        href="https://docs.google.com/spreadsheets/d/1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c/edit#gid=1155160317"
         >Data Spreadsheet</a
       >
-      <a href="https://docs.google.com/spreadsheets/d/1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s/edit#gid=1046036202"
+      <a
+        href="https://docs.google.com/spreadsheets/d/1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s/edit#gid=1046036202"
         >Airplane Data</a
       >
     </div>
 
     <div id="PickupList" class="pickupDetails">
-      <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span>
+      <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton"
+        >X</span
+      >
     </div>
     <div id="Boards" class="NoPrint"></div>
 
@@ -111,7 +120,6 @@
         $("body").append(root.details.$root)
         Events.init() // for Mobile Click
       })
-      
     </script>
     <div class="NoPrint">
       <div id="TheBoard" class="NoPrint" style="float: none; margin: 10px">
@@ -120,13 +128,19 @@
             <button class="Nav" onClick="root.makeNewBoard()">[+]</button>
             <button class="Nav Dev" onClick="utility.close()">Close</button>
             <button class="Dark" onClick="test()">Test</button>
-            <button class="Nav" id="SaveButton" onClick="saveBoard()">Save</button>
-            <button class="Nav" onClick="theBoard.timeStamp.checkRemote()">Check</button>
+            <button class="Nav" id="SaveButton" onClick="saveBoard()">
+              Save
+            </button>
+            <button class="Nav" onClick="theBoard.timeStamp.checkRemote()">
+              Check
+            </button>
             <button class="Nav" onClick="theBoard.load()">&#10226;</button>
 
             <button class="Dark" onClick="showDay()">Scratch</button>
             <button class="Dark" onClick="theBoard.print()">Print Board</button>
-            <button class="Dark" onClick="PlaneManager.loadHours()">Load Hours</button>
+            <button class="Dark" onClick="PlaneManager.loadHours()">
+              Load Hours
+            </button>
             <button class="Dark" onClick="showHidePerPax()">PerPax</button>
             <br />
 
@@ -135,7 +149,11 @@
               <span id="pd_Pilot" class="PCF"></span>
               <span id="pd_CoPilot" class="PCF"></span>
               <span id="pd_Fuel" class="PCF"></span>
-              <span id="planeDetailsClose" class="popupCloseButton exteriorButton NoPrint">X</span>
+              <span
+                id="planeDetailsClose"
+                class="popupCloseButton exteriorButton NoPrint"
+                >X</span
+              >
             </div>
             <br />
           </div>
@@ -145,14 +163,36 @@
           <!--  Putting all the extra buttons in Day2 cuz we hide Day2 by default -->
           <span id="Day2" style="display: inline-block">
             <div>
-              <button class="Dark" onClick="theBoard.highlightFerryLegs()">Ferry Legs</button>
+              <button class="Dark" onClick="theBoard.highlightFerryLegs()">
+                Ferry Legs
+              </button>
               <button class="Dark" onClick="Rezdy.load()">Load Rezdy</button>
-              <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(-1,false)"><</button>
-              <button class="Dark" onClick="theBoard.load()">Load Saved Board</button>
-              <button class="Dark" data-tip="(No Rezdy)" onClick="theBoard.next(1,false)">></button>
+              <button
+                class="Dark"
+                data-tip="(No Rezdy)"
+                onClick="theBoard.next(-1,false)"
+              >
+                
+              </button>
+              <button class="Dark" onClick="theBoard.load()">
+                Load Saved Board
+              </button>
+              <button
+                class="Dark"
+                data-tip="(No Rezdy)"
+                onClick="theBoard.next(1,false)"
+              >
+                
+              </button>
 
-              <a href="https://sites.google.com/a/glenorchyair.co.nz/staff/tracking/logreports">Flight Data</a>
-              <a href="https://sites.google.com/a/glenorchyair.co.nz/staff/opera/roster">Roster</a>
+              <a
+                href="https://sites.google.com/a/glenorchyair.co.nz/staff/tracking/logreports"
+                >Flight Data</a
+              >
+              <a
+                href="https://sites.google.com/a/glenorchyair.co.nz/staff/opera/roster"
+                >Roster</a
+              >
             </div>
           </span>
         </div>
@@ -176,7 +216,8 @@
 </html>
 <script>
   const isIOS =
-    /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+    /iPad|iPhone|iPod/.test(navigator.platform) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
   root.vars = {
     testBoard: testBoard,
     LOADSHEET: LOADSHEET,
