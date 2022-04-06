@@ -78,7 +78,6 @@
         this._fuel = { ...this._fuel, ...fuel } // merge the new values via spread
       }
     }
-
     getLoadedPlane(CellData) {
       const liters = this.getFuelQuantity(CellData)
       this.fuel = liters // this is setting weight not liters ***
@@ -108,6 +107,20 @@
         hrs: hrs,
         string: `${hrs.join(":")}(hrs)`,
       }
+    }
+    getRoute(CellData) {
+      const products = CellData.passengers.reduce((acc, passenger) => {
+        const code = passenger.getValue("productCode")
+        acc.push(gya.getProduct(code))
+        return acc
+      }, [])
+      const routes = products.reduce((acc, product) => {
+        const rt = product["Full Route"]
+        if (rt != "Full Route")
+        {acc.push(rt)}
+        return acc
+      }, [])
+      return [...new Set(routes)] // unique set
     }
     seatPax(pax) {
       pax = new Pax(pax) // Convert any JSON pax to {Pax}
@@ -332,7 +345,7 @@
         fuel: {
           liters: fuelQuantity,
           kg: fuelQuantity * data.fuel.factor,
-          endurance: this.getFuelEndurance(data.fuel.liters) // fuelQuantity / data.fuel.burnRate,
+          endurance: this.getFuelEndurance(data.fuel.liters), // fuelQuantity / data.fuel.burnRate,
         },
         rounded: {
           AUW: roundAUW,

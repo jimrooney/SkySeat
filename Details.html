@@ -368,7 +368,7 @@
     // Update
     // ============================================================================
     update(ARGS) {
-      console.log("\nUpdate(%o)",ARGS)
+      //console.log("\nUpdate(%o)",ARGS)
       const _this = this
       $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
       // Reflect PAX weights as per SAD
@@ -413,9 +413,9 @@
           .text()
         const WB = loadedPlane.getWB({...this.SAD,...CellData})
 
-        if (WB.POB.length > 0){
-          console.log("WB: ", WB)
-        }
+        // if (WB.POB.length > 0){
+        //   console.log("WB: ", WB)
+        // }
         const report = $(`.Report_${i}`)
         const color = WB.cg.balanced ? "green" : "red"
         //
@@ -708,9 +708,12 @@
             SAD: _this.SAD,
             CellData: cell,
             liters: airplanePlotter.airplane.getFuelQuantity(cell),
-            airplane: airplanePlotter.airplane
+            airplane: airplanePlotter.airplane,
+            plotter: airplanePlotter
           }
+          const routes = airplanePlotter.airplane.getRoute(cell)
           console.log("Airplane Click")
+          console.log("Airplane.getRoute(CellData): ", routes )
           console.log("ARGS: ", ARGS)
           console.log("getFuel: ", airplanePlotter.airplane.getFuelQuantity(cell))
           console.log("WB: ", airplanePlotter.airplane.getWB(ARGS))
@@ -729,12 +732,13 @@
           const ARGS = {
             SAD: _this.SAD,
             CellData: cell,
-            liters: airplanePlotter.airplane.getFuelQuantity(cell)
+            liters: airplanePlotter.airplane.getFuelQuantity(cell),
+            route: airplanePlotter.airplane.getRoute(cell)
           }
           console.log("Print WB: ", airplanePlotter.airplane.getWB(ARGS)) // need to add ARGS to getWB()
 
           const WB = airplanePlotter.airplane.getWB(ARGS)
-          LOADSHEET.show(_this._TableCell, airplanePlotter.airplane, WB)
+          LOADSHEET.show(_this._TableCell, airplanePlotter.airplane, WB, ARGS)
         })
         // ---------------------------
         // State Button

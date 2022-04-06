@@ -41,7 +41,7 @@
     // ---------------------------
     // Show
     // ---------------------------
-    show(TableCell,plane,WB) {
+    show(TableCell,plane,WB,ARGS) {
       console.log("{Loadsheet}.show()")
       console.log("TableCell:",TableCell)
       console.log("plane: ", plane)
@@ -50,8 +50,9 @@
       // Clear old PIC and CoPilot
       $("._plane_pilot").html("")
       $("._plane_copilot").html("")
-
-      // Hack ***
+      //
+      // Fuel
+      //
       const fuelStation = WB.stations.filter((station) =>
         station.type.includes("fuel")
       )
@@ -247,6 +248,10 @@
       $(".Notes").html(notes)
       Events.init() // for Mobile Click
       this.$this.show()
+
+      $("._trip_route").html(
+            `<span style="font-size:x-small">(${ARGS.route})</span>`
+          )
 
       //
       // Block Declared weights fom 208 use
