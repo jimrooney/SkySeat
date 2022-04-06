@@ -712,11 +712,14 @@
             plotter: airplanePlotter
           }
           const routes = airplanePlotter.airplane.getRoute(cell)
+          const WB = airplanePlotter.airplane.getWB(ARGS)
           console.log("Airplane Click")
           console.log("Airplane.getRoute(CellData): ", routes )
           console.log("ARGS: ", ARGS)
           console.log("getFuel: ", airplanePlotter.airplane.getFuelQuantity(cell))
-          console.log("WB: ", airplanePlotter.airplane.getWB(ARGS))
+          console.log("WB: ", WB)
+          console.table(WB.WAM)
+          console.log("TotalWeight: %o \nTotalMoment: %o \nCG: %o", WB.TotalWeight,WB.TotalMoment, WB.CG )
         })
         // ---------------------------
         // Print Button

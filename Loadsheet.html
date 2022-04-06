@@ -144,7 +144,7 @@
               return this.liters / 3.79
             },
             get time() {
-              const d = WB.fuel.liters / _thisPlane.fuel.burnRate
+              const d = (WB.TotalWeight - plane.limits.weight.Landing) * plane.fuel.factor / plane.fuel.burnRate
               const hrs = time.decimalToHours(d)
               let str = hrs.join(":") + "(hrs)"
               if (!!d && d < 0) {
@@ -170,7 +170,7 @@
       let toBurnString = ""
       if (fuel.landing.toBurn.kg > 0) {
         toBurnString = `${utility.round(fuel.landing.toBurn.liters, 0)}L ${fuel.landing.toBurn.time.string}`
-        if (_thisPlane.reg == "MMZ") {
+        if (_thisPlane.reg == "MMZ" || _thisPlane.reg == "PPR") {
           toBurnString = `${utility.round(fuel.landing.toBurn.lbs, 0)}lbs ${fuel.landing.toBurn.time.string}`
         }
         if (_thisPlane.reg == "JTK") {

@@ -60,7 +60,7 @@
           type: "100LL",
           factor: 0.72,
           weight: 0,
-          burnRate: 60, // this is wrong for the 206 ***
+          burnRate: 60,
         }
       }
       return this._fuel
@@ -110,14 +110,15 @@
     }
     getRoute(CellData) {
       const products = CellData.passengers.reduce((acc, passenger) => {
-        const code = passenger.getValue("productCode")
+        const code = passenger.fields.find((x) => x.label == "productCode")?.value
         acc.push(gya.getProduct(code))
         return acc
       }, [])
       const routes = products.reduce((acc, product) => {
         const rt = product["Full Route"]
-        if (rt != "Full Route")
-        {acc.push(rt)}
+        if (rt != "Full Route") {
+          acc.push(rt)
+        }
         return acc
       }, [])
       return [...new Set(routes)] // unique set
@@ -310,6 +311,18 @@
       //
       // Build {wb} Object
       //
+      let WAM = [
+        stations.reduce((acc, x) => {
+          acc.push(x.weight)
+          return acc
+        }, []),
+        stations.reduce((acc, x) => {
+          acc.push(x.moment)
+          return acc
+        }, []),
+      ]
+      WAM = utility.transpose(WAM)
+
       const wb = {
         SAD: data.SAD,
         stations: stations,
@@ -351,6 +364,7 @@
           AUW: roundAUW,
           CG: roundCG,
         },
+        WAM: WAM,
       }
       return wb
     }

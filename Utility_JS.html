@@ -36,6 +36,22 @@
     return x
   }
   var utility = {
+    //
+    // Transpose
+    // swap array rows for columns
+    //
+    transpose(matrix){
+        let [row] = matrix
+        return row.map((value, column) => matrix.map((row) => row[column]))
+      },
+    round(num, decimalPlaces) {
+      let factor = 100
+      if (decimalPlaces > -1) {
+        factor = Math.pow(10, decimalPlaces)
+      }
+      num = Number(num)
+      return Math.round((num + Number.EPSILON) * factor) / factor
+    },
     // ========================================== Get Pax ==========================================
     // Takes JSON booking
     // Returns pax object
@@ -45,14 +61,6 @@
     //    seats: seats,
     //    code: code,
     //    ACI: ACI,
-    round(num, decimalPlaces) {
-      let factor = 100
-      if (decimalPlaces > -1) {
-        factor = Math.pow(10, decimalPlaces)
-      }
-      num = Number(num)
-      return Math.round((num + Number.EPSILON) * factor) / factor
-    },
     // -----------------------------------------------------------------------------
     // Get passenger numbers. If quantities are by product and not pax, return false
     // -----------------------------------------------------------------------------
