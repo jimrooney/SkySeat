@@ -110,7 +110,9 @@
     }
     getRoute(CellData) {
       const products = CellData.passengers.reduce((acc, passenger) => {
-        const code = passenger.fields.find((x) => x.label == "productCode")?.value
+        const code = passenger.fields.find(
+          (x) => x.label == "productCode"
+        )?.value
         acc.push(gya.getProduct(code))
         return acc
       }, [])
@@ -156,9 +158,22 @@
           })
           break
         case "Standard":
+          // HERE *** Finish loading this into the Pax constructor
+          // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
+          const regex = /Child/g
           POB = pob.map((station) => {
-            station.weight = root.standard.weight.adult // Everyone's an adult for now ******
-            // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
+            const child = station.px.fields.reduce((accumulator, field) => {
+              let age = 0
+              if (field.label.match(regex)) {
+                age = parseInt(field.value)
+              }
+              return accumulator + age
+            }, 0)
+            if (!!child && child > 0) {
+              station.weight = root.standard.weight.child
+            } else {
+              station.weight = root.standard.weight.adult
+            }
             station.moment = station.weight * station.arm
             return station
           })
@@ -317,6 +332,10 @@
           return acc
         }, []),
         stations.reduce((acc, x) => {
+          acc.push(x.arm)
+          return acc
+        }, []),
+        stations.reduce((acc, x) => {
           acc.push(x.moment)
           return acc
         }, []),
@@ -448,6 +467,10 @@
         }
       })
       return balanced
+    }
+    sortStations(args) {
+      const stations = args.stations || Array.from(this.stations)
+      const seats = stations.filter((station) => station.type.includes("seat"))
     }
   }
 </script>

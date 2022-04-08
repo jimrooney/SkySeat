@@ -67,7 +67,7 @@
             break
         }
         if (!!$selector && !!$selector.text) {
-          $selector.text(ret.txt)
+          $selector.text(ret.txt) // Change the display text
         }
         _this.SAD = ret
         return ret
@@ -141,6 +141,9 @@
                 }
               },
             })
+            // --------------------------------
+            // Changing Weights
+            // --------------------------------
             .click(function (e) {
               console.log("PaxClick this %o", _this)
               if (_parent.SAD.SAD != "Actual") {
@@ -150,17 +153,16 @@
               // set starting weight... order of preference: actual / declared / standard
               //
               let weight = _pax.weight.actual || _pax.weight.declared
-              if (!parseInt(weight) > 0) {
-                weight = root.standard.weight.adult
-              }
+              //
               // Find the midpoint of the sprite
+              //
               const margin = 5
               const x = e.pageX - this.offsetLeft
               const y = e.pageY - this.offsetTop - 30
               const h = $(this).outerHeight(true)
               const midpoint = (h + margin) / 2
               const deadzone = 10
-              // --------------------------------
+
               if (y < -deadzone) {
                 const w = weight + 1
                 _pax.weight = { actual: w }
@@ -371,7 +373,9 @@
       //console.log("\nUpdate(%o)",ARGS)
       const _this = this
       $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
-      // Reflect PAX weights as per SAD
+      //
+      // Update Pax Sprites
+      //
       $(".Pax").each(function () {
         const _pax = $(this).data("this").pax
         let weight = ""
@@ -385,7 +389,7 @@
               `<span style="font-size:small;color:grey">${_pax.weight.declared}</span>`
             break
           case "Standard":
-            weight = root.standard.weight.adult
+            weight = _pax.weight.standard // || root.standard.weight.adult
             break
         }
         $(this).html(
@@ -411,7 +415,7 @@
         const $selectedFuel = $(`#AirplanePlotter_${i}`)
           .find(".PCF_Selector :selected")
           .text()
-        const WB = loadedPlane.getWB({...this.SAD,...CellData})
+        const WB = loadedPlane.getWB({ ...this.SAD, ...CellData })
 
         // if (WB.POB.length > 0){
         //   console.log("WB: ", WB)
@@ -671,7 +675,6 @@
       _row.some((cell, i) => {
         // why some? ***
 
-
         // ======================================
         // New this.Airplane
         // ======================================
@@ -696,12 +699,14 @@
         )
         $plane
           .find(".PaxList")
-          .css("background", utility.hexToRgbA(airplanePlotter.airplane.regcolor, 0.5))
-          
-          // $plane
-          // .find(".PCF_Selector :selected")
-          // .text()
+          .css(
+            "background",
+            utility.hexToRgbA(airplanePlotter.airplane.regcolor, 0.5)
+          )
 
+        // $plane
+        // .find(".PCF_Selector :selected")
+        // .text()
 
         $plane.click(() => {
           const ARGS = {
@@ -709,17 +714,25 @@
             CellData: cell,
             liters: airplanePlotter.airplane.getFuelQuantity(cell),
             airplane: airplanePlotter.airplane,
-            plotter: airplanePlotter
+            plotter: airplanePlotter,
           }
           const routes = airplanePlotter.airplane.getRoute(cell)
           const WB = airplanePlotter.airplane.getWB(ARGS)
           console.log("Airplane Click")
-          console.log("Airplane.getRoute(CellData): ", routes )
+          console.log("Airplane.getRoute(CellData): ", routes)
           console.log("ARGS: ", ARGS)
-          console.log("getFuel: ", airplanePlotter.airplane.getFuelQuantity(cell))
+          console.log(
+            "getFuel: ",
+            airplanePlotter.airplane.getFuelQuantity(cell)
+          )
           console.log("WB: ", WB)
           console.table(WB.WAM)
-          console.log("TotalWeight: %o \nTotalMoment: %o \nCG: %o", WB.TotalWeight,WB.TotalMoment, WB.CG )
+          console.log(
+            "TotalWeight: %o \nTotalMoment: %o \nCG: %o",
+            WB.TotalWeight,
+            WB.TotalMoment,
+            WB.CG
+          )
         })
         // ---------------------------
         // Print Button
@@ -736,7 +749,7 @@
             SAD: _this.SAD,
             CellData: cell,
             liters: airplanePlotter.airplane.getFuelQuantity(cell),
-            route: airplanePlotter.airplane.getRoute(cell)
+            route: airplanePlotter.airplane.getRoute(cell),
           }
           console.log("Print WB: ", airplanePlotter.airplane.getWB(ARGS)) // need to add ARGS to getWB()
 
@@ -798,21 +811,24 @@
         }
         //
         //
-        // if the cell has fuel, load that. If not, then use standardFuel. 
+        // if the cell has fuel, load that. If not, then use standardFuel.
         // standardFuel is set in the Company Data Spreadsheet
         //
-        const fuel = cell.PCF?.fuel > -1 ? cell.PCF.fuel : airplanePlotter.airplane.standardFuel
+        const fuel =
+          cell.PCF?.fuel > -1
+            ? cell.PCF.fuel
+            : airplanePlotter.airplane.standardFuel
         $selector.val(fuel)
         {
           const PCF = { fuel: fuel }
           _this.state.setFuel(cell?.cellID, PCF)
-//          _this.update("FuelSelector")
+          //          _this.update("FuelSelector")
         }
         //
         $selector.change(function () {
           const PCF = { fuel: $(this).val() }
           _this.state.setFuel(cell?.cellID, PCF)
-          console.log("cell ID: %o, PCF: %o",cell?.cellID, PCF)
+          console.log("cell ID: %o, PCF: %o", cell?.cellID, PCF)
           _this.update("FuelSelector Change")
         })
         return false

@@ -36,14 +36,30 @@
     return x
   }
   var utility = {
+    getTable(tableData) {
+      const table = document.createElement("table")
+      table.style.textAlign = 'right';
+      const tableBody = document.createElement("tbody")
+      tableData.forEach(function (rowData) {
+        const row = document.createElement("tr")
+        rowData.forEach(function (cellData) {
+          const cell = document.createElement("td")
+          cell.appendChild(document.createTextNode(cellData))
+          row.appendChild(cell)
+        })
+        tableBody.appendChild(row)
+      })
+      table.appendChild(tableBody)
+      return table
+    },
     //
     // Transpose
     // swap array rows for columns
     //
-    transpose(matrix){
-        let [row] = matrix
-        return row.map((value, column) => matrix.map((row) => row[column]))
-      },
+    transpose(matrix) {
+      let [row] = matrix
+      return row.map((value, column) => matrix.map((row) => row[column]))
+    },
     round(num, decimalPlaces) {
       let factor = 100
       if (decimalPlaces > -1) {
@@ -179,7 +195,10 @@
       if (booking.product && booking.product.includes("SR-Aspiring")) {
         isout = true
       }
-      if (cell.data("type") && cell.data("type").toUpperCase().includes("OUTS")) {
+      if (
+        cell.data("type") &&
+        cell.data("type").toUpperCase().includes("OUTS")
+      ) {
         isout = true
       }
 
@@ -291,13 +310,21 @@
       if (_this) {
         printMe = getElementChildrenAndStyles(_this)
       }
-      let style = "<style> .inMarker{float:right; display: block;} .outMarker{float:right;display: block;} </style>"
+      let style =
+        "<style> .inMarker{float:right; display: block;} .outMarker{float:right;display: block;} </style>"
       // -webkit-print-color-adjust to keep colors for the printing version
-      let keepColors = "<style>body {-webkit-print-color-adjust: exact !important; }</style>"
+      let keepColors =
+        "<style>body {-webkit-print-color-adjust: exact !important; }</style>"
       let newWin = window.open("", "Print-Window")
       newWin.document.open()
       newWin.document.write(
-        "<html><head>" + keepColors + " " + style + '</head><body onload="window.print()">' + printMe + "</body></html>"
+        "<html><head>" +
+          keepColors +
+          " " +
+          style +
+          '</head><body onload="window.print()">' +
+          printMe +
+          "</body></html>"
       )
       newWin.document.close()
       setTimeout(function () {
@@ -325,7 +352,11 @@
           c = [c[0], c[0], c[1], c[1], c[2], c[2]]
         }
         c = "0x" + c.join("")
-        return "rgba(" + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(",") + `,${alpha})`
+        return (
+          "rgba(" +
+          [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(",") +
+          `,${alpha})`
+        )
       }
       throw new Error("Bad Hex")
     },

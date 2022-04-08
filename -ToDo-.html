@@ -6,42 +6,28 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 ---------------------------------------------------------------------------------
 // Probably can remove this but need to remove PIC check first (dependant on it) ***
 
-burnRate: 60, // this is wrong for the 206 ***
-// Skipped if fuel is passed in (as it should be) *** (make sure fuel is always being passed in and skip this)
+---------------------------
+Issue pointers
+---------------------------
+if (_thisPlane.reg == "MMZ" || _thisPlane.reg == "PPR") {
+// *** HERE *** needs update for all 208s
+updateStations(stations) { <-- consider removing
+    // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
 
 -------------------------------
 Currently
 -------------------------------
-if (_thisPlane.reg == "MMZ" || _thisPlane.reg == "PPR") {
-Ready for testing.
+Details.Pax object is the place to add the "changing declared weights" code (for fake pax)
 
-Getting Trip Codes for LOADSHEET... can pull them out of CellData.passengers using product code and passing that to 
-        gya.getProduct()
-        
-Pax still stack if same seat. (when moved in calendar)
+Standard Weights (kids)
+// HERE ***
 
-// *** HERE *** needs update for all 208s
+// HERE *** Finish loading this into the Pax constructor
 
-In Details onShow, reflect current fuel value in dropmenu (standard fuel typically)
-$plane.click(() =>  gets wrong fuel data (always airvan)
-
-updateStations(stations) { <-- consider removing
-
-Stripped Details down to one update() call _this.update("PostPlane")
-// HERE *** 
-// plot out report and then return so that none of the code below changes things.
-// I think maybe we're changing the fuel again once it's loaded.
-
-This has been hack fixed for now... 
-// *** HERE *** needs update for all 208s
-
-
-// ***
-// not sure we need nor want this... {Airplane} should get pax seat data when it does the calculation
-        // shouldn't need to "seat" them, but rather grab their seat data
-
-
-
+Moving pax seats resets to Declared Weights
+AUW Left
+WAM Stats on Loasheets (needs hide/show button)
+//$(".WAM").append(utility.getTable(WB.WAM))
 
 
 =================================================
