@@ -17,6 +17,7 @@
     //
     init() {
       this.state = new State(this)
+      this.state.load()
     }
     handleDatePickerSelect($picker) {
       this.load()

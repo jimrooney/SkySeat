@@ -707,8 +707,9 @@
       google.script.run.withSuccessHandler(this.show).withUserObject(obj).loadBoard(d)
     },
     show: function (arg) {
-      return
+
       console.log("theBoard.show(%o)", arg)
+      return
       if (!arg) {
         console.log("No Data")
       }

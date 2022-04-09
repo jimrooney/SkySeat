@@ -37,12 +37,12 @@
           <div class="Roster" >Roster</div>
       </div>
       `)
-      .droppable({
-        accept: ".BookingSprite, .TableCell",
-        drop: this.handleDrop,
-        //delay: 100, // Might not need this now *******************
-      })
-      .data("_script", _this) // Backreference to JS from jQuery object
+        .droppable({
+          accept: ".BookingSprite, .TableCell",
+          drop: this.handleDrop,
+          //delay: 100, // Might not need this now *******************
+        })
+        .data("_script", _this) // Backreference to JS from jQuery object
 
       // this.$roster = $(``)
       // this.$board.append(this.$roster)
@@ -98,21 +98,24 @@
     //
     // Handlers for removing bookings/pax (used to be the Trash object)
     //
-    handleDrop(event, ui){
-			const _this = $(this).data("_script") // This JS Object
-        // ignore blank drops
-				const pax = ui.draggable.data("_script").getPax()
-				if (!!pax) { // Plottable
-					_this.removePax(pax)
+    handleDrop(event, ui) {
+      const _this = $(this).data("_script") // This JS Object
+      // ignore blank drops
+      const pax = ui.draggable.data("_script").getPax()
+      if (!!pax) {
+        // Plottable
+        _this.removePax(pax)
       }
-		}
-    removePax(pax){
-			root.boards.forEach(board => {
-				board.state.clearoutPax(pax)
-			})
-		}
+    }
+    removePax(pax) {
+      root.boards.forEach((board) => {
+        board.state.clearoutPax(pax)
+      })
+    }
     showTitle() {
-      this.$this.find("#Title").html(this.getDate().toLocaleString("en-us", { weekday: "long" }))
+      this.$this
+        .find("#Title")
+        .html(this.getDate().toLocaleString("en-us", { weekday: "long" }))
     }
     loadRoster() {
       const $roster = this.$roster
@@ -120,7 +123,10 @@
       $roster.append("<div>Loading</div>")
       const d = this.getDate("getDate")
       const date = d.toString()
-      google.script.run.withSuccessHandler(this.handleRosterLoad).withUserObject(this).loadRoster(date)
+      google.script.run
+        .withSuccessHandler(this.handleRosterLoad)
+        .withUserObject(this)
+        .loadRoster(date)
     }
     handleRosterLoad(args, manifest) {
       const $roster = manifest.$this.find(".Roster")
@@ -135,7 +141,8 @@
           return [key, val, color]
         })
         const rosterRows = keyVal.map(
-          (row) => `<div><span style="background-color:${row[2]}">${row[0]} ${row[1]}</span></div>`
+          (row) =>
+            `<div><span style="background-color:${row[2]}">${row[0]} ${row[1]}</span></div>`
         )
         const $rosterContent = $("<div />")
         $rosterContent.append(rosterRows.join(""))
@@ -169,7 +176,13 @@
       //
       // Filter by CONFIRMED
       //
-      let orders = this.orders.filter((order) => order.status == "CONFIRMED" || order.status == "PENDING_SUPPLIER" || order.status == "ON_HOLD" || order.status == "PENDING_CUSTOMER")
+      let orders = this.orders.filter(
+        (order) =>
+          order.status == "CONFIRMED" ||
+          order.status == "PENDING_SUPPLIER" ||
+          order.status == "ON_HOLD" ||
+          order.status == "PENDING_CUSTOMER"
+      )
       root.debug.log("All Confirmed Orders Returned From Rezdy\n%o", orders) // [{Booking},{Booking},{Booking}]
 
       // ------------------
@@ -214,7 +227,12 @@
       //
       // Sort Bookings by Start Time
       //
-      bookings.sort((a, b) => (time.getHour(a.item.startTimeLocal) > time.getHour(b.item.startTimeLocal) ? 1 : -1))
+      bookings.sort((a, b) =>
+        time.getHour(a.item.startTimeLocal) >
+        time.getHour(b.item.startTimeLocal)
+          ? 1
+          : -1
+      )
       //
       // Totals
       //
@@ -225,9 +243,9 @@
       let dayPax = this.countPax(bookings)
 
       // -------------------------------------------------------------------------------------------
-      this.$this.find("#Totals").text(
-        "Manifest Pax(" + dayParticipants + ")(" + dayPax + ") "
-      )
+      this.$this
+        .find("#Totals")
+        .text("Manifest Pax(" + dayParticipants + ")(" + dayPax + ") ")
       // -------------------------------------------------------------------------------------------
       //
       // Print Sprites
@@ -236,6 +254,7 @@
       //
       // Update the board
       //
+      this.board.state.load() // load saved data
       this.board.update()
     }
     countPax(arr) {
@@ -276,14 +295,20 @@
         .filter((element) => {
           if (element.items) {
             return element.items.some((subElement) => {
-              return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
+              return (
+                new Date(subElement.startTimeLocal).toDateString() ==
+                _date.toDateString()
+              )
             })
           }
         })
         .map((element) => {
           let newElt = Object.assign({}, element) // copies element
           newElt.items = newElt.items.filter((subElement) => {
-            return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
+            return (
+              new Date(subElement.startTimeLocal).toDateString() ==
+              _date.toDateString()
+            )
           })
           return newElt
         })
@@ -292,11 +317,17 @@
       let month = date.getMonth()
       return orders
         .filter((element) =>
-          element.items.some((subElement) => new Date(subElement.startTimeLocal).getMonth() == month)
+          element.items.some(
+            (subElement) =>
+              new Date(subElement.startTimeLocal).getMonth() == month
+          )
         )
         .map((element) => {
           let newElt = Object.assign({}, element) // copies element
-          newElt.items = newElt.items.filter((subElement) => new Date(subElement.startTimeLocal).getMonth() == month)
+          newElt.items = newElt.items.filter(
+            (subElement) =>
+              new Date(subElement.startTimeLocal).getMonth() == month
+          )
           return newElt
         })
     }
@@ -369,7 +400,9 @@
         this.orders.forEach((order) => {
           let found = order.items.find((item) =>
             item.participants.find((part) =>
-              part.fields.find((field) => field.label == "Barcode" && field.value == barcode)
+              part.fields.find(
+                (field) => field.label == "Barcode" && field.value == barcode
+              )
             )
           )
           if (!!found) {
