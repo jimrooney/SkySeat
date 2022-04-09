@@ -37,11 +37,13 @@
       $(".NoPrint").show()
       $(".FlightFollowingOpen").show()
       $(".FlightFollowingOpen").hide()
+      this.plane.state.save()
     }
     // ---------------------------
     // Show
     // ---------------------------
     show(TableCell,plane,WB,ARGS) {
+      this.plane = plane
       console.log("{Loadsheet}.show()")
       console.log("TableCell:",TableCell)
       console.log("plane: ", plane)
@@ -57,7 +59,6 @@
         station.type.includes("fuel")
       )
       plane.fuel = {...plane.fuel, ...fuelStation}
-      console.log("{Loadsheet} plane:", plane)
       // ------------------
       // Time and Date
       // ------------------
