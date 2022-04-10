@@ -20,7 +20,24 @@ colors
 Dates
 display
 
+---------------------------------------------------------------------------------------------------------
+Dynamic Objects
+---------------------------------------------------------------------------------------------------------
+This is to create dynamic objects without using eval()
+One of the primary motivators for this is speed.... eval has large overheads.
 
+const mynamespace = {};
+mynamespace.myCar = function() {
+    this.speed = 50,
+    this.drive = function (){
+        console.log("Driving")
+    }
+}
+const myType = "myCar"
+
+const p = new mynamespace[myType]()
+p.drive()
+console.log(p)
 
 
 ---------------------------------------------------------------------------------------------------------
