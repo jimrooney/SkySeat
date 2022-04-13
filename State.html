@@ -251,7 +251,7 @@
     //
     removePax(pax, key) {
       pax = new Pax(pax)
-      this.data[key]?.passengers.forEach((p, index) => {
+      this.data[key]?.passengers?.forEach((p, index) => {
         const px = new Pax(p)
         if (pax.barcode == px.barcode) {
           this.data[key].passengers.splice(index, 1)
@@ -276,8 +276,8 @@
     }
     clearEmpties() {
       for (const key in this.data) {
-        let arry = this.data[key].passengers.filter((n) => n)
-        if (arry.length < 1 && !this.data[key].PCF) {
+        let arry = this.data[key].passengers?.filter((n) => n)
+        if (!!arry && arry.length < 1 && !this.data[key].PCF) {
           delete this.data[key]
         }
       }
