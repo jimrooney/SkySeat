@@ -54,8 +54,12 @@
       //
       this.$board.find(".PickupCell").each(function (i) {
         const row = $(this).data("row")
-        let paxNum = $(this).data("this").manifest.getPickupList({row:row})?.totalPax
-        if (paxNum == 0){ paxNum = ""}
+        let paxNum = $(this)
+          .data("this")
+          .manifest.getPickupList({ row: row })?.totalPax
+        if (paxNum == 0) {
+          paxNum = ""
+        }
         $(this).text(paxNum)
       })
       //
@@ -120,7 +124,6 @@
       // Pickup Cells
       //
 
-
       $(".MobileButton").mouseenter(_mouseOverEvent).mouseleave(_mouseOutEvent)
     }
     /*
@@ -153,7 +156,9 @@
         '<div class="Top"></div><div style="float:left; display: inline-block;" class="Header"><table class="BoardTable" /></div>'
       )
       const _this = this
-      const $closer = $('<div class="popupCloseButton MobileButton">X</div>').click(() => {
+      const $closer = $(
+        '<div class="popupCloseButton MobileButton">X</div>'
+      ).click(() => {
         _this.close()
       })
       this.$board.find(".Top").append($closer)
@@ -184,10 +189,26 @@
         //
         // Pickup Column
         //
-        myRow.push($('<td class="PickupCell Row_' + thisRow + '"></td>').data("row",thisRow).data("this",this).click(() => {
-          $("#PickupList").data("object").show({pickupList: this.manifest.getPickupList({row:thisRow})})
-          $("#PickupList").show()
-      }))
+        myRow.push(
+          $('<td class="PickupCell Row_' + thisRow + '"></td>')
+            .data("row", thisRow)
+            .data("this", this)
+            // .hover(
+            //   () => {
+            //     this.$board
+            //       .find(".Manifest_Container")
+            //       .find("#Totals")
+            //       .text(JSON.stringify(this.manifest.getPickupList({ row: thisRow }).locations))
+            //   },
+            //   () => {
+            //     this.$board.find(".Manifest_Container").find("#Totals").text("")
+            //   }
+            // )
+            .click(() => {
+              $("#PickupList").data("object").show({ pickupList: this.manifest.getPickupList({ row: thisRow }) })
+              $("#PickupList").show()
+            })
+        )
         //
         // Time column
         //

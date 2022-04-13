@@ -7,10 +7,10 @@
     }
     get$PickupList(args) {
       this.clear()
-      console.log("PickupList: ", args)
+      const list = JSON.stringify(args.pickupList)
       const contents = $(
-        "<div class='PickupContents'>PickupContents</div>"
-      ).append(
+        "<div class='PickupContents'></div>"
+      ).text(list).append(
         $(`<span class="popupCloseButtonSmall MobileButton">X</span>`).click(
           () => this.$this.hide()
         )

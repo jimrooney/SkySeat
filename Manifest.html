@@ -271,7 +271,7 @@
       }
       let _row
       if (!!row) {
-        _row = this.board.state.getRow(row)
+        _row = this.board.state?.getRow(row)
       }
       _row?.forEach((cellData) => {
         cellData.passengers?.forEach((pax) => {
@@ -282,8 +282,8 @@
             // pilots don't have pickup locations
             // Outs don't always have pickup locationNames
             const selfDrive =
-              Pickup.value?.locationName.match(/Self Drive/) ||
-              Pickup.value?.locationName.match(/Glenorchy/)
+              Pickup.value?.locationName?.match(/Self Drive/) ||
+              Pickup.value?.locationName?.match(/Glenorchy/)
             if (!!selfDrive) {
               pickupList.selfDrives.push(pax)
             } else {
@@ -295,22 +295,6 @@
           }
         })
       })
-
-      // bookings.forEach((booking) => {
-      //   let _row = time.getRowByTime(booking.item.startTimeLocal) // Change this to look at the State
-      //   _row = _row.data("row")
-      //   if (_row == row) {
-      //     const selfDrive =
-      //       booking.item.pickupLocation?.locationName.match(/Self Drive/)
-      //     if (!!selfDrive) {
-      //       pickupList.selfDrives.push(booking.item.participants)
-      //     } else {
-      //       pickupList.pickups.push(booking.item.participants)
-      //       pickupList.locations.push(booking.item.pickupLocation)
-      //       pickupList.totalPax += booking.item.participants.length
-      //     }
-      //   }
-      // })
       return pickupList
     }
     countPax(arr) {
