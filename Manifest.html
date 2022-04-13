@@ -7,6 +7,7 @@
       this.json // Placeholder for Rezdy Parsed Data
       this.$bookings // Placeholder
       this.$this // Placeholder
+      this.bookings = [] // Placeholder
       //this.$Bookings = this.$board.find(".Bookings") // get the root jQuery object to put all the Booking Divs into
     }
     getDate() {
@@ -157,46 +158,19 @@
     onLoad(json) {
       this.data = JSON.parse(json) // parse json String data into a json object
       // to Rezdy, a "booking" is a "booking order" (cuz they couldn't decide which name they preferred)
-      this.orders = this.data.bookings // [{Booking},{Booking},{Booking}] An array of booking objects
+      this.orders = this.processOrders(this.data.bookings) // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
       this.show()
       this.loadRoster() // auto load the roster too.
       $(".Roster").hide()
     }
-    // ---------------------------------------------------------
-    // Show Manifest
-    // ---------------------------------------------------------
-    show(date) {
-      root.debug.log("Manifest.show()")
-      root.debug.log("Requested Date:", date)
-      root.debug.log("JSON: (this.data) %o", this.data)
-      if (!date) {
-        date = this.getDate()
-      }
-      root.debug.log("Date used:", date, { Manifest })
-      //
-      // Filter by CONFIRMED
-      //
-      let orders = this.orders.filter(
-        (order) =>
-          order.status == "CONFIRMED" ||
-          order.status == "PENDING_SUPPLIER" ||
-          order.status == "ON_HOLD" ||
-          order.status == "PENDING_CUSTOMER"
-      )
-      root.debug.log("All Confirmed Orders Returned From Rezdy\n%o", orders) // [{Booking},{Booking},{Booking}]
-
-      // ------------------
-      // Tag each passenger
-      // ------------------
-      //
-      // This pulls down the OrderNumber and Array numbers
-      // so we can find the pax again in the Rezdy data structure from just the pax data
-      //
-      orders = orders.map((o) => {
+    processOrders(orders){
+      // Copy down some Rezdy data to Pax fields (location isn't attached to Pax for example)
+      orders.map((o) => {
         const orderNumber = o.orderNumber
         o.items = o.items.map((item, index) => {
           item.index = index
+          const pickupLocation = item.pickupLocation
           item.participants = item.participants.map((pax, i) => {
             const groupKey = `${orderNumber}_${index}`
             const paxKey = `${groupKey}_${i}`
@@ -206,16 +180,35 @@
             pax.fields.push({ label: "groupID", value: groupKey })
             pax.fields.push({ label: "productCode", value: item.productCode })
             pax.fields.push({ label: "key", value: paxKey })
+            pax.fields.push({ label: "pickupLocation", value: pickupLocation })
             return pax
           })
           return item
         })
         return o
       })
-      //
-      // Filter by Date
-      //
-      let filteredManifest = this.filterByDate(orders, date)
+      return orders
+    }
+    //
+    // Get Manifest
+    //
+    getManifest(date = this.getDate()) {
+      let orders = this.orders
+      // Filter by Status
+      orders = orders.filter(
+        (order) =>
+          order.status == "CONFIRMED" ||
+          order.status == "PENDING_SUPPLIER" ||
+          order.status == "ON_HOLD" ||
+          order.status == "PENDING_CUSTOMER"
+      )
+      return this.filterByDate(orders, date) // Filter by Date
+    }
+    // ---------------------------------------------------------
+    // Show Manifest
+    // ---------------------------------------------------------
+    show(date) {
+      let filteredManifest = this.getManifest(date)
       //
       // Create Booking Objects
       //
@@ -257,6 +250,68 @@
       //
       this.board.state.load() // load saved data
       this.board.update()
+      //
+      console.log("Bookings: ", bookings)
+      const pickupList = this.getPickupList({ bookings: bookings })
+      console.log("pickupList: ", pickupList)
+      this.bookings = bookings
+    }
+    //
+    // Need to split out via pickup time (and dropoff) ***
+    // Need to filter GY Airstrip
+    //
+    getPickupList({ bookings, date, row }) {
+      bookings = !!bookings ? bookings : this.bookings
+      const pickupList = {
+        totalPax: 0,
+        pickups: [],
+        selfDrives: [],
+        locations: [],
+        bookings: [],
+      }
+      let _row
+      if (!!row) {
+        _row = this.board.state.getRow(row)
+      }
+      _row?.forEach((cellData) => {
+        cellData.passengers?.forEach((pax) => {
+          const Pickup = pax.fields.find(
+            (field) => field.label === "pickupLocation"
+          )
+          if (!!Pickup) {
+            // pilots don't have pickup locations
+            // Outs don't always have pickup locationNames
+            const selfDrive =
+              Pickup.value?.locationName.match(/Self Drive/) ||
+              Pickup.value?.locationName.match(/Glenorchy/)
+            if (!!selfDrive) {
+              pickupList.selfDrives.push(pax)
+            } else {
+              pickupList.pickups.push(pax)
+              pickupList.locations.push(Pickup.value)
+              pickupList.locations = [...new Set(pickupList.locations)]
+              pickupList.totalPax++
+            }
+          }
+        })
+      })
+
+      // bookings.forEach((booking) => {
+      //   let _row = time.getRowByTime(booking.item.startTimeLocal) // Change this to look at the State
+      //   _row = _row.data("row")
+      //   if (_row == row) {
+      //     const selfDrive =
+      //       booking.item.pickupLocation?.locationName.match(/Self Drive/)
+      //     if (!!selfDrive) {
+      //       pickupList.selfDrives.push(booking.item.participants)
+      //     } else {
+      //       pickupList.pickups.push(booking.item.participants)
+      //       pickupList.locations.push(booking.item.pickupLocation)
+      //       pickupList.totalPax += booking.item.participants.length
+      //     }
+      //   }
+      // })
+      return pickupList
     }
     countPax(arr) {
       return arr.reduce((total, booking) => {

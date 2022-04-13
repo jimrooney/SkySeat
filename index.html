@@ -48,7 +48,7 @@
     <?!= include('GYA'); ?>
     <?!= include('Test'); ?>
     <?!= include('Init'); ?>
-    <?!= include('TheBoard_JS'); ?>
+    <!-- <?!= include('TheBoard_JS'); ?> -->
     <?!= include('WB'); ?>
     <?!= include('Pilots'); ?>
     <?!= include('PlaneManager'); ?>
@@ -58,6 +58,7 @@
     <?!= include('Manifest'); ?>
     <?!= include('Details'); ?>
     <?!= include('Details_CSS'); ?>
+    <?!= include('PickupList'); ?>
     <?!= include('Click'); ?>
 
     <script>
@@ -80,6 +81,7 @@
         root.makeNewBoard()
         LOADSHEET = new Loadsheet($("#Loadsheet"))
         root.loadsheet = LOADSHEET
+        root.pickupList = new PickupList($("#PickupList"))
       })
     </script>
 
@@ -107,11 +109,7 @@
       >
     </div>
 
-    <div id="PickupList" class="pickupDetails">
-      <span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton"
-        >X</span
-      >
-    </div>
+    <div id="PickupList" class="pickupDetails"></div>
     <div id="Boards" class="NoPrint"></div>
 
     <script>

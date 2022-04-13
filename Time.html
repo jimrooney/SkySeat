@@ -47,6 +47,11 @@
     getRowByHour(hour) {
       return this.getRow(hour)
     },
+    getRowByTime(time) {
+      const d = new Date(time)
+      let hour = d.getHours()
+      return this.getRowByHour(hour)
+    },
     getRow: function (h) {
       let hour = parseInt(h)
       if (hour > 12) {

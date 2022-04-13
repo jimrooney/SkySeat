@@ -1,0 +1,32 @@
+<script>
+  class PickupList {
+    constructor($this) {
+      let _this = this
+      this.$this = $this // jQuery selector passed in
+      $this.data("object", this)
+    }
+    get$PickupList(args) {
+      this.clear()
+      console.log("PickupList: ", args)
+      const contents = $(
+        "<div class='PickupContents'>PickupContents</div>"
+      ).append(
+        $(`<span class="popupCloseButtonSmall MobileButton">X</span>`).click(
+          () => this.$this.hide()
+        )
+      )
+
+      return contents
+    }
+    clear() {
+      this.$this.find(".PickupContents").remove()
+    }
+    show(args) {
+      this.$this.append(this.get$PickupList(args))
+      this.$this.show()
+    }
+    hide() {
+      this.$this.hide()
+    }
+  }
+</script>
