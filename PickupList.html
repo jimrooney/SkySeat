@@ -35,7 +35,8 @@
         .append("<div class='container'>Container</div>")
       list.forEach((location) => {
         console.log("location: ", location)
-        const drag = $(`<div>${location.locationName}</div>`)
+        const pickupTime = time.getTime(location.pickupTime)
+        const drag = $(`<div>${location.locationName} ${pickupTime}</div>`)
           .addClass("pickup")
           .addClass("draggable")
           .draggable({
