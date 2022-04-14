@@ -260,6 +260,8 @@
     // Need to split out via pickup time (and dropoff) ***
     // Need to filter GY Airstrip
     //
+
+    // Move all this logic into PickupList ***
     getPickupList({ bookings, date, row }) {
       bookings = !!bookings ? bookings : this.bookings
       const pickupList = {
@@ -267,7 +269,8 @@
         pickups: [],
         selfDrives: [],
         locations: [],
-        bookings: [],
+        passengers: [],
+        bookings: bookings,
       }
       let _row
       if (!!row) {
@@ -275,21 +278,27 @@
       }
       _row?.forEach((cellData) => {
         cellData.passengers?.forEach((pax) => {
+          pickupList.passengers.push(pax)
+          //
           const Pickup = pax.fields.find(
             (field) => field.label === "pickupLocation"
           )
+          // will return null for Pilots ---
+          const orderNumber = pax.fields.find(
+            (field) => field.label === "orderNumber"
+          )?.value
           if (!!Pickup) {
             // pilots don't have pickup locations
             // Outs don't always have pickup locationNames
+
+            // Can split this out to include "RemotePickups".... aka Glenorchy Airstrip ***
             const selfDrive =
               Pickup.value?.locationName?.match(/Self Drive/) ||
               Pickup.value?.locationName?.match(/Glenorchy/)
             if (!!selfDrive) {
-              pickupList.selfDrives.push(pax)
+              pickupList.selfDrives.push(orderNumber)
             } else {
-              pickupList.pickups.push(pax)
-              pickupList.locations.push(Pickup.value)
-              pickupList.locations = [...new Set(pickupList.locations)]
+              pickupList.pickups.push(orderNumber)// = [...new Set([orderNumber])] // keep unique list of orderNumbers
               pickupList.totalPax++
             }
           }

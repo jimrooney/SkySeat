@@ -24,7 +24,9 @@
     }
     get$PickupList(args) {
       console.log("args: ", args)
-      const list = args.pickupList.locations
+      const pickupList = args.pickupList
+      pickupList.pickups = [...new Set(pickupList.pickups)]
+
       this.clear()
       const contents = $("<div class='PickupContents container'></div>")
         .append(
@@ -33,10 +35,29 @@
           )
         )
         .append("<div class='container'>Container</div>")
-      list.forEach((location) => {
-        console.log("location: ", location)
-        const pickupTime = time.getTime(location.pickupTime)
-        const drag = $(`<div>${location.locationName} ${pickupTime}</div>`)
+
+      // --------------------
+      // Each Pickup Location
+      // --------------------
+      pickupList.pickups.forEach((orderNumber) => {
+        //
+        // Number of pax at pickup location
+        //
+        const px = pickupList.passengers.filter((pax) =>
+          pax.fields.find((f) => f.value == orderNumber)
+        )
+        const location = px[0].fields.reduce((acc, field) => {
+          if (field.label == "pickupLocation") {
+            acc = field.value
+          }
+          return acc
+        }, null)
+
+        console.log("PX : ", px)
+        console.log("Pickup: ", location)
+
+        const pickupTime = time.getTime(location?.pickupTime)
+        const drag = $(`<div>(${px.length}x) ${location?.locationName} ${pickupTime}</div>`)
           .addClass("pickup")
           .addClass("draggable")
           .draggable({
