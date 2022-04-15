@@ -149,6 +149,11 @@
               if (_parent.SAD.SAD != "Actual") {
                 return
               }
+              // Block changing Actual weights outside of plane seats (cuz bugs ***)
+              if(!_this.pax.fields.find(field=>field.label == "seat")){
+                console.log("no seat")
+                return
+              }
               //
               // set starting weight... order of preference: actual / declared / standard
               //
