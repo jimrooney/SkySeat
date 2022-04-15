@@ -370,7 +370,7 @@
     // Update
     // ============================================================================
     update(ARGS) {
-      //console.log("\nUpdate(%o)",ARGS)
+      console.log("\nUpdate(%o)", ARGS)
       const _this = this
       $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
       //
@@ -652,8 +652,9 @@
     show($TableCell, notInitial) {
       this.$this.show()
       this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
-      this.setWeightClass("D") // Set the initial SAD to Declared
-      //
+      if (!notInitial) {
+        this.setWeightClass("D") // Set the initial SAD to Declared
+      } //
       const _this = this
       const visible = this.$root.css("display") !== "none"
       // Store the clicked cell
@@ -864,15 +865,17 @@
       // -------------- Init -----------------
       // ===========================================
       this.init() // initialize jQuery drag/drop code
-      if (!notInitial) {
-        // if (visible) {
-        //   this.$root.hide()
-        // } else {
-        //   this.$root.show()
-        // }
-        // this.$root.show()
-      }
-      $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
+
+      /*
+
+        Doesn't seem to be doing anything... this doesn't fire but the buttons still sync
+
+
+      */
+      // if (!notInitial) {
+      //   $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
+      // }
+
       _this.update("PostPlane")
     }
   }
