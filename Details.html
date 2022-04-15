@@ -535,42 +535,38 @@
     // Dropped on the Pen (PaxList)
     // ============================
     handlePaxListDrop(even, ui) {
+      //
+      // $(this) = This Pen
+      // ui.draggable = $Pax
+      // $(this).closest(".detailsDiv").data("root") = This Details Object
+      // ui.draggable.closest(".AirplanePlotter") = Which plane? (could be the same plane)
+
+      
+
       // console.log("Dropped on Pen $(this): ", $(this))
-      // console.log("Paxlist: ", $(this).prop("id"))
+      // console.log("Paxlist: ", $(this).prop("id")) 
+      // console.log("HasClass: " , $(this).hasClass("PaxList"))
+      // console.log("Draggable: ", ui.draggable.data("pax"))
 
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
-      const cellID = $(this).data("cell").cellID
-
-      const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // $droppedAirplanePlotter.data("cell")
-      //console.log("droppedAirplanePlotter: ", $droppedAirplanePlotter.prop("id"))
-
-      // const oldID = ui.draggable.data("cell")
-      // console.log("OldID: ", ui.draggable)
-      /*
-
-      Since we've moved $droppedAirplanePlotter above the detach() method,
-      {state}.movePax() no longer skip-returns because oldCell is no longer null (the null check used to just return)
-      The next idea is now to flag the movePax() maybe by passing in a variable? so it knows that it was called
-      by a pen drop... then it can clean up the {state} and skip-return so the sprite puts itself into the pen.
-
-      */
-
-      let $newPax = ui.draggable.detach()
-      let fields = $newPax.data("pax") // array of Rezdy fields
-
-      // const $thisAirplanePlotter = $(this).closest(".AirplanePlotter")
-      // console.log("thisAirplanePlotter: ", $thisAirplanePlotter.prop("id"))
-
+      const cellID = $(this).data("cell").cellID // This pen's ID
+      const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // Which plane? (could be the same plane)
       const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
-      const barcode = fields.find((field) => field.label == "Barcode").value
-      let statePax = _this._TableCell.board.state.getPax(barcode)
-      statePax.fields = fields.filter((x) => x.label != "seat") // remove seat
 
-      // save the pax with no seat (incase the movePax skips )
-      // Keeps them in the same pen, but the "movePax" method below should handle the swap to the new pen.
-      _this._TableCell.board.state.savePax(statePax, oldCellID)
-      _this.state.movePax(statePax, oldCellID, cellID)
-      $newPax.appendTo($(this))
+      let fields = ui.draggable.data("pax") // array of Rezdy fields
+      //const barcode = ui.draggable.data("pax").find((field) => field.label == "Barcode").value
+      ui.draggable.detach() // remove dropped Sprite (not needed anymore)
+
+      fields = fields.filter((x) => x.label != "seat") // remove seat
+      let newPax = new Pax(fields)
+      //
+      _this.state.movePax(
+        newPax,
+        _this.state.getCell(oldCellID),
+        _this.state.getCell(cellID)
+      )
+      _this.show(_this.$TableCell, true)
+
     }
     handleDrop(event, ui) {
       const $seat = $(this) // The jQuery seat (that's handling the drop)
