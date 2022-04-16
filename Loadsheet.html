@@ -98,6 +98,8 @@
         ${PIC[0].px.fullName}
         (${PIC[0].weight})
         `
+        const mobile = PIC[0]?.px.fields.find(f=>f.label=="Mobile")?.value
+        $(".PIC_Phone").text(mobile)
       }
       if (SIC.length > 0 && hasSIC) {
         CrewNames += `
