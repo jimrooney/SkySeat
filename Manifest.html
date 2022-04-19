@@ -36,6 +36,7 @@
           <div class="Bookings"></div>
           </div>
           <div class="Roster" >Roster</div>
+          <div class="Info" >Roster</div>
       </div>
       `)
         .droppable({
@@ -80,18 +81,18 @@
         _board.state.load()
       })
 
-      let $_s = $("<button class='Dark Debug'>").text("State")
+      const $_s = $("<button class='Dark Debug'>").text("State")
       this.$this.prepend($_s)
       $_s.on("click", function () {
         console.log("{state}.getState(): %o", _board.state.getState())
       })
 
-      let $_r = $("<button class='Dark Debug'>").append("<BR>").text("R")
+      const $_r = $("<button class='Dark Debug'>").append("<BR>").text("R")
       this.$this.prepend($_r)
       $_r.on("click", function () {
         $(".Roster").toggle()
       })
-      let $_msg = $("<div class='FloatingBox' />")
+      const $_msg = $("<div class='FloatingBox' />")
       $_msg.on("click", function () {
         //
       })
@@ -164,7 +165,7 @@
       this.loadRoster() // auto load the roster too.
       $(".Roster").hide()
     }
-    processOrders(orders){
+    processOrders(orders) {
       // Copy down some Rezdy data to Pax fields (location isn't attached to Pax for example)
       orders.map((o) => {
         const orderNumber = o.orderNumber
@@ -230,16 +231,9 @@
       //
       // Totals
       //
-      let dayParticipants = bookings.reduce((total, booking) => {
-        return total + booking.item.participants.length
-      }, 0)
-
-      let dayPax = this.countPax(bookings)
-
+      const dayPax = this.countPax(bookings)
       // -------------------------------------------------------------------------------------------
-      this.$this
-        .find("#Totals")
-        .text("Manifest Pax(" + dayParticipants + ")(" + dayPax + ") ")
+      this.$this.find("#Totals").text("Manifest Total Pax(" + dayPax + ") ")
       // -------------------------------------------------------------------------------------------
       //
       // Print Sprites
@@ -251,25 +245,31 @@
       this.board.state.load() // load saved data
       this.board.update()
       //
-      console.log("Bookings: ", bookings)
       const pickupList = this.getPickupList({ bookings: bookings })
-      console.log("pickupList: ", pickupList)
       this.bookings = bookings
-    }
-    //
-    // Need to split out via pickup time (and dropoff) ***
-    // Need to filter GY Airstrip
-    //
 
+      console.log("Bookings: ", bookings)
+      const info = this.$this.find(".Info")
+      info.empty()
+      bookings.forEach(booking=>{
+        const orderNumber = booking.order.orderNumber
+        const link = `<A class="${orderNumber} Link" href="https://app.rezdy.com/orders/edit/${orderNumber}" target="_blank"> ${orderNumber}</a>`
+        info.append($(`<div>${booking.passengers.length}X ${booking.product.GYACode} ${booking.order.customer.firstName} ${booking.order.customer.lastName} ${link}</div>`))
+      })
+    }
     // Move all this logic into PickupList ***
     getPickupList({ bookings, date, row }) {
       bookings = !!bookings ? bookings : this.bookings
       const pickupList = {
         totalPax: 0,
+        totalPickup: 0,
+        totalDropoff: 0,
         pickups: [],
+        dropoffs: [],
         selfDrives: [],
         locations: [],
         passengers: [],
+        crew: [],
         bookings: bookings,
       }
       let _row
@@ -278,7 +278,13 @@
       }
       _row?.forEach((cellData) => {
         cellData.passengers?.forEach((pax) => {
-          pickupList.passengers.push(pax)
+          const pickdrop = cellData.leg == "B" ? "dropoffs" : "pickups"
+
+          if (pax.fields.some((x) => x.label == "Role")) {
+            pickupList.crew.push(pax)
+          } else {
+            pickupList.passengers.push(pax)
+          }
           //
           const Pickup = pax.fields.find(
             (field) => field.label === "pickupLocation"
@@ -298,7 +304,7 @@
             if (!!selfDrive) {
               pickupList.selfDrives.push(orderNumber)
             } else {
-              pickupList.pickups.push(orderNumber)// = [...new Set([orderNumber])] // keep unique list of orderNumbers
+              pickupList[pickdrop].push(orderNumber) // = [...new Set([orderNumber])] // keep unique list of orderNumbers
               pickupList.totalPax++
             }
           }

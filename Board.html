@@ -52,6 +52,8 @@
       // Pickups
       // pull pickup data down into the pax.fields
       //
+
+      // here is where we need to now make 2 divs, one for pickup, one for dropoff
       this.$board.find(".PickupCell").each(function (i) {
         const row = $(this).data("row")
         let paxNum = $(this)
@@ -61,6 +63,14 @@
           paxNum = ""
         }
         $(this).text(paxNum)
+
+        
+        // Staggar here ***
+        // need to know if it's an in or an out... then push it the appropriate offset
+        $(this).parent().css({position: 'relative'});
+        $(this).css({top: -5, position:'absolute'});
+  
+  
       })
       //
       // Make things Draggable
