@@ -35,8 +35,8 @@
           <div id="Totals" />
           <div class="Bookings"></div>
           </div>
-          <div class="Roster" >Roster</div>
-          <div class="Info" >Roster</div>
+          <div class="Roster" ></div>
+          <div class="Info" ></div>
       </div>
       `)
         .droppable({
@@ -238,7 +238,29 @@
       //
       // Print Sprites
       //
-      bookings.forEach((booking) => this.$bookings.append(booking.getSprite()))
+      let lastHour
+      let rowTotal = 0
+      let rowHeader
+      bookings.forEach((booking) => {
+        const hour = booking.getStartHour()
+        const num = this.countPax([booking])
+
+        if (lastHour == null){ // first row
+          rowHeader = this.$bookings.append($(`<div class="row${hour}" />`).html(`Hour: ${hour}`)) // print header
+          lastHour = hour
+        }
+        if (lastHour == hour){ // current row, count
+          rowTotal += num // booking.passengers.length
+        } else { // new row
+          rowTotal = num
+          rowHeader = this.$bookings.append($(`<div class="row${hour}" />`).html(`Hour: ${hour}`)) // print header
+        }
+
+        this.$this.find(`.row${hour}`).html(`<div>Hour: ${hour} Total Pax: ${rowTotal}</div>`) // update total
+        
+        this.$bookings.append(booking.getSprite()) // print row
+        lastHour = hour
+      })
       //
       // Update the board
       //
@@ -248,14 +270,15 @@
       const pickupList = this.getPickupList({ bookings: bookings })
       this.bookings = bookings
 
-      console.log("Bookings: ", bookings)
+      // console.log("Bookings: ", bookings)
       const info = this.$this.find(".Info")
       info.empty()
-      bookings.forEach(booking=>{
-        const orderNumber = booking.order.orderNumber
-        const link = `<A class="${orderNumber} Link" href="https://app.rezdy.com/orders/edit/${orderNumber}" target="_blank"> ${orderNumber}</a>`
-        info.append($(`<div>${booking.passengers.length}X ${booking.product.GYACode} ${booking.order.customer.firstName} ${booking.order.customer.lastName} ${link}</div>`))
-      })
+
+      // bookings.forEach(booking=>{
+      //   const orderNumber = booking.order.orderNumber
+      //   const link = `<A class="${orderNumber} Link" href="https://app.rezdy.com/orders/edit/${orderNumber}" target="_blank"> ${orderNumber}</a>`
+      //   info.append($(`<div>${booking.passengers.length}X ${booking.product.GYACode} ${booking.order.customer.firstName} ${booking.order.customer.lastName} ${link}</div>`))
+      // })
     }
     // Move all this logic into PickupList ***
     getPickupList({ bookings, date, row }) {

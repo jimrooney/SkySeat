@@ -85,7 +85,7 @@
     //Constructs and returns a booking sprite
     //
     getSprite() {
-      let $sprite = $("<span class='BookingSprite' />")
+      let $sprite = $("<div class='BookingSprite' />")
       .addClass(this.orderNumber)
 
       $sprite.data("this", this) // Self Reference (for click)
@@ -99,8 +99,13 @@
       let cHue = "hsl(" + hue + ", 50%, 75%)"
 
       $sprite.css("background-color", cHue)
-      // $sprite.text(booking.flight.seats + " " + booking.productCode.GYACode)
-      $sprite.text(this.getSeats() + " " + this.product.GYACode)
+      const xmlLink = "<span class='Dev'><A href='https://api.rezdy.com/v1/bookings/"  + this.orderNumber + "?apiKey=4a02ae91ede241fd80324ec8b2ac57cb" + "' target='_blank'>(xml)</A></span>"
+      const link = `<A class="${this.orderNumber} ManifestLink" href="https://app.rezdy.com/orders/edit/${this.orderNumber}" target="_blank"> ${this.orderNumber}</a>`
+
+      $sprite.append($(`<div>${this.passengers.length}X ${this.product.GYACode} ${this.order.customer.firstName} ${this.order.customer.lastName} ${xmlLink} ${link}</div>`))
+
+
+      //$sprite.text(this.getSeats() + " " + this.product.GYACode)
       //
       // Click
       //
