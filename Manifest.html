@@ -219,6 +219,7 @@
           bookings.push(new Booking(this, order, item, i))
         })
       })
+      bookings = bookings.filter((booking) => booking.order.supplierId == "13330")
       //
       // Sort Bookings by Start Time
       //
@@ -245,19 +246,33 @@
         const hour = booking.getStartHour()
         const num = this.countPax([booking])
 
-        if (lastHour == null){ // first row
-          rowHeader = this.$bookings.append($(`<div class="row${hour}" />`).html(`Hour: ${hour}`)) // print header
+      const hue = colors.getByTime(hour)
+      const cHue = "hsl(" + hue + ", 50%, 75%)"
+
+
+
+        if (lastHour == null) {
+          // first row
+          rowHeader = this.$bookings.append(
+            $(`<div class="row${hour}" />`).html(`Hour: ${hour}`).css({"background-color":cHue,"width": "fit-content"})
+          ) // print header
           lastHour = hour
         }
-        if (lastHour == hour){ // current row, count
+        if (lastHour == hour) {
+          // current row, count
           rowTotal += num // booking.passengers.length
-        } else { // new row
+        } else {
+          // new row
           rowTotal = num
-          rowHeader = this.$bookings.append($(`<div class="row${hour}" />`).html(`Hour: ${hour}`)) // print header
+          rowHeader = this.$bookings.append(
+            $(`<div class="row${hour}" />`).html(`Hour: ${hour}`).css({"background-color":cHue,"width": "fit-content"})
+          ) // print header
         }
 
-        this.$this.find(`.row${hour}`).html(`<div>Hour: ${hour} Total Pax: ${rowTotal}</div>`) // update total
-        
+        this.$this
+          .find(`.row${hour}`)
+          .html(`<div><b>(${rowTotal})</b>Pax (${hour}hour) </div>`) // update total
+
         this.$bookings.append(booking.getSprite()) // print row
         lastHour = hour
       })
