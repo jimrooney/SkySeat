@@ -86,7 +86,17 @@
           // Enable Dragging (only for cells with passengers)
           //
           $(this).draggable("disable") // Disable by default
+          //
+          // ReColor plotted bookings // this could encompass all of this code ***
+          //
           if (!!$(this).data("_script").getPassengers()) {
+            $(this).data("_script").getPassengers().forEach((pax)=>{
+              const orderNumber = pax.fields.reduce((acc,field)=>{
+                return field.label=="orderNumber" ? field.value : acc
+              },'')
+              if(!!orderNumber){
+              $(`.${orderNumber}`).addClass("Plotted")
+            }})
             $(this)
               .draggable({
                 revert: true,
