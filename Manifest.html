@@ -102,6 +102,8 @@
     //
     handleDrop(event, ui) {
       const _this = $(this).data("_script") // This JS Object
+      $(".Plotted").removeClass("Plotted") // Clear all "Plotted"
+
       // ignore blank drops
       const pax = ui.draggable.data("_script").getPax()
       if (!!pax) {
