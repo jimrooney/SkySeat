@@ -115,6 +115,12 @@
       const _displayLimits = _thisPlane.limits.CG.aft + "" + _thisPlane.limits.CG.forward
       //
 
+      const auwLeft = _thisPlane.limits.weight.MAUW - WB.weights.auw
+      const auwString = `${utility.round(WB.weights.auw)} 
+      <span style="font-size:x-small">( ${utility.round(auwLeft)} )left</span>`
+
+      console.log("auwString: ", auwString)
+
 
       // *** HERE *** needs update for all 208s
       let fuelWeightString = `${utility.round(WB.weights.fuel)}`
@@ -187,10 +193,10 @@
         regColor: _thisPlane.regcolor,
         fuel: `${WB.fuel.liters}(L) ${fuel.time.string}`, // Liters
         EmptyWeight: utility.round(_thisPlane.weight),
-        AUW: utility.round(WB.weights.auw),
+        AUW: auwString,
         ZFW: utility.round(WB.weights.zfw),
         fuelWeight: fuelWeightString,
-        TOW: utility.round(WB.TotalWeight),
+        TOW: auwString,
         MCTOW: _thisPlane.limits.weight.MAUW,
         MLW: _thisPlane.limits.weight.Landing,
         Burnoff: "",
