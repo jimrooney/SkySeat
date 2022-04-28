@@ -349,7 +349,7 @@
       })
       return pickupList
     }
-    countPax(arr) {
+    countPax(arr,countSouls) {
       return arr.reduce((total, booking) => {
         let s1 = booking.item.participants.length
         let s2 = booking.item.quantities.reduce((total, q) => {
@@ -367,7 +367,7 @@
           return total
         }, 0)
         let ret = s1
-        if (s1 < s2) {
+        if (s1 < s2 && !!countSouls) {
           ret = s2
         }
         return total + ret
