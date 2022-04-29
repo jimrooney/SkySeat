@@ -33,10 +33,12 @@
           <span style="float:right;display: inline-block;"><button id="debug">(M)</button></span>
           ${_this.board.$board.prop("id")} Manifest </div>
           <div id="Totals" />
+
           <div class="Bookings"></div>
           </div>
           <div class="Roster" ></div>
           <div class="Info" ></div>
+          <span class="Notes" style="float: right;background-color:grey" />
       </div>
       `)
         .droppable({
@@ -221,7 +223,9 @@
           bookings.push(new Booking(this, order, item, i))
         })
       })
-      bookings = bookings.filter((booking) => booking.order.supplierId == "13330")
+      bookings = bookings.filter(
+        (booking) => booking.order.supplierId == "13330"
+      )
       //
       // Sort Bookings by Start Time
       //
@@ -248,12 +252,14 @@
         const hour = booking.getStartHour()
         const num = this.countPax([booking])
 
-      const hue = colors.getByTime(hour)
-      const cHue = "hsl(" + hue + ", 50%, 75%)"
+        const hue = colors.getByTime(hour)
+        const cHue = "hsl(" + hue + ", 50%, 75%)"
         if (lastHour == null) {
           // first row
           rowHeader = this.$bookings.append(
-            $(`<div class="row${hour}" />`).html(`Hour: ${hour}`).css({"width": "fit-content"})
+            $(`<div class="row${hour}" />`)
+              .html(`Hour: ${hour}`)
+              .css({ width: "fit-content" })
           ) // print header
           lastHour = hour
         }
@@ -264,13 +270,17 @@
           // new row
           rowTotal = num
           rowHeader = this.$bookings.append(
-            $(`<div class="row${hour}" />`).html(`Hour: ${hour}`).css({"width": "fit-content"})
+            $(`<div class="row${hour}" />`)
+              .html(`Hour: ${hour}`)
+              .css({ width: "fit-content" })
           ) // print header
         }
 
         this.$this
           .find(`.row${hour}`)
-          .html(`<div><span style='background-color:${cHue}'><b>(${rowTotal})</b>Pax (${hour}hour) </span></div>`) // update total
+          .html(
+            `<div><span style='background-color:${cHue}'><b>(${rowTotal})</b>Pax (${hour}hour) </span></div>`
+          ) // update total
 
         this.$bookings.append(booking.getSprite()) // print row
         lastHour = hour
@@ -349,7 +359,7 @@
       })
       return pickupList
     }
-    countPax(arr,countSouls) {
+    countPax(arr, countSouls) {
       return arr.reduce((total, booking) => {
         let s1 = booking.item.participants.length
         let s2 = booking.item.quantities.reduce((total, q) => {

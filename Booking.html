@@ -85,8 +85,10 @@
     //Constructs and returns a booking sprite
     //
     getSprite() {
-      const $sprite = $(`<div class='BookingSprite Manifest ${this.orderNumber}' />`)
-      
+      const $sprite = $(
+        `<div class='BookingSprite Manifest ${this.orderNumber}' />`
+      )
+
       $sprite.data("this", this) // Self Reference (for click)
       $sprite.data("script", this)
       $sprite.data("_script", this)
@@ -97,7 +99,11 @@
       const xmlLink = `<span class='Dev ${this.orderNumber}'><A href='https://api.rezdy.com/v1/bookings/${this.orderNumber}?apiKey=4a02ae91ede241fd80324ec8b2ac57cb' target='_blank'>(xml)</A></span>`
       const link = `<A class="${this.orderNumber} ManifestLink" href="https://app.rezdy.com/orders/edit/${this.orderNumber}" target="_blank"> ${this.orderNumber}</a>`
 
-      $sprite.append($(`<div>${this.passengers.length}X ${this.product.GYACode} ${this.order.customer.firstName} ${this.order.customer.lastName} ${xmlLink} ${link}</div>`))
+      $sprite.append(
+        $(
+          `<div>${this.passengers.length}X ${this.product.GYACode} ${this.order.customer.firstName} ${this.order.customer.lastName} ${xmlLink} ${link}</div>`
+        )
+      )
 
       //$sprite.text(this.getSeats() + " " + this.product.GYACode)
       //
@@ -110,36 +116,35 @@
         //
         _this.show() // inherited function from Plottable
         const $FBox = $("<div />", {
-            class: "FloatingBox",
+          class: "FloatingBox",
+        })
+        const paxList = _this.getPax()
+        let orderNumber = ""
+        if (!!paxList) {
+          const _acc = []
+          paxList.forEach((pax) => {
+            _acc.push(`${pax.fullName} (${pax.weight.declared})`)
+            $("." + pax.orderNumber).addClass("highlight")
+            orderNumber = pax.orderNumber
           })
-          const paxList = _this.getPax()
-          let orderNumber = ""
-          if (!!paxList) {
-            const _acc = []
-            paxList.forEach((pax) => {
-              _acc.push(`${pax.fullName} (${pax.weight.declared})`)
-              $("." + pax.orderNumber).addClass("highlight")
-              orderNumber = pax.orderNumber
-            })
-            $FBox.html(_acc.join("<br>"))
-            const string = `<A id='${orderNumber}_rezdyLink' href='https://app.rezdy.com/orders/edit/${orderNumber}' target='_blank'>${orderNumber}</a><br>`
-            $FBox.prepend(string)
-            
-
-              const notes = _this.order.internalNotes
-              if (!!notes){
-                $FBox.append(`<div><b>Notes:</b> ${notes}</div>`)
-              }
-
-              _this.board.manifest.$this.append($FBox)
-          }
-          
+          $FBox.html(_acc.join("<br>"))
+          const string = `<A id='${orderNumber}_rezdyLink' href='https://app.rezdy.com/orders/edit/${orderNumber}' target='_blank'>${orderNumber}</a><br>`
+          $FBox.prepend(string)
+          _this.board.manifest.$this.append($FBox)
+        }
       })
       // Here's where you change the row highliting behaviour ***
       $sprite.hover(
         // On
         function () {
           let _this = $sprite.data("this")
+          // new Fbox
+          $(".Notes").empty()
+          const notes = _this.order.internalNotes
+          if (!!notes) {
+            $(".Notes").append(`<div><b>Notes:</b> ${notes}</div>`)
+          }
+          //
           let $row = time.getRowByHour(_this.getStartHour())
           if ($row) {
             $(".Row_" + $row.data("row")).addClass("highlight")
@@ -147,6 +152,9 @@
         },
         // Off
         function () {
+          $(".Notes").empty()
+          $(".FloatingBox").empty()
+          
           let _this = $sprite.data("this")
           let $row = time.getRowByHour(_this.getStartHour())
           if ($row) {
@@ -169,7 +177,7 @@
     getPaxOB() {
       // Number of sould on board excluding staff (includes infants)
     }
-    getPickups(){
+    getPickups() {
       // Returns pickup details (if pickup is needed)
       return this.item
     }
