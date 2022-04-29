@@ -106,6 +106,8 @@
       $sprite.click(function () {
         $(".FloatingBox").remove()
         let _this = $sprite.data("this")
+        console.log("Order: ", _this.order)
+        //
         _this.show() // inherited function from Plottable
         const $FBox = $("<div />", {
             class: "FloatingBox",
@@ -120,11 +122,20 @@
               orderNumber = pax.orderNumber
             })
             $FBox.html(_acc.join("<br>"))
-            $FBox.prepend("<A id='" + orderNumber + "_rezdyLink' href='https://app.rezdy.com/orders/edit/"+orderNumber+"' target='_blank'>"+orderNumber+"</a><br>")
-            _this.board.manifest.$this.append($FBox)
+            const string = `<A id='${orderNumber}_rezdyLink' href='https://app.rezdy.com/orders/edit/${orderNumber}' target='_blank'>${orderNumber}</a><br>`
+            $FBox.prepend(string)
+            
+
+              const notes = _this.order.internalNotes
+              if (!!notes){
+                $FBox.append(`<div><b>Notes:</b> ${notes}</div>`)
+              }
+
+              _this.board.manifest.$this.append($FBox)
           }
           
       })
+      // Here's where you change the row highliting behaviour ***
       $sprite.hover(
         // On
         function () {
