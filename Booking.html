@@ -141,8 +141,10 @@
           // new Fbox
           $(".Notes").empty()
           const notes = _this.order.internalNotes
+          const pickup = _this.item.pickupLocation.locationName
+          const pickupTime = root.time.getTime(_this.item.pickupLocation.pickupTime)
           if (!!notes) {
-            $(".Notes").append(`<div><b>Notes:</b> ${notes}</div>`)
+            $(".Notes").append(`<div><b>Notes:</b> ${notes}<p>${pickup} ${pickupTime}</div>`)
           }
           //
           let $row = time.getRowByHour(_this.getStartHour())
