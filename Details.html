@@ -150,7 +150,7 @@
                 return
               }
               // Block changing Actual weights outside of plane seats (cuz bugs ***)
-              if(!_this.pax.fields.find(field=>field.label == "seat")){
+              if (!_this.pax.fields.find((field) => field.label == "seat")) {
                 console.log("no seat")
                 return
               }
@@ -541,10 +541,8 @@
       // $(this).closest(".detailsDiv").data("root") = This Details Object
       // ui.draggable.closest(".AirplanePlotter") = Which plane? (could be the same plane)
 
-      
-
       // console.log("Dropped on Pen $(this): ", $(this))
-      // console.log("Paxlist: ", $(this).prop("id")) 
+      // console.log("Paxlist: ", $(this).prop("id"))
       // console.log("HasClass: " , $(this).hasClass("PaxList"))
       // console.log("Draggable: ", ui.draggable.data("pax"))
 
@@ -566,7 +564,6 @@
         _this.state.getCell(cellID)
       )
       _this.show(_this.$TableCell, true)
-
     }
     handleDrop(event, ui) {
       const $seat = $(this) // The jQuery seat (that's handling the drop)
@@ -740,7 +737,7 @@
         // Print Button
         // ---------------------------
         const $Print = $("<div />", {
-          text: "P",
+          text: "Print",
           class: "MenuButton MobileButton Print",
         })
         $Print.click(function () {
@@ -756,15 +753,24 @@
           console.log("Print WB: ", airplanePlotter.airplane.getWB(ARGS)) // need to add ARGS to getWB()
 
           const WB = airplanePlotter.airplane.getWB(ARGS)
+
+          const validPOBs = WB.POB.every((station) => station.weight > 0)
+          console.log("ValidPOBs: ", validPOBs)
+
+          if (!validPOBs) {
+            utility.alert("Missing Weights", $("#Details"))
+            return
+          }
           LOADSHEET.show(_this._TableCell, airplanePlotter.airplane, WB, ARGS)
         })
         // ---------------------------
         // State Button
         // ---------------------------
-        const $State = $("<div />", {
-          text: "State",
-          class: "MenuButton MobileButton",
-        })
+        const $State = $("<div />") // disable State button (so "P" can become "Print")
+        // const $State = $("<div />", {
+        //   text: "State",
+        //   class: "MenuButton MobileButton",
+        // })
         $State.click(function () {
           console.log("State data:", _this.state.data)
           //_this.state.save()
