@@ -53,24 +53,38 @@
       // pull pickup data down into the pax.fields
       //
 
+      // Staggar here ***
       // here is where we need to now make 2 divs, one for pickup, one for dropoff
       this.$board.find(".PickupCell").each(function (i) {
         const row = $(this).data("row")
-        let paxNum = $(this)
+        const pickupList = $(this)
           .data("this")
-          .manifest.getPickupList({ row: row })?.totalPax
-        if (paxNum == 0) {
-          paxNum = ""
-        }
-        $(this).text(paxNum)
+          .manifest.getPickupList({ row: row })
+        const paxNum = pickupList.pickups.length
 
-        
-        // Staggar here ***
-        // need to know if it's an in or an out... then push it the appropriate offset
-        $(this).parent().css({position: 'relative'});
-        $(this).css({top: -5, position:'absolute'});
-  
-  
+
+          $(this).empty()
+
+
+        if (paxNum > 0) {
+          $(this).append($(`<div>${paxNum}</div>`))
+          // need to know if it's an in or an out... then push it the appropriate offset
+          $(this).parent().css({ position: "relative" })
+          $(this).css({ top: -5, position: "absolute" })
+        }
+
+
+
+        const dropPax = pickupList.dropoffs.length
+        if (dropPax > 0) {
+          $(this).append($(`<div><small>${dropPax}</small></div>`))
+          // need to know if it's an in or an out... then push it the appropriate offset
+          $(this).parent().css({ position: "relative" })
+          $(this).css({ top: 35,left:15, position: "absolute" })
+        }
+
+
+
       })
       //
       // Make things Draggable
@@ -90,13 +104,17 @@
           // ReColor plotted bookings // this could encompass all of this code ***
           //
           if (!!$(this).data("_script").getPassengers()) {
-            $(this).data("_script").getPassengers().forEach((pax)=>{
-              const orderNumber = pax.fields.reduce((acc,field)=>{
-                return field.label=="orderNumber" ? field.value : acc
-              },'')
-              if(!!orderNumber){
-              $(`.${orderNumber}`).addClass("Plotted")
-            }})
+            $(this)
+              .data("_script")
+              .getPassengers()
+              .forEach((pax) => {
+                const orderNumber = pax.fields.reduce((acc, field) => {
+                  return field.label == "orderNumber" ? field.value : acc
+                }, "")
+                if (!!orderNumber) {
+                  $(`.${orderNumber}`).addClass("Plotted")
+                }
+              })
             $(this)
               .draggable({
                 revert: true,
@@ -225,7 +243,11 @@
             //   }
             // )
             .click(() => {
-              $("#PickupList").data("object").show({ pickupList: this.manifest.getPickupList({ row: thisRow }) })
+              $("#PickupList")
+                .data("object")
+                .show({
+                  pickupList: this.manifest.getPickupList({ row: thisRow }),
+                })
               $("#PickupList").show()
             })
         )
