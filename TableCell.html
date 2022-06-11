@@ -176,6 +176,7 @@
       // Blank the cell
       // --------------
       this.$this.text("")
+      this.$this.html("")
       this.$this.css("background-image", "")
       this.$this.removeClass("outCell")
       this.$this.removeClass("inCell")
@@ -324,8 +325,10 @@
     // Update
     // ----------------------------------------------------------------------------
     update() {
-      let cellData = this.getStateCellData() // Get the data from the state object
-      let $this = this.$this // simplify the reference to the jQuery object
+      const cellData = this.getStateCellData() // Get the data from the state object
+      const $this = this.$this // simplify the reference to the jQuery object
+      this.clear() // blank the cell
+
       // --------------
       // Make Draggable
       // --------------
@@ -339,7 +342,6 @@
         revert: true,
         helper: "clone",
       })
-      this.clear() // blank the cell
 
       const cellPax = cellData?.passengers.filter((p)=>{
         return !p.fields.some((f)=> f.label == "Role")

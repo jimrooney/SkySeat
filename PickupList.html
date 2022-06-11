@@ -46,6 +46,9 @@
         const px = pickupList.passengers.filter((pax) =>
           pax.fields.find((f) => f.value == orderNumber)
         )
+        //
+        // HERE ***
+        // 
         const location = px[0].fields.reduce((acc, field) => {
           if (field.label == "pickupLocation") {
             acc = field.value
@@ -53,11 +56,13 @@
           return acc
         }, null)
 
-        // console.log("PX : ", px)
-        // console.log("Pickup: ", location)
-
-        const pickupTime = time.getTime(location?.pickupTime)
-        const drag = $(`<div>(${px.length}x) ${location?.locationName} ${pickupTime}</div>`)
+          // Build div at append.
+        let pickupTime = time.getTime(location?.pickupTime)
+        if (pickupTime == "NaN:NaN"){
+          pickupTime = ""
+        }
+        const loc = location?.locationName || ""
+        const drag = $(`<div>(${px.length}x) ${loc} ${pickupTime}</div>`)
           .addClass("pickup")
           .addClass("draggable")
           .draggable({

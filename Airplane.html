@@ -137,6 +137,15 @@
         }
       }
     }
+    removePax(pax){
+      pax = new Pax(pax) // Convert any JSON pax to {Pax}
+      const station = this.stations.find(
+          (station) => station.type.includes("seat") && station.px?.fullName == pax.fullName
+        )
+        station.weight = 0
+        station.px = null
+        return this
+    }
     convertToSAD(pob, SAD) {
       // takes a list of passenger stations and converts their weights based on SAD
       let POB

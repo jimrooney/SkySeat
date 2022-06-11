@@ -404,6 +404,8 @@
       //
       // Update WB reports
       //
+
+      // Loop over each Row in {State}
       const _row = this.state.getRow(this._TableCell.row)
       const WBPlanes = []
       const _WB = []
@@ -460,14 +462,10 @@
       $(".CrewList").droppable({
         accept: ".Crew",
         hoverClass: "hovered",
-        drop: this.removePax,
       })
       $("body").droppable({
         accept: ".Pax",
-        drop: function (e, ui) {
-          _this.removePax(e, ui)
-          _this.update("body.droppable")
-        },
+        drop: function (e, ui) {}, // unused
       })
       $(".CargoPod").droppable({
         greedy: true,
@@ -479,25 +477,6 @@
     // ============================================================================
     // End Init
     // ============================================================================
-    removePax(event, ui) {
-      return // ****
-      //
-      // Add baggage removal code here ***
-      //
-      const list = ui.draggable.data("list")
-      let $source = $(`#${list}`)
-      ui.draggable.data("_pax").seat = null // Remove old seat value (so pax doesn't get plotted)
-
-      if (ui.draggable.attr("class").includes("Crew")) {
-        $source = $(".CrewList")
-      }
-      let $newPax = ui.draggable.detach()
-      if (!!$source) {
-        $newPax.appendTo($source)
-        return
-      }
-      $newPax.appendTo($(this))
-    }
     resetAirplane($TableCell) {
       this.setWeightClass("D")
       $(".SAD").text(this.SAD.txt)
@@ -549,6 +528,7 @@
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
       const cellID = $(this).data("cell").cellID // This pen's ID
       const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // Which plane? (could be the same plane)
+      const airplanePlotter = $droppedAirplanePlotter.data("airplanePlotter")
       const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
 
       let fields = ui.draggable.data("pax") // array of Rezdy fields
@@ -563,6 +543,9 @@
         _this.state.getCell(oldCellID),
         _this.state.getCell(cellID)
       )
+      const removed = airplanePlotter.airplane.removePax(newPax) // remove the pax from this {airplane}
+      console.log("Removed: ", removed)
+      console.log("airplanePlotter.airplane: ", airplanePlotter.airplane)
       _this.show(_this.$TableCell, true)
     }
     handleDrop(event, ui) {
@@ -708,6 +691,7 @@
         // .text()
 
         $plane.click(() => {
+          console.log("Plane Click")
           const ARGS = {
             SAD: _this.SAD,
             CellData: cell,
@@ -750,13 +734,11 @@
             liters: airplanePlotter.airplane.getFuelQuantity(cell),
             route: airplanePlotter.airplane.getRoute(cell),
           }
-          console.log("Print WB: ", airplanePlotter.airplane.getWB(ARGS)) // need to add ARGS to getWB()
-
           const WB = airplanePlotter.airplane.getWB(ARGS)
-
           const validPOBs = WB.POB.every((station) => station.weight > 0)
           console.log("ValidPOBs: ", validPOBs)
 
+          // Missin Weights Check
           if (!validPOBs) {
             utility.alert("Missing Weights", $("#Details"))
             return

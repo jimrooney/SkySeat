@@ -41,9 +41,9 @@
     clearPax(paxList) {
       this.state.clearoutPax(paxList)
     }
-    // --------------------------------
+    // -------------------------------------------------------------------------------------
     // Update
-    // --------------------------------
+    // -------------------------------------------------------------------------------------
     // Calls update() on each TableCell
     //
     update() {
@@ -53,38 +53,28 @@
       // pull pickup data down into the pax.fields
       //
 
-      // Staggar here ***
-      // here is where we need to now make 2 divs, one for pickup, one for dropoff
+      // Make 2 divs, one for pickup, one for dropoff
       this.$board.find(".PickupCell").each(function (i) {
         const row = $(this).data("row")
         const pickupList = $(this)
           .data("this")
           .manifest.getPickupList({ row: row })
+
+        $(this).empty() // clear the cell
+
         const paxNum = pickupList.pickups.length
-
-
-          $(this).empty()
-
-
         if (paxNum > 0) {
-          $(this).append($(`<div>${paxNum}</div>`))
-          // need to know if it's an in or an out... then push it the appropriate offset
+          $(this).append($(`<div><div class="arrow-up"></div>${paxNum}</div>`))
           $(this).parent().css({ position: "relative" })
           $(this).css({ top: -5, position: "absolute" })
         }
 
-
-
         const dropPax = pickupList.dropoffs.length
         if (dropPax > 0) {
-          $(this).append($(`<div><small>${dropPax}</small></div>`))
-          // need to know if it's an in or an out... then push it the appropriate offset
+          $(this).append($(`<div><div class="arrow-down"></div><small>${dropPax}</small></div>`))
           $(this).parent().css({ position: "relative" })
-          $(this).css({ top: 35,left:15, position: "absolute" })
+          $(this).css({ top: 35, left: 15, position: "absolute" })
         }
-
-
-
       })
       //
       // Make things Draggable
@@ -103,7 +93,9 @@
           //
           // ReColor plotted bookings // this could encompass all of this code ***
           //
-          if (!!$(this).data("_script").getPassengers()) {
+          const _pax = $(this).data("_script").getPassengers()
+          if (!!_pax?.length>0) {
+            // console.log("This: ", $(this).data("_script"))
             $(this)
               .data("_script")
               .getPassengers()
