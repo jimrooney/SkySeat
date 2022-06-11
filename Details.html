@@ -158,6 +158,9 @@
               // set starting weight... order of preference: actual / declared / standard
               //
               let weight = _pax.weight.actual || _pax.weight.declared
+              if (!parseInt(weight)) {
+                weight = root.standard.weight.adult // Could figure out if it's a child, but MEH
+              }
               //
               // Find the midpoint of the sprite
               //
@@ -528,7 +531,8 @@
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
       const cellID = $(this).data("cell").cellID // This pen's ID
       const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // Which plane? (could be the same plane)
-      const droppedAirplanePlotter = $droppedAirplanePlotter.data("airplanePlotter")
+      const droppedAirplanePlotter =
+        $droppedAirplanePlotter.data("airplanePlotter")
       const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
 
       let fields = ui.draggable.data("pax") // array of Rezdy fields
@@ -551,7 +555,8 @@
       const _this = $seat.closest(".detailsDiv").data("root") // This Details Object
       //
       const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // $droppedAirplanePlotter.data("cell")
-      const droppedAirplanePlotter = $droppedAirplanePlotter.data("airplanePlotter")
+      const droppedAirplanePlotter =
+        $droppedAirplanePlotter.data("airplanePlotter")
       const $thisAirplanePlotter = $seat.closest(".AirplanePlotter")
       //
       const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID // Dropped from cell's id
