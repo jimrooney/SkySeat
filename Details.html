@@ -528,7 +528,7 @@
       const _this = $(this).closest(".detailsDiv").data("root") // This Details Object
       const cellID = $(this).data("cell").cellID // This pen's ID
       const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // Which plane? (could be the same plane)
-      const airplanePlotter = $droppedAirplanePlotter.data("airplanePlotter")
+      const droppedAirplanePlotter = $droppedAirplanePlotter.data("airplanePlotter")
       const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID
 
       let fields = ui.draggable.data("pax") // array of Rezdy fields
@@ -543,9 +543,7 @@
         _this.state.getCell(oldCellID),
         _this.state.getCell(cellID)
       )
-      const removed = airplanePlotter.airplane.removePax(newPax) // remove the pax from this {airplane}
-      console.log("Removed: ", removed)
-      console.log("airplanePlotter.airplane: ", airplanePlotter.airplane)
+      droppedAirplanePlotter.airplane.removePax(newPax) // remove the pax from this {airplane}
       _this.show(_this.$TableCell, true)
     }
     handleDrop(event, ui) {
@@ -553,6 +551,7 @@
       const _this = $seat.closest(".detailsDiv").data("root") // This Details Object
       //
       const $droppedAirplanePlotter = ui.draggable.closest(".AirplanePlotter") // $droppedAirplanePlotter.data("cell")
+      const droppedAirplanePlotter = $droppedAirplanePlotter.data("airplanePlotter")
       const $thisAirplanePlotter = $seat.closest(".AirplanePlotter")
       //
       const oldCellID = $droppedAirplanePlotter.data("cell")?.cellID // Dropped from cell's id
@@ -579,6 +578,7 @@
       }
 
       let newPax = new Pax(droppedFields)
+      droppedAirplanePlotter?.airplane.removePax(newPax) // remove the pax from originating {airplane} // Not always the same plane as the accepting plane
       newPax.setSeat($seat.data("seat")) // assign the accepting seat to the dropped pax
       //
       _this.state.movePax(
@@ -726,8 +726,6 @@
         })
         $Print.click(function () {
           console.log("\nPrint Click (cellID: %o)", cell.cellID) // correct ID (no other data than ID)
-
-          console.log("airplanePlotter: ", airplanePlotter)
           const ARGS = {
             SAD: _this.SAD,
             CellData: cell,
