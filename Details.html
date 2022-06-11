@@ -145,6 +145,7 @@
             // Changing Weights
             // --------------------------------
             .click(function (e) {
+              e.stopPropagation()
               console.log("PaxClick this %o", _this)
               if (_parent.SAD.SAD != "Actual") {
                 return
@@ -252,6 +253,9 @@
                 .appendTo($bay)
                 .data("station", station)
                 .append(`<option value="0">0</option>`)
+                .click((e)=>{
+                  e.stopPropagation()
+                })
               const _station = station
               // Limit the selector by the max limit of the pod bay ********
               for (let i = 10; i <= 500; i += 10) {
@@ -263,7 +267,8 @@
                   `<option value="${i}" ${selected}>${i}</option>`
                 )
               }
-              $selector.change(function () {
+              $selector.change(function (e) {
+                e.stopPropagation()
                 station.weight = this.value
                 _this.update("Selector Change")
               })
@@ -766,7 +771,8 @@
         //
         const $SAD = $(
           `<span class="SAD WeightClass relativeLeft MobileButton">SAD</span>`
-        ).click(function () {
+        ).click(function (e) {
+          e.stopPropagation()
           let txt = $(this).text().charAt(0)
           _this.changeWeightClass($(this))
           _this.update("SAD Button")
