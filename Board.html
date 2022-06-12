@@ -57,7 +57,7 @@
       this.$board.find(".PickupCell").each(function (i) {
         const row = $(this).data("row")
         const pickupList = $(this)
-          .data("this")
+          .data("board")
           .manifest.getPickupList({ row: row })
 
         $(this).empty() // clear the cell
@@ -222,7 +222,7 @@
         myRow.push(
           $('<td class="PickupCell Row_' + thisRow + '"></td>')
             .data("row", thisRow)
-            .data("this", this)
+            .data("board", this)
             // .hover(
             //   () => {
             //     this.$board
@@ -235,6 +235,7 @@
             //   }
             // )
             .click(() => {
+              console.log("This: ", this)
               $("#PickupList")
                 .data("object")
                 .show({

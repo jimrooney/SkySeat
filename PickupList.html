@@ -13,6 +13,12 @@
   .draggable.dragging {
     opacity: 0.5;
   }
+  .Pickup {
+    background-color: rgb(79, 172, 99);
+  }
+  .Dropoff {
+    background-color: rgb(52, 47, 114);
+  }
 </style>
 
 <script>
@@ -21,14 +27,16 @@
       let _this = this
       this.$this = $this // jQuery selector passed in
       $this.data("object", this)
+      this.pickupList
     }
     get$PickupList(args) {
-      console.log("args: ", args)
-      const pickupList = args.pickupList
-      pickupList.pickups = [...new Set(pickupList.pickups)]
-
-      this.clear()
-      const contents = $("<div class='PickupContents container'></div>")
+      this.pickupList = args.pickupList
+      // Clear dupicates
+      this.pickupList.pickups = [...new Set(this.pickupList.pickups)]
+      this.pickupList.dropoffs = [...new Set(this.pickupList.dropoffs)]
+      // Clear $ .PickupContents
+      this.clear() // this.$this.find(".PickupContents").remove()
+      let contents = $("<div class='PickupContents container'></div>")
         .append(
           $(`<span class="popupCloseButtonSmall MobileButton">X</span>`).click(
             () => this.$this.hide()
@@ -36,19 +44,26 @@
         )
         .append("<div class='container'>Container</div>")
 
+
+    // so it can be called against pickups or dropoffs
+        if (this.pickupList.pickups.length > 0){
+          contents = this.buildList(contents,this.pickupList.pickups,"Pickup")
+        } else {
+        contents = this.buildList(contents,this.pickupList.dropoffs,"Dropoff") 
+      }
+      return contents
+    }
+    buildList(contents, list, pickdrop){
       // --------------------
       // Each Pickup Location
       // --------------------
-      pickupList.pickups.forEach((orderNumber) => {
+      list.forEach((orderNumber) => {
         //
         // Number of pax at pickup location
         //
-        const px = pickupList.passengers.filter((pax) =>
+        const px = this.pickupList.passengers.filter((pax) =>
           pax.fields.find((f) => f.value == orderNumber)
         )
-        //
-        // HERE ***
-        // 
         const location = px[0].fields.reduce((acc, field) => {
           if (field.label == "pickupLocation") {
             acc = field.value
@@ -56,14 +71,22 @@
           return acc
         }, null)
 
-          // Build div at append.
+          
         let pickupTime = time.getTime(location?.pickupTime)
         if (pickupTime == "NaN:NaN"){
           pickupTime = ""
         }
         const loc = location?.locationName || ""
+
+
+
+
+        
+
+
+        // Build div and append.
         const drag = $(`<div>(${px.length}x) ${loc} ${pickupTime}</div>`)
-          .addClass("pickup")
+          .addClass(pickdrop)
           .addClass("draggable")
           .draggable({
             helper: "clone",
@@ -86,6 +109,7 @@
       this.$this.find(".PickupContents").remove()
     }
     show(args) {
+      console.log("PickupList: ", args)
       this.$this.append(this.get$PickupList(args))
       this.$this.show()
     }
