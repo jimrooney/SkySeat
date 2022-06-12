@@ -146,8 +146,8 @@
             // --------------------------------
             .click(function (e) {
               e.stopPropagation()
-              console.log("PaxClick this %o", _this)
               if (_parent.SAD.SAD != "Actual") {
+//              if ((_parent.SAD.SAD == "Standard")||((_parent.SAD.SAD != "Declared"))) {
                 return
               }
               // Block changing Actual weights outside of plane seats (cuz bugs ***)
