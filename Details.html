@@ -253,7 +253,7 @@
                 .appendTo($bay)
                 .data("station", station)
                 .append(`<option value="0">0</option>`)
-                .click((e)=>{
+                .click((e) => {
                   e.stopPropagation()
                 })
               const _station = station
@@ -671,12 +671,17 @@
         // New this.Airplane
         // ======================================
         const airplanePlotter = new _this.AirplanePlotter(cell, i) // backlink is in data.this
+        const $planeBackgroundContainer = $(`<div class="AirplanePlotterContainer"></div>`)
+        .append(`<div class="AirplanePlotterBackground" style="color:${utility.hexToRgbA(airplanePlotter.airplane.regcolor, 0.9)}">
+          ${airplanePlotter.airplane.reg}
+          </div>`)
         const $plane = $(`<div />`, {
           id: `AirplanePlotter_${i}`,
           class: "AirplanePlotter",
         })
           .data("airplanePlotter", airplanePlotter) // Backreference to JS {plane} object
           .data("cell", cell) // Backreference to which calendar cell it's plotting
+          
           .append(airplanePlotter.$seating)
           .append(
             $(`<span />`, {
@@ -686,9 +691,10 @@
           )
           .append(airplanePlotter.get$Pod())
           .append(`</span><span class="SpacerPod"></span>`)
+
         $plane.prepend(
-          $(`<div class="MenuBar"></div>`).prepend($(this.PCFSelectorString))
-        )
+          $(`<div class="MenuBar" style="background-color:${utility.hexToRgbA(airplanePlotter.airplane.regcolor, 0.8)}"></div>`).prepend($(this.PCFSelectorString))
+        ).prepend($planeBackgroundContainer)
         $plane
           .find(".PaxList")
           .css(
