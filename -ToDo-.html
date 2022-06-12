@@ -23,15 +23,7 @@ updateStations(stations) { <-- consider removing
 -------------------------------
 Currently
 -------------------------------
-Need to update pax moving code to include {Airplane}.removePax() so that we don't get duplicates.
-
-New removepax can barf...
-userCodeAppPanel:145 Uncaught TypeError: Cannot set properties of undefined (setting 'weight')
-at C208.removePax
-
-
-Once overweight at STD Weight, WB stops calculating?
-STD weight pax don't recalc when dropped in the pen.
+In PickupList.show() discriminating between showing pickups and dropoffs.
 
 Dropoff list needs to be added to popup.
 Clearing the next days board if it hasn't been saved already (the normal case)
