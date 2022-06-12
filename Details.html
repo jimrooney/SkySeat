@@ -232,7 +232,9 @@
           this.airplane = _this.state.getPlane(cell.cellID) // Airplane Object based on {state}
           this.airplane.state = cell
           this.$seating = $(
-            `<div id="Airplane_${i}" class="grid-container Airplane ${this.airplane.reg}"></div>`
+            `<div id="Airplane_${i}" class="grid-container Airplane ${this.airplane.reg}"
+            style="background:${utility.hexToRgbA(this.airplane.regcolor, 0.9)}"
+            ></div>`
           ).data("_this", this) // backreference
         }
         get$Pod() {
