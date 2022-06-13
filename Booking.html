@@ -166,7 +166,7 @@
               ${notes}</div>
           `)
           }
-          $(".Notes").append(`<p>${pickup} ${pickupTime}</div>`)
+          $(".Notes").append(`<p><hr><b>Pickup: </b>${pickup} ${pickupTime}</div>`)
           //
           let $row = time.getRowByHour(_this.getStartHour())
           if ($row) {
