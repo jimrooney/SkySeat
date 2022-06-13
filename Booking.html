@@ -155,11 +155,16 @@
           const pickupTime = root.time.getTime(
             _this.item.pickupLocation?.pickupTime
           )
+          $(".Notes").append(`
+              <div><b>${_this.order.customer.firstName} ${_this.order.customer.lastName}</b>
+              <HR></div>
+            `)
           if (!!notes) {
-            $(".Notes").append(`<div><b>Notes:</b><br>
-              <b>${_this.order.customer.firstName} ${_this.order.customer.lastName}</b>
-              <br><hr>
-              ${notes}</div>`)
+            $(".Notes").append(`
+            <div>
+              <b>Notes:</b><br>
+              ${notes}</div>
+          `)
           }
           $(".Notes").append(`<p>${pickup} ${pickupTime}</div>`)
           //
