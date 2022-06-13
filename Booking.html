@@ -100,11 +100,15 @@
       const link = `<A class="${this.orderNumber} ManifestLink" href="https://app.rezdy.com/orders/edit/${this.orderNumber}" target="_blank"> ${this.orderNumber}</a>`
 
       $sprite.append(
-        $(
-          `<div>${this.passengers.length}X ${this.product.GYACode} ${this.order.customer.firstName} ${this.order.customer.lastName} ${xmlLink} ${link}</div>`
-        )
+        $(`<div>${this.passengers.length}X ${this.product.GYACode}</div>`)
       )
-
+      if (false) {
+        $sprite.append(
+          $(
+            `<div>${this.passengers.length}X ${this.product.GYACode} ${this.order.customer.firstName} ${this.order.customer.lastName} ${xmlLink} ${link}</div>`
+          )
+        )
+      }
       //$sprite.text(this.getSeats() + " " + this.product.GYACode)
       //
       // Click
@@ -123,7 +127,7 @@
         if (!!paxList) {
           const _acc = []
           paxList.forEach((pax) => {
-            _acc.push(`${pax.fullName} (${pax.weight.declared})`)
+            _acc.push(`<br>${pax.fullName} (${pax.weight.declared})`)
             $("." + pax.orderNumber).addClass("highlight")
             orderNumber = pax.orderNumber
           })
@@ -132,6 +136,12 @@
           $FBox.prepend(string)
           _this.board.manifest.$this.append($FBox)
         }
+      })
+      // Open booking in Rezdy (DoubleClick)
+      $sprite.dblclick(()=>{
+        const _this = $sprite.data("this")
+        const link = 'https://app.rezdy.com/orders/edit/' + _this.order?.orderNumber
+        window.open(link, '_blank')
       })
       // Here's where you change the row highliting behaviour ***
       $sprite.hover(
@@ -142,9 +152,14 @@
           $(".Notes").empty()
           const notes = _this.order.internalNotes
           const pickup = _this.item.pickupLocation?.locationName
-          const pickupTime = root.time.getTime(_this.item.pickupLocation?.pickupTime)
+          const pickupTime = root.time.getTime(
+            _this.item.pickupLocation?.pickupTime
+          )
           if (!!notes) {
-            $(".Notes").append(`<div><b>Notes:</b> ${notes}</div>`)
+            $(".Notes").append(`<div><b>Notes:</b><br>
+              <b>${_this.order.customer.firstName} ${_this.order.customer.lastName}</b>
+              <br><hr>
+              ${notes}</div>`)
           }
           $(".Notes").append(`<p>${pickup} ${pickupTime}</div>`)
           //
@@ -157,7 +172,7 @@
         function () {
           $(".Notes").empty()
           $(".FloatingBox").empty()
-          
+
           let _this = $sprite.data("this")
           let $row = time.getRowByHour(_this.getStartHour())
           if ($row) {

@@ -108,9 +108,9 @@
       )</span>
       `
       }
-      //
+      // ==========================================================================================================
       // Make plane variable... names mapped to class names
-      //
+      // ==========================================================================================================
       // For some reason, this needs to be set as a const before putting into this.displayPlane ? *
       const _displayLimits = _thisPlane.limits.CG.aft + "" + _thisPlane.limits.CG.forward
       //
@@ -186,7 +186,14 @@
           toBurnString = `${utility.round(fuel.landing.toBurn.gallons, 0)}Gal ${fuel.landing.toBurn.time.string}`
         }
       }
+      // --------------
+      // Display Plane
+      // --------------
+      /*
+        Each variable in displayPlane will get mapped (below) to a "._plane_" class
+      */
       this.displayPlane = {
+        POB: WB.POB?.length,
         pilot: CrewNames,
         reg: _thisPlane.reg,
         type: _thisPlane.type,
@@ -981,7 +988,7 @@
         <td>&nbsp;</td>
       </tr>
       <tr>
-        <td><b>POB:</b> <span class="POB"></span></td>
+        <td><b>POB:</b> <span class="_plane_POB"></span></td>
         <td>Loadsheet: Attached or _______________</td>
         <td>&nbsp;</td>
       </tr>
