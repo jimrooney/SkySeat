@@ -156,6 +156,9 @@
         $roster.append($rosterContent)
       }
     }
+    // ===================================================================
+    //  Rezdy Loading
+    // ===================================================================
     // Call the Google Rezdy loading script, passing this object so the results can be returned into it
     load() {
       Rezdy.load(this)
@@ -170,6 +173,7 @@
       $(".Roster").hide()
     }
     processOrders(orders) {
+      const state = this.board.state
       // Copy down some Rezdy data to Pax fields (location isn't attached to Pax for example)
       orders.map((o) => {
         const orderNumber = o.orderNumber
@@ -485,6 +489,25 @@
             let found = item.participants.find((part) => {
               const px = new Pax(part.fields)
               if (px.barcode === barcode) {
+                return part
+              }
+            })
+            if (!!found) {
+              ret = found
+            }
+          })
+        })
+      }
+      return ret
+    }
+    getPaxByKey(key) {
+      let ret
+      if (!!this.orders) {
+        this.orders.forEach((order) => {
+          order.items.find((item) => {
+            let found = item.participants.find((part) => {
+              const px = new Pax(part.fields)
+              if (px.getValue("key") === key) {
                 return part
               }
             })

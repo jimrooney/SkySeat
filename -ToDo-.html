@@ -24,6 +24,18 @@ updateStations(stations) { <-- consider removing
 Currently
 -------------------------------
 
+in {Manifest}.onLoad() ... this is the place where Rezdy data loads (not state)
+in {State}.onLoad()
+Pulls in Rezdy data and then calls         _this.board.update()
+This would be a great point to resolve changes to pax data like weights / pickup-dropoff / etc.
+Need to have a think about what data overwrites what data.
+Likely that most customer data can be overwritten via the 
+
+
+
+
+
+
 For changing Declared weights... currently changes Actual... same mechanism can work for changing Declared.
 if ((_parent.SAD.SAD == "Standard")||((_parent.SAD.SAD != "Declared"))) {
 

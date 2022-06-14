@@ -274,6 +274,46 @@
       }
       return ret
     }
+    //
+    // Returns a list of all pax with the supplied key
+    //
+    getPaxByKey(paxKey) {
+      let ret
+      for (const key in this.data) {
+        ret = this.data[key].passengers.find((pax) =>
+          pax.fields.find((f) => f.label == "key" && f.value == paxKey)
+        )
+        if (!!ret) {
+          break
+        }
+      }
+      return ret
+    }
+    updatePax(paxKey, data) {
+      console.log("paxKey: ", paxKey)
+      console.log("this.data: ", this.data)
+
+      for (const key in this.data) {
+        console.log("Key: ", key)
+
+        const pax = this.data[key].passengers.find((pax) =>
+          pax.fields.find((f) => f.label == "key" && f.value == paxKey)
+        )
+        const pax2 = this.data[key].passengers.findIndex((pax) =>
+          pax.fields.find((f) => f.label == "key" && f.value == paxKey)
+        )
+        console.log("Pax2: ", pax2)
+        console.log("Pax: ", pax)
+
+        if (!!pax) {
+          this.data[key].passengers[pax2].fields.push({
+            label: "test",
+            value: "HI",
+          })
+          console.log("this: ", this)
+        }
+      }
+    }
     clearEmpties() {
       for (const key in this.data) {
         let arry = this.data[key].passengers?.filter((n) => n)
@@ -311,6 +351,23 @@
           }
         })
         _this.data = st
+
+        // Merge Manifest and State pax
+        // State data is key'd hashmap, so using keys to loop over them
+        Object.keys(st).forEach((key) => {
+          st[key].passengers.forEach((pax) => {
+            const paxKey = pax.fields.find((f) => f.label == "key")?.value
+            pax.mutated = true
+            if (!!paxKey) {
+              let _pax = _this.board.manifest.getPaxByKey(paxKey)
+              if (!!_pax) {
+                _pax = new Pax(_pax)
+                const newFields = [..._pax.fields, ...pax.fields] // Merge // pax is last (instead of _pax) so it take precedence.
+                pax.fields = newFields
+              }
+            }
+          })
+        })
         _this.board.update()
       }
     }
