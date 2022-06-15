@@ -173,10 +173,11 @@
       // Blank the cell
       // --------------
       this.$this.text("")
-      ///this.$this.html("")
+      this.$this.html("")
       this.$this.css("background-image", "")
       this.$this.removeClass("outCell")
       this.$this.removeClass("inCell")
+      this.$this.addClass("Border")
     }
 
     // -------------------------------------------------------------------
@@ -403,6 +404,8 @@
       } else {
         $this.draggable("disable")
       }
+      
+      this.$this.css("border", "2px solid black")
     }
   }
 </script>
