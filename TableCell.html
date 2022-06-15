@@ -48,10 +48,7 @@
           $(".FloatingBox").empty()
         }
       )
-      // -------------------------------------------
-      // Backreference
-      // -------------------------------------------
-      $this.data("_script", this._this) // Backreference to JS from jQuery object
+      .data("_script", this._this) // Backreference to JS from jQuery object
       this.$this = $this // keep a reference to the jQuery object
       // -------------------------------------------
       // Droppable
@@ -176,7 +173,7 @@
       // Blank the cell
       // --------------
       this.$this.text("")
-      this.$this.html("")
+      ///this.$this.html("")
       this.$this.css("background-image", "")
       this.$this.removeClass("outCell")
       this.$this.removeClass("inCell")
@@ -407,6 +404,5 @@
         $this.draggable("disable")
       }
     }
-
   }
 </script>

@@ -24,12 +24,7 @@ updateStations(stations) { <-- consider removing
 Currently
 -------------------------------
 
-in {Manifest}.onLoad() ... this is the place where Rezdy data loads (not state)
-in {State}.onLoad()
-Pulls in Rezdy data and then calls         _this.board.update()
-This would be a great point to resolve changes to pax data like weights / pickup-dropoff / etc.
-Need to have a think about what data overwrites what data.
-Likely that most customer data can be overwritten via the 
+in Board.html looking at where cells are built. Suspect that the border css is being dropped.
 
 
 

@@ -133,8 +133,8 @@
       //
       const planeList = planes.data.slice(0) // this clones the planes.data array
       $(".PlaneCell").each(function () {
-        const _this = $(this).data("_script")
-        const data = _this.board.state.getData($(this))
+        const _planecell = $(this).data("_script")
+        const data = _planecell.board.state.getData($(this))
 
         if (!data.PCF) {
           const plane = planeList.shift()
@@ -144,10 +144,10 @@
             pilot: "Standard",
             fuel: "150",
           }
-          _this.saveData(data)
+          _planecell.saveData(data)
         }
         //$("> #hours", this).remove() // removes all "hours" children ***********************
-        _this.update() // call update against all PlaneCells (maybe use above code to refine that to just this board?)
+        _planecell.update() // call update against all PlaneCells (maybe use above code to refine that to just this board?)
       })
 
       //
@@ -155,6 +155,16 @@
       //
 
       $(".MobileButton").mouseenter(_mouseOverEvent).mouseleave(_mouseOutEvent)
+    }
+    reborder(){
+      console.log("Reborder")
+      this.$board.find(".TableCell").each(function(cell)
+      {
+        $(this).text("HI")
+        $(this).css('border-color', "green")
+        //console.log("this", $( this ).text())
+      }
+      )
     }
     /*
 
