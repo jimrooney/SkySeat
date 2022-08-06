@@ -22,33 +22,34 @@
       let $this = $("<td />", {
         class: `TableCell Row_${r} Col_${c} MobileButton ${this.id}`, //"TableCell Row_" + r + " Col_" + c,
         id: this.id,
-      }).hover(
-        function () {
-          const $FBox = $("<div />", {
-            class: "FloatingBox",
-          })
-          const paxList = _this.getPax()
-          if (!!paxList) {
-            const _acc = []
-            paxList.forEach((pax) => {
-              _acc.push(`${pax.fullName} (${pax.weight.declared})`)
-              $("." + pax.orderNumber).addClass("highlight")
+      })
+        .hover(
+          function () {
+            const $FBox = $("<div />", {
+              class: "FloatingBox",
             })
-            $FBox.html(_acc.join("<br>"))
-            _this.board.manifest.$this.append($FBox)
+            const paxList = _this.getPax()
+            if (!!paxList) {
+              const _acc = []
+              paxList.forEach((pax) => {
+                _acc.push(`${pax.fullName} (${pax.weight.declared})`)
+                $("." + pax.orderNumber).addClass("highlight")
+              })
+              $FBox.html(_acc.join("<br>"))
+              _this.board.manifest.$this.append($FBox)
+            }
+          },
+          function () {
+            const paxList = _this.getPax()
+            if (!!paxList) {
+              paxList.forEach((pax) => {
+                $("." + pax.orderNumber).removeClass("highlight")
+              })
+            }
+            $(".FloatingBox").empty()
           }
-        },
-        function () {
-          const paxList = _this.getPax()
-          if (!!paxList) {
-            paxList.forEach((pax) => {
-              $("." + pax.orderNumber).removeClass("highlight")
-            })
-          }
-          $(".FloatingBox").empty()
-        }
-      )
-      .data("_script", this._this) // Backreference to JS from jQuery object
+        )
+        .data("_script", this._this) // Backreference to JS from jQuery object
       this.$this = $this // keep a reference to the jQuery object
       // -------------------------------------------
       // Droppable
@@ -177,6 +178,7 @@
       this.$this.css("background-image", "")
       this.$this.removeClass("outCell")
       this.$this.removeClass("inCell")
+      this.$this.removeClass("hr30")
       this.$this.addClass("Border")
     }
 
@@ -341,8 +343,8 @@
         helper: "clone",
       })
 
-      const cellPax = cellData?.passengers.filter((p)=>{
-        return !p.fields.some((f)=> f.label == "Role")
+      const cellPax = cellData?.passengers.filter((p) => {
+        return !p.fields.some((f) => f.label == "Role")
       })
       // --------
       // If Data
@@ -371,7 +373,9 @@
             $this.addClass("outCell")
             break
         }
-
+        if (this.hour == 12) {
+          $this.addClass("hr30")
+        }
         let codes = []
         let numPax = 0
 

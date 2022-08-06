@@ -582,4 +582,20 @@
 .Border{
     border: 1px solid black;
   }
+  .hr30{
+    position:relative;
+    top:-20px;
+  }
+  .hr30:after {
+        content: " ";
+        display: block;
+        background: var(--main-bg-color);
+        height: 20px;
+        width: 100%;
+        border-right:1px solid black; 
+        border-left:1px solid black; 
+        position: absolute;
+        bottom: -20px;
+        left: -1px;
+    }
 </style>
