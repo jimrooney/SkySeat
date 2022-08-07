@@ -607,6 +607,20 @@
       $pax.position({ of: $seat, my: "left top", at: "left top" })
       $pax.data("pax", droppedPaxFields)
     }
+    fillSeats(cell){
+      // this is {Details}
+      console.log("Fill Seats:", cell)
+      // make pax object
+      // call setSeat() function
+
+      cell.passengers.forEach((p, index) => {
+          const pax = new Pax(p, index)
+          pax.setSeat(index) // *** Change to count from 2 and finish at 2 (coPilot seat problem)
+          p.fields = pax.fields
+          this.state.savePax(p, cell.cellID, cell.leg)
+        })
+        this.show(this.$TableCell)
+    }
     seatPax($pax, $plane) {
       //
       // check to make sure the assigned seat is within the number of available seats before assigning
@@ -667,7 +681,7 @@
       //
       //      console.log("Details.show() row: ", _row)
       _row.some((cell, i) => {
-        // why some? ***
+        // why some? *** ... should probably be forEach... I think we're just abusing some as an iterator
 
         // ======================================
         // New this.Airplane
@@ -764,14 +778,13 @@
         // ---------------------------
         // State Button
         // ---------------------------
-        const $State = $("<div />") // disable State button (so "P" can become "Print")
-        // const $State = $("<div />", {
-        //   text: "State",
-        //   class: "MenuButton MobileButton",
-        // })
-        $State.click(function () {
-          console.log("State data:", _this.state.data)
-          //_this.state.save()
+        const $Fill = $("<div />", {
+          text: "Fill",
+          class: "MenuButton MobileButton",
+        })
+        $Fill.click(function (e) {
+          e.stopPropagation()
+          _this.fillSeats(cell)
         })
 
         //
@@ -790,7 +803,7 @@
         airplanePlotter.reset()
 
         //airplanePlotter.$seating.find(".Print").append($Print) // can use this to put the print button at the top
-        airplanePlotter.$seating.append([$Print, $State])
+        airplanePlotter.$seating.append([$Print, $Fill])
         $plane.find(`CargoPod_${i}`).append()
         _this.$root.find(".content").append($plane)
 
