@@ -147,7 +147,7 @@
             .click(function (e) {
               e.stopPropagation()
               if (_parent.SAD.SAD != "Actual") {
-//              if ((_parent.SAD.SAD == "Standard")||((_parent.SAD.SAD != "Declared"))) {
+                //              if ((_parent.SAD.SAD == "Standard")||((_parent.SAD.SAD != "Declared"))) {
                 return
               }
               // Block changing Actual weights outside of plane seats (cuz bugs ***)
@@ -232,7 +232,9 @@
           this.airplane = _this.state.getPlane(cell.cellID) // Airplane Object based on {state}
           this.airplane.state = cell
           this.$seating = $(
-            `<div id="Airplane_${i}" class="grid-container Airplane ${this.airplane.reg}"
+            `<div id="Airplane_${i}" class="grid-container Airplane ${
+              this.airplane.reg
+            }"
             style="background:${utility.hexToRgbA(this.airplane.regcolor, 0.9)}"
             ></div>`
           ).data("_this", this) // backreference
@@ -607,19 +609,35 @@
       $pax.position({ of: $seat, my: "left top", at: "left top" })
       $pax.data("pax", droppedPaxFields)
     }
-    fillSeats(cell){
+    fillSeats(cell) {
       // this is {Details}
       console.log("Fill Seats:", cell)
-      // make pax object
-      // call setSeat() function
+      const plane = this.state.getPlaneFromState(cell)
+      const seats = plane.getSeats()
+      console.log("Seats: ", seats)
+
+      // Only work on empty planes
+      if (seats.some((seat) => seat.id != 1 && seat.weight != 0)) {
+        utility.alert("Plane's not empty")
+        return
+      }
 
       cell.passengers.forEach((p, index) => {
-          const pax = new Pax(p, index)
-          pax.setSeat(index) // *** Change to count from 2 and finish at 2 (coPilot seat problem)
-          p.fields = pax.fields
-          this.state.savePax(p, cell.cellID, cell.leg)
-        })
-        this.show(this.$TableCell)
+        const pax = new Pax(p, index)
+        // Skip if overloading plane
+        if (index > seats.length - 2) {
+          return
+        }
+        // Skip the first two seats and backfill CoPilot if the plane's full.
+        let seatNum = index + 3
+        if (seatNum > seats.length) {
+          seatNum = 2
+        }
+        pax.setSeat(seatNum)
+        p.fields = pax.fields
+        this.state.savePax(p, cell.cellID, cell.leg)
+      })
+      this.show(this.$TableCell, true)
     }
     seatPax($pax, $plane) {
       //
@@ -687,8 +705,13 @@
         // New this.Airplane
         // ======================================
         const airplanePlotter = new _this.AirplanePlotter(cell, i) // backlink is in data.this
-        const $planeBackgroundContainer = $(`<div class="AirplanePlotterContainer"></div>`)
-        .append(`<div class="AirplanePlotterBackground" style="color:${utility.hexToRgbA(airplanePlotter.airplane.regcolor, 0.9)}">
+        const $planeBackgroundContainer = $(
+          `<div class="AirplanePlotterContainer"></div>`
+        )
+          .append(`<div class="AirplanePlotterBackground" style="color:${utility.hexToRgbA(
+          airplanePlotter.airplane.regcolor,
+          0.9
+        )}">
           ${airplanePlotter.airplane.reg}
           </div>`)
         const $plane = $(`<div />`, {
@@ -697,7 +720,7 @@
         })
           .data("airplanePlotter", airplanePlotter) // Backreference to JS {plane} object
           .data("cell", cell) // Backreference to which calendar cell it's plotting
-          
+
           .append(airplanePlotter.$seating)
           .append(
             $(`<span />`, {
@@ -708,9 +731,16 @@
           .append(airplanePlotter.get$Pod())
           .append(`</span><span class="SpacerPod"></span>`)
 
-        $plane.prepend(
-          $(`<div class="MenuBar" style="background-color:${utility.hexToRgbA(airplanePlotter.airplane.regcolor, 0.8)}"></div>`).prepend($(this.PCFSelectorString))
-        ).prepend($planeBackgroundContainer)
+        $plane
+          .prepend(
+            $(
+              `<div class="MenuBar" style="background-color:${utility.hexToRgbA(
+                airplanePlotter.airplane.regcolor,
+                0.8
+              )}"></div>`
+            ).prepend($(this.PCFSelectorString))
+          )
+          .prepend($planeBackgroundContainer)
         $plane
           .find(".PaxList")
           .css(

@@ -85,7 +85,7 @@
       return this
     }
     getSeats() {
-      return this.stations((item) => item.type.includes("seat"))
+      return this.stations.filter((item) => item.type.includes("seat"))
     }
     getFuelQuantity(CellData) {
       let liters = 0
