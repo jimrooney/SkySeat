@@ -505,7 +505,14 @@
       let duration = gya.getProduct(pax.getValue("productCode"))?.Duration
       const row = cell.id?.split("_")[0]
       const col = cell.id?.split("_")[1]
-      const newRow = parseInt(row) + parseInt(duration)
+
+      // 
+      // 11:30 bookings. Plot them as 11 and push the outs to 3pm
+      let push = 0
+      // if (parseInt(row) == 5) {
+      //   push = 1
+      // }
+      const newRow = parseInt(row) + parseInt(duration) + push
       const outID = newRow + "_" + col
       const out = this.getCell(outID)
       return out
