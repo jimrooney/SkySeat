@@ -23,6 +23,16 @@ updateStations(stations) { <-- consider removing
 -------------------------------
 Currently
 -------------------------------
+
+Working on removeOldBookings() in {Board} ... which calls {state}.getBookings()
+    Looping over the state and making sure that the plotted bookings are in the manifest... if not, remove them.
+
+
+in {state}.movePax(pax, oldCell, newCell) {
+    Looking to handle the Bcell stuff here rather than below in getBCell (cuz getBCell is barfing in same column moves)
+
+
+
 in {State}.getBCell()
     Plotting 11am pushes to 3pm correctly
     Moving works correctly... except in the same column between 11 and 12 (in either direction)

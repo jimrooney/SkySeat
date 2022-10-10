@@ -41,6 +41,27 @@
     clearPax(paxList) {
       this.state.clearoutPax(paxList)
     }
+    //
+    // Remove Previous plots that have rebooked/cancelled
+    //
+    removeOldBookings(){
+      const state = this.state
+
+
+      
+      this.manifest.orders.forEach( order => {
+        const booking = state.getBookings(order.orderNumber)
+
+        if (!!booking){
+          console.log("Booking: ", booking)
+        }
+      }
+      )
+
+
+
+
+    }
     // --------------------------------
     // Update
     // --------------------------------
