@@ -44,23 +44,54 @@
     //
     // Remove Previous plots that have rebooked/cancelled
     //
-    removeOldBookings(){
+    removeOldBookings() {
       const state = this.state
+      const manifest = this.manifest.getManifest()
+      console.log("Manifest: ", manifest)
+      // Loop over list of plotted pax ({state}) and compare to manifest.
+      // If they're not in the manifest, remove them from the plot.
 
-
+      // this.state.data ... {}, so need to use entries()
+      const data = state.data
+      let barcodes = []
+      for (let [key, value] of Object.entries(data)) {
+        value.passengers.forEach((pax) => {
+          const barcode = pax.fields.find((f) => (f.label == "Barcode"))
+          // see if the barcode is in the manifest
+          let ret
+        manifest.forEach((order) => {
+          order.items.find((item) => {
+            let found = item.participants.find((part) => {
+              const px = new Pax(part.fields)
+              if (px.barcode == barcode.value) {
+                return true
+              }
+            })
+            if (!!found) {
+              ret = found
+            }
+          })
+        })
       
-      this.manifest.orders.forEach( order => {
+        // If not found, remove the plot ***
+      console.log("Found: ", ret) 
+
+
+
+
+
+
+        })
+      }
+
+      // Needs to be the other way around as we're removing what's not in the manifest... ***
+      this.manifest.orders.forEach((order) => {
         const booking = state.getBookings(order.orderNumber)
 
-        if (!!booking){
+        if (!!booking) {
           console.log("Booking: ", booking)
         }
-      }
-      )
-
-
-
-
+      })
     }
     // --------------------------------
     // Update
@@ -85,13 +116,10 @@
         }
         $(this).text(paxNum)
 
-        
         // Staggar here ***
         // need to know if it's an in or an out... then push it the appropriate offset
-        $(this).parent().css({position: 'relative'});
-        $(this).css({top: -5, position:'absolute'});
-  
-  
+        $(this).parent().css({ position: "relative" })
+        $(this).css({ top: -5, position: "absolute" })
       })
       //
       // Make things Draggable
@@ -111,13 +139,17 @@
           // ReColor plotted bookings // this could encompass all of this code ***
           //
           if (!!$(this).data("_script").getPassengers()) {
-            $(this).data("_script").getPassengers().forEach((pax)=>{
-              const orderNumber = pax.fields.reduce((acc,field)=>{
-                return field.label=="orderNumber" ? field.value : acc
-              },'')
-              if(!!orderNumber){
-              $(`.${orderNumber}`).addClass("Plotted")
-            }})
+            $(this)
+              .data("_script")
+              .getPassengers()
+              .forEach((pax) => {
+                const orderNumber = pax.fields.reduce((acc, field) => {
+                  return field.label == "orderNumber" ? field.value : acc
+                }, "")
+                if (!!orderNumber) {
+                  $(`.${orderNumber}`).addClass("Plotted")
+                }
+              })
             $(this)
               .draggable({
                 revert: true,
@@ -246,7 +278,11 @@
             //   }
             // )
             .click(() => {
-              $("#PickupList").data("object").show({ pickupList: this.manifest.getPickupList({ row: thisRow }) })
+              $("#PickupList")
+                .data("object")
+                .show({
+                  pickupList: this.manifest.getPickupList({ row: thisRow }),
+                })
               $("#PickupList").show()
             })
         )

@@ -201,6 +201,7 @@
     //
     // Get Manifest
     //
+    // Returns a filtered array of orders
     getManifest(date = this.getDate()) {
       let orders = this.orders
       // Filter by Status
@@ -481,10 +482,10 @@
       }
       return this.orders.filter((order) => order.orderNumber == pax.orderNumber)
     }
-    getPax(barcode) {
+    getPax(barcode,orders = this.orders) {
       let ret
-      if (!!this.orders) {
-        this.orders.forEach((order) => {
+      if (!!orders) {
+        orders.forEach((order) => {
           order.items.find((item) => {
             let found = item.participants.find((part) => {
               const px = new Pax(part.fields)
