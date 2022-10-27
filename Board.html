@@ -51,47 +51,42 @@
       // Loop over list of plotted pax ({state}) and compare to manifest.
       // If they're not in the manifest, remove them from the plot.
 
-      // this.state.data ... {}, so need to use entries()
-      const data = state.data
-      let barcodes = []
-      for (let [key, value] of Object.entries(data)) {
+      const plottedPax = state.data
+      // this.state.data is an object, so need to use entries() to iterate over it
+      for (let [key, value] of Object.entries(plottedPax)) {
         value.passengers.forEach((pax) => {
-          const barcode = pax.fields.find((f) => (f.label == "Barcode"))
+          const barcode = pax.fields.find((f) => f.label == "Barcode")
           // see if the barcode is in the manifest
           let ret
-        manifest.forEach((order) => {
-          order.items.find((item) => {
-            let found = item.participants.find((part) => {
-              const px = new Pax(part.fields)
-              if (px.barcode == barcode.value) {
-                return true
+          manifest.forEach((order) => {
+            order.items.find((item) => {
+              let found = item.participants.find((part) => {
+                const px = new Pax(part.fields)
+                if (px.barcode == barcode.value) {
+                  return true
+                }
+              })
+              if (!!found) {
+                ret = found
               }
             })
-            if (!!found) {
-              ret = found
-            }
           })
-        })
-      
-        // If not found, remove the plot ***
-      console.log("Found: ", ret) 
 
-
-
-
-
-
+          if (!ret) {
+            // If not found, remove the plot ***
+            console.log("pax Not Found: ", pax)
+          }
         })
       }
 
       // Needs to be the other way around as we're removing what's not in the manifest... ***
-      this.manifest.orders.forEach((order) => {
-        const booking = state.getBookings(order.orderNumber)
+      // this.manifest.orders.forEach((order) => {
+      //   const booking = state.getBookings(order.orderNumber)
 
-        if (!!booking) {
-          console.log("Booking: ", booking)
-        }
-      })
+      //   if (!!booking) {
+      //     console.log("Booking: ", booking)
+      //   }
+      // })
     }
     // --------------------------------
     // Update
