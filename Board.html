@@ -52,6 +52,7 @@
       // If they're not in the manifest, remove them from the plot.
 
       const plottedPax = state.data
+      const miaPax = []
       // this.state.data is an object, so need to use entries() to iterate over it
       for (let [key, value] of Object.entries(plottedPax)) {
         value.passengers.forEach((pax) => {
@@ -71,13 +72,16 @@
               }
             })
           })
-
           if (!ret) {
-            // If not found, remove the plot ***
-            console.log("pax Not Found: ", pax)
+            miaPax.push(new Pax(pax))
           }
         })
       }
+      //console.log("miaPax: %o", miaPax)
+      miaPax.forEach(pax=>{
+        this.state.removeAllBarcode(pax)
+        this.update()
+      })
 
       // Needs to be the other way around as we're removing what's not in the manifest... ***
       // this.manifest.orders.forEach((order) => {

@@ -168,6 +168,7 @@
       return this.data[cellID].passengers
     }
     savePax(pax, cellID, leg) {
+      // If pax is just an array of fields, convert to {Pax}
       if (!!pax.length) {
         pax = new Pax(pax)
       }
@@ -274,7 +275,7 @@
       this.clearEmpties()
     }
     //
-    // Returns a list of all pax with the supplied barcode
+    // Returns a pax with the supplied barcode
     //
     getPax(barcode) {
       let ret
@@ -288,8 +289,22 @@
       }
       return ret
     }
+    getAllPax(barcode) {
+      let _pax = []
+      let ret
+      for (const key in this.data) {
+        ret = this.data[key].passengers.find((pax) =>
+          pax.fields.find((f) => f.label == "Barcode" && f.value == barcode)
+        )
+        if (!!ret) {
+          ret.key = key
+          _pax.push(ret)
+        }
+      }
+      return _pax
+    }
     //
-    // Returns a list of all pax with the supplied key
+    // Returns a pax with the supplied key
     //
     getPaxByKey(paxKey) {
       let ret
@@ -304,27 +319,18 @@
       return ret
     }
     updatePax(paxKey, data) {
-      console.log("paxKey: ", paxKey)
-      console.log("this.data: ", this.data)
-
       for (const key in this.data) {
-        console.log("Key: ", key)
-
         const pax = this.data[key].passengers.find((pax) =>
           pax.fields.find((f) => f.label == "key" && f.value == paxKey)
         )
         const pax2 = this.data[key].passengers.findIndex((pax) =>
           pax.fields.find((f) => f.label == "key" && f.value == paxKey)
         )
-        console.log("Pax2: ", pax2)
-        console.log("Pax: ", pax)
-
         if (!!pax) {
           this.data[key].passengers[pax2].fields.push({
             label: "test",
             value: "HI",
           })
-          console.log("this: ", this)
         }
       }
     }
@@ -353,6 +359,7 @@
     }
     // OnLoad, parse into JSON and update the board
     onLoad(args, _this) {
+      utility.alert("(Day) Loaded")
       console.log("{state}onLoad")
       const _args = JSON.parse(args)
       if (!!_args) {

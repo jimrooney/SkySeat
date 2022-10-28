@@ -24,9 +24,30 @@ updateStations(stations) { <-- consider removing
 Currently
 -------------------------------
 
-Working on removeOldBookings() in {Board} ... which calls {state}.getBookings()
-    Looping over the state and making sure that the plotted bookings are in the manifest... if not, remove them.
-    // If not found, remove the plot ***
+Mike's list
+>>>
+Times changed to 11:30 an 1:45 - even if they are the same boxes, just so its clear and load sheets print correctly.
+Pick ups to be formatted like the old board where you can click and show 2 vans and drag and drop.
+Charters, doesn't pull weights through
+Saving issues - seems to be a lot of times it wont save. If is an issue with how much info there is I think we can loose the notes from the board if it means it will save.
+>>>
+
+======================
+11:30 problem
+======================
+{TableCell} 
+// Visually shifts the 11am bookings to 11:30. Causes issuse, so disabled for now.
+{State}
+// 11:30 bookings. Plot them as 11 and push the outs to 3pm
+{CSS}
+.hr30{
+    position:relative;
+    top:20px;
+  }
+======================
+
+
+
 
 in {state}.movePax(pax, oldCell, newCell) {
     Looking to handle the Bcell stuff here rather than below in getBCell (cuz getBCell is barfing in same column moves)

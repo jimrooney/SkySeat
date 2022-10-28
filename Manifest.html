@@ -83,17 +83,18 @@
         _board.state.load()
       })
 
-      const $_s = $("<button class='Dark Debug'>").text("State")
+      const $_s = $("<button class='Dark Debug'>").text("Clean")
       this.$this.prepend($_s)
       $_s.on("click", function () {
-        console.log("{state}.getState(): %o", _board.state.getState())
+        console.log("{state}.getState(): %o", _board.removeOldBookings())
       })
 
-      const $_r = $("<button class='Dark Debug'>").append("<BR>").text("R")
-      this.$this.prepend($_r)
-      $_r.on("click", function () {
-        $(".Roster").toggle()
-      })
+      // const $_r = $("<button class='Dark Debug'>").append("<BR>").text("R")
+      // this.$this.prepend($_r)
+      // $_r.on("click", function () {
+      //   $(".Roster").toggle()
+      // })
+
       const $_msg = $("<div class='FloatingBox' />")
       $_msg.on("click", function () {
         //
@@ -197,6 +198,12 @@
         return o
       })
       return orders
+    }
+    getTomorrow(){
+      // *** this doesn't work yet. ***
+      let date = this.getDate() + 1
+      this.setDate(date)
+
     }
     //
     // Get Manifest

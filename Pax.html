@@ -12,7 +12,7 @@
     //
     // Getter/Setter Utility functions
     //
-    setValue(label, value) {
+    setLabel(label, value) {
       const rgxp = new RegExp(label, "i")
       let result = this.fields.find((x) => x.label.match(rgxp))
       if (!!result) {
@@ -21,7 +21,11 @@
         this.fields.push({ label: label, value: value })
       }
     }
-    getValue(label) {
+    // better naming for getValue... using wrapper so as not to break it getValue
+    getValue(label){
+      return this.getLabel(label)
+    }
+    getLabel(label) {
       const rgxp = new RegExp(label, "i")
       const result = this.fields.find((x) => x.label.match(rgxp))
       if (!!result && !!result.value) {
@@ -49,7 +53,7 @@
       return this.getValue("seat")
     }
     set seat(seatNum) {
-      this.setValue("seat", seatNum)
+      this.setLabel("seat", seatNum)
       //
       // also change the field here? ************************
       //
@@ -58,13 +62,13 @@
       return this.getValue("First Name")
     }
     set firstName(name) {
-      this.setValue("First Name", name)
+      this.setLabel("First Name", name)
     }
     get lastName() {
       return this.getValue("Last Name")
     }
     set lastName(name) {
-      this.setValue("Last Name", name)
+      this.setLabel("Last Name", name)
     }
     get barcode() {
       let code = this.getValue("Barcode")
@@ -79,13 +83,13 @@
         this.fields.push({ label: "Barcode", value: Barcode })
         return
       }
-      this.setValue("Barcode", Barcode)
+      this.setLabel("Barcode", Barcode)
     }
     get orderNumber() {
       return this.getValue("orderNumber")
     }
     set orderNumber(orderNumber) {
-      this.setValue("orderNumber", orderNumber)
+      this.setLabel("orderNumber", orderNumber)
     }
     get weight() {
       //
@@ -119,9 +123,9 @@
     }
     set weight(weight) {
       if (!!weight.actual) {
-        this.setValue("Actual Weight", weight.actual)
+        this.setLabel("Actual Weight", weight.actual)
       } else {
-        this.setValue("Passenger weight", weight)
+        this.setLabel("Passenger weight", weight)
       }
     }
     get times() {

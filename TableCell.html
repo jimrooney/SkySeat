@@ -364,6 +364,10 @@
             //
             $this.removeClass("outCell")
             $this.addClass("inCell")
+            // Visually shifts the 11am bookings to 11:30. Causes issuse, so disabled for now.
+            // if (this.hour == 11) {
+            //   $this.addClass("hr30")
+            // }
             break
           case "B":
             //
@@ -373,10 +377,6 @@
             $this.addClass("outCell")
             break
         }
-        // Visually shifts the 12pm bookings to 11:30. Causes issuse, so disabled for now.
-        // if (this.hour == 12) {
-        //   $this.addClass("hr30")
-        // }
         let codes = []
         let numPax = 0
 
