@@ -35,6 +35,13 @@ Saving issues - seems to be a lot of times it wont save. If is an issue with how
 ======================
 11:30 problem
 ======================
+The big issue with 11:30's right now is that we push the B leg +1 hour... 
+then the Bleg functions don't know where to find them, so they assume they've been manually moved.
+For now, we just block same column drops around 11/12.
+We allow same row drops cuz the Seating Planner view could break (all it does is same cell stuff)
+
+
+
 {TableCell} 
 // Visually shifts the 11am bookings to 11:30. Causes issuse, so disabled for now.
 {State}
@@ -44,6 +51,13 @@ Saving issues - seems to be a lot of times it wont save. If is an issue with how
     position:relative;
     top:20px;
   }
+
+{Time}
+/*                 **********************************************
+This is a hack!
+This is to make the 11:30 bookings plot at 12
+*********************************************
+*/
 ======================
 
 

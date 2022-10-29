@@ -128,6 +128,31 @@
       // ------------
       // Record Drop (if Legal)
       // ------------
+
+      //.......................................................
+      // Block TableCell drops from/to 11am/12pm cuz they barf 
+      //.......................................................
+      // (cuz they lose their B legs (cuz we're pushing the B's out an hour so they don't know where to look))
+      // _this {TableCell}
+      // _dropped {TableCell} or {Booking}
+
+      // skip any {Manifest} drops
+      if (!(_dropped instanceof Booking)) {
+        // not the same cell
+        if (_dropped.row != _this.row) {
+          // only same column
+          if (_dropped.column == _this.column) {
+            // row 5 or 6 (11am/12pm)
+            if (_dropped.row == 5 || _dropped.row == 6) {
+              console.log("5/6")
+              console.log("Going to barf")
+              utility.error("11:30/12:00 drops in same column don't work.")
+              return
+            }
+          }
+        }
+      }
+
       if (_this.isLegalDrop(_this.leg, _dropped.leg)) {
         // ---------------
         // Remove old plots (if Manifest drop)
