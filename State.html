@@ -233,7 +233,7 @@
         this.removePax(pax, key)
       }
     }
-    getBookings(barcode){
+    getBookings(barcode) {
       // return a list of [{CellData}] for any cells with that pax
       let ret = []
       for (const key in this.data) {
@@ -399,28 +399,41 @@
       })
 
       console.log("Date: %o", _date)
-
       console.log("Data: %o", this.data)
-
+      //
+      // filter data
+      //
+      Object.entries(this.data).forEach((entry) => {
+        const [key, value] = entry
+        if (!!value.passengers) {
+          value.passengers.forEach((px) => {
+            px.fields.forEach((f) => {
+              if (f.label == "pickupLocation") {
+                if (!!f.value) {
+                  f.value.pickupInstructions = ""
+                }
+              }
+            })
+          })
+        }
+      })
+      console.log("this.data: ", this.data)
+      //
+      // JSONify
+      //
       const sendData = []
       Object.entries(this.data).forEach((entry) => {
         const [key, value] = entry
         sendData.push(JSON.stringify(value))
       })
 
-      console.log("sendData: ", sendData)
+      //console.log("sendData: ", sendData)
       utility.alert("Sending Data...")
-      //google.script.run.saveState(_date, this.data)
+
       google.script.run
         .withSuccessHandler(this.com.success)
         .withFailureHandler(this.com.failure)
         .saveState(_date, sendData)
-
-      //
-      // google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).saveBoard( dataArry )
-      // function saveBoard(_array) { ... in Code.js
-      //
-      // Can just try calling the root save() function.
     }
 
     test(args) {
@@ -430,7 +443,6 @@
     // A function to move a pax so the B leg can be handled as well.
     //
     movePax(pax, oldCell, newCell) {
-
       const oldId = oldCell.id || oldCell
       const newId = newCell.id || newCell
       // console.log("oldCell: ", oldCell)
@@ -439,7 +451,6 @@
       // if (oldId.split("_")[1] == newId.split("_")[1]){
       //   console.log("Same Column")
       // }
-
 
       if (!(pax instanceof Pax)) {
         // force {Pax} object
@@ -539,7 +550,7 @@
       const row = cell.id?.split("_")[0]
       const col = cell.id?.split("_")[1]
 
-      // 
+      //
       // 11:30 bookings. Plot them as 11 and push the outs to 3pm
       let push = 0
       if (parseInt(row) == 5) {
