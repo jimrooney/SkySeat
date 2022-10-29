@@ -407,16 +407,30 @@
         const [key, value] = entry
         if (!!value.passengers) {
           value.passengers.forEach((px) => {
+            let obj = {}
+
             px.fields.forEach((f) => {
+              // remove pickup instructions
               if (f.label == "pickupLocation") {
                 if (!!f.value) {
                   f.value.pickupInstructions = ""
                 }
               }
+              obj[f.label] = f.value // Build obj retaining only one set of label/value per label... removes duplicates
             })
+
+            let newFields = []
+
+            Object.entries(obj).forEach((entry) => {
+              const [key, value] = entry
+              newFields.push({ label: key, value: value })
+            })
+
+            px.fields = newFields
           })
         }
       })
+
       console.log("this.data: ", this.data)
       //
       // JSONify
@@ -426,8 +440,6 @@
         const [key, value] = entry
         sendData.push(JSON.stringify(value))
       })
-
-      //console.log("sendData: ", sendData)
       utility.alert("Sending Data...")
 
       google.script.run
