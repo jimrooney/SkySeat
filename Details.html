@@ -427,6 +427,7 @@
         // Load Fuel
         //
         const plane = _this.state.getPlaneFromState(CellData)
+        console.log("Plane: ", plane)
         const loadedPlane = plane.getLoadedPlane(CellData)
         // get the PCF selector
         // Set it to match the {state} data (or standard fuel if no state fuel)
@@ -441,11 +442,14 @@
         // }
         const report = $(`.Report_${i}`)
         const color = WB.cg.balanced ? "green" : "red"
+
+        let WeightLeft = plane.limits.weight.MAUW - WB.rounded.AUW
+        WeightLeft = Math.round(WeightLeft)
         //
         // Update the "red/notRed" report bar above the seats
         //
         report.css("background-color", color)
-        report.text(`CG: ${WB.rounded.CG} AUW: ${WB.rounded.AUW}`)
+        report.text(`CG: ${WB.rounded.CG} Left: ${WeightLeft} kg`)
       })
     }
     // ============================================================================
