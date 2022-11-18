@@ -23,6 +23,17 @@ updateStations(stations) { <-- consider removing
 -------------------------------
 Currently
 -------------------------------
+
+
+//
+          // Each Pickup
+          //
+          data.forEach(orderNumber=>{
+
+in {Manifest}.getPickupList({ bookings, date, row }) {
+    This is where the pickup object is created and it only currently slugs the orderNumbers into arrays.
+    Probably want to put all the pickup data in there so we don't have to search for it later.
+
 in {PickupList}... data.forEach(orderNumber=>{
     Looping over a list of oreder numbers... need to call the Manifest and extract the pickup details from them.
     Moving them works already.

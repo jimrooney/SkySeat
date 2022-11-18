@@ -44,16 +44,15 @@
         )
         .append("<div class='container'></div>")
 
-
-    // so it can be called against pickups or dropoffs
-        if (this.pickupList.pickups.length > 0){
-          contents = this.buildList(contents,this.pickupList.pickups,"Pickup")
-        } else {
-        contents = this.buildList(contents,this.pickupList.dropoffs,"Dropoff") 
+      // so it can be called against pickups or dropoffs
+      if (this.pickupList.pickups.length > 0) {
+        contents = this.buildList(contents, this.pickupList.pickups, "Pickup")
+      } else {
+        contents = this.buildList(contents, this.pickupList.dropoffs, "Dropoff")
       }
       return contents
     }
-    buildList(contents, list, pickdrop){
+    buildList(contents, list, pickdrop) {
       // --------------------
       // Each Pickup Location
       // --------------------
@@ -71,18 +70,11 @@
           return acc
         }, null)
 
-          
         let pickupTime = time.getTime(location?.pickupTime)
-        if (pickupTime == "NaN:NaN"){
+        if (pickupTime == "NaN:NaN") {
           pickupTime = ""
         }
         const loc = location?.locationName || ""
-
-
-
-
-        
-
 
         // Build div and append.
         const drag = $(`<div>(${px.length}x) ${loc} ${pickupTime}</div>`)
@@ -119,7 +111,7 @@
       this.$this.hide()
     }
 
-    showList (Data) {
+    showList(Data) {
       const RoundID = "PickupContents" // legacy hack... can probably replace below with string
       const PickupManifest = "PickupManifest"
 
@@ -133,117 +125,127 @@
       //
       const pickupList = $("#PickupList")
       pickupList.empty()
-      pickupList.append("<div id='PickupContents'>PickupContents</div>")
+      pickupList.append("<div id='PickupContents'></div>")
       //
       // Navbar
       //
-      let _nav =
-        "<div style='float:right; width: 100%; display: block; position: absolute; top: 0;'>" +
-        "<button id='OnGroundManifestToggle' onClick=''>On-Ground Manifest</button><button onClick='utility.printPickup()'>Print</button>" +
-        "</div><P>"
+      let _nav = `<div style='float:right; width: 100%; display: block; position: absolute; top: 0;'>
+        <button onClick='utility.printPickup()'>Print</button>
+        </div><span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span><P>`
       $("#PickupContents").append(_nav)
+      $("#PickupContents")
+        .find("#pickupDetailsClose")
+        .click(function () {
+          $("#PickupList").hide()
+        })
 
       // ----------------------------------------------------------------------------------------------------------------------------------
       // Pickup Manifest (sortable) (loop over the Data)
       // ----------------------------------------------------------------------------------------------------------------------------------
-        if (!!Data.pickups && Data.pickups.length > 0) {
-          let data = Data.pickups
-          //
-          // Sortable PickupManifest
-          //
-          $("#" + RoundID).append(
-            "<div id='" +
-              PickupManifest +  
-              "' data-time='" +
-              time +
-              "' data-round='" +
-              RoundID +
-              "' class='PickupManifest'></div>"
-          )
-          $("#" + PickupManifest).append(
-            `<ul id="sortable1" class="PickupSprite droptrue">
+      if (!!Data.pickups && Data.pickups.length > 0) {
+        let data = Data.pickups
+        //
+        // Sortable PickupManifest
+        //
+        $("#" + RoundID).append(
+          "<div id='" +
+            PickupManifest +
+            "' data-time='" +
+            time +
+            "' data-round='" +
+            RoundID +
+            "' class='PickupManifest'></div>"
+        )
+        $("#" + PickupManifest).append(
+          `<ul id="sortable1" class="PickupSprite droptrue">
               <span class="pax"></span>
               <span class="title" data-vehicle="1">Van1</span>
             </ul>`
-          )
-          //
-          // Each Pickup
-          //
-          data.forEach(orderNumber=>{
-            $("#sortable1").append(
-              `<li id="Stop${orderNumber}" class="ui-state-default stop"></span>
+        )
+        //
+        // Each Pickup
+        //
+        data.forEach((orderNumber) => {
+          // In Manifest getPickupList() looking at how the data is formed and looking to include the pickup data
+          // so we don't have to dig it back up here. ***
+
+          $("#sortable1").append(
+            `<li id="Stop${orderNumber}" class="ui-state-default stop"></span>
                 ${orderNumber}
                 <br>
                 <span class='click_area' style='font-size:x-small'></span>
                 </li>`
-            )
-            $("#Stop" + orderNumber).data("data", stop)
-          })
-          //
-          // Two other sortable lists (Van2 and "Other")
-          //
-          $("#" + PickupManifest).append(
-            '<ul id="sortable2' +
-              time +
-              '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="2">Van2</span></ul>'
           )
-          $("#" + PickupManifest).append(
-            '<ul id="sortable3' +
-              time +
-              '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="3">Other</span></ul>'
-          )
+          $("#Stop" + orderNumber).data("data", stop)
+        })
+        //
+        // Two other sortable lists (Van2 and "Other")
+        //
+        $("#" + PickupManifest).append(
+          '<ul id="sortable2' +
+            time +
+            '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="2">Van2</span></ul>'
+        )
+        $("#" + PickupManifest).append(
+          '<ul id="sortable3' +
+            time +
+            '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="3">Other</span></ul>'
+        )
+        //
+        // Link the sortables
+        //
+        $("ul.droptrue").sortable({
+          connectWith: "ul",
+        })
+        //
+        $("ul.dropfalse").sortable({
+          connectWith: "ul",
+          dropOnEmpty: false,
+        })
+        // --------------------------------------------------------------
+        // Name Dropdowns (show by default)
+        // --------------------------------------------------------------
+        //
+        $(
+          "#sortable1" +
+            " .click_area, #sortable2" +
+            " .click_area, #sortable3" +
+            " .click_area"
+        ).each(function () {
           //
-          // Link the sortables
+          // Show/Hide details
           //
-          $("ul.droptrue").sortable({
-            connectWith: "ul",
-          })
-          //
-          $("ul.dropfalse").sortable({
-            connectWith: "ul",
-            dropOnEmpty: false,
-          })
-          // --------------------------------------------------------------
-          // Name Dropdowns (show by default)
-          // --------------------------------------------------------------
-          //
-          $(
-            "#sortable1" + " .click_area, #sortable2" + " .click_area, #sortable3" + " .click_area"
-          ).each(function () {
-            //
-            // Show/Hide details
-            //
 
-            let _stop = $(this).parent().data("data")
+          let _stop = $(this).parent().data("data")
 
-            let details = "<div></div>"
+          let details = "<div></div>"
 
-            $(this).append(details)
+          $(this).append(details)
 
-            if (!!_stop) {
-              if (!!_stop.tripCell) {
-                let _col = _stop.tripCell.slice(-1)
-                let _reg = $("#ac" + _col)
-                  .text()
-                  .slice(0, 3)
-                let _regLine = _reg + " <br> "
-                $(this).append(_regLine)
-              }
-              let _pax = []
-              for (let p in _stop.pax) {
-                _pax.push(_stop.pax[p].firstName + " " + _stop.pax[p].lastName)
-              }
-              $(this).append(_pax.join("<BR>"))
-              $(this).data("visible", 1)
+          if (!!_stop) {
+            if (!!_stop.tripCell) {
+              let _col = _stop.tripCell.slice(-1)
+              let _reg = $("#ac" + _col)
+                .text()
+                .slice(0, 3)
+              let _regLine = _reg + " <br> "
+              $(this).append(_regLine)
             }
-          })
+            let _pax = []
+            for (let p in _stop.pax) {
+              _pax.push(_stop.pax[p].firstName + " " + _stop.pax[p].lastName)
+            }
+            $(this).append(_pax.join("<BR>"))
+            $(this).data("visible", 1)
+          }
+        })
 
-          $("#sortable1" + ", #sortable2" + ", #sortable3").droppable({
-            accept: ".ui-state-default",
-            //drop: handleDropEvent,
-          })
-        }
-      
+        $("#sortable1" + ", #sortable2" + ", #sortable3").droppable({
+          accept: ".ui-state-default",
+          //drop: handleDropEvent,
+        })
+      }
+
       // ----------------------------------------------------------------------------------------------------------------------------------
       pickupList.show()
     }
