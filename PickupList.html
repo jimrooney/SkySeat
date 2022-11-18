@@ -110,11 +110,142 @@
     }
     show(args) {
       console.log("PickupList: ", args)
-      this.$this.append(this.get$PickupList(args))
+      this.$this.append(this.get$PickupList(args)) // Old V2 pickupList DOM.
       this.$this.show()
+      // *** to disable the new stuff, remove the next call...
+      this.showList(args.pickupList) // Calling retrofit of V1 pickupList DOM... deletes Old V2 version first
     }
     hide() {
       this.$this.hide()
+    }
+
+    showList (Data) {
+      const RoundID = "PickupContents" // legacy hack... can probably replace below with string
+      const PickupManifest = "PickupManifest"
+
+      /* RoundID was the "pickup round" we're on (aka, which hour)
+        We're just targetting PickupContents for now as it's the second tier container (just below PickupList)
+      */
+      const time = "99"
+      console.log("showList Data: %o", Data)
+      //
+      // Clear old list
+      //
+      const pickupList = $("#PickupList")
+      pickupList.empty()
+      pickupList.append("<div id='PickupContents'>PickupContents</div>")
+      //
+      // Navbar
+      //
+      let _nav =
+        "<div style='float:right; width: 100%; display: block; position: absolute; top: 0;'>" +
+        "<button id='OnGroundManifestToggle' onClick=''>On-Ground Manifest</button><button onClick='utility.printPickup()'>Print</button>" +
+        "</div><P>"
+      $("#PickupContents").append(_nav)
+
+      // ----------------------------------------------------------------------------------------------------------------------------------
+      // Pickup Manifest (sortable) (loop over the Data)
+      // ----------------------------------------------------------------------------------------------------------------------------------
+        if (!!Data.pickups && Data.pickups.length > 0) {
+          let data = Data.pickups
+          //
+          // Sortable PickupManifest
+          //
+          $("#" + RoundID).append(
+            "<div id='" +
+              PickupManifest +  
+              "' data-time='" +
+              time +
+              "' data-round='" +
+              RoundID +
+              "' class='PickupManifest'></div>"
+          )
+          $("#" + PickupManifest).append(
+            `<ul id="sortable1" class="PickupSprite droptrue">
+              <span class="pax"></span>
+              <span class="title" data-vehicle="1">Van1</span>
+            </ul>`
+          )
+          //
+          // Each Pickup
+          //
+          data.forEach(orderNumber=>{
+            $("#sortable1").append(
+              `<li id="Stop${orderNumber}" class="ui-state-default stop"></span>
+                ${orderNumber}
+                <br>
+                <span class='click_area' style='font-size:x-small'></span>
+                </li>`
+            )
+            $("#Stop" + orderNumber).data("data", stop)
+          })
+          //
+          // Two other sortable lists (Van2 and "Other")
+          //
+          $("#" + PickupManifest).append(
+            '<ul id="sortable2' +
+              time +
+              '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="2">Van2</span></ul>'
+          )
+          $("#" + PickupManifest).append(
+            '<ul id="sortable3' +
+              time +
+              '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="3">Other</span></ul>'
+          )
+          //
+          // Link the sortables
+          //
+          $("ul.droptrue").sortable({
+            connectWith: "ul",
+          })
+          //
+          $("ul.dropfalse").sortable({
+            connectWith: "ul",
+            dropOnEmpty: false,
+          })
+          // --------------------------------------------------------------
+          // Name Dropdowns (show by default)
+          // --------------------------------------------------------------
+          //
+          $(
+            "#sortable1" + " .click_area, #sortable2" + " .click_area, #sortable3" + " .click_area"
+          ).each(function () {
+            //
+            // Show/Hide details
+            //
+
+            let _stop = $(this).parent().data("data")
+
+            let details = "<div></div>"
+
+            $(this).append(details)
+
+            if (!!_stop) {
+              if (!!_stop.tripCell) {
+                let _col = _stop.tripCell.slice(-1)
+                let _reg = $("#ac" + _col)
+                  .text()
+                  .slice(0, 3)
+                let _regLine = _reg + " <br> "
+                $(this).append(_regLine)
+              }
+              let _pax = []
+              for (let p in _stop.pax) {
+                _pax.push(_stop.pax[p].firstName + " " + _stop.pax[p].lastName)
+              }
+              $(this).append(_pax.join("<BR>"))
+              $(this).data("visible", 1)
+            }
+          })
+
+          $("#sortable1" + ", #sortable2" + ", #sortable3").droppable({
+            accept: ".ui-state-default",
+            //drop: handleDropEvent,
+          })
+        }
+      
+      // ----------------------------------------------------------------------------------------------------------------------------------
+      pickupList.show()
     }
   }
 </script>
