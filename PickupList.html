@@ -28,6 +28,8 @@
       this.$this = $this // jQuery selector passed in
       $this.data("object", this)
       this.pickupList
+      this.headers = ["Crafter","HiAce","Taxi1","Taxi2"]
+      
     }
     get$PickupList(args) {
       this.pickupList = args.pickupList
@@ -112,11 +114,12 @@
     }
 
     showList(pickupData) {
+      // pickupData is built in {Manifest}
+      // getPickupList({ bookings, date, row }) {
       console.log("showList pickupData: ", pickupData)
-      const ContainerId = "PickupContents" // legacy hack... can probably replace below with string
       const PickupManifest = "PickupManifest"
 
-      /* ContainerId was the "pickup round" we're on (aka, which hour)
+      /* PickupContents was the "pickup round" we're on (aka, which hour)
         We're just targetting PickupContents for now as it's the second tier container (just below PickupList)
       */
       //
@@ -128,37 +131,57 @@
       //
       // Navbar
       //
+      //<button onClick='utility.printPickup()'>Print</button>
       let _nav = `<div style='float:right; width: 100%; display: block; position: absolute; top: 0;'>
-        <button onClick='utility.printPickup()'>Print</button>
+        <span class="title"></span>
         </div><span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span><P>`
-      $("#PickupContents").append(_nav)
-      $("#PickupContents")
+      $(`#PickupContents`).append(_nav)
+      
+      $(`#PickupContents`)
         .find("#pickupDetailsClose")
         .click(function () {
-          $("#PickupList").hide()
+          pickupList.hide()
         })
 
+        $(`#PickupContents .title`).text("Pickups")
+        pickupList.css("background-color", "green");
+
+      let data = pickupData.pickups
+      let _dropoffs = false
+      if(data.length < 1){
+        _dropoffs = true
+        data = pickupData.dropoffs
+        $(`#PickupContents .title`).text("Dropoffs")
+        pickupList.css("background-color", "lightgreen")
+      }
       // ----------------------------------------------------------------------------------------------------------------------------------
       // Pickup Manifest (sortable) (loop over the Data)
       // ----------------------------------------------------------------------------------------------------------------------------------
-      if (!!pickupData.pickups && pickupData.pickups.length > 0) {
-        let data = pickupData.pickups
+      if (data.length > 0) {
         //
         // Sortable PickupManifest
         //
-        $("#" + ContainerId).append(
+        $("#PickupContents").append(
           `<div id='${PickupManifest}' class='PickupManifest'></div>`
         )
         $("#" + PickupManifest).append(
           `<ul id="sortable1" class="PickupSprite droptrue">
               <span class="pax"></span>
-              <span class="title" data-vehicle="1">Van1</span>
+              <span class="title" data-vehicle="1">${this.headers[0]}</span>
             </ul>`
         )
         //
         // Each Pickup
         //
         data.forEach((orderNumber) => {
+          //
+          // Get Dropoff Location for one way trips (outs/ccf)... 
+          // Rezdy uses multiple "Drop off address" labels, so we're getting the last one...
+          // This will break if they add more "Drop off address" labels in the future.
+          //
+          const order = pickupData.manifest.getOrder(orderNumber)
+          const dropoffAddress = order.fields.findLast(f=>f.label="Drop off address").value
+          
           // get a list of passengers for this orderNumber (filtering the pickupData by orderNumber)
           const paxList = pickupData.passengers.filter((pax) => {
             const oNum = pax.fields?.find((x) => x.label == "orderNumber")
@@ -173,6 +196,10 @@
             short: location?.value?.locationName || "MissingPickupName",
             detail: "",
           }
+          if (!!dropoffAddress && _dropoffs){
+            locationName.short = dropoffAddress
+            locationName.detail = ""
+          }
           if (!!locationName.short.match(/=/)) {
             const split = locationName.short.split("=")
             locationName.short = split[1]
@@ -186,6 +213,9 @@
           let time = location?.value?.pickupTime
           if (!!time) {
             time = root.time.getTime(time)
+          }
+          if (_dropoffs){
+            time = ""
           }
           const $line =
             $(`<li id="Stop${orderNumber}" class="ui-state-default stop"></span>
@@ -208,14 +238,22 @@
         // Two other sortable lists (Van2 and "Other")
         //
         $("#" + PickupManifest).append(
-          '<ul id="sortable2' +
-            time +
-            '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="2">Van2</span></ul>'
+          `<ul id="sortable2${time}" class="PickupSprite droptrue">
+            <span class="pax"></span>
+            <span class="title" data-vehicle="2">${this.headers[1]}</span>
+          </ul>`
         )
         $("#" + PickupManifest).append(
-          '<ul id="sortable3' +
-            time +
-            '" class="PickupSprite droptrue"><span class="pax"></span><span class="title" data-vehicle="3">Other</span></ul>'
+          `<ul id="sortable3${time}" class="PickupSprite droptrue">
+            <span class="pax"></span>
+            <span class="title" data-vehicle="3">${this.headers[2]}</span>
+          </ul>`
+        )
+        $("#" + PickupManifest).append(
+          `<ul id="sortable4${time}" class="PickupSprite droptrue">
+            <span class="pax"></span>
+            <span class="title" data-vehicle="4">${this.headers[3]}</span>
+          </ul>`
         )
         //
         // Link the sortables
@@ -236,6 +274,7 @@
           "#sortable1" +
             " .click_area, #sortable2" +
             " .click_area, #sortable3" +
+            " .click_area, #sortable4" +
             " .click_area"
         ).each(function () {
           //

@@ -24,37 +24,21 @@ updateStations(stations) { <-- consider removing
 Currently
 -------------------------------
 
-Reduce the passengers array in pickupList by orderNumber to get all the data for that pickup.
-//
-          // Each Pickup
-          //
-          data.forEach(orderNumber=>{
+Needs to get "Special" dropoff locations for:
+Outs
+Ccf
+Mmon
 
-in {Manifest}.getPickupList({ bookings, date, row }) {
-    This is where the pickup object is created and it only currently slugs the orderNumbers into arrays.
-    Probably want to put all the pickup data in there so we don't have to search for it later.
+PickupList:
+    Sort by time (initially)
+    Maybe add trip type to detailed pax view?
+    Add plane to detailed view if possible (colouring?)
 
-in {PickupList}... data.forEach(orderNumber=>{
-    Looping over a list of oreder numbers... need to call the Manifest and extract the pickup details from them.
-    Moving them works already.
+    Van2 loses padding?
+    Make PickupList Print button only print the pickuplist
 
-
-
-Mike's list
->>>
-Times changed to 11:30 an 1:45 - even if they are the same boxes, just so its clear and load sheets print correctly.
-Pick ups to be formatted like the old board where you can click and show 2 vans and drag and drop.
 Charters, doesn't pull weights through
-Saving issues - seems to be a lot of times it wont save. If is an issue with how much info there is I think we can loose the notes from the board if it means it will save.
->>>
 
-======================
-11:30 problem
-======================
-The big issue with 11:30's right now is that we push the B leg +1 hour... 
-then the Bleg functions don't know where to find them, so they assume they've been manually moved.
-For now, we just block same column drops around 11/12.
-We allow same row drops cuz the Seating Planner view could break (all it does is same cell stuff)
 
 
 
