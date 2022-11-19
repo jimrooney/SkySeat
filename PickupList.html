@@ -28,8 +28,7 @@
       this.$this = $this // jQuery selector passed in
       $this.data("object", this)
       this.pickupList
-      this.headers = ["Crafter","HiAce","Taxi1","Taxi2"]
-      
+      this.headers = ["Crafter", "HiAce", "Taxi1", "Taxi2"]
     }
     get$PickupList(args) {
       this.pickupList = args.pickupList
@@ -136,19 +135,19 @@
         <span class="title"></span>
         </div><span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span><P>`
       $(`#PickupContents`).append(_nav)
-      
+
       $(`#PickupContents`)
         .find("#pickupDetailsClose")
         .click(function () {
           pickupList.hide()
         })
 
-        $(`#PickupContents .title`).text("Pickups")
-        pickupList.css("background-color", "green");
+      $(`#PickupContents .title`).text("Pickups")
+      pickupList.css("background-color", "green")
 
       let data = pickupData.pickups
       let _dropoffs = false
-      if(data.length < 1){
+      if (data.length < 1) {
         _dropoffs = true
         data = pickupData.dropoffs
         $(`#PickupContents .title`).text("Dropoffs")
@@ -175,19 +174,26 @@
         //
         data.forEach((orderNumber) => {
           //
-          // Get Dropoff Location for one way trips (outs/ccf)... 
+          // Get Dropoff Location for one way trips (outs/ccf)...
           // Rezdy uses multiple "Drop off address" labels, so we're getting the last one...
           // This will break if they add more "Drop off address" labels in the future.
           //
           const order = pickupData.manifest.getOrder(orderNumber)
-          const dropoffAddress = order.fields.findLast(f=>f.label="Drop off address").value
-          
+          let dropoffAddress
+          if (!!order) {
+            const _doff = order.fields?.findLast(
+              (f) => (f.label = "Drop off address")
+            )
+            if (!!_doff.value) {
+              dropoffAddress = _doff.value
+            }
+          }
           // get a list of passengers for this orderNumber (filtering the pickupData by orderNumber)
           const paxList = pickupData.passengers.filter((pax) => {
             const oNum = pax.fields?.find((x) => x.label == "orderNumber")
             return oNum.value == orderNumber
           })
-//          console.log("orderNumber %o pax: %o", orderNumber, paxList)
+          //          console.log("orderNumber %o pax: %o", orderNumber, paxList)
           // extract location from first pax
           const location = paxList[0].fields.find(
             (f) => f.label == "pickupLocation"
@@ -196,7 +202,7 @@
             short: location?.value?.locationName || "MissingPickupName",
             detail: "",
           }
-          if (!!dropoffAddress && _dropoffs){
+          if (!!dropoffAddress && _dropoffs) {
             locationName.short = dropoffAddress
             locationName.detail = ""
           }
@@ -214,7 +220,7 @@
           if (!!time) {
             time = root.time.getTime(time)
           }
-          if (_dropoffs){
+          if (_dropoffs) {
             time = ""
           }
           const $line =
