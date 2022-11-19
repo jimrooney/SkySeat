@@ -113,13 +113,12 @@
 
     showList(pickupData) {
       console.log("showList pickupData: ", pickupData)
-      const RoundID = "PickupContents" // legacy hack... can probably replace below with string
+      const ContainerId = "PickupContents" // legacy hack... can probably replace below with string
       const PickupManifest = "PickupManifest"
 
-      /* RoundID was the "pickup round" we're on (aka, which hour)
+      /* ContainerId was the "pickup round" we're on (aka, which hour)
         We're just targetting PickupContents for now as it's the second tier container (just below PickupList)
       */
-      const time = "99"
       //
       // Clear old list
       //
@@ -147,14 +146,8 @@
         //
         // Sortable PickupManifest
         //
-        $("#" + RoundID).append(
-          "<div id='" +
-            PickupManifest +
-            "' data-time='" +
-            time +
-            "' data-round='" +
-            RoundID +
-            "' class='PickupManifest'></div>"
+        $("#" + ContainerId).append(
+          `<div id='${PickupManifest}' class='PickupManifest'></div>`
         )
         $("#" + PickupManifest).append(
           `<ul id="sortable1" class="PickupSprite droptrue">
@@ -167,26 +160,48 @@
         //
         data.forEach((orderNumber) => {
           // get a list of passengers for this orderNumber (filtering the pickupData by orderNumber)
-          const paxList = pickupData.passengers.filter(pax=>{
-            const oN = pax.fields?.find(x=>x.label == "orderNumber")
-            return oN.value == orderNumber
+          const paxList = pickupData.passengers.filter((pax) => {
+            const oNum = pax.fields?.find((x) => x.label == "orderNumber")
+            return oNum.value == orderNumber
           })
-          // In Manifest getPickupList() looking at how the data is formed and looking to include the pickup data
-          // so we don't have to dig it back up here. ***
-
-          // console.log("orderNumber %o pax: %o", orderNumber, paxList)
-          const location = paxList[0].fields.find(f=>f.label=="pickupLocation") // extract location from first pax
+//          console.log("orderNumber %o pax: %o", orderNumber, paxList)
+          // extract location from first pax
+          const location = paxList[0].fields.find(
+            (f) => f.label == "pickupLocation"
+          )
+          const locationName = {
+            short: location?.value?.locationName || "MissingPickupName",
+            detail: "",
+          }
+          if (!!locationName.short.match(/=/)) {
+            const split = locationName.short.split("=")
+            locationName.short = split[1]
+            locationName.detail = split[0]
+          }
+          if (!!locationName.short.match(/\(/)) {
+            const split = locationName.short.split("(")
+            locationName.short = split[0]
+            locationName.detail = split[1]
+          }
           let time = location?.value?.pickupTime
-          if(!!time){
+          if (!!time) {
             time = root.time.getTime(time)
           }
-          $("#sortable1").append(
-            `<li id="Stop${orderNumber}" class="ui-state-default stop"></span>
-                (${paxList.length}) ${time} ${location?.value?.locationName} 
+          const $line =
+            $(`<li id="Stop${orderNumber}" class="ui-state-default stop"></span>
+                (${paxList.length}) ${time} ${locationName.short} 
                 <br>
-                <span class='click_area' style='font-size:x-small'></span>
-                </li>`
-          )
+                </li>`).click(() => {
+              $(".click_area").toggle("slow")
+            })
+          const $clickArea =
+            $(`<div class='click_area' style='font-size:x-small;display: none;'>
+              <span style='color:darkgrey'>${locationName.detail}</span></div>`)
+          paxList.forEach((p) => {
+            $clickArea.append(`<div>${p.fullName}</div>`)
+          })
+          $line.append($clickArea)
+          $("#sortable1").append($line)
           $("#Stop" + orderNumber).data("data", stop)
         })
         //
