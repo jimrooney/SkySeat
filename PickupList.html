@@ -181,6 +181,7 @@
           const order = pickupData.manifest.getOrder(orderNumber)
           let dropoffAddress
           if (!!order) {
+            console.log("Order: ", order)
             const _doff = order.fields?.findLast(
               (f) => (f.label = "Drop off address")
             )
