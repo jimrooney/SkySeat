@@ -194,6 +194,15 @@
             const oNum = pax.fields?.find((x) => x.label == "orderNumber")
             return oNum.value == orderNumber
           })
+          // Get number of infants (if any)
+          const initialValue = 0
+          const numInfants = paxList.reduce((accumulator, pax) => {
+            const infant = pax.fields.find((x) => x.label.match(/Infant/gi))?.value
+            if ((infant === "0" || infant > 0) && infant < 3) {
+              accumulator++
+            }
+            return accumulator
+          }, initialValue)
           //          console.log("orderNumber %o pax: %o", orderNumber, paxList)
           // extract location from first pax
           const location = paxList[0].fields.find(
@@ -224,9 +233,13 @@
           if (_dropoffs) {
             time = ""
           }
+          let _color = ""
+          if (numInfants>0){
+            _color = "color:red"
+          }
           const $line =
             $(`<li id="Stop${orderNumber}" class="ui-state-default stop"></span>
-                (${paxList.length}) ${time} ${locationName.short} 
+              <span style='${_color}'>(${paxList.length+numInfants})</span> ${time} ${locationName.short} 
                 <br>
                 </li>`).click(() => {
               $(".click_area").toggle("slow")
