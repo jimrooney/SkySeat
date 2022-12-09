@@ -23,20 +23,24 @@
       //
       let _this = this // _this instead of this because this is the calling button right now.
 
-      this.$this = $(`<div class="Manifest_Container NoPrint">
+      this.$this = $(`
+      <div class="Manifest_Container NoPrint">
+        
         <div>
           <div id="Header" class="Header">
-          <div id="Title">Loading...</div>
-          
-          <span class="total" style="float:left;display: inline-block;"></span>
-          ${_this.board.$board.prop("id")} Manifest </div>
-          <div><button id="reload" class='Dark Debug'>Reload Rezdy Data</button></div>
-          <div id="Totals" />
-
-          <div class="Bookings"></div>
+            <span>Manifest</span> <span id="Title">Loading...</span> <span id="Totals" />
+            <div class="DatePicker" />
+            <span class="total" style="float:left;display: inline-block;"></span>
           </div>
-          <div class="Roster" ></div>
-          <div class="Info" ></div>
+          
+          <span class="CrossCheck" />
+          <span><button id="reload" class='Dark Debug'>Reload Data</button></span>
+          <p>
+          
+          <div class="Bookings" />
+        </div>
+          <div class="Roster" />
+          <div class="Info" />
           <span class="Notes" style="float: right;background-color:grey" />
       </div>
       `)
@@ -83,10 +87,10 @@
       // })
 
       const $_s = $("<button>").text("<- CrossCheck ->")
-      this.$this.prepend($_s)
       $_s.on("click", function () {
         console.log("{state}.getState(): %o", _board.removeOldBookings())
       })
+      this.$this.find(".CrossCheck").prepend($_s)
 
       // const $_r = $("<button class='Dark Debug'>").append("<BR>").text("R")
       // this.$this.prepend($_r)
@@ -251,7 +255,7 @@
       //
       const dayPax = this.countPax(bookings)
       // -------------------------------------------------------------------------------------------
-      this.$this.find("#Totals").text("Manifest Total Pax(" + dayPax + ") ")
+      this.$this.find("#Totals").text("Total Pax(" + dayPax + ") ")
       // -------------------------------------------------------------------------------------------
       //
       // Print Sprites
