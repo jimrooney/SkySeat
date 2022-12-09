@@ -27,11 +27,10 @@
         <div>
           <div id="Header" class="Header">
           <div id="Title">Loading...</div>
+          
           <span class="total" style="float:left;display: inline-block;"></span>
-          <span style="float:right;display: inline-block;"><button id="rr">(R)</button></span>
-          <span style="float:right;display: inline-block;"><button id="reload">&#10226;</button></span>
-          <span style="float:right;display: inline-block;"><button id="debug">(M)</button></span>
           ${_this.board.$board.prop("id")} Manifest </div>
+          <div><button id="reload" class='Dark Debug'>Reload Rezdy Data</button></div>
           <div id="Totals" />
 
           <div class="Bookings"></div>
@@ -57,33 +56,33 @@
       //
       // Manifest Reload Button
       //
-      this.$this.find("#rr").click(function () {
-        _this.loadRoster()
-      })
+      // this.$this.find("#rr").click(function () {
+      //   _this.loadRoster()
+      // })
       this.$this.find("#reload").click(function () {
         _this.load()
       })
-      this.$this.find("#debug").click(function () {
-        debug.log(_this)
-      })
+      // this.$this.find("#debug").click(function () {
+      //   debug.log(_this)
+      // })
 
       //
       // Show State Button
       //
       let _board = this.board
 
-      const $_save = $("<button class='Dark Debug' />").html("Save")
-      this.$this.prepend($_save)
-      $_save.on("click", function () {
-        _board.state.save()
-      })
-      const $_load = $("<button class='Dark Debug' />").html("Load")
-      this.$this.prepend($_load)
-      $_load.on("click", function () {
-        _board.state.load()
-      })
+      // const $_save = $("<button class='Dark Debug' />").html("Save")
+      // this.$this.prepend($_save)
+      // $_save.on("click", function () {
+      //   _board.state.save()
+      // })
+      // const $_load = $("<button class='Dark Debug' />").html("Load")
+      // this.$this.prepend($_load)
+      // $_load.on("click", function () {
+      //   _board.state.load()
+      // })
 
-      const $_s = $("<button class='Dark Debug'>").text("Clean")
+      const $_s = $("<button>").text("<- CrossCheck ->")
       this.$this.prepend($_s)
       $_s.on("click", function () {
         console.log("{state}.getState(): %o", _board.removeOldBookings())
