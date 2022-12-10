@@ -173,22 +173,30 @@
         // Each Pickup
         //
         data.forEach((orderNumber) => {
-          //
-          // Get Dropoff Location for one way trips (outs/ccf)...
-          // Rezdy uses multiple "Drop off address" labels, so we're getting the last one...
-          // This will break if they add more "Drop off address" labels in the future.
-          //
+
           const order = pickupData.manifest.getOrder(orderNumber)
           let dropoffAddress
+          let pickupAddress
+          //
+          // Rezdy uses the second "Drop off address" label as the actual dropoff address... IF there's a dropoff!!! (arg!)
+          // The rest of the array is used for "How did you hear about us" type data... (all labeled "Drop off address") arg!!!
+          //
+
+          // Get the dropoff address (or whatever's shoved in there) if it has the field
           if (!!order) {
             console.log("Order: ", order)
-            const _doff = order.fields?.findLast(
+            const _doff = order.fields?.filter(
               (f) => (f.label = "Drop off address")
             )
-            if (!!_doff.value) {
-              dropoffAddress = _doff.value
+            if (_doff.length>0) {
+              dropoffAddress = _doff[1].value
             }
           }
+
+          // Get the pickup address (if it has one, even if it's "No pickup required" ARG!)
+          // We have to get it from the first passenger, because of course it's in passengers when dropoffs are in bookings (arg!)
+
+          // == Passenger List ==
           // get a list of passengers for this orderNumber (filtering the pickupData by orderNumber)
           const paxList = pickupData.passengers.filter((pax) => {
             const oNum = pax.fields?.find((x) => x.label == "orderNumber")
@@ -203,16 +211,22 @@
             }
             return accumulator
           }, initialValue)
-          //          console.log("orderNumber %o pax: %o", orderNumber, paxList)
+          // console.log("orderNumber %o pax: %o", orderNumber, paxList)
           // extract location from first pax
           const location = paxList[0].fields.find(
             (f) => f.label == "pickupLocation"
           )
           const locationName = {
-            short: location?.value?.locationName || "MissingPickupName",
+            short: location?.value?.locationName || "",
             detail: "",
           }
-          if (!!dropoffAddress && _dropoffs) {
+          pickupAddress = locationName.short
+          console.log('pickupAddress?: ', !!pickupAddress)
+          console.log("pickupAddress: " , pickupAddress)
+
+
+
+          if (!!dropoffAddress && _dropoffs && !locationName.short) {
             locationName.short = dropoffAddress
             locationName.detail = ""
           }
