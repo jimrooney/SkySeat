@@ -35,6 +35,7 @@
           
           <span class="CrossCheck" />
           <span><button id="reload" class='Dark Debug'>Reload Data</button></span>
+          <span class="SaveButton" />
           <p>
           
           <div class="Bookings" />
@@ -75,11 +76,11 @@
       //
       let _board = this.board
 
-      // const $_save = $("<button class='Dark Debug' />").html("Save")
-      // this.$this.prepend($_save)
-      // $_save.on("click", function () {
-      //   _board.state.save()
-      // })
+      const $_save = $("<button class='Dark Debug' />").html("Save")
+      $_save.on("click", function () {
+        _board.state.save()
+      })
+      this.$this.find(".SaveButton").prepend($_save)
       // const $_load = $("<button class='Dark Debug' />").html("Load")
       // this.$this.prepend($_load)
       // $_load.on("click", function () {
