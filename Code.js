@@ -1,5 +1,3 @@
-var testVar = "Hi, I'm a testVar"
-
 function doGet(request) {
   return HtmlService.createTemplateFromFile("index").evaluate()
 }
@@ -58,8 +56,7 @@ function getLastSave() {
   return saveDate
 }
 function loadState(date) {
-  const DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
-  const sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
+  const sheet = SpreadsheetApp.openById(ssId).getSheetByName("state") // worksheet name
   const range = sheet.getRange("A:AZ")
   const values = range.getValues()
   //
@@ -92,8 +89,7 @@ function loadState(date) {
   If the number of aircraft (or hours) expands, the spreadsheet needs to as well (could be fixed)
 */
 function saveState(date, data) {
-  const DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
-  const sheet = SpreadsheetApp.openById(DataID).getSheetByName("state") // worksheet name
+  const sheet = SpreadsheetApp.openById(ssId).getSheetByName("state") // worksheet name
   let range = sheet.getRange("A:AZ")
   let values = range.getValues()
   const numRows = range.getNumRows()
@@ -176,9 +172,7 @@ function saveBoard(_array) {
 
   var d = new Date()
   var time = d.getTime()
-
-  var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
-  var sheet = SpreadsheetApp.openById(DataID).getSheetByName("state")
+  var sheet = SpreadsheetApp.openById(ssId).getSheetByName("state")
   var range = sheet.getRange("A:AZ") // Number of columns needs to match getRange below... last number is the number of rows. // needs to match (below) *********************!!!!!!!!!!
   var values = range.getValues()
   var numRows = range.getNumRows()
@@ -217,9 +211,7 @@ function getNZdate(d) {
 
 function saveLoadsheet(data) {
   // date,time,pilot,plane,fuel,route,pax,paxWeights,pilotWeight,TOW,CG,numPax
-
-  var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
-  var sheet = SpreadsheetApp.openById(DataID).getSheetByName("Flight Data")
+  var sheet = SpreadsheetApp.openById(ssId).getSheetByName("Flight Data")
 
   // ================
   // Remove old rows
@@ -277,9 +269,7 @@ function saveLoadsheet(data) {
 function loadBoard(date) {
   // Testing:
   //date = "28/12/2019"
-
-  var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
-  var range = SpreadsheetApp.openById(DataID).getSheetByName("TheBoardData").getRange("A:E") // needs to match saveBoard (above) *********************!!!!!!!!!!
+  var range = SpreadsheetApp.openById(ssId).getSheetByName(THE_BOARD_SHEET_NAME).getRange(THE_BOARD_DATA_RANGE) // needs to match saveBoard (above) *********************!!!!!!!!!!
   var data = range.getValues()
 
   var numRows = range.getNumRows()
@@ -294,26 +284,21 @@ function loadBoard(date) {
   return ret
 }
 function loadPilots() {
-  var DataID = "1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s" // Company Data Spreadsheet ID
-  var range = SpreadsheetApp.openById(DataID).getSheetByName("Pilots").getRange("A:E")
+  var range = SpreadsheetApp.openById(ssId).getSheetByName(PILOT_SHEET_NAME).getRange(PILOT_RANGE)
   var data = range.getValues()
   return data
 }
 function loadPlanes() {
-  var DataID = "1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s" // Company Data Spreadsheet ID
-  var range = SpreadsheetApp.openById(DataID).getSheetByName("Airplanes").getRange("A:N")
+  var range = SpreadsheetApp.openById(ssId).getSheetByName(AIRCRAFT_SHEET_NAME).getRange(AIRCRAFT_RANGE)
   var data = range.getValues()
   return data
 }
 function loadPlaneData() {
-  var DataID = "1OOaO6yrHKXUsN0JHdPo9mDpuuBMVBnvZUxe3OTQPo-s" // Company Data Spreadsheet ID
-  var data = SpreadsheetApp.openById(DataID).getSheetByName("HoursTillCheck").getRange("B:F").getValues()
+  var data = SpreadsheetApp.openById(ssId).getSheetByName("HoursTillCheck").getRange(AIRCRAFT_DATA_RANGE).getValues()
   return data
 }
 function loadRoster(date) {
-  //https://docs.google.com/spreadsheets/d/1zkA22oiIPbnggme0cosvPnnTkRPCSkkCcc-2mFSclLg/edit#gid=211032400
-  const DataID = "1zkA22oiIPbnggme0cosvPnnTkRPCSkkCcc-2mFSclLg" // Company Data Spreadsheet ID
-  const workbook = SpreadsheetApp.openById(DataID)
+  const workbook = SpreadsheetApp.openById(ssId)
   const sheets = workbook.getSheets()
   const tabs = sheets.map((x) => {
     return x.getName()
