@@ -1,3 +1,5 @@
+var testVar = "Hi, I'm a testVar"
+
 function doGet(request) {
   return HtmlService.createTemplateFromFile("index").evaluate()
 }

@@ -1,4 +1,3 @@
-
 function setSettings(){
   
   // Set Global Variables

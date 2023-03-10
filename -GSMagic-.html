@@ -1,0 +1,7 @@
+All GS files (js before uploaded by CLASP) share their global vars and even hoist them... 
+So the file name order doesn't matter for loading so we can keep all the globals in "Settings.gs" 
+and they'll still work even if they're called in example.gs
+
+-- Uncaught 
+"Uncaught" errors in the Chrome console won't tell you much... 
+but if you open apps scripts and look at the "My Excecutions" you'll get much more useful error reports
