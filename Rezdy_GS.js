@@ -25,7 +25,7 @@ function add_months(dt, n) {
 function loadTripCodes() {
   Logger.log(testVar)
   Logger.log(ssId)
-  var data = ss.getSheetByName("TripCodes").getRange("A:Z").getValues()
+  var data = ss.getSheetByName(TRIPCODES).getRange(TRIPCODES_RANGE).getValues()
   return data
 }
 // =======================================================

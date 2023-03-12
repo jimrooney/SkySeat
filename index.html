@@ -85,17 +85,12 @@
         root.pickupList = new PickupList($("#PickupList"))
       })
     </script>
+    <div id="PickupList" class="pickupDetails"></div>
 
     <div
       id="HoverBar"
       class="NoPrint"
-      style="
-        float: top;
-        width: 100%;
-        text-align: center;
-        background: #737373;
-        color: white;
-      "
+      style="float: top; width: 100%; text-align: center; color: #737373"
     >
       <div id="Alert"></div>
       <div id="Error"></div>
@@ -106,8 +101,6 @@
         >Company Data (Plane/Pilot)</a
       >
     </div>
-
-    <div id="PickupList" class="pickupDetails"></div>
     <div id="Boards" class="NoPrint"></div>
 
     <script>
@@ -168,7 +161,7 @@
                 data-tip="(No Rezdy)"
                 onClick="theBoard.next(-1,false)"
               >
-              <=
+                <=
               </button>
               <button class="Dark" onClick="theBoard.load()">
                 Load Saved Board
@@ -178,7 +171,7 @@
                 data-tip="(No Rezdy)"
                 onClick="theBoard.next(1,false)"
               >
-              =>
+                =>
               </button>
 
               <a

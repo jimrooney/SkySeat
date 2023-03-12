@@ -15,6 +15,10 @@ var AIRCRAFT_RANGE = "A:N"
 var AIRCRAFT_DATA_RANGE = "B:F"
 var THE_BOARD_SHEET_NAME = "TheBoardData"
 var THE_BOARD_DATA_RANGE = "A:E" 
+
+var TRIPCODES = "TripCodes"
+var TRIPCODES_RANGE = "A:Z"
+
 // *** lots of -> // needs to match (
   // search for it in Code.js *** 
 

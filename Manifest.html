@@ -42,7 +42,7 @@
         </div>
           <div class="Roster" />
           <div class="Info" />
-          <span class="Notes" style="float: right;background-color:grey" />
+          <span class="Notes" />
       </div>
       `)
         .droppable({
@@ -174,8 +174,8 @@
       this.orders = this.processOrders(this.data.bookings) // [{Booking},{Booking},{Booking}] An array of booking objects
       this.$bookings.empty()
       this.show()
-      this.loadRoster() // auto load the roster too.
-      $(".Roster").hide()
+      // this.loadRoster() // auto load the roster too.
+      // $(".Roster").hide()
     }
     processOrders(orders) {
       const state = this.board.state

@@ -38,6 +38,8 @@ function jQuery() {
     .setWidth(2500)
   ss.show(html)
 }
+
+// These two functions aren't used, remove them ***
 function checkSave(_date) {
   return // **************************************
   var DataID = "1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c" // Data Spreadsheet ID
@@ -55,6 +57,9 @@ function getLastSave() {
   var saveDate = saveDateCell.getValue()
   return saveDate
 }
+//
+//
+
 function loadState(date) {
   const sheet = SpreadsheetApp.openById(ssId).getSheetByName("state") // worksheet name
   const range = sheet.getRange("A:AZ")
@@ -293,11 +298,11 @@ function loadPlanes() {
   var data = range.getValues()
   return data
 }
-function loadPlaneData() {
+function loadPlaneData() { // not used anymore
   var data = SpreadsheetApp.openById(ssId).getSheetByName("HoursTillCheck").getRange(AIRCRAFT_DATA_RANGE).getValues()
   return data
 }
-function loadRoster(date) {
+function loadRoster(date) { // not used (remove it) ***
   const workbook = SpreadsheetApp.openById(ssId)
   const sheets = workbook.getSheets()
   const tabs = sheets.map((x) => {

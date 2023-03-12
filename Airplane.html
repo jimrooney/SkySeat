@@ -221,7 +221,7 @@
           fuel: {quantity: x, weight x,}
         }
       */
-      let data = ARGS // eventually just swap ARGS for data (once we're done rooting out all the ARGS uses)
+      const data = ARGS // eventually just swap ARGS for data (once we're done rooting out all the ARGS uses)
 
       // Build data.fuel (copy by value) with default 0 liters.
       data.fuel = {
@@ -242,6 +242,7 @@
           this.seatPax(pax)
         })
       }
+      console.log("Data: ", data)
       //
       // copy so we don't change the original data
       //
