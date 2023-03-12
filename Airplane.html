@@ -9,7 +9,7 @@
       this.moment = data.moment
       this.type = data.type // this.constructor.name
       this.standardFuel = data.standardfuel || 0
-
+      this.calculator = new WB_Calculator(this)
       // this.burn = {
       //   // climb:
       //   // cruise:
@@ -95,7 +95,8 @@
       return liters
     }
     getFuelWeight(CellData) {
-      const liters = this.getFuelQuantity(CellData)
+      let liters = this.fuel.liters
+      if (!!CellData){liters = this.getFuelQuantity(CellData)}
       const weight = liters * this.fuel.factor || 0
       return weight
     }
@@ -214,6 +215,8 @@
     // If not given, load from {state}
     //
     getWB(ARGS) {
+      console.log("getWB")
+      this.calculator.getWB(ARGS)
       /*
         {
           sad: {txt: 'Declared Weights', SAD: 'Declared', class: 'declaredWeights'}
@@ -398,6 +401,7 @@
         },
         WAM: WAM,
       }
+      console.log("WB: ", wb)
       return wb
     }
 

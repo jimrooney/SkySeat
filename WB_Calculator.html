@@ -1,0 +1,26 @@
+<script>
+  // ==========================================================================
+  // WB_Calculator Object
+  // ==========================================================================
+  class WB_Calculator {
+    constructor(aircraft) {
+      this.aircraft = aircraft
+    }
+    getWB(data) {
+      console.log("WB_Calculator.getWB(data) data:",data)
+      // No data check
+      if (!data) {
+        console.log("WB_Calculator.getWB(): No data passed in")
+        return
+      }
+      data.fuel = this.aircraft.fuel
+      data.fuel = {
+        ...{ liters: data.PCF?.fuel || data.liters || 0 },
+        ...data.fuel,
+      }
+      data.fuel.weight = data.fuel.liters * data.fuel.factor
+      console.log("DData:",data)
+    }
+
+  }
+</script>
