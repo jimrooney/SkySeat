@@ -95,11 +95,6 @@
       <div id="Alert"></div>
       <div id="Error"></div>
       <div class="Background"><?!= include('Logo'); ?></div>
-      SkySeat [[ v3 ] ["THL"]]
-      <a
-        href="https://docs.google.com/spreadsheets/d/1HXimCuJVYXizVfEe4ZQfAKWHxX-PFf0HFZhiQkdRw9g"
-        >Company Data (Plane/Pilot)</a
-      >
     </div>
     <div id="Boards" class="NoPrint"></div>
 
@@ -114,7 +109,7 @@
       <div id="TheBoard" class="NoPrint" style="float: none; margin: 10px">
         <div>
           <div>
-            <button class="Nav" onClick="root.makeNewBoard()">[+]</button>
+            <!-- <button class="Nav" onClick="root.makeNewBoard()">[+]</button> -->
             <!-- <button class="Nav Dev" onClick="utility.close()">Close</button>
             <button class="Dark" onClick="test()">Test</button>
             <button class="Nav" id="SaveButton" onClick="saveBoard()">
@@ -185,7 +180,6 @@
             </div>
           </span>
         </div>
-        <div><button onClick="theBoard.load()">&#10226;</button><br /></div>
       </div>
       <!-- Popups -->
       <div id="Roster"></div>
@@ -200,6 +194,13 @@
 
       <?!= include('Draggable'); ?>
       <a name="bottom"></a>
+      <div>
+        SkySeat [[ v3.0.1 ] ["THL"]]
+      <a
+        href="https://docs.google.com/spreadsheets/d/1HXimCuJVYXizVfEe4ZQfAKWHxX-PFf0HFZhiQkdRw9g"
+        >Company Data (Plane/Pilot)</a
+      >
+      </div>
     </div>
   </body>
 </html>
