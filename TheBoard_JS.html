@@ -62,17 +62,6 @@
         google.script.run.withSuccessHandler(theBoard.timeStamp.saveLocal).getLastSave()
       },
     },
-    showPickups: function () {
-      $(".PickupCell").each(function () {
-        let row = $(this).prop("id")
-        let numPickups = theBoard.getManifest(row).pickups.total
-        if (numPickups) {
-          $(this).html(numPickups)
-        } else {
-          $(this).html('<span style="color:white">00</span>')
-        }
-      })
-    },
     showManifest: function (Data) {
       console.log("showManifest Data: %o", Data)
       //

@@ -346,7 +346,7 @@
       */
       const $S = $("<div />", {
         text: "Save",
-        class: "MenuButton MobileButton",
+        class: "MenuButton MobileButton SaveButton",
       })
       $S.click(function () {
         console.log("State data:", _this.state.data)
@@ -375,7 +375,7 @@
         `<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`
       )
       const $popLeft = $(
-        `<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`
+        `<div id="DetailsClose" class="popupCloseButton left MobileButton">X</div>`
       )
       this.$root.append($pop).append($popLeft)
       $pop.click(() => _this.close(_this))
