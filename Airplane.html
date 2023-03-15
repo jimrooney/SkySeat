@@ -80,9 +80,46 @@
     }
     getLoadedPlane(CellData) {
       const liters = this.getFuelQuantity(CellData)
-      this.fuel = liters // this is setting weight not liters ***
+      this.fuel = liters // this is setting weight not liters (cuz it's a setter/getter)
+      this.fixWAM() // Fix our screwy Aircraft WAM
       CellData.passengers.forEach((pax) => this.seatPax(pax)) // seat pax
       return this
+    }
+    fixWAM() {
+      //
+      // put corrected Empty Weight WAM into stations
+      //
+      const aircraftStation = this.stations.find((station) =>
+        station.type.includes("airplane")
+      )
+      console.log("aircraftStation: ", aircraftStation)
+
+      console.log("WAM: ", [this.weight, this.arm, this.moment])
+      console.log("WAM: ", this.weight * this.arm == this.moment)
+
+      let station = new Station({
+        type: ["airplane"],
+        weight: this.weight,
+        arm: this.moment / this.weight,
+        moment: this.moment,
+        changed: true,
+      })
+      if (!!aircraftStation) {
+        console.log("Assign")
+        Object.assign(
+          this.stations[
+            this.stations.findIndex((station) =>
+              station.type.includes("airplane")
+            )
+          ],
+          station
+        )
+      }
+      else{
+        console.log("push")
+        this.stations.push(station)
+      }
+      console.log("stations: " , this.stations)
     }
     getSeats() {
       return this.stations.filter((item) => item.type.includes("seat"))
@@ -96,7 +133,9 @@
     }
     getFuelWeight(CellData) {
       let liters = this.fuel.liters
-      if (!!CellData){liters = this.getFuelQuantity(CellData)}
+      if (!!CellData) {
+        liters = this.getFuelQuantity(CellData)
+      }
       const weight = liters * this.fuel.factor || 0
       return weight
     }
