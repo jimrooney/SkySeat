@@ -34,9 +34,8 @@
       let station = new Station({
         type: ["airplane"],
         weight: this.aircraft.weight,
-        arm: this.aircraft.arm,
+        moment: this.aircraft.moment
       })
-      station.moment = this.aircraft.moment
       stations.push(station)
 
       console.log("Stations: ", stations)

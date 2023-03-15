@@ -6,10 +6,12 @@
       this.regcolor = data.regcolor
       this.weight = data.weight
       this.arm = data.arm
-      this.moment = data.moment
+      this.moment = this.fixCrazyMoment(data)
       this.type = data.type // this.constructor.name
       this.standardFuel = data.standardfuel || 0
       this.calculator = new WB_Calculator(this)
+      this.args = arguments
+
       // this.burn = {
       //   // climb:
       //   // cruise:
@@ -43,6 +45,18 @@
       // if (!!stations) {
       //   this.updateStations(stations)
       // }
+    }
+    //
+    // fix our screwy Aircraft Empty WAM
+    //
+    fixCrazyMoment(data) { 
+      if (data.weight > 0 && data.arm > 0) { // if we have values
+        if (data.moment != data.weight * data.arm) { // if W*A doesn't == Moment, tweak Arm
+          data.arm = data.moment / data.weight
+          this.arm = data.arm // override Arm with calculated Arm
+        }
+      }
+      return data.weight * data.arm
     }
     updateStations(stations) {
       // console.log("this.stations: ", this.stations)
@@ -81,45 +95,8 @@
     getLoadedPlane(CellData) {
       const liters = this.getFuelQuantity(CellData)
       this.fuel = liters // this is setting weight not liters (cuz it's a setter/getter)
-      this.fixWAM() // Fix our screwy Aircraft WAM
       CellData.passengers.forEach((pax) => this.seatPax(pax)) // seat pax
       return this
-    }
-    fixWAM() {
-      //
-      // put corrected Empty Weight WAM into stations
-      //
-      const aircraftStation = this.stations.find((station) =>
-        station.type.includes("airplane")
-      )
-      console.log("aircraftStation: ", aircraftStation)
-
-      console.log("WAM: ", [this.weight, this.arm, this.moment])
-      console.log("WAM: ", this.weight * this.arm == this.moment)
-
-      let station = new Station({
-        type: ["airplane"],
-        weight: this.weight,
-        arm: this.moment / this.weight,
-        moment: this.moment,
-        changed: true,
-      })
-      if (!!aircraftStation) {
-        console.log("Assign")
-        Object.assign(
-          this.stations[
-            this.stations.findIndex((station) =>
-              station.type.includes("airplane")
-            )
-          ],
-          station
-        )
-      }
-      else{
-        console.log("push")
-        this.stations.push(station)
-      }
-      console.log("stations: " , this.stations)
     }
     getSeats() {
       return this.stations.filter((item) => item.type.includes("seat"))

@@ -9,19 +9,7 @@
       this.weight = data.weight > 0 ? data.weight : 0
       this.arm = data.arm || 0
       this.id = data.id
-      this.moment = this.fixCrazyMoment(data)
-    }
-    //
-    // This will screw with the Arm to make weight*arm=moment work.
-    // This is because our W*A inexplicably does not equal moment... but it's what the engineers say, so it's "correct"
-    //
-    fixCrazyMoment(data) { // fix our screwy Aircraft Empty WAM
-      if (data.weight > 0 && data.arm > 0) { // if we have values
-        if (data.moment != data.weight * data.arm) { // if W*A doesn't == Moment, tweak Arm
-          data.arm = data.moment / data.weight
-        }
-      }
-      return data.weight * data.arm
+      this.moment = data.moment
     }
   }
 </script>
