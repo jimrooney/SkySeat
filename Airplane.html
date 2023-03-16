@@ -11,6 +11,7 @@
       this.standardFuel = data.standardfuel || 0
       this.calculator = new WB_Calculator(this) // Creates this.stations[]
       this.args = arguments // For debugging --
+      this.data = data
 
       // this.burn = {
       //   // climb:
@@ -83,7 +84,7 @@
       if (typeof fuel == "object" && !!fuel.burnRate) {
         this._fuel = { ...this._fuel, ...fuel }
       }
-      if (fuel < 0) {
+      if (fuel > 0) {
         const fuelStation = this.stations.find((station) =>
           station.type.includes("fuel")
         ) // get the station

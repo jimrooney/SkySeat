@@ -153,6 +153,21 @@
       plane._state = this
       return plane
     }
+    getAircraftFromState(cell) {
+      const [r, c] = cell.cellID.split("_")
+      const key = "0_" + c
+      const PCF = this.data[key].PCF // Header Row PCF Data
+
+      const template = planes.getPlane(PCF.reg) // Grab the {Airplane} from planeManager to use as a template
+      const stations = JSON.parse( JSON.stringify( template.stations ))
+      const data = JSON.parse( JSON.stringify( template.data ))
+
+      // add checks ***
+          const dynamic_class = eval(PCF.type)
+          const instance = new dynamic_class(data,this,stations)
+          instance.cell = cell
+          return instance 
+    }
     addPax(pax, cellID, leg) {
       if (!this.data[cellID]) {
         this.data[cellID] = new CellData(cellID)

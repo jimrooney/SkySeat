@@ -13,28 +13,53 @@
       this.aircraft.stations = [station]
     }
     getWB(data) {
-      console.log("WB_Calculator.getWB(data) data:", data)
       // No data check
-      if (!data) {
+      if (!data.PCF) {
         console.log("WB_Calculator.getWB(): No data passed in")
         return
       }
-
+      // data.CellData
       // Stations
       console.log("Aircraft: ", this.aircraft)
-      const stations = Array.from(this.aircraft.stations) // copy so we don't change the original data
+      const stations = JSON.parse(JSON.stringify(Array.from(this.aircraft.stations))) // Shallow Copy
 
-      // Fuel
-      data.fuel = this.aircraft.fuel
-      data.fuel = {
-        ...{ liters: data.PCF?.fuel || data.liters || 0 },
-        ...data.fuel,
-      }
-      data.fuel.weight = data.fuel.liters * data.fuel.factor
+      const ff = this.aircraft.fuel.factor
+
+      const fuelWeight = data.PCF.fuel * this.aircraft.fuel.factor
+      this.aircraft.fuelWeight = fuelWeight 
+      this.aircraft.fuel = data.PCF.fuel // setter should mod the station
+      //
+
       console.log("WB_Calculator Data:", data)
+      const pxStations = stations.filter((item) => item.type.includes("seat"))
+
+      console.log("Seats: ", pxStations)
+      // Calc all moments
+      stations.forEach((station,index) => {
+        if (!!station.px){
+          const SAD = data.SAD.toLowerCase()
+
+          stations[index].weight = station.weight[SAD]
+          console.log("Station update: " , station.weight)
+        }
+        station.moment = station.weight * station.arm
+        console.log(station.moment)
+      })
 
 
-      console.log("Stations: ", stations)
+      /*
+      const numArray = [1, 2, 3, 4, 5];
+
+numArray.forEach((element, index) => {
+  numArray[index] = element * element;
+});
+
+console.log(numArray);
+*/
+
+      console.log("== Stations == : ", stations)
+
+
     }
   }
 </script>
