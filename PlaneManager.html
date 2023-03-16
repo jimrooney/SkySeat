@@ -18,32 +18,8 @@
     // Load in plane hours from spreadsheet
     //
     loadHours: function () {
-      google.script.run.withSuccessHandler(this.onPlaneDataLoad).loadPlaneData()
+      return
     },
-    onPlaneDataLoad: function (data) {
-      let planes = {}
-      for (let a in data[0]) {
-        planes[data[0][a]] = data[0][a]
-      }
-      for (let row in data) {
-        for (let col in data[row]) {
-          if (data[row][col]) {
-            planes[data[0][col]] = data[row][col]
-          }
-        }
-      }
-      $(".PlaneCell").each(function () {
-        $("> #hours", this).remove() // removes all "hours" children
-        let PCF = $(this).data("PCF")
-        let id = PCF[0]
-
-        let hours = planes[id]
-
-        let span = "<div id='hours' style='font-size:small;'>[hrs: <B>" + hours + "</B>]</div>"
-        $(this).prepend(span)
-      })
-    },
-
     loadPlanes: function (data) {
       //
       // Parse loaded two dimensional array into root planes object
@@ -60,7 +36,7 @@
       //
       data.forEach((row, i) => {
         let rowPlane = {}
-        if (i > 0) {
+        if ((i > 0)&&(data[i][0].length>0)) { // skip the header row & blank rows --
           row.forEach((element, pos) => {
             rowPlane[data[0][pos].toLowerCase()] = element // use header row element as variable name for element value
           })
@@ -68,13 +44,13 @@
         }
       })
       // ----------------------------
-      // Filter out extraneous planes
+      // Creates a list of dynamically created {Airplane} objects
       // ----------------------------
       //
       // Convert [{}] object list to [{Class}] Classed objects based on "type" attribute (206/208/GA8)
       //
       _rawData.forEach((plane) => {
-        if (!!plane.type && !plane.legacy) {
+        if (!!plane.type && !plane.legacy) { // filter out legacy planes
           let dynamic_class = eval(plane.type)
           let instance = new dynamic_class(plane)
           _planeData.push(instance)

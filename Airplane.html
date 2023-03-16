@@ -9,8 +9,8 @@
       this.moment = this.fixCrazyMoment(data)
       this.type = data.type // this.constructor.name
       this.standardFuel = data.standardfuel || 0
-      this.calculator = new WB_Calculator(this)
-      this.args = arguments
+      this.calculator = new WB_Calculator(this) // Creates this.stations[]
+      this.args = arguments // For debugging --
 
       // this.burn = {
       //   // climb:
@@ -22,15 +22,15 @@
         // weight: [TO,LND,Ramp]
         // fuel: (capacity)
       }
-      this.stations = [
-        // {
-        // accepts: ["crew","pax","cargo","seat","fuel","other"(controls/pods)] // perhaps more "others" details? *************
-        // type: (any of the accepts)
-        // weight:
-        // arm:
-        // limit:
-        // }
-      ]
+      // this.stations = [
+      //   // {
+      //   // accepts: ["crew","pax","cargo","seat","fuel","other"(controls/pods)] // perhaps more "others" details? *************
+      //   // type: (any of the accepts)
+      //   // weight:
+      //   // arm:
+      //   // limit:
+      //   // }
+      // ]
       this.load = [
         // {
         //   id: // this.getNextLoadId() ... simple counter.

@@ -24,7 +24,12 @@ updateStations(stations) { <-- consider removing
 Currently
 -------------------------------
 
+Fix planes.RawData (immediately!)... huge array.
+    {PlaneManager}.loadPlanes() loads a huge array... filter by empty [0] values.
 
+rewrite {Details}.getPlaneFromState()
+    it doesn't return a Class, so it doesn't get the WAM fix.
+    getPlaneFromState()
 
 "No PIC" when trying to print loadsheet. (first plane only)
 // HERE *** Finish loading this into the Pax constructor

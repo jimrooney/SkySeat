@@ -5,6 +5,12 @@
   class WB_Calculator {
     constructor(aircraft) {
       this.aircraft = aircraft
+      let station = new Station({
+        type: ["airplane"],
+        weight: this.aircraft.weight,
+        moment: this.aircraft.moment
+      })
+      this.aircraft.stations = [station]
     }
     getWB(data) {
       console.log("WB_Calculator.getWB(data) data:", data)
@@ -15,7 +21,7 @@
       }
 
       // Stations
-      console.log("Stations: ", this.aircraft.stations)
+      console.log("Aircraft: ", this.aircraft)
       const stations = Array.from(this.aircraft.stations) // copy so we don't change the original data
 
       // Fuel
@@ -27,16 +33,6 @@
       data.fuel.weight = data.fuel.liters * data.fuel.factor
       console.log("WB_Calculator Data:", data)
 
-      // Aircraft Moment fix
-      //
-      // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
-      //
-      let station = new Station({
-        type: ["airplane"],
-        weight: this.aircraft.weight,
-        moment: this.aircraft.moment
-      })
-      stations.push(station)
 
       console.log("Stations: ", stations)
     }
