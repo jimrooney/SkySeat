@@ -50,9 +50,11 @@
     //
     // fix our screwy Aircraft Empty WAM
     //
-    fixCrazyMoment(data) { 
-      if (data.weight > 0 && data.arm > 0) { // if we have values
-        if (data.moment != data.weight * data.arm) { // if W*A doesn't == Moment, tweak Arm
+    fixCrazyMoment(data) {
+      if (data.weight > 0 && data.arm > 0) {
+        // if we have values
+        if (data.moment != data.weight * data.arm) {
+          // if W*A doesn't == Moment, tweak Arm
           data.arm = data.moment / data.weight
           this.arm = data.arm // override Arm with calculated Arm
         }
@@ -88,9 +90,11 @@
         const fuelStation = this.stations.find((station) =>
           station.type.includes("fuel")
         ) // get the station
-        fuelStation.liters = fuel // modify the station
-        fuel = { liters: fuel, weight: this.getFuelWeight() } // build the object to modify the fuel object (spread into)
+        fuel = { liters: fuel, weight: fuel * this.fuel.factor || 0 } // build the object to modify the fuel object (spread into)
         this._fuel = { ...this._fuel, ...fuel } // merge the new values via spread
+
+        fuelStation.liters = fuel.liters // modify the station
+        fuelStation.weight = fuel.weight
       }
     }
     getLoadedPlane(CellData) {
@@ -109,14 +113,7 @@
       }
       return liters
     }
-    getFuelWeight(CellData) {
-      let liters = this.fuel.liters
-      if (!!CellData) {
-        liters = this.getFuelQuantity(CellData)
-      }
-      const weight = liters * this.fuel.factor || 0
-      return weight
-    }
+
     getFuelEndurance(liters) {
       const decimal = liters / this.fuel.burnRate
       const hrs = time.decimalToHours(decimal)
@@ -249,7 +246,7 @@
         ...this.fuel,
         ...data.fuel,
       }
-      data.fuel.kg = this.getFuelWeight(data.fuel.liters) // needs to be done after we have the "for sure" fuel quantity ***
+      data.fuel.kg = data.fuel.liters * data.fuel.factor // needs to be done after we have the "for sure" fuel quantity ***
       // if no passengers, look into state (is this necessary?) ***
       if (!!data.passengers) {
         data.passengers = this.state.data[this.cell.cellID]?.passengers
@@ -418,7 +415,6 @@
         },
         WAM: WAM,
       }
-      console.log("WB: ", wb)
       return wb
     }
 

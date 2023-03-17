@@ -27,48 +27,51 @@
 // ==========================================================================
 // WB Object
 // ==========================================================================
-  class WB {
-    constructor(data) {
+  class WBObject {
+    constructor(input) {
 
-      const wb = {
-        SAD: SAD,
-        stations: this.stations,
-        POB: pob,
-        crew: {
-          stations: CREW,
-          pic: PIC,
-        },
-        TotalWeight: totalWeight,
-        TotalMoment: totalMoment,
-        CG: CG,
-        cg: {
-          position: CG,
-          balanced: isBalanced,
-          fwdLimit: this.getForwardCGLimit(totalWeight, this.limits.CG.bounds[0]),
-          imperial: {
-            TotalWeight: totalWeight * 2.2,
-            CG: CG * 39.3701,
-            fuelWeight: (totalWeight - ZFW_Weight) * 2.2,
-          },
-        },
-        weights: {
-          crew: CREW_Weight,
-          pob: POB_Weight,
-          pax: PAX_Weight,
-          zfw: ZFW_Weight,
-          auw: totalWeight,
-          auwLeft: this.limits.MAUW - totalWeight,
-          fuel: totalWeight - ZFW_Weight,
-        },
-        fuel: {
-          liters: fuelQuantity,
-          kg: 0,
-          endurance: fuelEndurance,
-        },
-        rounded: {
-          AUW: roundAUW,
-          CG: roundCG,
-        },
+      const data = {
+        // SAD: data.SAD,
+        // stations: stations,
+        // POB: pob,
+        // crew: {
+        //   stations: CREW,
+        //   pic: PIC,
+        // },
+        // TotalWeight: totalWeight,
+        // TotalMoment: totalMoment,
+        // CG: CG,
+        // cg: {
+        //   position: CG,
+        //   balanced: isBalanced,
+        //   fwdLimit: this.getForwardCGLimit(
+        //     totalWeight,
+        //     this.limits.CG.bounds[0]
+        //   ),
+        //   imperial: {
+        //     TotalWeight: totalWeight * 2.2,
+        //     CG: CG * 39.3701,
+        //     fuelWeight: (totalWeight - ZFW_Weight) * 2.2,
+        //   },
+        // },
+        // weights: {
+        //   crew: CREW_Weight,
+        //   pob: POB_Weight,
+        //   pax: PAX_Weight,
+        //   zfw: ZFW_Weight,
+        //   auw: totalWeight,
+        //   fuel: totalWeight - ZFW_Weight,
+        // },
+        // fuel: {
+        //   liters: fuelQuantity,
+        //   kg: fuelQuantity * data.fuel.factor,
+        //   endurance: this.getFuelEndurance(data.fuel.liters), // fuelQuantity / data.fuel.burnRate,
+        // },
+        // rounded: {
+        //   AUW: roundAUW,
+        //   CG: roundCG,
+        // },
+        // WAM: WAM,
       }
       return wb
     }

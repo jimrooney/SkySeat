@@ -428,6 +428,12 @@
         //
         const plane = _this.state.getPlaneFromState(CellData)
         console.log("Plane: ", plane)
+
+
+
+
+
+
         const loadedPlane = plane.getLoadedPlane(CellData)
         // get the PCF selector
         // Set it to match the {state} data (or standard fuel if no state fuel)
@@ -757,8 +763,19 @@
         // .text()
         const _plane = $plane
         $plane.click(() => {
-          const aircraft = this.state.getAircraftFromState(cell)
-          aircraft.calculator.getWB(cell)
+          const data = $plane.data("cell")
+          const aircraft = this.state.getAircraftFromState(data)
+
+          const selectedFuel = $plane.find(".PCF_Selector :selected").val()
+
+          console.log("\n\n data: ", data)
+          console.log("aircraft: ", aircraft)
+
+            data.SAD = _this.SAD
+            data.liters = selectedFuel
+            
+          console.log("Data: " , data)
+          aircraft.calculator.getWB(data)
 
 
 
@@ -784,7 +801,7 @@
           // console.log("WB: ", WB)
 
 
-          // console.table(WB.WAM)
+           console.log("==WB==",WB)
           // console.log(
           //   "TotalWeight: %o \nTotalMoment: %o \nCG: %o",
           //   WB.TotalWeight,
