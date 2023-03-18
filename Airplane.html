@@ -61,15 +61,6 @@
       }
       return data.weight * data.arm
     }
-    updateStations(stations) {
-      // console.log("this.stations: ", this.stations)
-      // console.log("replace with: ", stations)
-      // // clear old stations and repopulate (could maybe do selective later so you can just pass in seats)
-      // this.stations = []
-      // stations.forEach((station) => {
-      //   this.stations.push(new Station(station))
-      // })
-    }
     get fuel() {
       if (!this._fuel) {
         return {
@@ -229,8 +220,10 @@
     // If not given, load from {state}
     //
     getWB(ARGS) {
+
       console.log("getWB")
       this.calculator.getWB(ARGS)
+      return
       /*
         {
           sad: {txt: 'Declared Weights', SAD: 'Declared', class: 'declaredWeights'}

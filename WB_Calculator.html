@@ -5,66 +5,98 @@
   class WB_Calculator {
     constructor(aircraft) {
       this.aircraft = aircraft
-      let station = new Station({
-        type: ["airplane"],
-        weight: this.aircraft.weight,
-        moment: this.aircraft.moment
-      })
-      this.aircraft.stations = [station]
     }
     getWB(data) {
-      const wb = new WBObject()      // No data check
-      if (!data.id) { // data.id is the Cell ID
+      const wb = new WBObject() // No data check ============ For Output =============
+      if (!data.id) {
+        // data.id is the Cell ID
         console.log("WB_Calculator.getWB(): No data passed in")
         return
       }
+
+      // const stationData = 
+      const station = new Station({
+        type: ["airplane"],
+        moment : this.aircraft.moment,
+        weight : this.aircraft.weight,
+        arm : this.aircraft.arm,
+        id: id = "AC"
+      })
+
+      this.aircraft.stations.unshift(station)
       // data.CellData
       // Stations
       console.log("Aircraft: ", this.aircraft)
-      const stations = JSON.parse(JSON.stringify(Array.from(this.aircraft.stations))) // Shallow Copy
-      const ff = this.aircraft.fuel.factor
-      const fuelLiters = this.aircraft.fuel.liters || data.liters || this.aircraft.data.standardfuel || 0
 
+
+
+      // const stations = JSON.parse(
+      //   JSON.stringify(Array.from(this.aircraft.stations))
+      // ) // Shallow Copy
+      const stations = this.aircraft.stations
+
+
+      const ff = this.aircraft.fuel.factor
+      const fuelLiters =
+        this.aircraft.fuel.liters ||
+        data.liters ||
+        this.aircraft.data.standardfuel ||
+        0
+      // == Set Fuel ==
       this.aircraft.fuel = fuelLiters // setter will mod the station
-      //
+      // == Set Pax ==
+      this.setPax(data)
+
       console.log("==stations: ", this.aircraft.stations)
+
+
       console.log("WB_Calculator Data:", data)
+
       const pxStations = stations.filter((item) => item.type.includes("seat"))
 
       console.log("Seats: ", pxStations)
       // Calc all moments
-      stations.forEach((station,index) => {
-        if (!!station.px){
+      stations.forEach((station, index) => {
+        if (!!station.px) {
           const SAD = data.SAD.toLowerCase()
 
           stations[index].weight = station.weight[SAD]
-          console.log("Station update: " , station.weight)
+          console.log("Station update: ", station.weight)
         }
         station.moment = station.weight * station.arm
         console.log(station.moment)
       })
 
-
       /*
-      const numArray = [1, 2, 3, 4, 5];
+                const numArray = [1, 2, 3, 4, 5];
 
-numArray.forEach((element, index) => {
-  numArray[index] = element * element;
-});
+          numArray.forEach((element, index) => {
+            numArray[index] = element * element;
+          });
 
-console.log(numArray);
-*/
+          console.log(numArray);
+          */
 
       console.table(stations)
       console.log(wb)
-          // console.table(WB.WAM)
-          // console.log(
-          //   "TotalWeight: %o \nTotalMoment: %o \nCG: %o",
-          //   WB.TotalWeight,
-          //   WB.TotalMoment,
-          //   WB.CG
-          // )
-
+      // console.table(WB.WAM)
+      // console.log(
+      //   "TotalWeight: %o \nTotalMoment: %o \nCG: %o",
+      //   WB.TotalWeight,
+      //   WB.TotalMoment,
+      //   WB.CG
+      // )
+    }
+    setPax(data){
+      const statePax = this.aircraft.state.data[this.aircraft.cell.id].passengers
+      statePax.forEach(pax=>{
+        if (pax.seat>0){
+          const station = this.aircraft.stations.find(station=>station.id==pax.seat)
+          station.pax = pax
+          station.weight = pax.weight[data.SAD.SAD.toLowerCase()]
+          station.moment = station.weight * station.arm
+        }
+      })
     }
   }
 </script>

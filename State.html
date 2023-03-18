@@ -162,6 +162,8 @@
       const stations = JSON.parse( JSON.stringify( template.stations ))
       const data = JSON.parse( JSON.stringify( template.data ))
 
+      console.log("==Stations==" , stations)
+      console.log("Template Aircraft: ", template)
       // add checks ***
           const dynamic_class = eval(PCF.type)
           const instance = new dynamic_class(data,this,stations)

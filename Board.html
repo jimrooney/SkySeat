@@ -178,7 +178,7 @@
         const _this = $(this).data("_script")
         const data = _this.board.state.getData($(this))
 
-        if (!data.PCF) {
+        if (!data.PCF && planeList.length>0) {
           const plane = planeList.shift()
           data.PCF = {
             type: plane.type,
