@@ -9,7 +9,7 @@
       this.moment = this.fixCrazyMoment(data)
       this.type = data.type // this.constructor.name
       this.standardFuel = data.standardfuel || 0
-      this.calculator = new WB_Calculator(this) // Creates this.stations[]
+      this.calculator = new WBObject({aircraft:this}) // Creates this.stations[]
       this.args = arguments // For debugging --
       this.data = data
 
