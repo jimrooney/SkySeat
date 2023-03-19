@@ -178,10 +178,6 @@
       this.roundAUW =
         Math.round((this.totalWeight + Number.EPSILON) * 100) / 100
       this.isBalanced = this.aircraft.isBalanced(this.totalWeight, this.CG)
-
-      console.table(stations)
-      console.log(this)
-
       return this
     }
     //

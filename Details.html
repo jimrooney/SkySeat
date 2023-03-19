@@ -417,40 +417,38 @@
       // Update WB reports
       //
 
+      //
       // Loop over each Row in {State}
+      //
       const _row = this.state.getRow(this._TableCell.row)
       const WBPlanes = []
       const _WB = []
       const loadedPlanes = []
-      _row.forEach((CellData, i) => {
+      _row.forEach((data, i) => {
+          const $AirplanePlotter = $(`#AirplanePlotter_${i}`)
+
+          const aircraft = this.state.getAircraftFromState(data)
+
+          console.log("Data: ", data)
+        // ---------------------------
+        // Get WB
+        // ---------------------------
+          const WB = aircraft.calculator.getWB(data)
+
+        const $Report = $(`.Report_${i}`)
+        const color = WB.isBalanced ? "green" : "red"
+
         //
-        // Load Fuel
+        // Update the "red/notRed" $Report bar above the seats
         //
-        const plane = _this.state.getPlaneFromState(CellData)
-        console.log("Plane: ", plane)
-
-        const loadedPlane = plane.getLoadedPlane(CellData)
-        // get the PCF selector
-        // Set it to match the {state} data (or standard fuel if no state fuel)
-        const $PCF_Selector = $(`#AirplanePlotter_${i}`).find(".PCF_Selector")
-        const $selectedFuel = $(`#AirplanePlotter_${i}`)
-          .find(".PCF_Selector :selected")
-          .text()
-        const WB = loadedPlane.getWB({ ...this.SAD, ...CellData })
-
-        // if (WB.POB.length > 0){
-        //   console.log("WB: ", WB)
-        // }
-        const report = $(`.Report_${i}`)
-        const color = WB.cg.balanced ? "green" : "red"
-
-        let WeightLeft = plane.limits.weight.MAUW - WB.rounded.AUW
+        let WeightLeft = WB.aircraft.limits.weight.MAUW - WB.roundAUW
         WeightLeft = Math.round(WeightLeft)
-        //
-        // Update the "red/notRed" report bar above the seats
-        //
-        report.css("background-color", color)
-        report.text(`CG: ${WB.rounded.CG} Left: ${WeightLeft} kg`)
+        $Report.css("background-color", color)
+        $Report.text(`CG: ${WB.roundCG} Left: ${WeightLeft} kg`)
+
+          console.table(WB.aircraft.stations)
+          console.log("==WB==", WB)
+
       })
     }
     // ============================================================================
@@ -763,34 +761,14 @@
           const selectedFuel = $plane.find(".PCF_Selector :selected").val()
           data.SAD = _this.SAD
           data.liters = selectedFuel
+
+        // ---------------------------
+        // Get WB
+        // ---------------------------
           const WB = aircraft.calculator.getWB(data)
 
-          // const ARGS = {
-          //   SAD: _this.SAD,
-          //   CellData: cell,
-          //   liters: airplanePlotter.airplane.getFuelQuantity(cell),
-          //   airplane: airplanePlotter.airplane,
-          //   plotter: airplanePlotter,
-          // }
-
-          // const routes = airplanePlotter.airplane.getRoute(cell)
-          // const WB = airplanePlotter.airplane.getWB(ARGS)
-          // console.log("Airplane Click: ", airplanePlotter.airplane)
-          // console.log("Airplane.getRoute(CellData): ", routes)
-          // console.log("ARGS: ", ARGS)
-          // console.log(
-          //   "getFuel: ",
-          //   airplanePlotter.airplane.getFuelQuantity(cell)
-          // )
-          // console.log("WB: ", WB)
-
+          console.table(WB.aircraft.stations)
           console.log("==WB==", WB)
-          // console.log(
-          //   "TotalWeight: %o \nTotalMoment: %o \nCG: %o",
-          //   WB.TotalWeight,
-          //   WB.TotalMoment,
-          //   WB.CG
-          // )
         })
 
         // ---------------------------
