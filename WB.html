@@ -189,11 +189,12 @@
       if (!!statePax) {
         statePax.forEach((pax) => {
           if (pax.seat > 0) {
+            console.log("PAX: ", pax)
             const station = this.aircraft.stations.find(
               (station) => station.id == pax.seat
             )
             station.pax = pax
-            station.weight = pax.weight[data.SAD.SAD.toLowerCase()]
+            station.weight = pax.weight[data.SAD]
             station.moment = station.weight * station.arm
           }
         })
