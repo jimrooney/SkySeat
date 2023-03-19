@@ -23,18 +23,26 @@ updateStations(stations) { <-- consider removing
 -------------------------------
 Currently
 -------------------------------
-WB_Calculator needs to add the aircraft to WB table
+Move all of WB_Calculator into {WB}
 
-In {station}... maybe use setter/getter to set moment when weight is set
+*** Update this for helis (helis don't fly left seat.)
+// PIC (Find finds Left Seat only (then skips)
+
+// this if block should be able to be removed now ***
+
+Fix Role always being PIC
 
 Keep fixing WB_Calculator.getWB(). Shallow Copy helped.
 // add checks ***
+In {station}... maybe use setter/getter to set moment when weight is set
+    I wonder if you can set it up so that setting a weight changes the moment and arm AND if you
+    pass in a moment that it mods the arm?
 
+-- Done?
 rewrite {Details}.getPlaneFromState()
     it doesn't return a Class, so it doesn't get the WAM fix.
     getPlaneFromState()
 
-    Starting to work... just picks up fuel so far.
 
 
 "No PIC" when trying to print loadsheet. (first plane only)

@@ -7,13 +7,12 @@
       this.aircraft = aircraft
     }
     getWB(data) {
-      const wb = new WBObject() // No data check ============ For Output =============
+      const WB = new WBObject() // No data check ============ For Output =============
       if (!data.id) {
         // data.id is the Cell ID
         console.log("WB_Calculator.getWB(): No data passed in")
         return
       }
-
       // const stationData = 
       const station = new Station({
         type: ["airplane"],
@@ -28,14 +27,10 @@
       // Stations
       console.log("Aircraft: ", this.aircraft)
 
-
-
       // const stations = JSON.parse(
       //   JSON.stringify(Array.from(this.aircraft.stations))
       // ) // Shallow Copy
       const stations = this.aircraft.stations
-
-
       const ff = this.aircraft.fuel.factor
       const fuelLiters =
         this.aircraft.fuel.liters ||
@@ -47,38 +42,79 @@
       // == Set Pax ==
       this.setPax(data)
 
-      console.log("==stations: ", this.aircraft.stations)
-
-
-      console.log("WB_Calculator Data:", data)
-
-      const pxStations = stations.filter((item) => item.type.includes("seat"))
-
-      console.log("Seats: ", pxStations)
       // Calc all moments
       stations.forEach((station, index) => {
+        // this if block should be able to be removed now ***
         if (!!station.px) {
           const SAD = data.SAD.toLowerCase()
-
           stations[index].weight = station.weight[SAD]
-          console.log("Station update: ", station.weight)
+          console.log("************ Station update: ", station.weight)
         }
         station.moment = station.weight * station.arm
         console.log(station.moment)
       })
+      // ---------------------------
+      // Sum all Weights and Moments
+      // ---------------------------
+      
+      // POB
+      // only occupied seats
+      WB.POB = stations.filter(
+        (station) => station.type.includes("seat") && !!station.weight
+      )
+      // Crew
+      const CREW = WB.POB.filter((station) => { // gets all CREW
+        if (!!station.pax) {
+          return station.pax.fields.find((field) => field.label == "Role") // only return pax with Roles (crew)
+        }
+      })
+      // PIC (Find finds Left Seat only (then skips), but could also search by matching seat number) ****
+      WB.PIC = CREW.find((station) =>
+      station.pax.fields.find((pax) => pax.label == "Role" && pax.value == "PIC")
+      )
+      console.log("PIC: ", WB.PIC)
+      WB.PAX = WB.POB.filter((x) => !CREW.includes(x)) // Filter out Crew
+      console.log("PAX: ", WB.PAX)
+      // Cargo
+      WB.CARGO = stations.filter(
+        (station) => station.type.includes("cargo") && station.weight > 0
+      )
+      // Everything but fuel
+      WB.ZFW = stations.filter((station) => !station.type.includes("fuel"))
+      // Fuel
+      WB.FUEL = stations.filter((station) => station.type.includes("fuel")) 
 
-      /*
-                const numArray = [1, 2, 3, 4, 5];
+      WB.POB_Weight = WB.POB.reduce(
+        (total, station) => total + parseFloat(station.weight),
+        0
+      )
+      WB.CREW_Weight = CREW.reduce(
+        (total, station) => total + parseFloat(station.weight),
+        0
+      )
+      WB.PAX_Weight = WB.POB_Weight - WB.CREW_Weight
+      const ZFW_Weight = WB.ZFW.reduce(
+        (total, station) => total + parseFloat(station.weight),
+        0
+      )
+      WB.totalWeight = stations.reduce(
+        (total, station) => total + parseFloat(station.weight),
+        0
+      )
+      WB.totalMoment = stations.reduce(
+        (total, station) => total + parseFloat(station.moment),
+        0
+      )
+      //
+      WB.CG = WB.totalMoment / WB.totalWeight
+      WB.roundCG = Math.round((WB.CG + Number.EPSILON) * 1000) / 1000
+      WB.roundAUW = Math.round((WB.totalWeight + Number.EPSILON) * 100) / 100
+      WB.isBalanced = this.aircraft.isBalanced(WB.totalWeight, WB.CG)
 
-          numArray.forEach((element, index) => {
-            numArray[index] = element * element;
-          });
 
-          console.log(numArray);
-          */
-
+      //console.log(WB.roundCG, WB.roundAUW, WB.isBalanced)
       console.table(stations)
-      console.log(wb)
+      console.log(WB)
       // console.table(WB.WAM)
       // console.log(
       //   "TotalWeight: %o \nTotalMoment: %o \nCG: %o",
@@ -87,6 +123,9 @@
       //   WB.CG
       // )
     }
+    //
+    // Copy the pax from {state} and put them in this.aircraft (stations) with SAD numbers
+    //
     setPax(data){
       const statePax = this.aircraft.state.data[this.aircraft.cell.id].passengers
       statePax.forEach(pax=>{
@@ -98,5 +137,6 @@
         }
       })
     }
+
   }
 </script>
