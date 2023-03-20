@@ -250,11 +250,36 @@
           const regex = new RegExp("weight", "gi")
           const weight = station.weight
           //
+          // Lunches
+          //
+          let Lunches = 0
+          let Buffet = 0
+
+          const myPax = new Pax(station.px)
+          const booking = this.plane.state.board.manifest.getBooking(myPax)
+          console.log("Booking: ", booking)
+
+          if (booking.length>0){
+              Lunches = this.plane.state.board.manifest.findLunches(booking[0])
+              Buffet = this.plane.state.board.manifest.findBuffetLunches(booking[0])
+          }
+          //
+          // Display
+          //
           $("._paxList-" + seatNum + "-fullName , PaxLine").html(
             `<span style="font-size:x-small">(${seatNum})</span> ${firstName} ${lastName}</span>`
           )
           $("._paxList-" + seatNum + "-weight").html(weight)
-          //
+
+          if (Buffet>0){
+            $("._paxList-" + seatNum + "-fullName , PaxLine").addClass("Buffet")
+          } else if (Lunches>0){
+            $("._paxList-" + seatNum + "-fullName , PaxLine").addClass("Lunch")
+          }
+          console.log("myPax: ", myPax)
+          console.log("booking: ", booking)
+          console.log("Lunches: ", Lunches)
+          console.log("Buffet: ", Buffet)
         }
       })
       let notes = []
@@ -273,7 +298,7 @@
       // Block Declared weights fom 208 use
       //
       $(".Signature").html("")
-        if (plane.type == "C208" && WB.SAD.SAD == "Declared"){
+        if (/^C208/i.test(plane.type) && WB.SAD.SAD == "Declared"){
           $(".Signature").html("Not Valid For Use <br>(208) with Declared Weights")
         }
         if (!WB.cg.balanced){

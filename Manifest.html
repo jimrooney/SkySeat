@@ -203,11 +203,10 @@
       })
       return orders
     }
-    getTomorrow(){
+    getTomorrow() {
       // *** this doesn't work yet. ***
       let date = this.getDate() + 1
       this.setDate(date)
-
     }
     //
     // Get Manifest
@@ -494,7 +493,7 @@
       }
       return this.orders.filter((order) => order.orderNumber == pax.orderNumber)
     }
-    getPax(barcode,orders = this.orders) {
+    getPax(barcode, orders = this.orders) {
       let ret
       if (!!orders) {
         orders.forEach((order) => {
@@ -573,6 +572,42 @@
         }
       })
       return seats
+    }
+    findLunches(obj) {
+      let numLunches = 0
+      // Base case
+      if (obj.extras && obj.extras.length > 0) {
+        for (let extra of obj.extras) {
+          if (extra.name.includes("Lunch")) {
+            numLunches += extra.quantity
+          }
+        }
+      }
+      // Recursive case
+      if (obj.items && obj.items.length > 0) {
+        for (let item of obj.items) {
+          numLunches += this.findLunches(item)
+        }
+      }
+      return numLunches
+    }
+    findBuffetLunches(obj) {
+      let numLunches = 0
+      // Base case
+      if (obj.extras && obj.extras.length > 0) {
+        for (let extra of obj.extras) {
+          if (extra.name.includes("Buffet")) {
+            numLunches += extra.quantity
+          }
+        }
+      }
+      // Recursive case
+      if (obj.items && obj.items.length > 0) {
+        for (let item of obj.items) {
+          numLunches += this.findBuffetLunches(item)
+        }
+      }
+      return numLunches
     }
   }
 </script>
