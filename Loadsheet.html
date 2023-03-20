@@ -271,6 +271,10 @@
           )
           $("._paxList-" + seatNum + "-weight").html(weight)
 
+          // Clear out old Lunch highlights
+          $("._paxList-" + seatNum + "-fullName , PaxLine").removeClass("Buffet")
+          $("._paxList-" + seatNum + "-fullName , PaxLine").removeClass("Lunch")
+          // Add new Lunch highlights
           if (Buffet>0){
             $("._paxList-" + seatNum + "-fullName , PaxLine").addClass("Buffet")
           } else if (Lunches>0){
