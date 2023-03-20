@@ -441,9 +441,6 @@
         WeightLeft = Math.round(WeightLeft)
         $Report.css("background-color", color)
         $Report.text(`CG: ${WB.roundCG} Left: ${WeightLeft} kg`)
-
-        console.table(WB.aircraft.stations)
-        console.log("==WB==", WB)
       })
     }
     // ============================================================================
@@ -749,10 +746,9 @@
         // .find(".PCF_Selector :selected")
         // .text()
         const _plane = $plane
-        $plane.click(() => {
+        $plane.click((e) => {
           const data = $plane.data("cell")
           const aircraft = this.state.getAircraftFromState(data)
-
           const selectedFuel = $plane.find(".PCF_Selector :selected").val()
           data.SAD = _this.SAD.SAD.toLowerCase()
           data.liters = selectedFuel
@@ -760,9 +756,11 @@
           // Get WB
           // ---------------------------
           const WB = aircraft.calculator.getWB(data)
-
+          console.log("CellData: ", data)
+          console.log("Aircraft: ", aircraft)
+          console.log("WB: ", WB)
           console.table(WB.aircraft.stations)
-          console.log("==WB==", WB)
+          e.stopPropagation()
         })
 
         // ---------------------------
@@ -854,18 +852,22 @@
           cell.PCF?.fuel > -1
             ? cell.PCF.fuel
             : airplanePlotter.airplane.standardFuel
-        $selector.val(fuel)
+        $selector.val(fuel) // Sets the dropmenu to the current fuel
         {
           const PCF = { fuel: fuel }
-          _this.state.setFuel(cell?.cellID, PCF)
-          //          _this.update("FuelSelector")
+          _this.state.setFuel(cell?.cellID, fuel)
         }
         //
+        
         $selector.change(function () {
           const PCF = { fuel: $(this).val() }
           _this.state.setFuel(cell?.cellID, PCF)
-          console.log("cell ID: %o, PCF: %o", cell?.cellID, PCF)
+          // console.log("cell ID: %o, PCF: %o", cell?.cellID, PCF)
+          // console.log("fuel now: ", _this.state.getFuel(cell?.cellID))
           _this.update("FuelSelector Change")
+        })
+        $selector.click(function (e){ // Stop clicks from triggering Airplane clicks
+          return false
         })
         return false
       })

@@ -81,6 +81,7 @@
         console.log("WB.getWB(): No data passed in")
         return
       }
+      // console.log("WB.getWB(): ", data)
       //
       const stations = this.aircraft.stations // stations
       // Add aircraft station
@@ -93,16 +94,13 @@
       })
       stations.push(station)
 
-      console.log("Aircraft: ", this.aircraft)
-
-      const ff = this.aircraft.fuel.factor
-      const fuelLiters =
-        this.aircraft.fuel.liters ||
-        data.liters ||
-        this.aircraft.data.standardfuel ||
-        0
       // == Set Fuel ==
-      this.aircraft.fuel = fuelLiters // setter will mod the station
+      // If no fuel in {state}, use standard fuel
+      let _fuel =
+        this.aircraft.state.getFuel(this.aircraft.cell.id) ||
+        this.aircraft.standardFuel
+      this.aircraft.fuel = _fuel // setter will mod the station
+
       // == Set Pax ==
       this.setPax(data)
 
@@ -174,9 +172,9 @@
       )
       //
       this.CG = this.totalMoment / this.totalWeight
+      this.AUW_Left = Math.round(((this.aircraft.limits.weight.MAUW - this.totalWeight) + Number.EPSILON) * 1000) / 1000
       this.roundCG = Math.round((this.CG + Number.EPSILON) * 1000) / 1000
-      this.roundAUW =
-        Math.round((this.totalWeight + Number.EPSILON) * 100) / 100
+      this.roundAUW = Math.round((this.totalWeight + Number.EPSILON) * 100) / 100
       this.isBalanced = this.aircraft.isBalanced(this.totalWeight, this.CG)
       return this
     }
@@ -189,7 +187,6 @@
       if (!!statePax) {
         statePax.forEach((pax) => {
           if (pax.seat > 0) {
-            console.log("PAX: ", pax)
             const station = this.aircraft.stations.find(
               (station) => station.id == pax.seat
             )
