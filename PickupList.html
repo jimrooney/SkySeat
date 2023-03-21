@@ -166,7 +166,7 @@
         $("#" + PickupManifest).append(
           `<ul id="sortable1" class="PickupSprite droptrue">
               <span class="pax"></span>
-              <span class="title" data-vehicle="1">${this.headers[0]}</span>
+              <span class="title" data-vehicle="1">${this.headers[0]}<span class="total" /></span>
             </ul>`
         )
         //
@@ -252,7 +252,9 @@
             _color = "color:red"
           }
           const $line =
-            $(`<li id="Stop${orderNumber}" class="ui-state-default stop"></span>
+          $(`<li id="Stop${orderNumber}" class="ui-state-default stop" paxNum=${
+              paxList.length + numInfants
+            }></span>
               <span style='${_color}'>(${paxList.length+numInfants})</span> ${time} ${locationName.short} 
                 <br>
                 </li>`).click(() => {
@@ -274,19 +276,19 @@
         $("#" + PickupManifest).append(
           `<ul id="sortable2" class="PickupSprite droptrue">
             <span class="pax"></span>
-            <span class="title" data-vehicle="2">${this.headers[1]}</span>
+            <span class="title" data-vehicle="2">${this.headers[1]}<span class="total" /></span>
           </ul>`
         )
         $("#" + PickupManifest).append(
           `<ul id="sortable3" class="PickupSprite droptrue">
             <span class="pax"></span>
-            <span class="title" data-vehicle="3">${this.headers[2]}</span>
+            <span class="title" data-vehicle="3">${this.headers[2]}<span class="total" /></span>
           </ul>`
         )
         $("#" + PickupManifest).append(
           `<ul id="sortable4" class="PickupSprite droptrue">
             <span class="pax"></span>
-            <span class="title" data-vehicle="4">${this.headers[3]}</span>
+            <span class="title" data-vehicle="4">${this.headers[3]}<span class="total" /></span>
           </ul>`
         )
         //
@@ -339,14 +341,28 @@
           }
         })
 
+        const _this = this
         $("#sortable1" + ", #sortable2" + ", #sortable3").droppable({
           accept: ".ui-state-default",
-          //drop: handleDropEvent,
+          drop: _this.handleDropEvent,
         })
       }
 
       // ----------------------------------------------------------------------------------------------------------------------------------
       pickupList.show()
     }
+    handleDropEvent(e, ui) {
+      const $list = $(this) // list that's handling the drop
+        $("#PickupManifest").each(() => {
+          let paxNum = 0
+          $(this)
+            .find("li")
+            .each((i, LI) => {
+              const newNum = parseInt(LI.getAttribute("paxNum")) || 0
+              paxNum += newNum
+            })
+          $(this).find(".total").text(` (${paxNum})`)
+        })
+    }    
   }
 </script>

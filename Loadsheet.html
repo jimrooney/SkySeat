@@ -273,7 +273,7 @@
       // Block Declared weights fom 208 use
       //
       $(".Signature").html("")
-        if (plane.type == "C208" && WB.SAD.SAD == "Declared"){
+      if (/^C208/i.test(plane.type) && WB.SAD.SAD == "Declared"){
           $(".Signature").html("Not Valid For Use <br>(208) with Declared Weights")
         }
         if (!WB.cg.balanced){

@@ -23,11 +23,20 @@ updateStations(stations) { <-- consider removing
 -------------------------------
 Currently
 -------------------------------
-{Details}
-Fuel Selector seems to be getting ignored a bit (esp with isBalanced)
+Start getting loadsheets working again
+Add cargo bays back into WB
 
 
-
+After saving/loading a day WB borks...
+Uncaught ReferenceError: id is not defined
+    at WBObject.getWB (userCodeAppPanel:93:17)
+    at userCodeAppPanel:433:40
+    at Array.forEach (<anonymous>)
+    at Details.update (userCodeAppPanel:426:12)
+    at Details.show (userCodeAppPanel:912:13)
+    at HTMLTableCellElement.<anonymous> (userCodeAppPanel:74:40)
+    at HTMLTableCellElement.dispatch (jquery.min.js:2:42571)
+    at v.handle (jquery.min.js:2:40572)
 
 *** Update this for helis (helis don't fly left seat.)
 // PIC (Find finds Left Seat only (then skips)
