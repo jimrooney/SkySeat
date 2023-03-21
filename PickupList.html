@@ -166,14 +166,13 @@
         $("#" + PickupManifest).append(
           `<ul id="sortable1" class="PickupSprite droptrue">
               <span class="pax"></span>
-              <span class="title" data-vehicle="1">${this.headers[0]}</span>
+              <span class="title" data-vehicle="1">${this.headers[0]}<span class="total" /></span>
             </ul>`
         )
         //
         // Each Pickup
         //
         data.forEach((orderNumber) => {
-
           const order = pickupData.manifest.getOrder(orderNumber)
           let dropoffAddress
           let pickupAddress
@@ -188,7 +187,7 @@
             const _doff = order.fields?.filter(
               (f) => (f.label = "Drop off address")
             )
-            if (_doff.length>0) {
+            if (_doff.length > 0) {
               dropoffAddress = _doff[1].value
             }
           }
@@ -205,7 +204,9 @@
           // Get number of infants (if any)
           const initialValue = 0
           const numInfants = paxList.reduce((accumulator, pax) => {
-            const infant = pax.fields.find((x) => x.label.match(/Infant/gi))?.value
+            const infant = pax.fields.find((x) =>
+              x.label.match(/Infant/gi)
+            )?.value
             if ((infant === "0" || infant > 0) && infant < 3) {
               accumulator++
             }
@@ -221,10 +222,8 @@
             detail: "",
           }
           pickupAddress = locationName.short
-          console.log('pickupAddress?: ', !!pickupAddress)
-          console.log("pickupAddress: " , pickupAddress)
-
-
+          console.log("pickupAddress?: ", !!pickupAddress)
+          console.log("pickupAddress: ", pickupAddress)
 
           if (!!dropoffAddress && _dropoffs && !locationName.short) {
             locationName.short = dropoffAddress
@@ -248,16 +247,22 @@
             time = ""
           }
           let _color = ""
-          if (numInfants>0){
+          if (numInfants > 0) {
             _color = "color:red"
           }
           const $line =
-            $(`<li id="Stop${orderNumber}" class="ui-state-default stop"></span>
-              <span style='${_color}'>(${paxList.length+numInfants})</span> ${time} ${locationName.short} 
+            $(`<li id="Stop${orderNumber}" class="ui-state-default stop" paxNum=${
+              paxList.length + numInfants
+            }></span>
+              <span style='${_color}'>(${
+              paxList.length + numInfants
+            })</span> ${time} ${locationName.short} 
                 <br>
-                </li>`).click(() => {
-              $(".click_area").toggle("slow")
-            })
+                </li>`)
+              .click(() => {
+                $(".click_area").toggle("slow")
+              })
+              .data("paxNum", paxList.length + numInfants)
           const $clickArea =
             $(`<div class='click_area' style='font-size:x-small;display: none;'>
               <span style='color:darkgrey'>${locationName.detail}</span></div>`)
@@ -266,7 +271,6 @@
           })
           $line.append($clickArea)
           $("#sortable1").append($line)
-          $("#Stop" + orderNumber).data("data", stop)
         })
         //
         // Two other sortable lists (Van2 and "Other")
@@ -274,19 +278,19 @@
         $("#" + PickupManifest).append(
           `<ul id="sortable2" class="PickupSprite droptrue">
             <span class="pax"></span>
-            <span class="title" data-vehicle="2">${this.headers[1]}</span>
+            <span class="title" data-vehicle="2">${this.headers[1]}<span class="total" /></span>
           </ul>`
         )
         $("#" + PickupManifest).append(
           `<ul id="sortable3" class="PickupSprite droptrue">
             <span class="pax"></span>
-            <span class="title" data-vehicle="3">${this.headers[2]}</span>
+            <span class="title" data-vehicle="3">${this.headers[2]}<span class="total" /></span>
           </ul>`
         )
         $("#" + PickupManifest).append(
           `<ul id="sortable4" class="PickupSprite droptrue">
             <span class="pax"></span>
-            <span class="title" data-vehicle="4">${this.headers[3]}</span>
+            <span class="title" data-vehicle="4">${this.headers[3]}<span class="total" /></span>
           </ul>`
         )
         //
@@ -338,15 +342,28 @@
             $(this).data("visible", 1)
           }
         })
-
+        const _this = this
         $("#sortable1" + ", #sortable2" + ", #sortable3").droppable({
           accept: ".ui-state-default",
-          //drop: handleDropEvent,
+          drop: _this.handleDropEvent,
         })
       }
 
       // ----------------------------------------------------------------------------------------------------------------------------------
       pickupList.show()
+    }
+    handleDropEvent(e, ui) {
+      const $list = $(this) // list that's handling the drop
+        $("#PickupManifest").each(() => {
+          let paxNum = 0
+          $(this)
+            .find("li")
+            .each((i, LI) => {
+              const newNum = parseInt(LI.getAttribute("paxNum")) || 0
+              paxNum += newNum
+            })
+          $(this).find(".total").text(` (${paxNum})`)
+        })
     }
   }
 </script>
