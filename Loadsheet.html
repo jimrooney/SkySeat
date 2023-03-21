@@ -55,7 +55,7 @@
       //
       // Fuel
       //
-      const fuelStation = WB.stations.filter((station) =>
+      const fuelStation = WB.aircraft.stations.filter((station) =>
         station.type.includes("fuel")
       )
       plane.fuel = {...plane.fuel, ...fuelStation}

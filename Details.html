@@ -420,14 +420,16 @@
       //
       // Loop over each Row in {State}
       //
+      console.log("This.State: ", this.state)
       const _row = this.state.getRow(this._TableCell.row)
       const WBPlanes = []
       const _WB = []
       const loadedPlanes = []
+      const _state = this.state
       _row.forEach((data, i) => {
         const $AirplanePlotter = $(`#AirplanePlotter_${i}`)
         data.SAD = _this.SAD.SAD.toLowerCase()
-        const aircraft = this.state.getAircraftFromState(data)
+        const aircraft = _state.getAircraftFromState(data)
         // ---------------------------
         // Get WB
         // ---------------------------
@@ -681,6 +683,7 @@
       this.$TableCell = $TableCell
       this._TableCell = $TableCell.data("_script")
       this.state = this._TableCell.board.state
+      const _state = this.state
       // Get the entire row
       let _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
       _row = _row.sort((a, b) => {
@@ -748,7 +751,8 @@
         const _plane = $plane
         $plane.click((e) => {
           const data = $plane.data("cell")
-          const aircraft = this.state.getAircraftFromState(data)
+          console.log("State: " , _state)
+          const aircraft = _state.getAircraftFromState(data)
           const selectedFuel = $plane.find(".PCF_Selector :selected").val()
           data.SAD = _this.SAD.SAD.toLowerCase()
           data.liters = selectedFuel
@@ -772,13 +776,17 @@
         })
         $Print.click(function () {
           console.log("\nPrint Click (cellID: %o)", cell.cellID) // correct ID (no other data than ID)
-          const ARGS = {
-            SAD: _this.SAD,
-            CellData: cell,
-            liters: airplanePlotter.airplane.getFuelQuantity(cell),
-            route: airplanePlotter.airplane.getRoute(cell),
-          }
-          const WB = airplanePlotter.airplane.getWB(ARGS)
+
+          const data = cell
+          const aircraft = _state.getAircraftFromState(data)
+          const selectedFuel = $plane.find(".PCF_Selector :selected").val()
+          data.SAD = _this.SAD.SAD.toLowerCase()
+          data.liters = selectedFuel
+          // ---------------------------
+          // Get WB
+          // ---------------------------
+          const WB = aircraft.calculator.getWB(data)
+          
           const validPOBs = WB.POB.every((station) => station.weight > 0)
           console.log("ValidPOBs: ", validPOBs)
 
@@ -787,7 +795,7 @@
             utility.alert("Missing Weights", $("#Details"))
             return
           }
-          LOADSHEET.show(_this._TableCell, airplanePlotter.airplane, WB, ARGS)
+          LOADSHEET.show(_this._TableCell, airplanePlotter.airplane, WB,)
         })
         // ---------------------------
         // State Button
