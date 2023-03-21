@@ -81,7 +81,7 @@
         const fuelStation = this.stations.find((station) =>
           station.type.includes("fuel")
         ) // get the station
-        fuel = { liters: fuel, weight: fuel * this.fuel.factor || 0 } // build the object to modify the fuel object (spread into)
+        fuel = { liters: fuel, weight: fuel * this.fuel.factor || 0, endurance: fuel/this.fuel.burnRate } // build the object to modify the fuel object (spread into)
         this._fuel = { ...this._fuel, ...fuel } // merge the new values via spread
 
         fuelStation.liters = fuel.liters // modify the station

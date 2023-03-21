@@ -81,6 +81,7 @@
         console.log("WB.getWB(): No data passed in")
         return
       }
+      this.SAD = data.SAD
       // console.log("WB.getWB(): ", data)
       //
       const stations = this.aircraft.stations // stations
@@ -144,11 +145,18 @@
       this.CARGO = stations.filter(
         (station) => station.type.includes("cargo") && station.weight > 0
       )
+      this.FUEL = stations.filter(
+        (station) => station.type.includes("fuel") && station.weight > 0
+      )
       // Everything but fuel
       this.ZFW = stations.filter((station) => !station.type.includes("fuel"))
       // Fuel
       this.FUEL = stations.filter((station) => station.type.includes("fuel"))
 
+      this.FUEL_Weight = this.FUEL.reduce(
+        (total, station) => total + parseFloat(station.weight),
+        0
+      )
       this.POB_Weight = this.POB.reduce(
         (total, station) => total + parseFloat(station.weight),
         0
@@ -162,6 +170,10 @@
         (total, station) => total + parseFloat(station.weight),
         0
       )
+      this.ZFW_Weight = this.ZFW.reduce(
+        (total, station) => total + parseFloat(station.weight),
+        0
+      )
       this.totalWeight = stations.reduce(
         (total, station) => total + parseFloat(station.weight),
         0
@@ -170,12 +182,28 @@
         (total, station) => total + parseFloat(station.moment),
         0
       )
+
       //
       this.CG = this.totalMoment / this.totalWeight
+      this.AUW = this.totalWeight
       this.AUW_Left = Math.round(((this.aircraft.limits.weight.MAUW - this.totalWeight) + Number.EPSILON) * 1000) / 1000
       this.roundCG = Math.round((this.CG + Number.EPSILON) * 1000) / 1000
       this.roundAUW = Math.round((this.totalWeight + Number.EPSILON) * 100) / 100
       this.isBalanced = this.aircraft.isBalanced(this.totalWeight, this.CG)
+
+      this.cg = {
+          position: this.CG,
+          balanced: this.isBalanced,
+          fwdLimit: this.aircraft.getForwardCGLimit(
+            this.totalWeight,
+            this.aircraft.limits.CG.bounds[0]
+          ),
+          imperial: {
+            TotalWeight: this.totalWeight * 2.2,
+            CG: this.CG * 39.3701,
+            fuelWeight: (this.totalWeight - ZFW_Weight) * 2.2,
+          },
+        }
       return this
     }
     //
