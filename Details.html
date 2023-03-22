@@ -384,6 +384,266 @@
 
       return this
     }
+    //
+    // ======================================
+    // Show
+    // ======================================
+    //
+    //  [This is the first function called]
+    //
+    // --------------------------------------
+    show($TableCell, notInitial) {
+      this.$this.show()
+      this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
+      if (!notInitial) {
+        this.setWeightClass("D") // Set the initial SAD to Declared
+      } //
+      const _this = this
+      const visible = this.$root.css("display") !== "none"
+      // Store the clicked cell
+      this.$TableCell = $TableCell
+      this._TableCell = $TableCell.data("_script")
+      this.state = this._TableCell.board.state
+      const _state = this.state
+
+      // Get the entire row
+      let _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
+      // Sort to ensure the row is ordered correctly
+      _row = _row.sort((a, b) => {
+        return a.cellID.split("_")[1] - b.cellID.split("_")[1]
+      })
+
+      // =========================================================================================
+      // Each Plane (loop over the row)
+      // =========================================================================================
+      // Each of these will be a different plane (and have it's own PCF)
+      _row.forEach((cell, i) => {
+        // ======================================
+        // New this.Airplane
+        // ======================================
+        const aircraftPlotter = new _this.AircraftPlotterClass(cell, i) // backlink is in data.this
+        const $aircraftBackgroundContainer = $(
+          `<div class="AircraftPlotterContainer"></div>`
+        )
+          .append(`<div class="AircraftPlotterBackground" style="color:${utility.hexToRgbA(
+          aircraftPlotter.airplane.regcolor,
+          0.9
+        )}">
+          ${aircraftPlotter.airplane.reg}
+          </div>`)
+        const $menubar = $(`<div />`, {
+          id: `AircraftPlotter_${i}`,
+          class: "AircraftPlotter",
+        })
+          .data("aircraftPlotter", aircraftPlotter) // Backreference to JS {plane} object
+          .data("cell", cell) // Backreference to which calendar cell it's plotting
+
+          .append(aircraftPlotter.$seating)
+          .append(
+            $(`<span />`, {
+              id: `PaxList_${i}`,
+              class: "PaxList",
+            }).data("cell", cell)
+          )
+          .append(aircraftPlotter.get$Pod())
+          .append(`</span><span class="SpacerPod"></span>`)
+
+        $menubar
+          .prepend(
+            $(
+              `<div class="MenuBar" style="background-color:${utility.hexToRgbA(
+                aircraftPlotter.airplane.regcolor,
+                0.8
+              )}"></div>`
+            ).prepend($(this.PCFSelectorString))
+          )
+          .prepend($aircraftBackgroundContainer)
+        // Color the menubar (reg color)
+        $menubar
+          .find(".PaxList")
+          .css(
+            "background",
+            utility.hexToRgbA(aircraftPlotter.airplane.regcolor, 0.5)
+          )
+        // $menubar
+        // .find(".PCF_Selector :selected")
+        // .text()
+        $menubar.click((e) => {
+          const data = $menubar.data("cell")
+          console.log("State: ", _state)
+          const aircraft = _state.getAircraftFromState(data)
+          const selectedFuel = $menubar.find(".PCF_Selector :selected").val()
+          data.SAD = _this.SAD.SAD.toLowerCase()
+          data.liters = selectedFuel
+          // ---------------------------
+          // Get WB
+          // ---------------------------
+          const WB = aircraft.calculator.getWB(data)
+          console.log("CellData: ", data)
+          console.log("Aircraft: ", aircraft)
+          console.log("WB: ", WB)
+          console.table(WB.aircraft.stations)
+          e.stopPropagation()
+        })
+
+        // ---------------------------
+        // Print Button
+        // ---------------------------
+        const $Print = $("<div />", {
+          text: "Print",
+          class: "MenuButton MobileButton Print",
+        })
+        $Print.click(function () {
+          console.log("\nPrint Click (cellID: %o)", cell.cellID) // correct ID (no other data than ID)
+
+          const data = cell
+          const aircraft = _state.getAircraftFromState(data)
+          const selectedFuel = $menubar.find(".PCF_Selector :selected").val()
+          data.SAD = _this.SAD.SAD.toLowerCase()
+          data.liters = selectedFuel
+          // ---------------------------
+          // Get WB
+          // ---------------------------
+          const WB = aircraft.calculator.getWB(data)
+
+          const validPOBs = WB.POB.every((station) => station.weight > 0)
+          console.log("ValidPOBs: ", validPOBs)
+
+          // Missin Weights Check
+          if (!validPOBs) {
+            utility.alert("Missing Weights", $("#Details"))
+            return
+          }
+          LOADSHEET.show(_this._TableCell, aircraftPlotter.airplane, WB)
+        })
+        // ---------------------------
+        // State Button
+        // ---------------------------
+        const $Fill = $("<div />", {
+          text: "Fill",
+          class: "MenuButton MobileButton",
+        })
+        $Fill.click(function (e) {
+          e.stopPropagation()
+          _this.fillSeats(cell)
+        })
+
+        //
+        // SAD Button
+        //
+        const $SAD = $(
+          `<span class="SAD WeightClass relativeLeft MobileButton">SAD</span>`
+        ).click(function (e) {
+          e.stopPropagation()
+          let txt = $(this).text().charAt(0)
+          _this.changeWeightClass($(this))
+          _this.update("SAD Button")
+        })
+        $menubar.find(".MenuBar").prepend($SAD)
+        aircraftPlotter.$menubarPlotter = $menubar // Backreference ******
+        aircraftPlotter.reset()
+
+        //aircraftPlotter.$seating.find(".Print").append($Print) // can use this to put the print button at the top
+        aircraftPlotter.$seating.append([$Print, $Fill])
+        $menubar.find(`CargoPod_${i}`).append()
+        _this.$root.find(".content").append($menubar)
+
+        const passengers = cell.passengers
+        const state = this.state // need this cells {CellData}... might be getting {state} ***
+        // ===========================================
+        // -------------- Passengers -----------------
+        // ===========================================
+        passengers.forEach((p, index) => {
+          const pax = new Pax(p, index)
+          const $pax = new this.Pax(_this, pax, "Pax", i) // create pax Sprite
+          this.seatPax($pax, $menubar)
+        })
+        const $PCF = $menubar.find(".PCF_Selector")
+        $PCF.empty()
+        // ===========================================
+        // Fuel Selector
+        // ===========================================
+        const $selector = $("<select />")
+          .appendTo($PCF)
+          .append(`<option value="0">0</option>`)
+        const fuelCap = aircraftPlotter.airplane.fuel.capacity || 350 // Limit the selector by the max fuel limit
+        for (let i = 10; i <= fuelCap; i += 10) {
+          $selector.append(`<option value="${i}">${i}</option>`)
+        }
+        //
+        //
+        // if the cell has fuel, load that. If not, then use standardFuel.
+        // standardFuel is set in the Company Data Spreadsheet
+        //
+        const fuel =
+          cell.PCF?.fuel > -1
+            ? cell.PCF.fuel
+            : aircraftPlotter.airplane.standardFuel
+        $selector.val(fuel) // Sets the dropmenu to the current fuel
+        {
+          const PCF = { fuel: fuel }
+          _this.state.setFuel(cell?.cellID, fuel)
+        }
+        //
+
+        $selector.change(function () {
+          const PCF = { fuel: $(this).val() }
+          _this.state.setFuel(cell?.cellID, PCF)
+          // console.log("cell ID: %o, PCF: %o", cell?.cellID, PCF)
+          // console.log("fuel now: ", _this.state.getFuel(cell?.cellID))
+          _this.update("FuelSelector Change")
+        })
+        $selector.click(function (e) {
+          // Stop clicks from triggering Airplane clicks
+          return false
+        })
+        return false
+      })
+      // =========================================================================================
+      // End (Each Plane)
+      // =========================================================================================
+
+      // ===========================================
+      // -------------- Crew -----------------
+      // ===========================================
+      const _crew = []
+      pilots.list.forEach((pilot, i) => {
+        _crew.push({
+          fields: [
+            { label: "Role", value: "PIC" },
+            { label: "First Name", value: pilot.first },
+            { label: "Last Name", value: pilot.last },
+            { label: "Mobile", value: pilot.mobile },
+            {
+              label: "Passenger Weight",
+              value: pilot["declared weight"].toString(),
+            },
+          ],
+        })
+      })
+      _crew.forEach((crew, index) => {
+        const pax = new Pax(crew)
+        const firstName = pax.firstName
+        const weight = pax.weight
+        const $pax = new this.Pax(_this, pax, "Crew", "")
+      })
+      // ===========================================
+      // -------------- Init -----------------
+      // ===========================================
+      this.init() // initialize jQuery drag/drop code
+
+      /*
+
+        Doesn't seem to be doing anything... this doesn't fire but the buttons still sync
+
+
+      */
+      // if (!notInitial) {
+      //   $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
+      // }
+
+      _this.update("PostPlane")
+    }
     // ============================================================================
     // Update
     // ============================================================================
@@ -663,266 +923,6 @@
     // This lets it revert to something close to the new container
     setRevert($obj) {
       $obj.draggable({ revert: true })
-    }
-    //
-    // ======================================
-    // Show
-    // ======================================
-    //
-    //  [This is the first function called]
-    //
-    // --------------------------------------
-    show($TableCell, notInitial) {
-      this.$this.show()
-      this.$root.find(".content").empty() // Clear the Details popup (removes the old planes)
-      if (!notInitial) {
-        this.setWeightClass("D") // Set the initial SAD to Declared
-      } //
-      const _this = this
-      const visible = this.$root.css("display") !== "none"
-      // Store the clicked cell
-      this.$TableCell = $TableCell
-      this._TableCell = $TableCell.data("_script")
-      this.state = this._TableCell.board.state
-      const _state = this.state
-
-      // Get the entire row
-      let _row = this.state.getRow(this._TableCell.row) // [CellData,CellData,CellData]
-      // Sort to ensure the row is ordered correctly
-      _row = _row.sort((a, b) => {
-        return a.cellID.split("_")[1] - b.cellID.split("_")[1]
-      })
-
-      // =========================================================================================
-      // Each Plane (loop over the row)
-      // =========================================================================================
-      // Each of these will be a different plane (and have it's own PCF)
-      _row.forEach((cell, i) => {
-        // ======================================
-        // New this.Airplane
-        // ======================================
-        const aircraftPlotter = new _this.AircraftPlotterClass(cell, i) // backlink is in data.this
-        const $aircraftBackgroundContainer = $(
-          `<div class="AircraftPlotterContainer"></div>`
-        )
-          .append(`<div class="AircraftPlotterBackground" style="color:${utility.hexToRgbA(
-          aircraftPlotter.airplane.regcolor,
-          0.9
-        )}">
-          ${aircraftPlotter.airplane.reg}
-          </div>`)
-        const $menubar = $(`<div />`, {
-          id: `AircraftPlotter_${i}`,
-          class: "AircraftPlotter",
-        })
-          .data("aircraftPlotter", aircraftPlotter) // Backreference to JS {plane} object
-          .data("cell", cell) // Backreference to which calendar cell it's plotting
-
-          .append(aircraftPlotter.$seating)
-          .append(
-            $(`<span />`, {
-              id: `PaxList_${i}`,
-              class: "PaxList",
-            }).data("cell", cell)
-          )
-          .append(aircraftPlotter.get$Pod())
-          .append(`</span><span class="SpacerPod"></span>`)
-
-        $menubar
-          .prepend(
-            $(
-              `<div class="MenuBar" style="background-color:${utility.hexToRgbA(
-                aircraftPlotter.airplane.regcolor,
-                0.8
-              )}"></div>`
-            ).prepend($(this.PCFSelectorString))
-          )
-          .prepend($aircraftBackgroundContainer)
-        // Color the menubar (reg color)
-        $menubar
-          .find(".PaxList")
-          .css(
-            "background",
-            utility.hexToRgbA(aircraftPlotter.airplane.regcolor, 0.5)
-          )
-        // $menubar
-        // .find(".PCF_Selector :selected")
-        // .text()
-        $menubar.click((e) => {
-          const data = $menubar.data("cell")
-          console.log("State: ", _state)
-          const aircraft = _state.getAircraftFromState(data)
-          const selectedFuel = $menubar.find(".PCF_Selector :selected").val()
-          data.SAD = _this.SAD.SAD.toLowerCase()
-          data.liters = selectedFuel
-          // ---------------------------
-          // Get WB
-          // ---------------------------
-          const WB = aircraft.calculator.getWB(data)
-          console.log("CellData: ", data)
-          console.log("Aircraft: ", aircraft)
-          console.log("WB: ", WB)
-          console.table(WB.aircraft.stations)
-          e.stopPropagation()
-        })
-
-        // ---------------------------
-        // Print Button
-        // ---------------------------
-        const $Print = $("<div />", {
-          text: "Print",
-          class: "MenuButton MobileButton Print",
-        })
-        $Print.click(function () {
-          console.log("\nPrint Click (cellID: %o)", cell.cellID) // correct ID (no other data than ID)
-
-          const data = cell
-          const aircraft = _state.getAircraftFromState(data)
-          const selectedFuel = $menubar.find(".PCF_Selector :selected").val()
-          data.SAD = _this.SAD.SAD.toLowerCase()
-          data.liters = selectedFuel
-          // ---------------------------
-          // Get WB
-          // ---------------------------
-          const WB = aircraft.calculator.getWB(data)
-
-          const validPOBs = WB.POB.every((station) => station.weight > 0)
-          console.log("ValidPOBs: ", validPOBs)
-
-          // Missin Weights Check
-          if (!validPOBs) {
-            utility.alert("Missing Weights", $("#Details"))
-            return
-          }
-          LOADSHEET.show(_this._TableCell, aircraftPlotter.airplane, WB)
-        })
-        // ---------------------------
-        // State Button
-        // ---------------------------
-        const $Fill = $("<div />", {
-          text: "Fill",
-          class: "MenuButton MobileButton",
-        })
-        $Fill.click(function (e) {
-          e.stopPropagation()
-          _this.fillSeats(cell)
-        })
-
-        //
-        // SAD Button
-        //
-        const $SAD = $(
-          `<span class="SAD WeightClass relativeLeft MobileButton">SAD</span>`
-        ).click(function (e) {
-          e.stopPropagation()
-          let txt = $(this).text().charAt(0)
-          _this.changeWeightClass($(this))
-          _this.update("SAD Button")
-        })
-        $menubar.find(".MenuBar").prepend($SAD)
-        aircraftPlotter.$menubarPlotter = $menubar // Backreference ******
-        aircraftPlotter.reset()
-
-        //aircraftPlotter.$seating.find(".Print").append($Print) // can use this to put the print button at the top
-        aircraftPlotter.$seating.append([$Print, $Fill])
-        $menubar.find(`CargoPod_${i}`).append()
-        _this.$root.find(".content").append($menubar)
-
-        const passengers = cell.passengers
-        const state = this.state // need this cells {CellData}... might be getting {state} ***
-        // ===========================================
-        // -------------- Passengers -----------------
-        // ===========================================
-        passengers.forEach((p, index) => {
-          const pax = new Pax(p, index)
-          const $pax = new this.Pax(_this, pax, "Pax", i) // create pax Sprite
-          this.seatPax($pax, $menubar)
-        })
-        const $PCF = $menubar.find(".PCF_Selector")
-        $PCF.empty()
-        // ===========================================
-        // Fuel Selector
-        // ===========================================
-        const $selector = $("<select />")
-          .appendTo($PCF)
-          .append(`<option value="0">0</option>`)
-        const fuelCap = aircraftPlotter.airplane.fuel.capacity || 350 // Limit the selector by the max fuel limit
-        for (let i = 10; i <= fuelCap; i += 10) {
-          $selector.append(`<option value="${i}">${i}</option>`)
-        }
-        //
-        //
-        // if the cell has fuel, load that. If not, then use standardFuel.
-        // standardFuel is set in the Company Data Spreadsheet
-        //
-        const fuel =
-          cell.PCF?.fuel > -1
-            ? cell.PCF.fuel
-            : aircraftPlotter.airplane.standardFuel
-        $selector.val(fuel) // Sets the dropmenu to the current fuel
-        {
-          const PCF = { fuel: fuel }
-          _this.state.setFuel(cell?.cellID, fuel)
-        }
-        //
-
-        $selector.change(function () {
-          const PCF = { fuel: $(this).val() }
-          _this.state.setFuel(cell?.cellID, PCF)
-          // console.log("cell ID: %o, PCF: %o", cell?.cellID, PCF)
-          // console.log("fuel now: ", _this.state.getFuel(cell?.cellID))
-          _this.update("FuelSelector Change")
-        })
-        $selector.click(function (e) {
-          // Stop clicks from triggering Airplane clicks
-          return false
-        })
-        return false
-      })
-      // =========================================================================================
-      // End (Each Plane)
-      // =========================================================================================
-
-      // ===========================================
-      // -------------- Crew -----------------
-      // ===========================================
-      const _crew = []
-      pilots.list.forEach((pilot, i) => {
-        _crew.push({
-          fields: [
-            { label: "Role", value: "PIC" },
-            { label: "First Name", value: pilot.first },
-            { label: "Last Name", value: pilot.last },
-            { label: "Mobile", value: pilot.mobile },
-            {
-              label: "Passenger Weight",
-              value: pilot["declared weight"].toString(),
-            },
-          ],
-        })
-      })
-      _crew.forEach((crew, index) => {
-        const pax = new Pax(crew)
-        const firstName = pax.firstName
-        const weight = pax.weight
-        const $pax = new this.Pax(_this, pax, "Crew", "")
-      })
-      // ===========================================
-      // -------------- Init -----------------
-      // ===========================================
-      this.init() // initialize jQuery drag/drop code
-
-      /*
-
-        Doesn't seem to be doing anything... this doesn't fire but the buttons still sync
-
-
-      */
-      // if (!notInitial) {
-      //   $(".SAD").text(this.SAD.txt) // syncs all SAD buttons
-      // }
-
-      _this.update("PostPlane")
     }
   }
 </script>
