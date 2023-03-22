@@ -8,7 +8,14 @@
         declared_bonus: 4,
       },
     },
-    //trash: new Trash(this),
+    alert() {
+      utility.alert("Done")
+    },
+    sendEmail(htmlContent, fileName, recipientEmail) {
+      google.script.run
+        .withSuccessHandler(root.alert)
+        .convertHTMLtoPDF(htmlContent, fileName, recipientEmail)
+    },
     // --------------------------------- Load TripCodes ----------------------------------------------
     loadTripCodes: function () {
       google.script.run.withSuccessHandler(gya.onTripCodeLoad).loadTripCodes()

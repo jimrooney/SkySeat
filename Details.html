@@ -82,7 +82,7 @@
           // ------------
           // Pilot's seat
           // ------------
-          $("<div></div>")
+          $("<div>Pilot</div>")
             .data("number", 1)
             .data("seat", 1)
             .attr("id", "SeatNumber1")
@@ -94,9 +94,9 @@
             .addClass("Crew")
             .appendTo($Airplane)
 
-          // -----
-          // Seats
-          // -----
+          // -------------------------------------------------------------------
+          // Create Seats
+          // -------------------------------------------------------------------
           // slice(1) skips the pilot's seat
           let index = 2 // Skipping the Pilot seat and using 1 based counting.
           this.airplane.stations
@@ -108,9 +108,11 @@
             .forEach((seat) => {
               if (seat.type.includes("placeholder")) {
                 $("<div></div>")
-                  .appendTo("#Airplane")
+                  .data("number", -index)
                   .addClass("grid-placeholder")
-                //.text("Placeholder")
+                  .addClass("station")
+                  .css("background-color",utility.hexToRgbA(this.airplane.regcolor, 0.9))
+                  .appendTo($Airplane)
               } else {
                 $("<div></div>")
                   .data("number", index)

@@ -39,6 +39,18 @@
       $(".FlightFollowingOpen").hide()
       this.aircraft.state.save()
     }
+    email(){
+      //sendEmail(htmlContent, fileName, recipientEmail) 
+      $("#SaveButton").css({ background: "green" })
+      $(".NoPrint").hide()
+      $("#LoadsheetPrint").focus()
+      const htmlContent = $("#Loadsheet").html()
+      const fileName = "testing.pdf"
+      root.sendEmail(htmlContent,fileName)
+      $(".NoPrint").show()
+      $(".FlightFollowingOpen").show()
+      $(".FlightFollowingOpen").hide()
+    }
     // ---------------------------
     // Show
     // ---------------------------
@@ -316,12 +328,14 @@
           <td height="1">
             <!-- The print button also calls the log function which submits the flight data to the data spreadsheet -->
             <button onclick="javascript: LOADSHEET.print()" id="LoadsheetPrintButton" class="NoPrint">Print</button>
+            <button onclick="javascript: LOADSHEET.email()" id="LoadsheetEmailButton" class="NoPrint">Email</button>
           </td>
           <td colspan="5" height="2">
             <img
               src=""
               height="40"
               style="float: left"
+              class="NoPrint"
             />
             <div align="center">
               <b>LoadSheet </b
