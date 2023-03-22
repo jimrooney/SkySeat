@@ -5,7 +5,7 @@
       weight: {
         adult: 86,
         child: 46,
-        declared_bonus : 4,
+        declared_bonus: 4,
       },
     },
     //trash: new Trash(this),
@@ -16,8 +16,8 @@
     getBoards: function () {
       return $(".Board").map((i, board) => $(board).data("root"))
     },
-    updateBoards : function (){
-      this.boards.forEach( board => board.update())
+    updateBoards: function () {
+      this.boards.forEach((board) => board.update())
     },
     //
     // Example function, changes all boards to today.
@@ -52,9 +52,9 @@
       this.boards.push(_board)
     },
     removeBoard: function (board) {
-      this.boards.forEach((b,i,o) => {
-        if (b === board){
-          o.splice(i,1)
+      this.boards.forEach((b, i, o) => {
+        if (b === board) {
+          o.splice(i, 1)
         }
       })
     },
@@ -72,21 +72,21 @@
         return "Logs Cleared"
       },
       show: function () {
-        this.logs.forEach(entry => {
+        this.logs.forEach((entry) => {
           console.log(entry)
         })
         return "[end]"
       },
     },
     getItem(barcode) {
-			let ret = ""
+      let ret = ""
       this.boards.forEach((board) => {
-				const item = board.manifest.getItem(barcode)
-				if (!!item){
-					ret = item
-				}
+        const item = board.manifest.getItem(barcode)
+        if (!!item) {
+          ret = item
+        }
       })
-			return ret
+      return ret
     },
   }
 </script>

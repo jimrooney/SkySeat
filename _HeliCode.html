@@ -1,0 +1,85 @@
+function calculateWeightAndBalance(items) {
+    // Initialize variables for total weight and moments
+    let totalWeight = 0;
+    let totalLongitudinalMoment = 0;
+    let totalLateralMoment = 0;
+    let totalVerticalMoment = 0;
+  
+    // Iterate through each item and add its weight and moment to the totals
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      totalWeight += item.weight;
+      totalLongitudinalMoment += item.longitudinalArm * item.weight;
+      totalLateralMoment += item.lateralArm * item.weight;
+      totalVerticalMoment += item.verticalArm * item.weight;
+    }
+  
+    // Calculate the center of gravity
+    const longitudinalCG = totalLongitudinalMoment / totalWeight;
+    const lateralCG = totalLateralMoment / totalWeight;
+    const verticalCG = totalVerticalMoment / totalWeight;
+  
+    // Return the weight and balance data as an object
+    return {
+      weight: totalWeight,
+      longitudinalMoment: totalLongitudinalMoment,
+      lateralMoment: totalLateralMoment,
+      verticalMoment: totalVerticalMoment,
+      longitudinalCG,
+      lateralCG,
+      verticalCG
+    };
+  }
+  
+  const items = [
+  { weight: 200, longitudinalArm: 2, lateralArm: 1, verticalArm: 0.5 },
+  { weight: 150, longitudinalArm: 3, lateralArm: -0.5, verticalArm: 1 },
+  { weight: 100, longitudinalArm: 0, lateralArm: 2, verticalArm: -0.5 }
+];
+
+const weightAndBalance = calculateWeightAndBalance(items);
+
+console.log(weightAndBalance);
+
+
+
+function checkWeightAndBalanceLimits(weightAndBalance, limitChart) {
+    // Check if the CG is within the limits in each dimension
+    const isWithinLongitudinalLimits =
+      weightAndBalance.longitudinalCG >= limitChart.longitudinalMin &&
+      weightAndBalance.longitudinalCG <= limitChart.longitudinalMax;
+    const isWithinLateralLimits =
+      weightAndBalance.lateralCG >= limitChart.lateralMin &&
+      weightAndBalance.lateralCG <= limitChart.lateralMax;
+    const isWithinVerticalLimits =
+      weightAndBalance.verticalCG >= limitChart.verticalMin &&
+      weightAndBalance.verticalCG <= limitChart.verticalMax;
+  
+    // Determine overall result based on each dimension
+    const isWithinLimits =
+      isWithinLongitudinalLimits && isWithinLateralLimits && isWithinVerticalLimits;
+    const result = {
+      isWithinLimits,
+      longitudinal: isWithinLongitudinalLimits,
+      lateral: isWithinLateralLimits,
+      vertical: isWithinVerticalLimits
+    };
+  
+    // Return the result object
+    return result;
+  }
+
+  
+  const weightAndBalance = { /* ... */ };
+const limitChart = {
+  longitudinalMin: 2,
+  longitudinalMax: 3,
+  lateralMin: -1,
+  lateralMax: 2,
+  verticalMin: -1,
+  verticalMax: 1
+};
+
+const result = checkWeightAndBalanceLimits(weightAndBalance, limitChart);
+
+console.log(result);
