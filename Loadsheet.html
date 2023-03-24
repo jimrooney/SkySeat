@@ -275,9 +275,10 @@
           $("._paxList-" + seatNum + "-fullName , PaxLine").removeClass("Buffet")
           $("._paxList-" + seatNum + "-fullName , PaxLine").removeClass("Lunch")
           // Add new Lunch highlights
-          if (Buffet>0){
-            $("._paxList-" + seatNum + "-fullName , PaxLine").addClass("Buffet")
-          } else if (Lunches>0){
+          // if (Buffet>0){
+          //   $("._paxList-" + seatNum + "-fullName , PaxLine").addClass("Buffet")
+          // } else 
+          if (Lunches>0){
             $("._paxList-" + seatNum + "-fullName , PaxLine").addClass("Lunch")
           }
           console.log("myPax: ", myPax)
