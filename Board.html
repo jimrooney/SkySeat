@@ -78,7 +78,7 @@
         })
       }
       //console.log("miaPax: %o", miaPax)
-      miaPax.forEach(pax=>{
+      miaPax.forEach((pax) => {
         this.state.removeAllBarcode(pax)
         this.update()
       })
@@ -121,21 +121,32 @@
         // $(this).css({ top: -5, position: "absolute" })
       })
       //
-      // Make things Draggable
+      // Make BookingSprite Draggable
       //
-      initializeDraggables()
+      $(".BookingSprite").draggable({
+        helper: "clone",
+        revert: "invalid",
+        start: function (event, ui) {
+          $(this).draggable("instance").offset.click = {
+            left: Math.floor(ui.helper.width() / 2),
+            top: Math.floor(ui.helper.height() / 2),
+          }
+        },
+      })
       //
       // Updata TableCells and reinit draggable code
       //
       this.$board.find(".TableCell").each(function (index) {
         if (!!$(this).data("_script")) {
           $(this).data("_script").update()
+
+          // Disable by default
+          if ($(this).is(":data(ui-draggable)")) {
+            $(this).draggable("disable")
+          }
+
           //
-          // Enable Dragging (only for cells with passengers)
-          //
-          $(this).draggable("disable") // Disable by default
-          //
-          // ReColor plotted bookings // this could encompass all of this code ***
+          // ReColor plotted bookings
           //
           if (!!$(this).data("_script").getPassengers()) {
             $(this)
@@ -149,21 +160,20 @@
                   $(`.${orderNumber}`).addClass("Plotted")
                 }
               })
+
+            // ------------------------------------------------
+            // Enable Dragging (only for cells with passengers)
+            // ------------------------------------------------
             $(this)
               .draggable({
-                revert: true,
                 helper: "clone",
                 cursor: "pointer",
-              })
-              //
-              // Centers the cursor
-              //
-              .draggable({
+                revert: true,
                 start: function (event, ui) {
-                  $(this).draggable("instance").offset.click = {
+                  $(this).draggable("option", "cursorAt", {
                     left: Math.floor(ui.helper.width() / 2),
                     top: Math.floor(ui.helper.height() / 2),
-                  }
+                  })
                 },
               })
               .draggable("enable")
@@ -178,7 +188,7 @@
         const _this = $(this).data("_script")
         const data = _this.board.state.getData($(this))
 
-        if (!data.PCF && planeList.length>0) {
+        if (!data.PCF && planeList.length > 0) {
           const plane = planeList.shift()
           data.PCF = {
             type: plane.type,

@@ -20,9 +20,13 @@
       // jQuery object
       // -------------------------------------------
       let $this = $("<td />", {
-        class: `TableCell Row_${r} Col_${c} MobileButton ${this.id}`, //"TableCell Row_" + r + " Col_" + c,
+        class: `TableCell Row_${r} Col_${c} MobileButton ${this.id}`,
         id: this.id,
       })
+        // .draggable({
+        //   helper: "clone",
+        //   revert: "invalid",
+        // })
         .hover(
           function () {
             const $FBox = $("<div />", {
@@ -128,7 +132,6 @@
       // ------------
       // Record Drop (if Legal)
       // ------------
-
 
       //-------------------------------------------------------
       // 11:30 hack
@@ -359,21 +362,6 @@
       const cellData = this.getStateCellData() // Get the data from the state object
       const $this = this.$this // simplify the reference to the jQuery object
       this.clear() // blank the cell
-
-      // --------------
-      // Make Draggable
-      // --------------
-      // Turn draggable on by default, then off if not needed... otherwise you have to test for it's existence before truning it off.
-      /*
-        (Example)
-        Uncaught Error: cannot call methods on draggable prior to initialization;
-        attempted to call method 'disable'
-      */
-      $this.draggable({
-        revert: true,
-        helper: "clone",
-      })
-
       const cellPax = cellData?.passengers.filter((p) => {
         return !p.fields.some((f) => f.label == "Role")
       })
@@ -423,22 +411,8 @@
           codes = [...new Set([...codes, ...[pc]])]
           numPax++
         })
-
-        // for (const a in cellData.passengers) {
-        //   const pax = cellData.passengers[a].fields
-        //   const pc = pax.find((item) => item.label === "productCode").value
-        //   codes = [...new Set([...codes, ...[pc]])]
-        //   numPax++
-        // }
         const GYACodes = codes.map((c) => gya.getProduct(c).GYACode)
         $this.html(`(${numPax})  ${GYACodes.join("<BR>")}`)
-        $this.draggable({
-          //revert: true,
-          helper: "clone",
-          cursorAt: { left: 5, top: 5 },
-        })
-      } else {
-        $this.draggable("disable")
       }
     }
   }
