@@ -109,12 +109,6 @@
       // Calc all moments
       // ---------------------------
       stations.forEach((station, index) => {
-        // this if block should be able to be removed now ***
-        // if (!!station.px) {
-        //   const SAD = data.SAD.toLowerCase()
-        //   stations[index].weight = station.weight[SAD]
-        //   console.log("************ Station update: ", station.weight)
-        // }
         station.moment = station.weight * station.arm
       })
 
@@ -122,11 +116,12 @@
       // Sum all Weights and Moments
       // ---------------------------
       //
-      // POB
-      // only occupied seats
+
+      // POB ... only occupied seats
       this.POB = stations.filter(
         (station) => station.type.includes("seat") && !!station.weight
       )
+
       // Crew
       this.CREW = this.POB.filter((station) => {
         // gets all CREW
@@ -134,22 +129,25 @@
           return station.pax.fields.find((field) => field.label == "Role") // only return pax with Roles (crew)
         }
       })
+
       // PIC (Find finds Left Seat only (then skips), but could also search by matching seat number) ****
       this.PIC = this.CREW.find((station) =>
         station.pax.fields.find(
           (pax) => pax.label == "Role" && pax.value == "PIC"
         )
       )
-      this.PAX = this.POB.filter((x) => !this.CREW.includes(x)) // Filter out Crew
+
+      // Filter out Crew
+      this.PAX = this.POB.filter((x) => !this.CREW.includes(x))
+
       // Cargo
       this.CARGO = stations.filter(
         (station) => station.type.includes("cargo") && station.weight > 0
       )
-      this.FUEL = stations.filter(
-        (station) => station.type.includes("fuel") && station.weight > 0
-      )
+
       // Everything but fuel
       this.ZFW = stations.filter((station) => !station.type.includes("fuel"))
+      
       // Fuel
       this.FUEL = stations.filter((station) => station.type.includes("fuel"))
 

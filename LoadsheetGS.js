@@ -8,6 +8,7 @@ const convertHTMLtoPDF = (htmlContent, fileName, recipientEmail) => {
   if (!recipientEmail) {
     recipientEmail = `jim@skyseat.co.nz`
   }
+  htmlContent = include("CSS") + htmlContent
   const blob = Utilities.newBlob(htmlContent, MimeType.HTML)
   blob.setName(fileName)
 

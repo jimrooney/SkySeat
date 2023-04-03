@@ -29,7 +29,7 @@
       //
       let _this = PlaneManager
       let _rawData = planes.rawData // Everything loaded from the spreadsheet
-      let _planeData = planes.data // Excludes non-plane data like "NoJTK"
+      let _planeData = planes.data // Excludes non-plane data like "NoJTK" (cleaning done below)
       //
       // Convert [[]] to [{}]
       // Objects key'd by header row labels (lowercased) *** maybe clean more than just lowercasing ***
