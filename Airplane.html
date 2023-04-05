@@ -269,7 +269,7 @@
       // ---------------------------
       // *** I don't think there's ever a plane station, so this gets called every time.
       const planeStation = stations.filter((station) =>
-        station.type.includes("airplane")
+        station.type.includes("aircraft")
       )
       // -----------------------------
       // if no plane station, make one
@@ -279,7 +279,7 @@
         // Since our airplane data moments inexplicably don't equal weight*arm, we need a seperate Station object for them.
         //
         let station = new Station({
-          type: ["airplane"],
+          type: ["aircraft"],
           weight: this.weight,
           arm: this.arm,
         })

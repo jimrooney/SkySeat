@@ -6,8 +6,6 @@
     // This should change (maybe instantiate a global variable when the board is created? Or perhaps have a single master global variable that holds the boards... yeah)
 
     var testBoard
-    var LOADSHEET
-    // Placeholder for the LOADSHEET object *** This should go in {root}
     //
     // Some Debug Stuff
     //
@@ -82,8 +80,7 @@
       //
       $(document).ready(function () {
         root.makeNewBoard()
-        LOADSHEET = new Loadsheet($("#Loadsheet"))
-        root.loadsheet = LOADSHEET
+        root.loadsheet = new Loadsheet($("#Loadsheet"))
         root.pickupList = new PickupList($("#PickupList"))
       })
     </script>
@@ -212,7 +209,6 @@
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
   root.vars = {
     testBoard: testBoard,
-    LOADSHEET: LOADSHEET,
     gya: gya,
     debug: {},
     colors: colors,

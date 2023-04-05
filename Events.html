@@ -20,7 +20,7 @@
           $("#PickupList").hide()
         }
         if ($(this).hasClass("Print")) {
-          LOADSHEET.show($("#Details").data("root")._TableCell)
+          root.loadsheet.show($("#Details").data("root")._TableCell)
         }
         if ($(this).is("a, a *")) {
           window.open($(this).attr("href"), "_blank")

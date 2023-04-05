@@ -10,6 +10,17 @@
       this.arm = data.arm || 0
       this.id = data.id
       this.moment = data.moment
+      this.lateral_arm = data.lateral_arm || null
+    }
+    get lateral_moment (){
+      let ret = null
+      if (!!this.lateral_arm){
+        ret = this.weight * this.lateral_arm
+      }
+      return ret
+    }
+    set lateral_moment (value) {
+      this.lateral_moment = value
     }
   }
 </script>

@@ -11,7 +11,7 @@ var API_KEY = "?apiKey=" + apiKey
 var PILOT_SHEET_NAME = "Pilots"
 var PILOT_RANGE = "A:E"
 var AIRCRAFT_SHEET_NAME = "Aircraft"
-var AIRCRAFT_RANGE = "A:N"
+var AIRCRAFT_RANGE = "A:O"
 var AIRCRAFT_DATA_RANGE = "B:F"
 var THE_BOARD_SHEET_NAME = "TheBoardData"
 var THE_BOARD_DATA_RANGE = "A:E" 
