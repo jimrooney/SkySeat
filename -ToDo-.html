@@ -6,13 +6,7 @@ A "Complete booking object" (for doing Rezdy writes) is actually an Order object
 ---------------------------------------------------------------------------------
 
 
----- 
-blocking PPR from printing on Declared... need to update this... 
-----
-if (plane.type == "C208" && WB.SAD.SAD == "Declared"){
 
-Add picnicks to Loadsheets
-Add Van totals to PickupList
 
 
 // Probably can remove this but need to remove PIC check first (dependant on it) ***
@@ -20,8 +14,7 @@ Add Van totals to PickupList
 ---------------------------
 Issue pointers
 ---------------------------
-if (_thisPlane.reg == "MMZ" || _thisPlane.reg == "PPR") {
-// *** HERE *** needs update for all 208s
+
 updateStations(stations) { <-- consider removing
     // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
     

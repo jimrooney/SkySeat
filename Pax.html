@@ -22,7 +22,7 @@
       }
     }
     // better naming for getValue... using wrapper so as not to break it getValue
-    getValue(label){
+    getValue(label) {
       return this.getLabel(label)
     }
     getLabel(label) {
@@ -105,17 +105,25 @@
       // Child standard weight
       const regex = /Child/g
       let standard = 0
-      const child = this.fields.reduce((accumulator, field) => {
+      const childAge = this.fields.reduce((accumulator, field) => {
         let age = 0
         if (field.label.match(regex)) {
-          age = parseInt(field.value)
+          if (field.value.match(/m/gi)) {
+            age = 0.1
+          } else {
+            age = parseInt(field.value)
+          }
         }
         return accumulator + age
       }, 0)
-      if (!!child && child > 0) {
+      if (!!childAge && childAge > .1) {
         standard = root.standard.weight.child
       } else {
         standard = root.standard.weight.adult
+      }
+      // If infant, add standard infant weight to adult
+      if (!!childAge && childAge === 0.1) {
+        standard = root.standard.weight.adult + root.standard.weight.infant
       }
       //
       result = parseInt(result) || "tbc"

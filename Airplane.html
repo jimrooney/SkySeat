@@ -174,18 +174,7 @@
           // Eventually, maybe pull down the ACI data when processing the initial Manifest load?
           const regex = /Child/g
           POB = pob.map((station) => {
-            const child = station.px.fields.reduce((accumulator, field) => {
-              let age = 0
-              if (field.label.match(regex)) {
-                age = parseInt(field.value)
-              }
-              return accumulator + age
-            }, 0)
-            if (!!child && child > 0) {
-              station.weight = root.standard.weight.child
-            } else {
-              station.weight = root.standard.weight.adult
-            }
+            station.weight = station.weight.standard
             station.moment = station.weight * station.arm
             return station
           })
