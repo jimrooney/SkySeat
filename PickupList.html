@@ -207,9 +207,11 @@
             const infant = pax.fields.find((x) =>
               x.label.match(/Infant/gi)
             )?.value
-            if ((infant === "0" || infant > 0) && infant < 3) {
+
+            if (infant.match(/m/gi)) {
               accumulator++
             }
+
             return accumulator
           }, initialValue)
           // console.log("orderNumber %o pax: %o", orderNumber, paxList)
@@ -354,16 +356,16 @@
     }
     handleDropEvent(e, ui) {
       const $list = $(this) // list that's handling the drop
-        $("#PickupManifest").each(() => {
-          let paxNum = 0
-          $(this)
-            .find("li")
-            .each((i, LI) => {
-              const newNum = parseInt(LI.getAttribute("paxNum")) || 0
-              paxNum += newNum
-            })
-          $(this).find(".total").text(` (${paxNum})`)
-        })
+      $("#PickupManifest").each(() => {
+        let paxNum = 0
+        $(this)
+          .find("li")
+          .each((i, LI) => {
+            const newNum = parseInt(LI.getAttribute("paxNum")) || 0
+            paxNum += newNum
+          })
+        $(this).find(".total").text(` (${paxNum})`)
+      })
     }
   }
 </script>
