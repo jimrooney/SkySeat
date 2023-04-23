@@ -108,7 +108,7 @@
       const childAge = this.fields.reduce((accumulator, field) => {
         let age = 0
         if (field.label.match(regex)) {
-          if (field.value.match(/m/gi)) {
+          if (field.value?.match(/m/gi)) {
             age = 0.1
           } else {
             age = parseInt(field.value)
