@@ -68,7 +68,7 @@
     isOut() {
       return this.getDirection() == "B" ? true : false
     }
-    getTripTimes(TableCell) {
+    getTripTimes(TableCell) { // Unused ***
       let cellHour = TableCell.hour
       let stTime = this.item.startTimeLocal //"2020-08-08 10:00:00"
       let startHour = new Date(stTime).getHours()

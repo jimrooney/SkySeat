@@ -1,0 +1,48 @@
+<script>
+  class Kodiak extends Airplane {
+    constructor(...args) {
+      super(...args)
+
+      //this.type = this.constructor.name // "C208"
+      this.limits = {
+        weight: { empty: 0, MAUW: 3994.7, ramp: 4010, Landing: 3855.5 },
+        // fwd1/2 [limit in M ,@ weight in kg]
+        CG: {
+          forward: 1.61036,
+          aft: 2.02946,
+          bounds: [
+            { fwd1: [1.61036, 1814.8], fwd2: [1.61036, 2267.962] },
+            { fwd1: [1.61036, 2267.962], fwd2: [1.8034, 3311.224] },
+          ],
+        },
+      }
+      ;(this.fuel = {
+        capacity: 1283.3,
+        burnRate: 182,
+        factor: 0.8,
+        type: "JetA",
+      }),
+        (this.stations = [
+          new Station({ type: ["seat", "crew"], arm: 1.016, id: 1 }),
+          new Station({ type: ["seat", "crew"], arm: 1.016, id: 2 }),
+
+          new Station({ type: ["seat"], arm: 1.8034, id: 3 }),
+          new Station({ type: ["seat"], arm: 1.8034, id: 4 }),
+
+          new Station({ type: ["seat"], arm: 2.5908, id: 5 }),
+          new Station({ type: ["seat"], arm: 2.5908, id: 6 }),
+
+          new Station({ type: ["seat"], arm: 3.3782, id: 7 }),
+          new Station({ type: ["seat"], arm: 3.3782, id: 8 }),
+
+          new Station({ type: ["seat"], arm: 4.1656, id: 9 }),
+          new Station({ type: ["seat"], arm: 4.1656, id: 10 }),
+
+          new Station({ type: ["fuel"], arm: 2.11836, id: "Fuel" }),
+          new Station({ type: ["cargo", "podBay"], arm: 4.953, id: "bay1" }),
+          new Station({ type: ["cargo", "podBay"], arm: 4.953, id: "bay2" }),
+          new Station({ type: ["cargo", "podBay"], arm: 4.953, id: "bay3" }),
+        ])
+    }
+  }
+</script>
