@@ -63,7 +63,7 @@
     }
     getDirection() {
       let type = this.product.FlightType
-      return type.match(/^B/i) ? "B" : "A"
+      return type?.match(/^B/i) ? "B" : "A"
     }
     isOut() {
       return this.getDirection() == "B" ? true : false
