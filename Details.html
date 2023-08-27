@@ -256,7 +256,7 @@
               const $selector = $("<select />")
                 .appendTo($bay)
                 .data("station", station)
-                .append(`<option value="0">0</option>`)
+                .append(`<option value="0">${station.id}</option>`)
                 .click((e) => {
                   e.stopPropagation()
                 })
@@ -767,6 +767,8 @@
           }
           const routes = airplanePlotter.airplane.getRoute(cell)
           const WB = airplanePlotter.airplane.getWB(ARGS)
+          const WeightLeft = airplanePlotter.airplane.limits.weight.MAUW - WB.TotalWeight
+
           console.log("Airplane Click: ", airplanePlotter.airplane)
           console.log("Airplane.getRoute(CellData): ", routes)
           console.log("ARGS: ", ARGS)
@@ -774,14 +776,25 @@
             "getFuel: ",
             airplanePlotter.airplane.getFuelQuantity(cell)
           )
-          console.log("WB: ", WB)
+          console.log("✈️ WB: ", WB)
+          console.log("🥝 Civilized Units:")
           console.table(WB.WAM)
-          console.log(
-            "TotalWeight: %o \nTotalMoment: %o \nCG: %o",
-            WB.TotalWeight,
-            WB.TotalMoment,
-            WB.CG
-          )
+          console.log("Total Weight: ", WB.TotalWeight)
+          console.log("MAUW: ", airplanePlotter.airplane.limits.weight.MAUW)
+          console.log("Weight Left: ", WeightLeft)
+          console.log(" ")
+          
+          console.log("CG: ", WB.CG)
+          console.log("Max Aft CG: ", airplanePlotter.airplane.limits.CG.aft)
+          console.log(" ")
+
+          console.log("🏴󠁧󠁢󠁳󠁣󠁴󠁿🏴󠁧󠁢󠁳󠁣󠁴󠁿🏴󠁧󠁢󠁳󠁣󠁴󠁿 Freedom Units: 🦅🦅🦅")
+          console.table(WB.FreedomWAM)
+          console.log("Total Weight: ", WB.cg.imperial.TotalWeight)
+          console.log("MAUW: ", airplanePlotter.airplane.limits.weight.MAUW * 2.2046)
+          console.log("Weight Left: ", WeightLeft * 2.2046)
+          console.log("CG: ", WB.cg.imperial.CG)
+          console.log("Max Aft CG: ", airplanePlotter.airplane.limits.CG.aft * 39.37)
         })
         // ---------------------------
         // Print Button

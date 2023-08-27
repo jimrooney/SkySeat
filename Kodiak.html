@@ -9,7 +9,7 @@
         // fwd1/2 [limit in M ,@ weight in kg]
         CG: {
           forward: 1.61036,
-          aft: 2.02946,
+          aft: 2.04978,
           bounds: [
             { fwd1: [1.61036, 1814.8], fwd2: [1.61036, 2267.962] },
             { fwd1: [1.61036, 2267.962], fwd2: [1.8034, 3311.224] },
@@ -39,6 +39,8 @@
           new Station({ type: ["seat"], arm: 4.1656, id: 10 }),
 
           new Station({ type: ["fuel"], arm: 2.11836, id: "Fuel" }),
+          new Station({ type: ["cargo","podBay"], arm: 1.22936, id: "TKS" }),
+          
           new Station({ type: ["cargo", "podBay"], arm: 4.953, id: "bay1" }),
           new Station({ type: ["cargo", "podBay"], arm: 4.953, id: "bay2" }),
           new Station({ type: ["cargo", "podBay"], arm: 4.953, id: "bay3" }),

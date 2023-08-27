@@ -342,6 +342,13 @@
         }, []),
       ]
       WAM = utility.transpose(WAM)
+      const FWAM = JSON.parse(JSON.stringify(WAM))
+      const FreedomWAM = FWAM.map((numbers) => {
+        numbers[0] = Math.round(numbers[0] * 2.2046)
+        numbers[1] = Math.round(numbers[1] * 39.3700787402)
+        numbers[2] = numbers[2].toFixed(2)
+        return numbers
+      })
 
       const wb = {
         SAD: data.SAD,
@@ -385,6 +392,7 @@
           CG: roundCG,
         },
         WAM: WAM,
+        FreedomWAM: FreedomWAM,
       }
       return wb
     }
