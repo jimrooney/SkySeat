@@ -3,9 +3,9 @@
       constructor(...args) {
         super(...args)
   
-        //this.type = this.constructor.name // "C208"
+        //this.type = this.constructor.name // "KodiakB"
         this.limits = {
-          weight: { empty: 0, MAUW: 3994.7, ramp: 4010, Landing: 3855.5 },
+          weight: { empty: 0, MAUW: 3311.224, ramp: 3311.224, Landing: 3311.224 }, // Needs Updating to real values ******
           // fwd1/2 [limit in M ,@ weight in kg]
           CG: {
             forward: 1.61036,
@@ -22,7 +22,8 @@
           factor: 0.8,
           type: "JetA",
         }),
-          (this.stations = [
+      // Standard Seating Configuration B (from the manual) ****************************************************************
+      (this.stations = [
             new Station({ type: ["seat", "crew"], arm: 1.016, id: 1 }),
             new Station({ type: ["seat", "crew"], arm: 1.016, id: 2 }),
   
