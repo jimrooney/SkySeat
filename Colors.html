@@ -20,35 +20,27 @@
       ]
       this.count = 0
       this.hue = [
-        0,
-        30,
-        45,
-        60,
-        75,
-        105,
-        120,
-        150,
-        180,
-        195,
-        210,
-        225,
-        240,
-        255,
-        270,
-        285,
-        300,
-        315,
-        330,
-        345,
-        360
+        0, 30, 45, 60, 75, 105, 120, 150, 180, 195, 210, 225, 240, 255, 270,
+        285, 300, 315, 330, 345, 360,
       ]
     }
     getByBooking(booking) {
       let index = this.count
       let ret = "hsl(" + this.hue[index] + ",100%,50%)"
       this.count++
-      if(this.count>this.hue.length){
+      if (this.count > this.hue.length) {
         this.count = 0
+      }
+      return ret
+    }
+    getByOrderNumber(orderNumber) {
+      let ret = 0
+      if (!!orderNumber) {
+        ret = orderNumber.replace(/[^0-9]/g, "")
+        ret = ret.slice(0, -1)
+        ret = ret.split("").reverse().join("")
+        ret = parseInt(ret, 10)
+        ret = "hsl(" + ret + ",50%,50%)"
       }
       return ret
     }
