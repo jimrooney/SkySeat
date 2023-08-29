@@ -347,7 +347,8 @@
       const $S = $("<div />", {
         text: "Save",
         class: "MenuButton MobileButton",
-      })
+      }).width('70%').css('margin','auto');
+
       $S.click(function () {
         console.log("State data:", _this.state.data)
         _this.state.save()
@@ -375,7 +376,7 @@
         `<div id="DetailsClose" class="popupCloseButton right MobileButton">X</div>`
       )
       const $popLeft = $(
-        `<div id="DetailsClose" class="popupCloseButton left small MobileButton">X</div>`
+        `<div id="DetailsClose" class="popupCloseButton left MobileButton">X</div>`
       )
       this.$root.append($pop).append($popLeft)
       $pop.click(() => _this.close(_this))
@@ -450,6 +451,21 @@
         //
         report.css("background-color", color)
         report.text(`CG: ${WB.rounded.CG} Left: ${WeightLeft} kg`)
+        //
+        // Update CG Sliders
+        //
+        //const $range = $(`#AirplanePlotter_${i}`).find(".balance-range")
+        const $marker = $(`#AirplanePlotter_${i}`).find(
+          ".balance-range .balance-marker"
+        )
+        $marker.css("border-left-color", color)
+        const bounds = new Array()
+        bounds[0] = WB.cg.fwdLimit
+        bounds[1] = plane.limits.CG.aft
+        const ratio = (bounds[1] - bounds[0]) / (WB.cg.position - bounds[0])
+        const newMarker = Math.round(150 / ratio) // ****** Calculate by the size of the container ******
+
+        $marker.css("top", `${newMarker - 4}px`)
       })
     }
     // ============================================================================
@@ -745,6 +761,16 @@
             ).prepend($(this.PCFSelectorString))
           )
           .prepend($planeBackgroundContainer)
+
+        //
+        // --- Balance Slider ---
+        //
+        $planeBackgroundContainer.append(`
+          <div class="balance-range range" style="position: absolute; top:100px; left:0px">
+          <div class="balance-marker arrow-right" style="position: absolute;"></div>
+          </div>
+          `)
+
         $plane
           .find(".PaxList")
           .css(
@@ -767,7 +793,8 @@
           }
           const routes = airplanePlotter.airplane.getRoute(cell)
           const WB = airplanePlotter.airplane.getWB(ARGS)
-          const WeightLeft = airplanePlotter.airplane.limits.weight.MAUW - WB.TotalWeight
+          const WeightLeft =
+            airplanePlotter.airplane.limits.weight.MAUW - WB.TotalWeight
 
           console.log("Airplane Click: ", airplanePlotter.airplane)
           console.log("Airplane.getRoute(CellData): ", routes)
@@ -783,7 +810,7 @@
           console.log("MAUW: ", airplanePlotter.airplane.limits.weight.MAUW)
           console.log("Weight Left: ", WeightLeft)
           console.log(" ")
-          
+
           console.log("CG: ", WB.CG)
           console.log("Max Aft CG: ", airplanePlotter.airplane.limits.CG.aft)
           console.log(" ")
@@ -791,10 +818,16 @@
           console.log("🏴󠁧󠁢󠁳󠁣󠁴󠁿🏴󠁧󠁢󠁳󠁣󠁴󠁿🏴󠁧󠁢󠁳󠁣󠁴󠁿 Freedom Units: 🦅🦅🦅")
           console.table(WB.FreedomWAM)
           console.log("Total Weight: ", WB.cg.imperial.TotalWeight)
-          console.log("MAUW: ", airplanePlotter.airplane.limits.weight.MAUW * 2.2046)
+          console.log(
+            "MAUW: ",
+            airplanePlotter.airplane.limits.weight.MAUW * 2.2046
+          )
           console.log("Weight Left: ", WeightLeft * 2.2046)
           console.log("CG: ", WB.cg.imperial.CG)
-          console.log("Max Aft CG: ", airplanePlotter.airplane.limits.CG.aft * 39.37)
+          console.log(
+            "Max Aft CG: ",
+            airplanePlotter.airplane.limits.CG.aft * 39.37
+          )
         })
         // ---------------------------
         // Print Button

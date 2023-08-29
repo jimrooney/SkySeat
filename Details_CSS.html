@@ -1,4 +1,19 @@
 <style>
+:root {
+  --markerHeight: 8px;
+}
+div.range {
+  height: 150px;
+  width: 5px;
+  background-color: rgb(76, 76, 58);
+}
+.arrow-right {
+  width: 0;
+  height: 0;
+  border-top: var(--markerHeight) solid transparent;
+  border-bottom: var(--markerHeight) solid transparent;
+  border-left: var(--markerHeight) solid green;
+}
   .detailsDiv {
     display: none;
     width: auto;
