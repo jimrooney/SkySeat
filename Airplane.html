@@ -44,26 +44,21 @@
       //   this.updateStations(stations)
       // }
     }
+    // Override stations from spreadsheet data.
     updateStations(stations) {
-      console.log("this.stations: ", this.stations)
-      const _plane = root.planes.rawData.find((data) => data.reg == this.reg)
-      if (_plane.stations.length > 0) {
-        this.stations = null
-        this.stations = JSON.parse(_plane.stations)
-        this.stations.forEach((station) => {
-          
-          station.weight = (!!station.weight) ? station.weight : 0 
-          station.moment = station.weight * station.arm
-        })
-        console.log("New Stations: ", this.stations)
+      // If none have been passed in, load from the spreadsheet values.
+      if (!stations) {
+        // Get the plane rawData from the spreadsheet... this will have a column of new stations in JSON format.
+        const _plane = root.planes.rawData.find((data) => data.reg == this.reg)
+        stations = JSON.parse(_plane.stations)
       }
-      console.log("plane: ", _plane)
-      // console.log("replace with: ", stations)
-      // // clear old stations and repopulate (could maybe do selective later so you can just pass in seats)
-      // this.stations = []
-      // stations.forEach((station) => {
-      //   this.stations.push(new Station(station))
-      // })
+      // clear old stations and repopulate (could maybe do selective later so you can just pass in seats)
+      this.stations = []
+      stations.forEach((station) => {
+        this.stations.push(new Station(station))
+      })
+      // update the GUI
+      root.details.update()
     }
     get fuel() {
       if (!this._fuel) {
@@ -358,7 +353,7 @@
       const FreedomWAM = FWAM.map((numbers) => {
         numbers[0] = Math.round(numbers[0] * 2.2046)
         numbers[1] = Math.round(numbers[1] * 39.3700787402)
-        numbers[2] = (numbers[2]>0) ? numbers[2].toFixed(2) : 0
+        numbers[2] = numbers[2] > 0 ? numbers[2].toFixed(2) : 0
         return numbers
       })
 
