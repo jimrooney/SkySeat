@@ -45,7 +45,19 @@
       // }
     }
     updateStations(stations) {
-      // console.log("this.stations: ", this.stations)
+      console.log("this.stations: ", this.stations)
+      const _plane = root.planes.rawData.find((data) => data.reg == this.reg)
+      if (_plane.stations.length > 0) {
+        this.stations = null
+        this.stations = JSON.parse(_plane.stations)
+        this.stations.forEach((station) => {
+          
+          station.weight = (!!station.weight) ? station.weight : 0 
+          station.moment = station.weight * station.arm
+        })
+        console.log("New Stations: ", this.stations)
+      }
+      console.log("plane: ", _plane)
       // console.log("replace with: ", stations)
       // // clear old stations and repopulate (could maybe do selective later so you can just pass in seats)
       // this.stations = []
@@ -346,7 +358,7 @@
       const FreedomWAM = FWAM.map((numbers) => {
         numbers[0] = Math.round(numbers[0] * 2.2046)
         numbers[1] = Math.round(numbers[1] * 39.3700787402)
-        numbers[2] = numbers[2].toFixed(2)
+        numbers[2] = (numbers[2]>0) ? numbers[2].toFixed(2) : 0
         return numbers
       })
 
