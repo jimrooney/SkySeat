@@ -5,11 +5,11 @@
 
       //this.type = this.constructor.name // "Kodiak"
       this.limits = {
-        weight: { empty: 0, MAUW: 3311.224, ramp: 3311.224, Landing: 3311.224 }, // Needs Updating to real values ******
+        weight: { empty: 0, MAUW: 3290.813, ramp: 3290.813, Landing: 3290.813 }, // Needs Updating to real values ******
         // fwd1/2 [limit in M ,@ weight in kg]
         CG: {
           forward: 1.61036,
-          aft: 2.04978,
+          aft: 2.05232,
           bounds: [
             { fwd1: [1.61036, 1814.8], fwd2: [1.61036, 2267.962] },
             { fwd1: [1.61036, 2267.962], fwd2: [1.8034, 3311.224] },
@@ -42,9 +42,9 @@
           new Station({ type: ["fuel"], arm: 2.11836, id: "Fuel" }),
           new Station({ type: ["cargo","podBay"], arm: 1.22936, id: "TKS" }),
           
-          new Station({ type: ["cargo", "podBay"], arm: 4.953, id: "bay1" }),
-          new Station({ type: ["cargo", "podBay"], arm: 4.953, id: "bay2" }),
-          new Station({ type: ["cargo", "podBay"], arm: 4.953, id: "bay3" }),
+          new Station({ type: ["cargo", "podBay"], arm: 0.6604, id: "bay1" }),
+          new Station({ type: ["cargo", "podBay"], arm: 1.91135, id: "bay2" }),
+          new Station({ type: ["cargo", "podBay"], arm: 2.81305, id: "bay3" }),
         ])
     }
   }
