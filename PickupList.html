@@ -77,6 +77,7 @@
         }
         const loc = location?.locationName || ""
 
+        console.log("px: ", px)
         // Build div and append.
         const drag = $(`<div>(${px.length}x) ${loc} ${pickupTime}</div>`)
           .addClass(pickdrop)
@@ -102,6 +103,7 @@
       this.$this.find(".PickupContents").remove()
     }
     show(args) {
+      console.log("This: ", this)
       console.log("PickupList: ", args)
       this.$this.append(this.get$PickupList(args)) // Old V2 pickupList DOM.
       this.$this.show()
@@ -252,10 +254,12 @@
           if (numInfants > 0) {
             _color = "color:red"
           }
+          console.log("paxList: " , paxList)
           const $line =
             $(`<li id="Stop${orderNumber}" class="ui-state-default stop" paxNum=${
               paxList.length + numInfants
-            }></span>
+            }
+            ></span>
               <span style='${_color}'>(${
               paxList.length + numInfants
             })</span> ${time} ${locationName.short} 
@@ -267,6 +271,7 @@
               .data("paxNum", paxList.length + numInfants)
           const $clickArea =
             $(`<div class='click_area' style='font-size:x-small;display: none;'>
+              CD: ${paxList[0]?.cellData.id}
               <span style='color:darkgrey'>${locationName.detail}</span></div>`)
           paxList.forEach((p) => {
             $clickArea.append(`<div>${p.fullName}</div>`)

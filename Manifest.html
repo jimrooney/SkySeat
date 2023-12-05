@@ -341,6 +341,7 @@
       }
       _row?.forEach((cellData) => {
         cellData.passengers?.forEach((pax) => {
+          pax.cellData = cellData
           const pickdrop = cellData.leg == "B" ? "dropoffs" : "pickups"
 
           if (pax.fields.some((x) => x.label == "Role")) {

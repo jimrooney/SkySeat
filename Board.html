@@ -281,6 +281,8 @@
                 .data("object")
                 .show({
                   pickupList: this.manifest.getPickupList({ row: thisRow }),
+                  board: this,
+                  row: thisRow,
                 })
               $("#PickupList").show()
             })
