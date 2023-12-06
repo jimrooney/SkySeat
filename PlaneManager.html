@@ -3,6 +3,9 @@
     rawData: [],
     data: [],
     getPlane: function (registration) {
+      if (typeof registration === "number") {
+        return this.data[registration]
+      }
       for (let r in this.data) {
         if (this.data[r].reg == registration) {
           return this.data[r]
@@ -39,7 +42,10 @@
 
         let hours = planes[id]
 
-        let span = "<div id='hours' style='font-size:small;'>[hrs: <B>" + hours + "</B>]</div>"
+        let span =
+          "<div id='hours' style='font-size:small;'>[hrs: <B>" +
+          hours +
+          "</B>]</div>"
         $(this).prepend(span)
       })
     },
@@ -114,10 +120,21 @@
         let PCF = $(this).data("PCF")
         $(this).empty() // Just remove everything for now *****************
         if (PCF) {
-          let _content = "<span id='content'>" + PCF[0] + "<br>" + PCF[1][0][0] + "<br>" + PCF[2] + "L" + "</span>"
+          let _content =
+            "<span id='content'>" +
+            PCF[0] +
+            "<br>" +
+            PCF[1][0][0] +
+            "<br>" +
+            PCF[2] +
+            "L" +
+            "</span>"
           $(this).append(_content)
           if (PCF[1][1]) {
-            _content = "<br><span style='font-size:small;'>" + PCF[1][1][0] + "</span><br>"
+            _content =
+              "<br><span style='font-size:small;'>" +
+              PCF[1][1][0] +
+              "</span><br>"
             $(this).append(_content)
           }
           let _plane = PlaneManager.planes.getPlane(PCF[0])
@@ -147,7 +164,12 @@
         for (let p in PlaneManager.planes.list) {
           let selected = PlaneManager.planes.list[p].reg
 
-          let menu_row = "<div class='changePlane' id='" + selected + "'>" + selected + "</div>"
+          let menu_row =
+            "<div class='changePlane' id='" +
+            selected +
+            "'>" +
+            selected +
+            "</div>"
           box.append(menu_row)
           $("#" + selected).click(function () {
             let PCF = _this.data("PCF")
@@ -174,7 +196,12 @@
         for (let p in pilots.matrix) {
           let selected_pilot = pilots.matrix[p]
 
-          let menu_row = "<div class='changePilot' id='" + selected_pilot[0] + "'>" + selected_pilot[0] + "</div>"
+          let menu_row =
+            "<div class='changePilot' id='" +
+            selected_pilot[0] +
+            "'>" +
+            selected_pilot[0] +
+            "</div>"
           box.append(menu_row)
           $("#" + selected_pilot[0]).click(function () {
             let PCF = _this.data("PCF")
@@ -200,7 +227,12 @@
       $("#CoPilotDrop").click(function () {
         for (let p in pilots.matrix) {
           let selected_pilot = pilots.matrix[p]
-          let menu_row = "<div class='changeCoPilot' id='Co" + selected_pilot[0] + "'>" + selected_pilot[0] + "</div>"
+          let menu_row =
+            "<div class='changeCoPilot' id='Co" +
+            selected_pilot[0] +
+            "'>" +
+            selected_pilot[0] +
+            "</div>"
           box.append(menu_row)
           $("#Co" + selected_pilot[0]).click(function () {
             let PCF = _this.data("PCF")
@@ -230,7 +262,12 @@
         for (let i = 0; i <= 32; i++) {
           let f = i * 10
           let selected = f
-          let menu_row = "<div class='changeFuel' id='" + selected + "'>" + selected + "L</div>"
+          let menu_row =
+            "<div class='changeFuel' id='" +
+            selected +
+            "'>" +
+            selected +
+            "L</div>"
           box.append(menu_row)
           $("#" + selected).click(function () {
             _this.data("PCF")[2] = selected

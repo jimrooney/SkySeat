@@ -254,7 +254,23 @@
           if (numInfants > 0) {
             _color = "color:red"
           }
+          
+          // Which plane?
           console.log("paxList: " , paxList)
+          const col = paxList[0]?.cellData.id.split("_")[1] || 0
+          const planeNum = parseInt (col, 10)
+          const plane = root.planes.getPlane(planeNum)
+
+          // Do they need to pay?
+          let paymentDue = ""
+          if (!!order) {
+            console.log("TotalDue: ", order.totalDue)
+            if (parseInt (order.totalDue, 10) > 0) {
+              paymentDue = `<span style='color:#CC5500'>(P)</span>: ${order.totalDue})`
+            }
+          }
+
+
           const $line =
             $(`<li id="Stop${orderNumber}" class="ui-state-default stop" paxNum=${
               paxList.length + numInfants
@@ -271,7 +287,8 @@
               .data("paxNum", paxList.length + numInfants)
           const $clickArea =
             $(`<div class='click_area' style='font-size:x-small;display: none;'>
-              CD: ${paxList[0]?.cellData.id}
+              <span style='color:${plane?.regcolor}'>${plane?.reg}</span>
+              ${paymentDue}<br>
               <span style='color:darkgrey'>${locationName.detail}</span></div>`)
           paxList.forEach((p) => {
             $clickArea.append(`<div>${p.fullName}</div>`)
