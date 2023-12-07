@@ -259,7 +259,7 @@
           console.log("paxList: " , paxList)
           const col = paxList[0]?.cellId.split("_")[1] || 0
           const planeNum = parseInt (col, 10)
-          const plane = root.planes.getPlane(planeNum)
+          const plane = root.planes.getPlane(planeNum - 1)
 
           // Do they need to pay?
           let paymentDue = ""
