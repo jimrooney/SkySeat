@@ -19,6 +19,11 @@
   .Dropoff {
     background-color: rgb(139, 152, 206);
   }
+  .needToPay {
+    display: block; /* Make the span a block-level element */
+      width: 100%; /* Set its width to 100% of the container */
+    background-color: rgb(255, 119, 119, 0.2);
+  }
 </style>
 
 <script>
@@ -265,10 +270,12 @@
 
           // Do they need to pay?
           let paymentDue = ""
+          let needToPay = ""
           if (!!order) {
             console.log("TotalDue: ", order.totalDue)
             if (parseInt (order.totalDue, 10) > 0) {
-              paymentDue = `<span style='color:#CC5500'>(P)</span>: ${order.totalDue})`
+              paymentDue = `<span style='color:#CC5500'>(Pay)</span>: ${order.totalDue}`
+              needToPay = "needToPay"
             }
           }
 
@@ -289,9 +296,12 @@
               .data("paxNum", paxList.length + numInfants)
           const $clickArea =
             $(`<div class='click_area' style='font-size:x-small;display: none;'>
+              <span style='display: block;' class='${needToPay}'>
               <span style='color:${plane?.regcolor}'>${plane?.reg}</span>
-              ${paymentDue}<br>
-              <span style='color:darkgrey'>${locationName.detail}</span></div>`)
+              ${paymentDue}
+              </span>
+              <span style='color:darkgrey'>${locationName.detail}</span>
+              </div>`)
           paxList.forEach((p) => {
             $clickArea.append(`<div>${p.fullName}</div>`)
           })
