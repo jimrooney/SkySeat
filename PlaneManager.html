@@ -2,9 +2,11 @@
   var planes = {
     rawData: [],
     data: [],
-    getPlane: function (registration) {
-      if (typeof registration === "number") {
-        return this.data[registration]
+    getPlane: function (registration,boardId) {
+      if (typeof boardId === "number") {
+        // match the registration (from the top of the column) to the planemanager data
+        const reg = root.boards[boardId].state.data["0_" + registration].PCF.reg
+        return this.getPlane(reg)
       }
       for (let r in this.data) {
         if (this.data[r].reg == registration) {

@@ -258,8 +258,10 @@
           // Which plane?
           console.log("paxList: " , paxList)
           const col = paxList[0]?.cellId.split("_")[1] || 0
-          const planeNum = parseInt (col, 10)
-          const plane = root.planes.getPlane(planeNum - 1)
+          const planeNum = parseInt (col, 10) //-1 // plane columns are 1-x since column 0 is pickups
+          const boardId = paxList[0]?.boardId
+
+          const plane = root.planes.getPlane(planeNum,boardId)
 
           // Do they need to pay?
           let paymentDue = ""

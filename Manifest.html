@@ -342,6 +342,7 @@
       _row?.forEach((cellData) => {
         cellData.passengers?.forEach((pax) => {
           pax.cellId = cellData.id // attaching the cellId to pax so that the PickupList can reference the plane they're in.
+          pax.boardId = root.boards.indexOf(this.board)
 
           const pickdrop = cellData.leg == "B" ? "dropoffs" : "pickups"
 
