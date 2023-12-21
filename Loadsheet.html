@@ -261,6 +261,7 @@
           //
           let Lunches = 0
           let Buffet = 0
+          let pickupNotes = ""
 
           const myPax = new Pax(station.px)
           const booking = this.plane.state.board.manifest.getBooking(myPax)
@@ -269,6 +270,9 @@
           if (booking.length>0){
               Lunches = this.plane.state.board.manifest.findLunches(booking[0])
               Buffet = this.plane.state.board.manifest.findBuffetLunches(booking[0])
+              pickupNotes = booking[0].fields.find(
+                (field) => field.label === "Milford cruise/activity details "
+            )?.value
           }
           //
           // Display
@@ -278,6 +282,7 @@
             <span style="font-size:x-small">(${seatNum})</span></span>
             <span style='font-size:x-small; border-radius: 4px; padding:1px;'>${gyaCode}</span>
             <span style="font-size:small"> ${firstName} ${lastName}</span>
+            <span style="font-size:x-small"> ${pickupNotes}</span>
             `
           )
           $("._paxList-" + seatNum + "-weight").html(weight)
