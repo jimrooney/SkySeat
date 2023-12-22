@@ -271,8 +271,10 @@
               Lunches = this.plane.state.board.manifest.findLunches(booking[0])
               Buffet = this.plane.state.board.manifest.findBuffetLunches(booking[0])
               pickupNotes = booking[0].fields.find(
-                (field) => field.label === "Milford cruise/activity details "
-            )?.value
+
+                (field) => field.label?.match(/activity details/gi)
+//                (field) => field.label === "Milford cruise/activity details "
+            )?.value || ""
           }
           //
           // Display
