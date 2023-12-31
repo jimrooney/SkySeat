@@ -78,7 +78,7 @@
         })
       }
       //console.log("miaPax: %o", miaPax)
-      miaPax.forEach(pax=>{
+      miaPax.forEach((pax) => {
         this.state.removeAllBarcode(pax)
         this.update()
       })
@@ -107,18 +107,52 @@
       // here is where we need to now make 2 divs, one for pickup, one for dropoff
       this.$board.find(".PickupCell").each(function (i) {
         const row = $(this).data("row")
-        let paxNum = $(this)
+        const pickUpList = $(this)
           .data("this")
-          .manifest.getPickupList({ row: row })?.totalPax
+          .manifest.getPickupList({ row: row })
+
+        let paxNum = pickUpList?.totalPax
         if (paxNum == 0) {
           paxNum = ""
         }
         $(this).text(paxNum)
 
         // Staggar here ***
+        let bookingList = []
+        let filteredClasses = $(this).attr("class").split(" ").filter((str)=>{
+           return str.match(/Pickup/gi) || str.match(/Row/gi) 
+        })
+        $(this).removeClass()
+        $(this).addClass(filteredClasses) // clear all previous classes
+        
+        if (pickUpList.pickups.length > 0) {
+          $(this).addClass("arrow-up") // tag as a pickup
+          $(this).addClass(pickUpList.pickups.join(" ")) // tag with all the booking references.
+          bookingList = pickUpList.pickups // store list for highlighting
+        } else if (pickUpList.dropoffs.length > 0) {
+          $(this).addClass("arrow-down")
+          $(this).addClass(pickUpList.dropoffs.join(" ")) // tag with all the booking references.
+          bookingList = pickUpList.dropoffs // store list for highlighting
+        }
         // need to know if it's an in or an out... then push it the appropriate offset
-        $(this).parent().css({ position: "relative" })
-        $(this).css({ top: -5, position: "absolute" })
+        // $(this).parent().css({ position: "relative" })
+        // $(this).css({ top: -5, position: "absolute" })
+
+        // on Hover, loop through the booking list and highlight all objects classed with that order number.
+        $(this).hover(
+          () => {
+            bookingList.forEach((booking) => {
+              $("." + booking).addClass("highlight")
+            })
+          },
+          () => {
+            {
+              bookingList.forEach((booking) => {
+                $("." + booking).removeClass("highlight")
+              })
+            }
+          }
+        )
       })
       //
       // Make things Draggable

@@ -33,7 +33,7 @@
       this.$this = $this // jQuery selector passed in
       $this.data("object", this)
       this.pickupList
-      this.headers = ["Crafter", "HiAce", "Taxi1", "Taxi2"]
+      this.headers = ["Crafter", "HiAce", "Crafter2", "Taxi", "Misc"]
     }
     get$PickupList(args) {
       this.pickupList = args.pickupList
@@ -173,7 +173,7 @@
         $("#" + PickupManifest).append(
           `<ul id="sortable1" class="PickupSprite droptrue">
               <span class="pax"></span>
-              <span class="title" data-vehicle="1">${this.headers[0]}<span class="total" /></span>
+              <span class="title" data-vehicle="1"><form><input type="text" placeholder="${this.headers[0]}"></form><span class="total" /></span>
             </ul>`
         )
         //
@@ -327,6 +327,12 @@
           `<ul id="sortable4" class="PickupSprite droptrue">
             <span class="pax"></span>
             <span class="title" data-vehicle="4">${this.headers[3]}<span class="total" /></span>
+          </ul>`
+        )
+        $("#" + PickupManifest).append(
+          `<ul id="sortable5" class="PickupSprite droptrue">
+            <span class="pax"></span>
+            <span class="title" data-vehicle="5">${this.headers[4]}<span class="total" /></span>
           </ul>`
         )
         //
