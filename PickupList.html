@@ -16,6 +16,12 @@
   .Pickup {
     background-color: rgb(100, 201, 122);
   }
+  .PickupSprite {
+    min-height: 500px;
+  }
+  .input-title{
+    width: 100px;
+  }
   .Dropoff {
     background-color: rgb(139, 152, 206);
   }
@@ -173,7 +179,13 @@
         $("#" + PickupManifest).append(
           `<ul id="sortable1" class="PickupSprite droptrue">
               <span class="pax"></span>
-              <span class="title" data-vehicle="1"><form><input type="text" placeholder="${this.headers[0]}"></form><span class="total" /></span>
+              <span class="title" data-vehicle="1">
+                <form>
+                  <input class="input-title" type="text" placeholder="${this.headers[0]}">
+                  <input class="input-title" type="text" placeholder="">
+                  <span class="total" /></span>
+                </form>
+            </span>
             </ul>`
         )
         //
@@ -313,27 +325,51 @@
         //
         $("#" + PickupManifest).append(
           `<ul id="sortable2" class="PickupSprite droptrue">
-            <span class="pax"></span>
-            <span class="title" data-vehicle="2">${this.headers[1]}<span class="total" /></span>
-          </ul>`
+              <span class="pax"></span>
+              <span class="title" data-vehicle="2">
+                <form>
+                  <input class="input-title" type="text" placeholder="${this.headers[1]}">
+                  <input class="input-title" type="text" placeholder="">
+                  <span class="total" /></span>
+                </form>
+            </span>
+            </ul>`
         )
         $("#" + PickupManifest).append(
           `<ul id="sortable3" class="PickupSprite droptrue">
-            <span class="pax"></span>
-            <span class="title" data-vehicle="3">${this.headers[2]}<span class="total" /></span>
-          </ul>`
+              <span class="pax"></span>
+              <span class="title" data-vehicle="3">
+                <form>
+                  <input class="input-title" type="text" placeholder="${this.headers[2]}">
+                  <input class="input-title" type="text" placeholder="">
+                  <span class="total" /></span>
+                </form>
+            </span>
+            </ul>`
         )
         $("#" + PickupManifest).append(
           `<ul id="sortable4" class="PickupSprite droptrue">
-            <span class="pax"></span>
-            <span class="title" data-vehicle="4">${this.headers[3]}<span class="total" /></span>
-          </ul>`
+              <span class="pax"></span>
+              <span class="title" data-vehicle="4">
+                <form>
+                  <input class="input-title" type="text" placeholder="${this.headers[3]}">
+                  <input class="input-title" type="text" placeholder="">
+                  <span class="total" /></span>
+                </form>
+            </span>
+            </ul>`
         )
         $("#" + PickupManifest).append(
           `<ul id="sortable5" class="PickupSprite droptrue">
-            <span class="pax"></span>
-            <span class="title" data-vehicle="5">${this.headers[4]}<span class="total" /></span>
-          </ul>`
+              <span class="pax"></span>
+              <span class="title" data-vehicle="5">
+                <form>
+                  <input class="input-title" type="text" placeholder="${this.headers[4]}">
+                  <input class="input-title" type="text" placeholder="">
+                  <span class="total" /></span>
+                </form>
+            </span>
+            </ul>`
         )
         //
         // Link the sortables

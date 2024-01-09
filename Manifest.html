@@ -556,7 +556,7 @@
       //
       // return the matching order objects
       //
-      return this.orders.find((order) => order.orderNumber == orderNumber)
+      return this.orders?.find((order) => order.orderNumber == orderNumber)
     }
     //
     // return total number of filled seats
