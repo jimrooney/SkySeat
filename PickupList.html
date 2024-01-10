@@ -23,7 +23,26 @@
     width: 100px;
   }
   .Dropoff {
-    background-color: rgb(139, 152, 206);
+    background-color: 7393B3;
+  }
+  .popupCloseButtonSmall {
+    color: #ccc;
+    background-color: #fff;
+    border: 3px solid #999;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: arial;
+    font-weight: bold;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    font-size: 15px;
+    line-height: 15px;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    z-index: 1;
   }
   .needToPay {
     display: block; /* Make the span a block-level element */
@@ -50,7 +69,7 @@
       this.clear() // this.$this.find(".PickupContents").remove()
       let contents = $("<div class='PickupContents container'></div>")
         .append(
-          $(`<span class="popupCloseButtonSmall MobileButton">X</span>`).click(
+          $(`<span class="popupCloseButtonSmall left MobileButton">X</span>`).click(
             () => this.$this.hide()
           )
         )
@@ -144,7 +163,7 @@
       // Navbar
       //
       //<button onClick='utility.printPickup()'>Print</button>
-      let _nav = `<div style='float:right; width: 100%; display: block; position: absolute; top: 0;'>
+      let _nav = `<div style='width: 100%; display: block; position: absolute; top: 0;'>
         <span class="title"></span>
         </div><span id="pickupDetailsClose" class="popupCloseButtonSmall MobileButton">X</span><P>`
       $(`#PickupContents`).append(_nav)
@@ -164,7 +183,7 @@
         _dropoffs = true
         data = pickupData.dropoffs
         $(`#PickupContents .title`).text("Dropoffs")
-        pickupList.css("background-color", "lightgreen")
+        pickupList.css("background-color", "#7393B3")
       }
       // ----------------------------------------------------------------------------------------------------------------------------------
       // Pickup Manifest (sortable) (loop over the Data)
