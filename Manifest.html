@@ -166,9 +166,11 @@
     // ===================================================================
     // Call the Google Rezdy loading script, passing this object so the results can be returned into it
     load() {
+      document.body.style.backgroundColor = "darkgrey";
       Rezdy.load(this)
     }
     onLoad(json) {
+      document.body.style.backgroundColor = "lightgrey";
       this.data = JSON.parse(json) // parse json String data into a json object
       // to Rezdy, a "booking" is a "booking order" (cuz they couldn't decide which name they preferred)
       this.orders = this.processOrders(this.data.bookings) // [{Booking},{Booking},{Booking}] An array of booking objects
