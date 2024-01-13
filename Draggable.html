@@ -21,14 +21,14 @@
   // ---------------------------
   function initializeDraggables() {
     $(".BookingSprite").draggable({
-      //revert: true,
-      //helper: 'clone',
-      cursorAt: { left: 5, top: 5 },
+      revert: true,
+      helper: 'clone',
+      cursorAt: { left: 50, top: 15 },
       revert: "invalid",
-      helper: function () {
-        //debugger;
-        return $("<div class='popupCloseButton'></div>") //.append($(this).prop('id'));
-      },
+      // helper: function () {
+      //   //debugger;
+      //   return $("<div class='popupCloseButton'></div>") //.append($(this).prop('id'));
+      // },
     })
 
     $(".Draggable").draggable({
