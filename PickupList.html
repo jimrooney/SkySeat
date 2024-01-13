@@ -19,7 +19,7 @@
   .PickupSprite {
     min-height: 500px;
   }
-  .input-title{
+  .input-title {
     width: 100px;
   }
   .Dropoff {
@@ -46,7 +46,7 @@
   }
   .needToPay {
     display: block; /* Make the span a block-level element */
-      width: 100%; /* Set its width to 100% of the container */
+    width: 100%; /* Set its width to 100% of the container */
     background-color: rgb(255, 119, 119, 0.2);
   }
 </style>
@@ -69,9 +69,9 @@
       this.clear() // this.$this.find(".PickupContents").remove()
       let contents = $("<div class='PickupContents container'></div>")
         .append(
-          $(`<span class="popupCloseButtonSmall left MobileButton">X</span>`).click(
-            () => this.$this.hide()
-          )
+          $(
+            `<span class="popupCloseButtonSmall left MobileButton">X</span>`
+          ).click(() => this.$this.hide())
         )
         .append("<div class='container'></div>")
 
@@ -290,26 +290,25 @@
           if (numInfants > 0) {
             _color = "color:red"
           }
-          
+
           // Which plane?
-          console.log("paxList: " , paxList)
+          console.log("paxList: ", paxList)
           const col = paxList[0]?.cellId.split("_")[1] || 0
-          const planeNum = parseInt (col, 10) //-1 // plane columns are 1-x since column 0 is pickups
+          const planeNum = parseInt(col, 10) //-1 // plane columns are 1-x since column 0 is pickups
           const boardId = paxList[0]?.boardId
 
-          const plane = root.planes.getPlane(planeNum,boardId)
+          const plane = root.planes.getPlane(planeNum, boardId)
 
           // Do they need to pay?
           let paymentDue = ""
           let needToPay = ""
           if (!!order) {
             console.log("TotalDue: ", order.totalDue)
-            if (parseInt (order.totalDue, 10) > 0) {
+            if (parseInt(order.totalDue, 10) > 0) {
               paymentDue = `<span style='color:#CC5500'>(Pay)</span>: ${order.totalDue}`
               needToPay = "needToPay"
             }
           }
-
 
           const $line =
             $(`<li id="Stop${orderNumber}" class="ui-state-default stop" paxNum=${
@@ -440,7 +439,13 @@
           }
         })
         const _this = this
-        $("#sortable1" + ", #sortable2" + ", #sortable3").droppable({
+        $(
+          "#sortable1" +
+            ", #sortable2" +
+            ", #sortable3" +
+            ", #sortable4" +
+            ", #sortable5"
+        ).droppable({
           accept: ".ui-state-default",
           drop: _this.handleDropEvent,
         })
@@ -450,17 +455,22 @@
       pickupList.show()
     }
     handleDropEvent(e, ui) {
-      const $list = $(this) // list that's handling the drop
-      $("#PickupManifest").each(() => {
-        let paxNum = 0
-        $(this)
-          .find("li")
-          .each((i, LI) => {
-            const newNum = parseInt(LI.getAttribute("paxNum")) || 0
-            paxNum += newNum
-          })
-        $(this).find(".total").text(` (${paxNum})`)
-      })
+
+      // ---------------------------------------
+      // Count list totals (#of pax per vehicle)
+      // ---------------------------------------
+      setTimeout(function () { // doesn't count right without a slight delay
+        $("#PickupManifest ul").each((i, pickupList) => {
+          let paxNum = 0
+          $(pickupList)
+            .find("li")
+            .each((i, LI) => {
+              const newNum = parseInt(LI.getAttribute("paxNum")) || 0
+              paxNum += newNum
+            })
+          $(pickupList).find(".total").text(` (${paxNum})`)
+        })
+      }, 100)
     }
   }
 </script>
