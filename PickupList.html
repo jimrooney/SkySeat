@@ -17,7 +17,17 @@
     background-color: rgb(100, 201, 122);
   }
   .PickupSprite {
+    display: inline-block;
     min-height: 500px;
+  }
+
+  .vehicle-box{
+    display: inline-block;
+    width: 330px;
+  }
+  .title {
+    display: inline-block;
+    width: 300px;
   }
   .input-title {
     width: 100px;
@@ -49,6 +59,12 @@
     width: 100%; /* Set its width to 100% of the container */
     background-color: rgb(255, 119, 119, 0.2);
   }
+  ul:before{
+    content:attr(list-label);
+    font-size:100%;
+    font-weight:bold;
+    margin-left:15px;
+}
 </style>
 
 <script>
@@ -107,7 +123,6 @@
         }
         const loc = location?.locationName || ""
 
-        console.log("px: ", px)
         // Build div and append.
         const drag = $(`<div>(${px.length}x) ${loc} ${pickupTime}</div>`)
           .addClass(pickdrop)
@@ -139,6 +154,7 @@
       this.$this.show()
       // *** to disable the new stuff, remove the next call...
       this.showList(args.pickupList) // Calling retrofit of V1 pickupList DOM... deletes Old V2 version first
+      this.handleDropEvent()
     }
     hide() {
       this.$this.hide()
@@ -193,11 +209,10 @@
         // Sortable PickupManifest
         //
         $("#PickupContents").append(
-          `<div id='${PickupManifest}' class='PickupManifest'></div>`
+          `<span id='${PickupManifest}' class='PickupManifest'></span>`
         )
         $("#" + PickupManifest).append(
-          `<ul id="sortable1" class="PickupSprite droptrue">
-              <span class="pax"></span>
+          `<span class="vehicle-box"><span class="pax"></span>
               <span class="title" data-vehicle="1">
                 <form>
                   <input class="input-title" type="text" placeholder="${this.headers[0]}">
@@ -205,7 +220,7 @@
                   <span class="total" /></span>
                 </form>
             </span>
-            </ul>`
+          <ul id="sortable1" class="PickupSprite droptrue"></ul></span>`
         )
         //
         // Each Pickup
@@ -252,8 +267,7 @@
 
             return accumulator
           }, initialValue)
-          // console.log("orderNumber %o pax: %o", orderNumber, paxList)
-          // extract location from first pax
+              // extract location from first pax
           const location = paxList[0].fields.find(
             (f) => f.label == "pickupLocation"
           )
@@ -262,8 +276,6 @@
             detail: "",
           }
           pickupAddress = locationName.short
-          console.log("pickupAddress?: ", !!pickupAddress)
-          console.log("pickupAddress: ", pickupAddress)
 
           if (!!dropoffAddress && _dropoffs && !locationName.short) {
             locationName.short = dropoffAddress
@@ -292,7 +304,6 @@
           }
 
           // Which plane?
-          console.log("paxList: ", paxList)
           const col = paxList[0]?.cellId.split("_")[1] || 0
           const planeNum = parseInt(col, 10) //-1 // plane columns are 1-x since column 0 is pickups
           const boardId = paxList[0]?.boardId
@@ -303,7 +314,6 @@
           let paymentDue = ""
           let needToPay = ""
           if (!!order) {
-            console.log("TotalDue: ", order.totalDue)
             if (parseInt(order.totalDue, 10) > 0) {
               paymentDue = `<span style='color:#CC5500'>(Pay)</span>: ${order.totalDue}`
               needToPay = "needToPay"
@@ -342,8 +352,7 @@
         // Two other sortable lists (Van2 and "Other")
         //
         $("#" + PickupManifest).append(
-          `<ul id="sortable2" class="PickupSprite droptrue">
-              <span class="pax"></span>
+          `<span class="vehicle-box"><span class="pax"></span>
               <span class="title" data-vehicle="2">
                 <form>
                   <input class="input-title" type="text" placeholder="${this.headers[1]}">
@@ -351,11 +360,10 @@
                   <span class="total" /></span>
                 </form>
             </span>
-            </ul>`
+          <ul id="sortable2" class="PickupSprite droptrue"></ul></span>`
         )
         $("#" + PickupManifest).append(
-          `<ul id="sortable3" class="PickupSprite droptrue">
-              <span class="pax"></span>
+          `<span class="vehicle-box"><span class="pax"></span>
               <span class="title" data-vehicle="3">
                 <form>
                   <input class="input-title" type="text" placeholder="${this.headers[2]}">
@@ -363,11 +371,10 @@
                   <span class="total" /></span>
                 </form>
             </span>
-            </ul>`
+          <ul id="sortable3" class="PickupSprite droptrue"></ul></span>`
         )
         $("#" + PickupManifest).append(
-          `<ul id="sortable4" class="PickupSprite droptrue">
-              <span class="pax"></span>
+          `<span class="vehicle-box"><span class="pax"></span>
               <span class="title" data-vehicle="4">
                 <form>
                   <input class="input-title" type="text" placeholder="${this.headers[3]}">
@@ -375,19 +382,18 @@
                   <span class="total" /></span>
                 </form>
             </span>
-            </ul>`
+          <ul id="sortable4" class="PickupSprite droptrue"></ul></span>`
         )
         $("#" + PickupManifest).append(
-          `<ul id="sortable5" class="PickupSprite droptrue">
-              <span class="pax"></span>
-              <span class="title" data-vehicle="5">
+          `<span class="title"><span class="pax"></span>
+              <span class="vehicle-box" data-vehicle="5">
                 <form>
                   <input class="input-title" type="text" placeholder="${this.headers[4]}">
                   <input class="input-title" type="text" placeholder="">
                   <span class="total" /></span>
                 </form>
             </span>
-            </ul>`
+          <ul id="sortable5" class="PickupSprite droptrue"></ul></span>`
         )
         //
         // Link the sortables
@@ -469,6 +475,7 @@
               paxNum += newNum
             })
           $(pickupList).find(".total").text(` (${paxNum})`)
+          $(pickupList).attr('list-label', `Total Pax: ${paxNum}`)
         })
       }, 100)
     }
