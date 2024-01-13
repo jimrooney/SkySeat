@@ -119,6 +119,8 @@
 
         // Staggar here ***
         let bookingList = []
+        $(this).removeClass("arrow-up")
+        $(this).removeClass("arrow-down")
         let filteredClasses = $(this).attr("class").split(" ").filter((str)=>{
            return str.match(/Pickup/gi) || str.match(/Row/gi) 
         })
