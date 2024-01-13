@@ -91,13 +91,22 @@
       const $this = this.$this
 
       if (!!PCF) { // quick hack to avoid lack of defaults **********************
+        let bgColor = root.planes.getPlane(PCF.reg)?.regcolor
         const $content = $(`<div class="CellContent" />`)
         const $pilot = $(`<div class="pilot">${PCF.pilot}</div>`)
         const $plane = $(`<div class="plane">${PCF.reg}</div>`)
         const $fuel = $(`<div class="fuel">${PCF.fuel}</div>`)
-        $content.append($plane).append($pilot).append($fuel)
+        $content.append($plane)//.append($pilot).append($fuel)
 
         $this.empty()
+        
+        $this.css("background-color", colors.hexToRgb(bgColor,.06) );
+        bgColor = colors.hexToRgb(bgColor,.2)
+        $this.css("-webkit-box-shadow", `inset 0px 0px 0px 2px ${bgColor}`)
+        $this.css("-moz-box-shadow", `inset 0px 0px 0px 2px ${bgColor}}`)
+        $this.css("box-shadow", `inset 0px 0px 0px 2px ${bgColor}}`)
+
+
         $this.append($content)
       }
     }

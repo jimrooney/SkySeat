@@ -255,22 +255,20 @@
     }
     writeBoard() {
       console.log("Write Board")
-      // ----------------------
-      // The Board Table
-      // ----------------------
-      this.$board.append(
-        '<div class="Top"></div><div style="float:left; display: inline-block;" class="Header"><table class="BoardTable" /></div>'
-      )
+      // -----------------------
+      // The (empty) Board Table
+      // -----------------------
+      this.$board.prepend(`<table class="BoardTable" />`)
       const _this = this
       const $closer = $(
-        '<div class="popupCloseButton MobileButton">X</div>'
+        '<span style="display: inline-block" class="popupCloseButton MobileButton">X</span>'
       ).click(() => {
         _this.close()
       })
-      this.$board.find(".Top").append($closer)
-      // ----------------------
-      // Root
-      // ----------------------
+      this.$board.find(".Top .Header").prepend($closer)
+      // ------------------------
+      // Fill the board table...
+      // ------------------------
       let $table = this.$board.find(".BoardTable")
       // ----------------------
       // Header Row
@@ -359,6 +357,7 @@
       // Manifest
       // ----------
       this.manifest.write()
+
       // ----------
       // DatePicker
       // ----------

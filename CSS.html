@@ -50,20 +50,14 @@
     --in: rgb(201, 127, 42);
   }
   .BoardTable {
+    display: inline-block;
     border-collapse: collapse;
     background-color: white;
+    border: 1px solid #ddd; /* Optional: Add a border for better visibility */
   }
   .TableCell {
-    --gradient-in: linear-gradient(
-      -110deg,
-      var(--in) 20%,
-      var(--main-bg-color) 20%
-    );
-    --gradient-out: linear-gradient(
-      110deg,
-      var(--main-bg-color) 80%,
-      var(--out) 80%
-    );
+    --gradient-in: linear-gradient(-110deg, var(--in) 20%, var(--main-bg-color) 20%);
+    --gradient-out: linear-gradient(110deg, var(--main-bg-color) 80%, var(--out) 80%);
   }
   .TableCell,
   .PopupTableCell,
@@ -91,7 +85,7 @@
   .Half-Hour::after {
     content: ":30";
     color: red;
-}
+  }
   .PlaneCell,
   .PilotCell {
     border: 1px solid black;
@@ -197,9 +191,7 @@
     background: white;
   }
   .ui-datepicker-disable:hover {
-    transform: scale(
-      1.5
-    ); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
   }
   .ui-popupCloseButton,
   .ui-droppable {
@@ -243,19 +235,11 @@
 
   .inCell {
     -webkit-print-color-adjust: exact;
-    background-image: linear-gradient(
-      -110deg,
-      rgb(153, 174, 196) 20%,
-      rgb(64, 136, 207) 20%
-    );
+    background-image: linear-gradient(-110deg, rgb(153, 174, 196) 20%, rgb(64, 136, 207) 20%);
   }
   .outCell {
     -webkit-print-color-adjust: exact;
-    background-image: linear-gradient(
-      110deg,
-      rgb(64, 136, 207) 80%,
-      rgb(153, 174, 196) 80%
-    );
+    background-image: linear-gradient(110deg, rgb(64, 136, 207) 80%, rgb(153, 174, 196) 80%);
   }
   .inMarker {
     float: right;
@@ -440,12 +424,14 @@
   }
   .Manifest_Container {
     width: auto;
-    min-width: 50px;
+    min-width: 500px;
     max-width: 500px;
-    height: 545px;
+    height: 553px;
     padding: 10px;
     display: inline-block;
     background: rgba(71, 88, 115, 1);
+    vertical-align: top;
+    border: 1px solid #ddd;
   }
   .Manifest_Container .Header {
     background-color: #1e6330;
@@ -473,7 +459,7 @@
     border-style: solid;
     border-color: transparent black black transparent;
   }
-  .Plotted.Manifest{
+  .Plotted.Manifest {
     background-color: rgb(87, 87, 87);
   }
   .PaxSprite {
@@ -540,50 +526,50 @@
   } */
   .arrow-up {
     border: 2px dashed rgb(137, 236, 91);
-}
-.arrow-down {
-  border: 2px dashed rgb(166, 168, 180, 0.6);
-}
-.arrow-right {
-  width: 0; 
-  height: 0; 
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 5px solid green;
-}
-.arrow-left {
-  width: 0; 
-  height: 0; 
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent; 
-  border-right:5px solid blue; 
-}
-.Border{
+  }
+  .arrow-down {
+    border: 2px dashed rgb(166, 168, 180, 0.6);
+  }
+  .arrow-right {
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid green;
+  }
+  .arrow-left {
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 5px solid blue;
+  }
+  .Border {
     border: 1px solid black;
   }
-  .hr30{
-    position:relative;
-    top:20px;
+  .hr30 {
+    position: relative;
+    top: 20px;
   }
   .hr30:after {
-        content: " ";
-        display: block;
-        background: var(--main-bg-color);
-        height: 20px;
-        width: 100%;
-        border-right:1px solid black; 
-        border-left:1px solid black; 
-        position: absolute;
-        bottom: -20px;
-        left: -1px;
-    }
+    content: " ";
+    display: block;
+    background: var(--main-bg-color);
+    height: 20px;
+    width: 100%;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    position: absolute;
+    bottom: -20px;
+    left: -1px;
+  }
   .triangle {
-      display: inline-block;
-      border-left: 1px solid black;
-      border-bottom: 1px solid black;
-      width: 0;
-      height: 0;
-      padding: 5px; /* Adjust padding as needed */
-      margin-left: 4px; /* Adjust margin to center the top of the triangle */
-    }
+    display: inline-block;
+    border-left: 1px solid black;
+    border-bottom: 1px solid black;
+    width: 0;
+    height: 0;
+    padding: 5px; /* Adjust padding as needed */
+    margin-left: 4px; /* Adjust margin to center the top of the triangle */
+  }
 </style>

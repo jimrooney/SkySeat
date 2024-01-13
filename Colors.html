@@ -147,6 +147,22 @@ So 8am kayak, 11am FCF out and 1pm Kayak outs all get the same text colour
       // }
       return 0
     }
+
+
+    hexToRgb(hex,alpha) {
+    // Remove the hash (#) if it's included
+    hex = hex.replace(/^#/, '');
+
+    // Parse the hex value into RGB components
+    let bigint = parseInt(hex, 16);
+    let r = (bigint >> 16) & 255;
+    let g = (bigint >> 8) & 255;
+    let b = bigint & 255;
+
+    // Return the RGB color code
+    return `rgb(${r}, ${g}, ${b}, ${alpha})`;
+}
+
   }
   var colors = new Colors()
 </script>

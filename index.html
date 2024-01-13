@@ -92,8 +92,9 @@
       id="HoverBar"
       class="NoPrint"
       style="
-        float: top;
-        width: 100%;
+        display: inline-block;
+        vertical-align: top;
+        width: 1112px;
         text-align: center;
         background: #737373;
         color: white;
@@ -104,7 +105,7 @@
       <div id="Error"></div>
       <!-- <div id="Logo" hidden><?!= include('Logo'); ?></div> -->
 
-      SkySeat [[ v2.8.11 ] ["NexusOne"]]
+      SkySeat [[ v2.8.12 ] ["NexusOne"]]
       <a
         href="https://docs.google.com/spreadsheets/d/1izT_h7z9z2vHYs7TcRQq4EFWYXYwlm-C9Tcn_Ce-V-c/edit#gid=1155160317"
         >Data Spreadsheet</a
@@ -129,7 +130,7 @@
       <div id="TheBoard" class="NoPrint" style="float: none; margin: 10px">
         <div>
           <div>
-            <button class="Nav" onClick="root.makeNewBoard()">[+]</button>
+            <!-- <button class="Nav" onClick="root.makeNewBoard()">[+]</button> -->
             <!-- <button class="Nav Dev" onClick="utility.close()">Close</button>
             <button class="Dark" onClick="test()">Test</button>
             <button class="Nav" id="SaveButton" onClick="saveBoard()">
@@ -200,7 +201,6 @@
             </div>
           </span>
         </div>
-        <div><button onClick="theBoard.load()">&#10226;</button><br /></div>
       </div>
       <!-- Popups -->
       <div id="Roster"></div>
