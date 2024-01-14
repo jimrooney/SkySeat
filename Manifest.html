@@ -170,7 +170,7 @@
       Rezdy.load(this)
     }
     onLoad(json) {
-      document.body.style.backgroundColor = "lightgrey";
+      document.body.style.backgroundColor = "grey";
       this.data = JSON.parse(json) // parse json String data into a json object
       // to Rezdy, a "booking" is a "booking order" (cuz they couldn't decide which name they preferred)
       this.orders = this.processOrders(this.data.bookings) // [{Booking},{Booking},{Booking}] An array of booking objects
