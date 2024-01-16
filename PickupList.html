@@ -225,7 +225,7 @@
         //
         // Each Pickup
         //
-        data.forEach((orderNumber) => {
+        data?.forEach((orderNumber) => {
           const order = pickupData.manifest.getOrder(orderNumber)
           let dropoffAddress
           let pickupAddress
@@ -241,7 +241,7 @@
               (f) => (f.label = "Drop off address")
             )
             if (_doff.length > 0) {
-              dropoffAddress = _doff[1].value
+              dropoffAddress = _doff[1]?.value
             }
           }
 

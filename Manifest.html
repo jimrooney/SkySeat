@@ -217,7 +217,7 @@
     getManifest(date = this.getDate()) {
       let orders = this.orders
       // Filter by Status
-      orders = orders.filter(
+      orders = orders?.filter(
         (order) =>
           order.status == "CONFIRMED" ||
           order.status == "PENDING_SUPPLIER" ||
@@ -265,7 +265,7 @@
       let lastHour
       let rowTotal = 0
       let rowHeader
-      bookings.forEach((booking) => {
+      bookings?.forEach((booking) => {
         const hour = booking.getStartHour()
         const num = this.countPax([booking])
 
@@ -414,8 +414,7 @@
     // ------------
     filterByDate(orders, date) {
       let _date = date
-      return orders
-        .filter((element) => {
+      return orders?.filter((element) => {
           if (element.items) {
             return element.items.some((subElement) => {
               return (
