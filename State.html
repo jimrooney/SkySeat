@@ -381,8 +381,7 @@
     }
     // OnLoad, parse into JSON and update the board
     onLoad(args, _this) {
-      utility.alert("(Day) Loaded")
-      console.log("{state}onLoad")
+      utility.setStatus({message:"(Day) Loaded", caller: _this})
       const _args = JSON.parse(args)
       if (!!_args) {
         const date = _args.shift()
@@ -412,6 +411,8 @@
           })
         })
         _this.board.update()
+        document.body.style.backgroundColor = "white";
+        _this.board.removeOldBookings() // *** uncomment to auto-crosscheck
       }
     }
     save() {

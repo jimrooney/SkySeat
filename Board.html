@@ -59,7 +59,7 @@
           const barcode = pax.fields.find((f) => f.label == "Barcode")
           // see if the barcode is in the manifest
           let ret
-          manifest.forEach((order) => {
+          manifest?.forEach((order) => {
             order.items.find((item) => {
               let found = item.participants.find((part) => {
                 const px = new Pax(part.fields)

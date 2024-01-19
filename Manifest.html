@@ -87,11 +87,11 @@
       //   _board.state.load()
       // })
 
-      const $_s = $("<button>").text("<- CrossCheck ->")
-      $_s.on("click", function () {
-        console.log("{state}.getState(): %o", _board.removeOldBookings())
-      })
-      this.$this.find(".CrossCheck").prepend($_s)
+      // const $_s = $("<button>").text("<- CrossCheck ->")
+      // $_s.on("click", function () {
+      //   console.log("{state}.getState(): %o", _board.removeOldBookings())
+      // })
+      // this.$this.find(".CrossCheck").prepend($_s)
 
       // const $_r = $("<button class='Dark Debug'>").append("<BR>").text("R")
       // this.$this.prepend($_r)
@@ -166,9 +166,11 @@
     // ===================================================================
     // Call the Google Rezdy loading script, passing this object so the results can be returned into it
     load() {
+      document.body.style.backgroundColor = "darkgrey";
       Rezdy.load(this)
     }
     onLoad(json) {
+      document.body.style.backgroundColor = "grey";
       this.data = JSON.parse(json) // parse json String data into a json object
       // to Rezdy, a "booking" is a "booking order" (cuz they couldn't decide which name they preferred)
       this.orders = this.processOrders(this.data.bookings) // [{Booking},{Booking},{Booking}] An array of booking objects
@@ -215,7 +217,7 @@
     getManifest(date = this.getDate()) {
       let orders = this.orders
       // Filter by Status
-      orders = orders.filter(
+      orders = orders?.filter(
         (order) =>
           order.status == "CONFIRMED" ||
           order.status == "PENDING_SUPPLIER" ||
@@ -263,7 +265,7 @@
       let lastHour
       let rowTotal = 0
       let rowHeader
-      bookings.forEach((booking) => {
+      bookings?.forEach((booking) => {
         const hour = booking.getStartHour()
         const num = this.countPax([booking])
 
@@ -412,8 +414,7 @@
     // ------------
     filterByDate(orders, date) {
       let _date = date
-      return orders
-        .filter((element) => {
+      return orders?.filter((element) => {
           if (element.items) {
             return element.items.some((subElement) => {
               return (
