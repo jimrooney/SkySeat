@@ -29,6 +29,28 @@
         },
       }
     }
+    checkState() {
+      // loop over each cell in state
+      for (const [key, cell] of Object.entries(this.data)) {
+        // loop over each passenger
+        const newPassengerArray = cell.passengers.map((entry) => {
+          // find the passenger data in the manifest
+          const barcodeField = entry.fields.find(
+            (field) => field.label === "Barcode"
+          )
+          const barcode = barcodeField ? barcodeField.value : null
+          const manifestFields = this.board.manifest.getPax(barcode)?.fields
+          // merge in the State fields
+          // manifest fields take precedence over state fields
+          const newFields = manifestFields
+            ? [...entry.fields, ...manifestFields]
+            : entry.fields
+          return newFields
+        })
+        // assign the merged pax array to state.
+        cell.passengers = newPassengerArray
+      }
+    }
     clear() {
       console.log("Cleared State")
       this.data = {}
