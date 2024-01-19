@@ -347,7 +347,6 @@
           pax.boardId = root.boards.indexOf(this.board)
 
           const pickdrop = cellData.leg == "B" ? "dropoffs" : "pickups"
-
           if (pax.fields.some((x) => x.label == "Role")) {
             pickupList.crew.push(pax)
           } else {

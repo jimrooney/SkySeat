@@ -42,10 +42,8 @@
           const manifestFields = this.board.manifest.getPax(barcode)?.fields
           // merge in the State fields
           // manifest fields take precedence over state fields
-          const newFields = manifestFields
-            ? [...entry.fields, ...manifestFields]
-            : entry.fields
-          return newFields
+          entry.fields = manifestFields ? [...entry.fields, ...manifestFields] : entry.fields
+          return entry
         })
         // assign the merged pax array to state.
         cell.passengers = newPassengerArray
