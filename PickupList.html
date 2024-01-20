@@ -236,7 +236,6 @@
 
           // Get the dropoff address (or whatever's shoved in there) if it has the field
           if (!!order) {
-            console.log("Order: ", order)
             const _doff = order.fields?.filter(
               (f) => (f.label = "Drop off address")
             )
