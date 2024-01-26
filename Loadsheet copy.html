@@ -1,0 +1,1241 @@
+<div id="printLoadsheetClose" class="FFMenuButton popupCloseButtonSmall MobileButton NoPrint">X</div>
+<div class="FFMenuButton FlightFollowing NoPrint">CloseFlightFollowing</div>
+<div id="FlightFollowing" class="FFMenuButton FlightFollowingOpen NoPrint">ShowFlightFollowing</div>
+<style>
+  .NoWrap {
+    max-width: 590px;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap; /* Ensures the text doesn't wrap */
+    text-overflow: ellipsis; /* Adds ellipsis (...) if text overflows */
+  }
+  .popupCloseButtonSmall {
+    margin-left: 10px;
+    color: #ccc;
+    background-color: #fff;
+    border: 1px solid #999;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 12px;
+    width: 13px;
+    height: 13px;
+    text-align: center;
+    z-index: 1;
+  }
+  .FFMenuButton {
+    color: #ccc;
+    background-color: rgb(150, 148, 163);
+    border: 1px solid rgb(116, 109, 134);
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 1px 1px 1px 1px;
+    text-align: center;
+  }
+  .FlightFollowing,
+  .FlightFollowingOpen {
+    margin-left: 30px;
+    display: inline-block;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 12px;
+    height: 12px;
+    text-align: center;
+    z-index: 1;
+    padding: 1px 12px 1px 12px;
+  }
+  .A4 {
+    height: 1000px;
+    text-align: center; /* align the inline(-block) elements horizontally */
+    /* font: 0/0 a; remove the gap between inline(-block) elements */
+    /* margin-top: 5px;
+    margin-bottom: 10px; */
+    /* margin-right: 150px;
+    margin-left: 80px; */
+  }
+
+  .HalfA4 {
+    height: 510px;
+    border-style: dashed;
+    display: inline-block;
+    vertical-align: top; /* vertical alignment of the inline element */
+
+    /* margin-top: 5px;
+    margin-bottom: 10px; */
+    /* margin-right: 150px;
+    margin-left: 80px; */
+  }
+
+  .vcontainer {
+    display: inline-block;
+    vertical-align: middle; /* vertical alignment of the inline element */
+    font: 16px/1 Arial, sans-serif; /* reset the font property */
+  }
+  .Buffet {
+    background-color: #ff00dd;
+  }
+  .Lunch {
+    background-color: #ffff00;
+  }
+</style>
+<script>
+  // ===============================
+  // Loadsheet Close Button onClick
+  // ===============================
+  $(function () {
+    $("#printLoadsheetClose").click(function () {
+      $("#Loadsheet").hide()
+    })
+    $(".FlightFollowingOpen").show()
+    $(".FlightFollowing").hide()
+    $(".FlightFollowing,.FlightFollowingOpen").click(function () {
+      $(".FlightFollowing,.FlightFollowingOpen").toggle()
+    })
+  })
+</script>
+<script>
+  // ================
+  // Loadsheet Object
+  // ================
+  class Loadsheet {
+    constructor($this) {
+      const _this = this
+      this._this = this
+      this.$this = $this
+      this.displayPlane = null
+      $this.data("object", this)
+    }
+    print() {
+      console.log("printLoadsheet()")
+      $("#SaveButton").css({ background: "green" })
+      $(".NoPrint").hide()
+      $("#LoadsheetPrint").focus()
+      window.print()
+      $(".NoPrint").show()
+      $(".FlightFollowingOpen").show()
+      $(".FlightFollowingOpen").hide()
+      this.plane.state.save()
+    }
+    // ---------------------------
+    // Show
+    // ---------------------------
+    show(TableCell, plane, WB, ARGS) {
+      this.plane = plane
+      console.log("{Loadsheet}.show()")
+      console.log("TableCell:", TableCell)
+      console.log("plane: ", plane)
+      console.log("WB:", WB)
+
+      // Clear old PIC and CoPilot
+      $("._plane_pilot").html("")
+      $("._plane_copilot").html("")
+      //
+      // Fuel
+      //
+      const fuelStation = WB.stations.filter((station) => station.type.includes("fuel"))
+      plane.fuel = { ...plane.fuel, ...fuelStation }
+      // ------------------
+      // Time and Date
+      // ------------------
+      const date = TableCell.getDate()
+      const options = {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }
+      const dateSTR = date.toLocaleDateString("en-NZ", options)
+      $("._tripDate").html(dateSTR)
+      $("._trip_time").html(TableCell.getTime() + ":00") // ********
+      // ------------------
+      // Get the plane data
+      // ------------------
+
+      const _thisPlane = plane
+      let seats = WB.POB
+      let CrewNames
+      // ------------------
+      // Find PIC
+      // ------------------
+      let PIC = seats.filter((station) => station.id == 1)
+      if (!PIC.length) {
+        console.log("[error] No PIC")
+        PIC = null
+        utility.alert("No PIC", $("#Details"))
+        return
+        // If no PIC... this should all fail (and throw an error)
+      }
+      const SIC = seats.filter((station) => station.id == 2)
+      const hasSIC = SIC[0]?.px.fields.some((field) => field.label == "Role")
+      const CREW = [...PIC, ...SIC]
+      if (PIC.length > 0) {
+        CrewNames = `
+        ${PIC[0].px.fullName}
+        (${PIC[0].weight})
+        `
+        const mobile = PIC[0]?.px.fields.find((f) => f.label == "Mobile")?.value
+        $(".PIC_Phone").text(mobile)
+      }
+      if (SIC.length > 0 && hasSIC) {
+        CrewNames += `
+        <span style="font-size: xx-small;">/ (
+      ${SIC[0].px.fullName}
+      )</span>
+      `
+      }
+      // ==========================================================================================================
+      // Make plane variable... names mapped to class names
+      // ==========================================================================================================
+      // For some reason, this needs to be set as a const before putting into this.displayPlane ? *
+      const _displayLimits = _thisPlane.limits.CG.aft + "" + _thisPlane.limits.CG.forward
+      //
+
+      const auwLeft = _thisPlane.limits.weight.MAUW - WB.weights.auw
+      const auwString = `${utility.round(WB.weights.auw)} 
+      <span style="font-size:x-small">( ${utility.round(auwLeft)} )left</span>`
+
+      console.log("auwString: ", auwString)
+
+      // *** HERE *** needs update for all 208s
+      let fuelWeightString = `${utility.round(WB.weights.fuel)}`
+      if (_thisPlane.reg == "MMZ" || _thisPlane.reg == "PPR") {
+        fuelWeightString = `
+        ${utility.round(WB.weights.fuel)} 
+      <span style="font-size:x-small">( ${utility.round(WB.cg.imperial.fuelWeight)} )lbs</span>`
+      }
+      //
+      const cargoW = WB.stations
+        .filter((station) => station.type.includes("cargo"))
+        .reduce((accumulator, station) => {
+          return accumulator + Number(station.weight)
+        }, 0)
+      //
+      const fuel = {
+        time: WB.fuel.endurance,
+        quantity: {
+          liters: WB.fuel.liters,
+        },
+        landing: {
+          toBurn: {
+            kg: WB.TotalWeight - plane.limits.weight.Landing,
+            lbs: (WB.TotalWeight - plane.limits.weight.Landing) * 2.2,
+            get liters() {
+              return this.kg * plane.fuel.factor
+              //return `${Math.round((litersToBurn + Number.EPSILON) * 100) / 100}L`
+            },
+            get gallons() {
+              return this.liters / 3.79
+            },
+            get time() {
+              const d = ((WB.TotalWeight - plane.limits.weight.Landing) * plane.fuel.factor) / plane.fuel.burnRate
+              const hrs = time.decimalToHours(d)
+              let str = hrs.join(":") + "(hrs)"
+              if (!!d && d < 0) {
+                str = ""
+              }
+              return {
+                decimal: d,
+                hours: hrs,
+                string: str,
+              }
+            },
+            get string() {
+              if (this.kg > 0) {
+                return this.liters + "" + this.time.string
+              }
+              return ""
+            },
+          },
+        },
+      }
+      this.fuel = fuel
+      //
+      let toBurnString = ""
+      if (fuel.landing.toBurn.kg > 0) {
+        toBurnString = `${utility.round(fuel.landing.toBurn.liters, 0)}L ${fuel.landing.toBurn.time.string}`
+        if (_thisPlane.reg == "MMZ" || _thisPlane.reg == "PPR") {
+          toBurnString = `${utility.round(fuel.landing.toBurn.lbs, 0)}lbs ${fuel.landing.toBurn.time.string}`
+        }
+        if (_thisPlane.reg == "JTK") {
+          toBurnString = `${utility.round(fuel.landing.toBurn.gallons, 0)}Gal ${fuel.landing.toBurn.time.string}`
+        }
+      }
+      // --------------
+      // Display Plane
+      // --------------
+      /*
+        Each variable in displayPlane will get mapped (below) to a "._plane_" class
+      */
+      this.displayPlane = {
+        POB: WB.POB?.length,
+        pilot: CrewNames,
+        reg: _thisPlane.reg,
+        type: _thisPlane.type,
+        regColor: _thisPlane.regcolor,
+        fuel: `${WB.fuel.liters}(L) ${fuel.time.string}`, // Liters
+        EmptyWeight: utility.round(_thisPlane.weight),
+        AUW: auwString,
+        ZFW: utility.round(WB.weights.zfw),
+        fuelWeight: fuelWeightString,
+        TOW: auwString,
+        MCTOW: _thisPlane.limits.weight.MAUW,
+        MLW: _thisPlane.limits.weight.Landing,
+        Burnoff: "",
+        LandingWeight: toBurnString,
+        //CGLimit: "", //_displayLimits,
+        CG: Math.round((WB.CG + Number.EPSILON) * 1000) / 1000,
+        CGLimits: `${Math.round((WB.cg.fwdLimit + Number.EPSILON) * 1000) / 1000} <br> ${_thisPlane.limits.CG.aft}`,
+        OutOfLimits: "",
+        CREW: "CREW",
+        KGLBS: `${WB.SAD.SAD} [KG]`,
+        pobWeight: WB.weights.pob,
+        totalPaxWeight: WB.weights.pax,
+        totalFreightWeight: "",
+        totalBagWeight: utility.round(cargoW),
+      }
+      $(".reg").css("background-color", this.displayPlane.regColor)
+      // =====================================================================================================
+      // This is the magic...
+      // =====================================================================================================
+      //
+      // Map _plane object into classes
+      //
+      const keys = Object.keys(this.displayPlane)
+      keys.map((key) => {
+        $("._plane_" + key).html(this.displayPlane[key])
+      })
+      //
+      // Map the passenger data to _paxList- classes
+      //
+      //
+      // Clear out old pax values
+      //
+      $(".PaxLine").empty() // clears out each pax line
+      for (let i = 0; i <= 14; i++) {
+        $("._paxList-" + i + "-fullName").html("")
+        $("._paxList-" + i + "-weight").html("")
+      }
+      seats.map((station, index) => {
+        if (!!station.px) {
+          const firstName = station.px.fields.find((px) => px.label == "First Name").value
+          const lastName = station.px.fields.find((px) => px.label == "Last Name").value
+          let seatNum = station.px.fields.find((px) => px.label == "seat").value
+          seatNum = Number(seatNum) - 1
+          const regex = new RegExp("weight", "gi")
+          const weight = station.weight
+          //
+          // Group Info
+          //
+          console.log("PX: ", station.px)
+          const ProductCode = station.px.item.productCode
+          const gyaCode = gya.getProduct(ProductCode).GYACode
+          const gyaColor = colors.getByOrderNumber(station.px.orderNumber)
+          //
+          // Lunches
+          //
+          let Lunches = 0
+          let Buffet = 0
+          let pickupNotes = ""
+
+          const myPax = new Pax(station.px)
+          const booking = this.plane.state.board.manifest.getBooking(myPax)
+          console.log("Booking: ", booking)
+
+          if (booking.length > 0) {
+            Lunches = this.plane.state.board.manifest.findLunches(booking[0])
+            Buffet = this.plane.state.board.manifest.findBuffetLunches(booking[0])
+            pickupNotes =
+              booking[0].fields.find(
+                (field) => field.label?.match(/activity details/gi)
+                //                (field) => field.label === "Milford cruise/activity details "
+              )?.value || ""
+          }
+          //
+          // Display
+          //
+          $("._paxList-" + seatNum + "-fullName , PaxLine")
+            .html(
+              `
+            <span style="font-size:x-small">(${seatNum})</span></span>
+            <span style='font-size:x-small; border-radius: 4px; padding:1px;'>${gyaCode}</span>
+            <span style="font-size:small"> ${firstName} ${lastName}</span>
+            <span style="font-size:x-small"> ${pickupNotes}</span>
+            `
+            )
+            .addClass("NoWrap")
+          $("._paxList-" + seatNum + "-weight").html(weight)
+
+          // Clear out old Lunch highlights
+          $("._paxList-" + seatNum + "-fullName , PaxLine").removeClass("Buffet")
+          $("._paxList-" + seatNum + "-fullName , PaxLine").removeClass("Lunch")
+          // Add new Lunch highlights
+          // if (Buffet>0){
+          //   $("._paxList-" + seatNum + "-fullName , PaxLine").addClass("Buffet")
+          // } else
+          if (Lunches > 0) {
+            $("._paxList-" + seatNum + "-fullName , PaxLine").addClass("Lunch")
+          }
+          console.log("myPax: ", myPax)
+          console.log("booking: ", booking)
+          console.log("Lunches: ", Lunches)
+          console.log("Buffet: ", Buffet)
+        }
+      })
+      let notes = []
+      notes.push(`CG in Inches: ${WB.cg.imperial.CG}`)
+      notes.push(`AUW in LBS: ${WB.cg.imperial.TotalWeight}`)
+      notes = notes.join("<BR>")
+      $(".Notes").html(notes)
+      Events.init() // for Mobile Click
+      this.$this.show()
+
+      $("._trip_route").html(`<span style="font-size:x-small">(${ARGS.route})</span>`)
+
+      //
+      // Block Declared weights fom 208 use
+      //
+      $(".Signature").html("")
+      if (/^C208/i.test(plane.type) && WB.SAD.SAD == "Declared") {
+        $(".Signature").html("Not Valid For Use <br>(208) with Declared Weights")
+      }
+      if (!WB.cg.balanced) {
+        $(".Signature").html("Not Valid For Use <br>Out of limits")
+      }
+      //$(".WAM").append(utility.getTable(WB.WAM))
+    }
+  }
+</script>
+<!-- ------------------------------------- HTML ---------------------------------------- -->
+<div class="A4">
+  <div class="vcontainer">
+    <div class="HalfA4">
+      <table width="100%" border="1" style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px">
+        <tr>
+          <td height="1">
+            <!-- The print button also calls the log function which submits the flight data to the data spreadsheet -->
+            <button onclick="javascript: LOADSHEET.print()" id="LoadsheetPrintButton" class="NoPrint">Print</button>
+          </td>
+          <td colspan="5" height="2">
+            <div align="center">
+              <b>LoadSheet </b
+              ><font size="1"
+                ><br />
+                (Office Copy)</font
+              >
+            </div>
+          </td>
+          <td colspan="2">
+            <!--[ETD]-->
+            <font size="6"
+              ><center>
+                <b><!-- [Trip Time] --><span class="_trip_time"></span></b></center></font
+            ><br />
+            <!-- [Cruise Count] --><span style="font-size: x-small" class="_trip_cruiseCount"></span>
+          </td>
+        </tr>
+        <tr>
+          <td width="11%"><font size="1">Aircraft Type</font></td>
+          <td width="36%" class="reg">
+            <!--[GA8]-->
+            <span class="_plane_type"></span>
+          </td>
+          <td width="7%">Registration</td>
+          <td width="5%" class="reg">
+            <b>
+              <!--[REG]-->
+              <span class="_plane_reg"></span>
+            </b>
+          </td>
+          <td width="4%">Route</td>
+          <td colspan="3" class="reg">
+            <!--[Route]-->
+            <span class="_trip_route"></span>
+          </td>
+        </tr>
+        <tr>
+          <td width="11%">Date</td>
+          <td width="36%" class="reg">
+            <!--[Date]-->
+            <span class="_tripDate"></span>
+          </td>
+          <td width="7%">ETD</td>
+          <td width="5%" class="reg">
+            <!--[ETD]-->
+            <!--[Trip Time]--><span class="_trip_time"></span>
+          </td>
+          <td width="4%">PIC</td>
+          <td colspan="3" class="reg">
+            <!--[Pilot]-->
+            <span class="_plane_pilot"></span>
+            <span class="_plane_copilot"></span>
+          </td>
+        </tr>
+        <tr>
+          <td width="11%">&nbsp;</td>
+          <td width="36%" class="reg">
+            <!-- [Weights Declared] -->
+            Passengers
+            <span class="_plane_std"></span>
+          </td>
+          <td colspan="3" class="WeightClass">
+            <!--[Weights KG/LBS]-->
+            <span class="_plane_KGLBS"></span>
+          </td>
+          <td colspan="2">Fuel</td>
+          <td width="15%" class="reg">
+            <!--[FuelLiters]-->
+            <span class="_plane_fuel NoWrap"></span>
+          </td>
+        </tr>
+        <!-- -------------------- Passengers ---------------------- -->
+        <tr>
+          <td colspan="2" class="pax1">
+            <span class="_paxList-1-fullName">[Pax1]</span>
+            <span class="_paxList-1-product"></span>
+            <span class="_paxList-1-pickup"></span>
+          </td>
+          <td class="pax1">
+            <span class="_paxList-1-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td><span style="font-size: small">(Limits)</span></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-2-fullName"></span>
+            <span class="_paxList-2-product"></span>
+            <span class="_paxList-2-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-2-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+            <span class="NoWrap"><font size="1">Aircraft Empty Weight</font></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>
+            <!--Aircraft Empty Weight-->
+            <span class="_plane_EmptyWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-3-fullName"></span>
+            <span class="_paxList-3-product"></span>
+            <span class="_paxList-3-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-3-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+            <!--[Crew]-->
+            <span class="_plane_crewWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-4-fullName"></span>
+            <span class="_paxList-4-product"></span>
+            <span class="_paxList-4-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-4-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+            <span class="NoWrap"><font size="1">Total POB Weight</font></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>
+            <!--[Total Passenger Weight]-->
+            <span class="_plane_pobWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-5-fullName"></span>
+            <span class="_paxList-5-product"></span>
+            <span class="_paxList-5-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-5-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+            <span class="NoWrap"><font size="1">Total Freight Weight</font></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>
+            <!--[Total Freight Weight]-->
+            <span class="_plane_totalFreightWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-6-fullName"></span>
+            <span class="_paxList-6-product"></span>
+            <span class="_paxList-6-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-6-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+            <span class="NoWrap"><font size="1">Total Baggage Weight</font></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>
+            <!--[Total Baggage Weight]-->
+            <span class="_plane_totalBagWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-7-fullName"></span>
+            <span class="_paxList-7-product"></span>
+            <span class="_paxList-7-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-7-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Zero Fuel Weight</font></span>
+          </td>
+          <td width="6%">&nbsp;</td>
+          <td width="15%">
+            <!--[Zero Fuel Weight]-->
+            <span class="_plane_ZFW"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-8-fullName"></span>
+            <span class="_paxList-8-product"></span>
+            <span class="_paxList-8-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-8-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Fuel Weight</font></span>
+          </td>
+          <td width="6%">&nbsp;</td>
+          <td width="15%">
+            <!--[Fuel Weight]-->
+            <span class="_plane_fuelWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-9-fullName"></span>
+            <span class="_paxList-9-product"></span>
+            <span class="_paxList-9-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-9-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Takeoff Weight</font></span>
+          </td>
+          <td width="6%" class="limit"><span class="_plane_MCTOW"></span></td>
+          <td width="15%">
+            <!--[Takeoff Weight]-->
+            <span class="_plane_TOW NoWrap"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-10-fullName"></span>
+            <span class="_paxList-10-product"></span>
+            <span class="_paxList-10-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-10-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Burn off</font></span>
+          </td>
+          <td width="6%">&nbsp;</td>
+          <td width="15%">
+            <!--[Burn off]-->
+            <span class="_plane_Burnoff"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-11-fullName"></span>
+            <span class="_paxList-11-product"></span>
+            <span class="_paxList-11-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-11-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%" style="font-size: small"><span class="NoWrap">Burn before Landing</span></td>
+          <td width="6%" class="_plane_MLW" style="font-size: x-small"></td>
+          <td width="15%">
+            <!--[Landing Weight]-->
+            <span class="_plane_LandingWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-12-fullName"></span>
+            <span class="_paxList-12-product"></span>
+            <span class="_paxList-12-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-12-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%"></td>
+          <td width="6%" class="limit"></td>
+          <td width="15%"></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-13-fullName"></span>
+            <span class="_paxList-13-product"></span>
+            <span class="_paxList-13-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-13-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">C of G Position</font></span>
+          </td>
+          <td width="6%" class="limit"><span style="font-size: x-small" class="_plane_CGLimits"></span></td>
+          <td width="15%">
+            <!--[CG]-->
+            <span class="_plane_CG"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="8">
+            <div align="center">I HEREBY CERTIFY that the particulars recorded on the above load sheet are correct</div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="8" height="80" class="Signature">
+            <center>
+              <h2><span class="_plane_OutOfLimits"></span></h2>
+            </center>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <span style="font-size: 16px">&nbsp;<!-- I pass the butter --></span>
+    <!------------------------------------------------ Duplicate Loadsheet ------------------------------------------------------>
+    <div class="HalfA4">
+      <table width="100%" border="1" style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px">
+        <tr>
+          <td height="1">&nbsp;</td>
+          <td colspan="5" height="2">
+            <div align="center">
+              <b>LoadSheet </b
+              ><font size="1"
+                ><br />
+                (Pilot Copy)</font
+              >
+            </div>
+          </td>
+          <td colspan="2">
+            <!--[ETD]-->
+            <font size="6"
+              ><center>
+                <b><!--[Trip Time]--><span class="_trip_time"></span></b></center
+            ></font>
+            <!-- [Cruise Count] --><span style="font-size: x-small" class="_trip_cruiseCount"></span>
+          </td>
+        </tr>
+        <tr>
+          <td width="11%"><font size="1">Aircraft Type</font></td>
+          <td width="36%" class="reg">
+            <!--[GA8]-->
+            <span class="_plane_type"></span>
+          </td>
+          <td width="7%">Registration</td>
+          <td width="5%" class="reg">
+            <b>
+              <!--[REG]-->
+              <span class="_plane_reg"></span>
+            </b>
+          </td>
+          <td width="4%">Route</td>
+          <td colspan="3" class="reg">
+            <!--[Route]-->
+            <span class="_trip_route"></span>
+          </td>
+        </tr>
+        <tr>
+          <td width="11%">Date</td>
+          <td width="36%" class="reg">
+            <!--[Date]-->
+            <span class="_tripDate"></span>
+          </td>
+          <td width="7%">ETD</td>
+          <td width="5%" class="reg">
+            <!--[ETD]-->
+            <!--[Trip Time]--><span class="_trip_time"></span>
+          </td>
+          <td width="4%">PIC</td>
+          <td colspan="3" class="reg">
+            <!--[Pilot]-->
+            <span class="_plane_pilot"></span>
+            <span class="_plane_copilot"></span>
+          </td>
+        </tr>
+        <tr>
+          <td width="11%">&nbsp;</td>
+          <td width="36%" class="reg">
+            <!-- [Weights Declared] -->
+            Passengers
+            <span class="_plane_std"></span>
+          </td>
+          <td colspan="3" class="WeightClass">
+            <!--[Weights KG/LBS]-->
+            <span class="_plane_KGLBS"></span>
+          </td>
+          <td colspan="2">Fuel</td>
+          <td width="15%" class="reg">
+            <!--[FuelLiters]-->
+            <span class="_plane_fuel NoWrap"></span>
+          </td>
+        </tr>
+        <!-- -------------------- Passengers ---------------------- -->
+        <tr>
+          <td colspan="2" class="pax1">
+            <span class="_paxList-1-fullName">[Pax1]</span>
+            <span class="_paxList-1-product"></span>
+            <span class="_paxList-1-pickup"></span>
+          </td>
+          <td class="pax1">
+            <span class="_paxList-1-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td><span style="font-size: small">(Limits)</span></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-2-fullName"></span>
+            <span class="_paxList-2-product"></span>
+            <span class="_paxList-2-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-2-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+            <span class="NoWrap"><font size="1">Aircraft Empty Weight</font></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>
+            <!--Aircraft Empty Weight-->
+            <span class="_plane_EmptyWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-3-fullName"></span>
+            <span class="_paxList-3-product"></span>
+            <span class="_paxList-3-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-3-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+            <!--[Crew]-->
+            <span class="_plane_crewWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-4-fullName"></span>
+            <span class="_paxList-4-product"></span>
+            <span class="_paxList-4-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-4-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+            <span class="NoWrap"><font size="1">Total POB Weight</font></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>
+            <!--[Total Passenger Weight]-->
+            <span class="_plane_pobWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-5-fullName"></span>
+            <span class="_paxList-5-product"></span>
+            <span class="_paxList-5-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-5-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+            <span class="NoWrap"><font size="1">Total Freight Weight</font></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>
+            <!--[Total Freight Weight]-->
+            <span class="_plane_totalFreightWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-6-fullName"></span>
+            <span class="_paxList-6-product"></span>
+            <span class="_paxList-6-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-6-weight"></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>
+            <span class="NoWrap"><font size="1">Total Baggage Weight</font></span>
+          </td>
+          <td>&nbsp;</td>
+          <td>
+            <!--[Total Baggage Weight]-->
+            <span class="_plane_totalBagWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-7-fullName"></span>
+            <span class="_paxList-7-product"></span>
+            <span class="_paxList-7-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-7-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Zero Fuel Weight</font></span>
+          </td>
+          <td width="6%">&nbsp;</td>
+          <td width="15%">
+            <!--[Zero Fuel Weight]-->
+            <span class="_plane_ZFW"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-8-fullName"></span>
+            <span class="_paxList-8-product"></span>
+            <span class="_paxList-8-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-8-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Fuel Weight</font></span>
+          </td>
+          <td width="6%">&nbsp;</td>
+          <td width="15%">
+            <!--[Fuel Weight]-->
+            <span class="_plane_fuelWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-9-fullName"></span>
+            <span class="_paxList-9-product"></span>
+            <span class="_paxList-9-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-9-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Takeoff Weight</font></span>
+          </td>
+          <td width="6%" class="limit"><!-- <span class="_plane_MCTOW"></span> --></td>
+          <td width="15%">
+            <!--[Takeoff Weight]-->
+            <span class="_plane_TOW NoWrap"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-10-fullName"></span>
+            <span class="_paxList-10-product"></span>
+            <span class="_paxList-10-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-10-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Burn off</font></span>
+          </td>
+          <td width="6%">&nbsp;</td>
+          <td width="15%">
+            <!--[Burn off]-->
+            <span class="_plane_Burnoff"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-11-fullName"></span>
+            <span class="_paxList-11-product"></span>
+            <span class="_paxList-11-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-11-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%" style="font-size: small"><span class="NoWrap">Burn before Landing</span></td>
+          <td width="6%" class="_plane_MLW" style="font-size: x-small"></td>
+          <td width="15%">
+            <!--[Landing Weight]-->
+            <span class="_plane_LandingWeight"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-12-fullName"></span>
+            <span class="_paxList-12-product"></span>
+            <span class="_paxList-12-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-12-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%"></td>
+          <td width="6%" class="limit"></td>
+          <td width="15%"></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span class="_paxList-13-fullName"></span>
+            <span class="_paxList-13-product"></span>
+            <span class="_paxList-13-pickup"></span>
+          </td>
+          <td>
+            <span class="_paxList-13-weight"></span>
+          </td>
+          <td width="5%">&nbsp;</td>
+          <td width="4%">&nbsp;</td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">C of G Position</font></span>
+          </td>
+          <td width="6%" class="limit"><span style="font-size: x-small" class="_plane_CGLimits"></span></td>
+          <td width="15%">
+            <!--[CG]-->
+            <span class="_plane_CG"></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="8">
+            <div align="center">I HEREBY CERTIFY that the particulars recorded on the above load sheet are correct</div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="8" height="80" class="Signature">
+            <center>
+              <h2><span class="_plane_OutOfLimits"></span></h2>
+            </center>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <!-- /HalfA4 -->
+  </div>
+  <!-- vcontainer -->
+</div>
+<!-- /A4 div -->
+
+<p>
+  <!------------------- Flight Following ------------------->
+</p>
+
+<div class="FlightFollowing">
+  <table width="100%" class="noBorder FF">
+    <tr>
+      <td></td>
+      <td>
+        <u><font size="+2">Flight Plan Form</font></u>
+      </td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="reg">
+        <b>Aircraft ID:</b>
+        <span class="_plane_reg"></span>
+      </td>
+      <td>
+        <b>Pilot:</b> <span class="_plane_pilot"></span>
+        <span class="_plane_copilot"></span>
+      </td>
+      <td><b>Date:</b> <span class="_tripDate"></span></td>
+    </tr>
+    <tr>
+      <td colspan="3"><b>Route Details:</b> <span class="_trip_route"></span></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td><b>Fuel:</b> <span class="_plane_fuel NoWrap"></span></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>POB:</b> <span class="_plane_POB"></span></td>
+      <td>Loadsheet: Attached or _______________</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>Pilot Cellphone:</b> <span class="PIC_Phone"></span></td>
+      <td><b>Pax</b> Cell #1 ___________ #2 __________</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <b><u>COMMUNICATION WITH PILOT and Amended Sartime</u></b>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <div align="center">
+          ETD:
+          <!--[Trip Time]--><span class="_trip_time"></span> ETA ________ Time Pilot will call: ________ INITIAL SARTIME ________
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <table width="100%" border="1" class="noBorder FF">
+          <tr>
+            <td width="2%">&nbsp;</td>
+            <td width="10%">Time</td>
+            <td width="62%">Pilot called from:</td>
+            <td width="8%">ETD:</td>
+            <td width="7%">ETA:</td>
+            <td width="11%">SARTIME:</td>
+          </tr>
+          <tr>
+            <td width="2%">1</td>
+            <td width="10%">&nbsp;</td>
+            <td width="62%">&nbsp;</td>
+            <td width="8%">&nbsp;</td>
+            <td width="7%">&nbsp;</td>
+            <td width="11%">&nbsp;</td>
+          </tr>
+          <tr>
+            <td width="2%">2</td>
+            <td width="10%"></td>
+            <td width="62%"></td>
+            <td width="8%"></td>
+            <td width="7%"></td>
+            <td width="11%"></td>
+          </tr>
+          <tr>
+            <td width="2%">3</td>
+            <td width="10%">&nbsp;</td>
+            <td width="62%">&nbsp;</td>
+            <td width="8%">&nbsp;</td>
+            <td width="7%">&nbsp;</td>
+            <td width="11%">&nbsp;</td>
+          </tr>
+          <tr>
+            <td width="2%">4</td>
+            <td width="10%"></td>
+            <td width="62%"></td>
+            <td width="8%"></td>
+            <td width="7%"></td>
+            <td width="11%"></td>
+          </tr>
+          <tr>
+            <td width="2%">5</td>
+            <td width="10%">&nbsp;</td>
+            <td width="62%">&nbsp;</td>
+            <td width="8%">&nbsp;</td>
+            <td width="7%">&nbsp;</td>
+            <td width="11%">&nbsp;</td>
+          </tr>
+          <tr>
+            <td width="2%">6</td>
+            <td width="10%">&nbsp;</td>
+            <td width="62%">&nbsp;</td>
+            <td width="8%">&nbsp;</td>
+            <td width="7%">&nbsp;</td>
+            <td width="11%">&nbsp;</td>
+          </tr>
+          <tr>
+            <td width="2%">7</td>
+            <td width="10%">&nbsp;</td>
+            <td width="62%">&nbsp;</td>
+            <td width="8%">&nbsp;</td>
+            <td width="7%">&nbsp;</td>
+            <td width="11%">&nbsp;</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <table width="100%" class="noBorder FF">
+    <tr>
+      <td>Flight Following Person: ____________________</td>
+      <td>Pilot's Signature: ____________________</td>
+    </tr>
+    <tr>
+      <td>Follower's Signature ________________</td>
+      <td>Actual Time Cancelled: ________ By: _________</td>
+    </tr>
+  </table>
+  <div class="WAM"></div>
+  <p>&nbsp;</p>
+  <hr />
+  <p>&nbsp;</p>
+</div>
+<!------------------- End Flight Following ------------------->

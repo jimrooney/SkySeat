@@ -2,14 +2,14 @@
 <div class="FFMenuButton FlightFollowing NoPrint">CloseFlightFollowing</div>
 <div id="FlightFollowing" class="FFMenuButton FlightFollowingOpen NoPrint">ShowFlightFollowing</div>
 <style>
-  .NoWrap{
+  .NoWrap {
     max-width: 590px;
-      overflow: hidden;
-      display: inline-block;
-      white-space: nowrap; /* Ensures the text doesn't wrap */
-      text-overflow: ellipsis; /* Adds ellipsis (...) if text overflows */
-    }
-    .popupCloseButtonSmall {
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap; /* Ensures the text doesn't wrap */
+    text-overflow: ellipsis; /* Adds ellipsis (...) if text overflows */
+  }
+  .popupCloseButtonSmall {
     margin-left: 10px;
     color: #ccc;
     background-color: #fff;
@@ -47,6 +47,39 @@
     text-align: center;
     z-index: 1;
     padding: 1px 12px 1px 12px;
+  }
+  .A4 {
+    height: 1000px;
+    text-align: center; /* align the inline(-block) elements horizontally */
+    /* font: 0/0 a; remove the gap between inline(-block) elements */
+    /* margin-top: 5px;
+    margin-bottom: 10px; */
+    /* margin-right: 150px;
+    margin-left: 80px; */
+  }
+
+  .HalfA4 {
+    height: 510px;
+    border-style: dashed;
+    display: inline-block;
+    vertical-align: top; /* vertical alignment of the inline element */
+
+    /* margin-top: 5px;
+    margin-bottom: 10px; */
+    /* margin-right: 150px;
+    margin-left: 80px; */
+  }
+
+  .vcontainer {
+    display: inline-block;
+    vertical-align: middle; /* vertical alignment of the inline element */
+    font: 16px/1 Arial, sans-serif; /* reset the font property */
+  }
+  .Buffet {
+    background-color: #ff00dd;
+  }
+  .Lunch {
+    background-color: #ffff00;
   }
 </style>
 <script>
@@ -90,10 +123,10 @@
     // ---------------------------
     // Show
     // ---------------------------
-    show(TableCell,plane,WB,ARGS) {
+    show(TableCell, plane, WB, ARGS) {
       this.plane = plane
       console.log("{Loadsheet}.show()")
-      console.log("TableCell:",TableCell)
+      console.log("TableCell:", TableCell)
       console.log("plane: ", plane)
       console.log("WB:", WB)
 
@@ -103,10 +136,8 @@
       //
       // Fuel
       //
-      const fuelStation = WB.stations.filter((station) =>
-        station.type.includes("fuel")
-      )
-      plane.fuel = {...plane.fuel, ...fuelStation}
+      const fuelStation = WB.stations.filter((station) => station.type.includes("fuel"))
+      plane.fuel = { ...plane.fuel, ...fuelStation }
       // ------------------
       // Time and Date
       // ------------------
@@ -123,7 +154,7 @@
       // ------------------
       // Get the plane data
       // ------------------
-      
+
       const _thisPlane = plane
       let seats = WB.POB
       let CrewNames
@@ -139,14 +170,14 @@
         // If no PIC... this should all fail (and throw an error)
       }
       const SIC = seats.filter((station) => station.id == 2)
-      const hasSIC = SIC[0]?.px.fields.some(field => field.label == "Role")
+      const hasSIC = SIC[0]?.px.fields.some((field) => field.label == "Role")
       const CREW = [...PIC, ...SIC]
-      if (PIC.length>0){      
+      if (PIC.length > 0) {
         CrewNames = `
         ${PIC[0].px.fullName}
         (${PIC[0].weight})
         `
-        const mobile = PIC[0]?.px.fields.find(f=>f.label=="Mobile")?.value
+        const mobile = PIC[0]?.px.fields.find((f) => f.label == "Mobile")?.value
         $(".PIC_Phone").text(mobile)
       }
       if (SIC.length > 0 && hasSIC) {
@@ -169,7 +200,6 @@
 
       console.log("auwString: ", auwString)
 
-
       // *** HERE *** needs update for all 208s
       let fuelWeightString = `${utility.round(WB.weights.fuel)}`
       if (_thisPlane.reg == "MMZ" || _thisPlane.reg == "PPR") {
@@ -183,7 +213,7 @@
         .reduce((accumulator, station) => {
           return accumulator + Number(station.weight)
         }, 0)
-        //
+      //
       const fuel = {
         time: WB.fuel.endurance,
         quantity: {
@@ -201,7 +231,7 @@
               return this.liters / 3.79
             },
             get time() {
-              const d = (WB.TotalWeight - plane.limits.weight.Landing) * plane.fuel.factor / plane.fuel.burnRate
+              const d = ((WB.TotalWeight - plane.limits.weight.Landing) * plane.fuel.factor) / plane.fuel.burnRate
               const hrs = time.decimalToHours(d)
               let str = hrs.join(":") + "(hrs)"
               if (!!d && d < 0) {
@@ -315,26 +345,28 @@
           const booking = this.plane.state.board.manifest.getBooking(myPax)
           console.log("Booking: ", booking)
 
-          if (booking.length>0){
-              Lunches = this.plane.state.board.manifest.findLunches(booking[0])
-              Buffet = this.plane.state.board.manifest.findBuffetLunches(booking[0])
-              pickupNotes = booking[0].fields.find(
-
+          if (booking.length > 0) {
+            Lunches = this.plane.state.board.manifest.findLunches(booking[0])
+            Buffet = this.plane.state.board.manifest.findBuffetLunches(booking[0])
+            pickupNotes =
+              booking[0].fields.find(
                 (field) => field.label?.match(/activity details/gi)
-//                (field) => field.label === "Milford cruise/activity details "
-            )?.value || ""
+                //                (field) => field.label === "Milford cruise/activity details "
+              )?.value || ""
           }
           //
           // Display
           //
-          $("._paxList-" + seatNum + "-fullName , PaxLine").html(
-            `
+          $("._paxList-" + seatNum + "-fullName , PaxLine")
+            .html(
+              `
             <span style="font-size:x-small">(${seatNum})</span></span>
             <span style='font-size:x-small; border-radius: 4px; padding:1px;'>${gyaCode}</span>
             <span style="font-size:small"> ${firstName} ${lastName}</span>
             <span style="font-size:x-small"> ${pickupNotes}</span>
             `
-          ).addClass("NoWrap")
+            )
+            .addClass("NoWrap")
           $("._paxList-" + seatNum + "-weight").html(weight)
 
           // Clear out old Lunch highlights
@@ -343,8 +375,8 @@
           // Add new Lunch highlights
           // if (Buffet>0){
           //   $("._paxList-" + seatNum + "-fullName , PaxLine").addClass("Buffet")
-          // } else 
-          if (Lunches>0){
+          // } else
+          if (Lunches > 0) {
             $("._paxList-" + seatNum + "-fullName , PaxLine").addClass("Lunch")
           }
           console.log("myPax: ", myPax)
@@ -361,21 +393,19 @@
       Events.init() // for Mobile Click
       this.$this.show()
 
-      $("._trip_route").html(
-            `<span style="font-size:x-small">(${ARGS.route})</span>`
-          )
+      $("._trip_route").html(`<span style="font-size:x-small">(${ARGS.route})</span>`)
 
       //
       // Block Declared weights fom 208 use
       //
       $(".Signature").html("")
-        if (/^C208/i.test(plane.type) && WB.SAD.SAD == "Declared"){
-          $(".Signature").html("Not Valid For Use <br>(208) with Declared Weights")
-        }
-        if (!WB.cg.balanced){
-          $(".Signature").html("Not Valid For Use <br>Out of limits")
-        }
-        //$(".WAM").append(utility.getTable(WB.WAM))
+      if (/^C208/i.test(plane.type) && WB.SAD.SAD == "Declared") {
+        $(".Signature").html("Not Valid For Use <br>(208) with Declared Weights")
+      }
+      if (!WB.cg.balanced) {
+        $(".Signature").html("Not Valid For Use <br>Out of limits")
+      }
+      //$(".WAM").append(utility.getTable(WB.WAM))
     }
   }
 </script>
@@ -383,11 +413,7 @@
 <div class="A4">
   <div class="vcontainer">
     <div class="HalfA4">
-      <table
-        width="100%"
-        border="1"
-        style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
-      >
+      <table width="100%" border="1" style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px">
         <tr>
           <td height="1">
             <!-- The print button also calls the log function which submits the flight data to the data spreadsheet -->
@@ -406,8 +432,8 @@
             <!--[ETD]-->
             <font size="6"
               ><center>
-                <b><!-- [Trip Time] --><span class="_trip_time"></span></b></center></font
-            ><br />
+                <b><!--[Trip Time]--><span class="_trip_time"></span></b></center
+            ></font>
             <!-- [Cruise Count] --><span style="font-size: x-small" class="_trip_cruiseCount"></span>
           </td>
         </tr>
@@ -492,7 +518,9 @@
           </td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td><span class="NoWrap"><font size="1">Aircraft Empty Weight</font></span></td>
+          <td>
+            <span class="NoWrap"><font size="1">Aircraft Empty Weight</font></span>
+          </td>
           <td>&nbsp;</td>
           <td>
             <!--Aircraft Empty Weight-->
@@ -528,7 +556,9 @@
           </td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td><span class="NoWrap"><font size="1">Total POB Weight</font></span></td>
+          <td>
+            <span class="NoWrap"><font size="1">Total POB Weight</font></span>
+          </td>
           <td>&nbsp;</td>
           <td>
             <!--[Total Passenger Weight]-->
@@ -546,7 +576,9 @@
           </td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td><span class="NoWrap"><font size="1">Total Freight Weight</font></span></td>
+          <td>
+            <span class="NoWrap"><font size="1">Total Freight Weight</font></span>
+          </td>
           <td>&nbsp;</td>
           <td>
             <!--[Total Freight Weight]-->
@@ -564,7 +596,9 @@
           </td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td><span class="NoWrap"><font size="1">Total Baggage Weight</font></span></td>
+          <td>
+            <span class="NoWrap"><font size="1">Total Baggage Weight</font></span>
+          </td>
           <td>&nbsp;</td>
           <td>
             <!--[Total Baggage Weight]-->
@@ -582,7 +616,9 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><span class="NoWrap"><font size="1">Zero Fuel Weight</font></span></td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Zero Fuel Weight</font></span>
+          </td>
           <td width="6%">&nbsp;</td>
           <td width="15%">
             <!--[Zero Fuel Weight]-->
@@ -600,7 +636,9 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><span class="NoWrap"><font size="1">Fuel Weight</font></span></td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Fuel Weight</font></span>
+          </td>
           <td width="6%">&nbsp;</td>
           <td width="15%">
             <!--[Fuel Weight]-->
@@ -618,8 +656,10 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><span class="NoWrap"><font size="1">Takeoff Weight</font></span></td>
-          <td width="6%" class="limit"><span class="_plane_MCTOW"></span></td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Takeoff Weight</font></span>
+          </td>
+          <td width="6%" class="limit"><!-- <span class="_plane_MCTOW"></span> --></td>
           <td width="15%">
             <!--[Takeoff Weight]-->
             <span class="_plane_TOW NoWrap"></span>
@@ -636,7 +676,9 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><span class="NoWrap"><font size="1">Burn off</font></span></td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Burn off</font></span>
+          </td>
           <td width="6%">&nbsp;</td>
           <td width="15%">
             <!--[Burn off]-->
@@ -687,7 +729,9 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><span class="NoWrap"><font size="1">C of G Position</font></span></td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">C of G Position</font></span>
+          </td>
           <td width="6%" class="limit"><span style="font-size: x-small" class="_plane_CGLimits"></span></td>
           <td width="15%">
             <!--[CG]-->
@@ -708,14 +752,10 @@
         </tr>
       </table>
     </div>
-    <span style="font-size: 16px">&nbsp;<!-- I pass the butter --></span>
+    <!-- /HalfA4 -->
     <!------------------------------------------------ Duplicate Loadsheet ------------------------------------------------------>
     <div class="HalfA4">
-      <table
-        width="100%"
-        border="1"
-        style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px"
-      >
+      <table width="100%" border="1" style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px">
         <tr>
           <td height="1">&nbsp;</td>
           <td colspan="5" height="2">
@@ -817,7 +857,9 @@
           </td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td><span class="NoWrap"><font size="1">Aircraft Empty Weight</font></span></td>
+          <td>
+            <span class="NoWrap"><font size="1">Aircraft Empty Weight</font></span>
+          </td>
           <td>&nbsp;</td>
           <td>
             <!--Aircraft Empty Weight-->
@@ -853,7 +895,9 @@
           </td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td><span class="NoWrap"><font size="1">Total POB Weight</font></span></td>
+          <td>
+            <span class="NoWrap"><font size="1">Total POB Weight</font></span>
+          </td>
           <td>&nbsp;</td>
           <td>
             <!--[Total Passenger Weight]-->
@@ -871,7 +915,9 @@
           </td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td><span class="NoWrap"><font size="1">Total Freight Weight</font></span></td>
+          <td>
+            <span class="NoWrap"><font size="1">Total Freight Weight</font></span>
+          </td>
           <td>&nbsp;</td>
           <td>
             <!--[Total Freight Weight]-->
@@ -889,7 +935,9 @@
           </td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td><span class="NoWrap"><font size="1">Total Baggage Weight</font></span></td>
+          <td>
+            <span class="NoWrap"><font size="1">Total Baggage Weight</font></span>
+          </td>
           <td>&nbsp;</td>
           <td>
             <!--[Total Baggage Weight]-->
@@ -907,7 +955,9 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><span class="NoWrap"><font size="1">Zero Fuel Weight</font></span></td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Zero Fuel Weight</font></span>
+          </td>
           <td width="6%">&nbsp;</td>
           <td width="15%">
             <!--[Zero Fuel Weight]-->
@@ -925,7 +975,9 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><span class="NoWrap"><font size="1">Fuel Weight</font></span></td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Fuel Weight</font></span>
+          </td>
           <td width="6%">&nbsp;</td>
           <td width="15%">
             <!--[Fuel Weight]-->
@@ -943,7 +995,9 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><span class="NoWrap"><font size="1">Takeoff Weight</font></span></td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Takeoff Weight</font></span>
+          </td>
           <td width="6%" class="limit"><!-- <span class="_plane_MCTOW"></span> --></td>
           <td width="15%">
             <!--[Takeoff Weight]-->
@@ -961,7 +1015,9 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><span class="NoWrap"><font size="1">Burn off</font></span></td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">Burn off</font></span>
+          </td>
           <td width="6%">&nbsp;</td>
           <td width="15%">
             <!--[Burn off]-->
@@ -1012,7 +1068,9 @@
           </td>
           <td width="5%">&nbsp;</td>
           <td width="4%">&nbsp;</td>
-          <td width="16%"><span class="NoWrap"><font size="1">C of G Position</font></span></td>
+          <td width="16%">
+            <span class="NoWrap"><font size="1">C of G Position</font></span>
+          </td>
           <td width="6%" class="limit"><span style="font-size: x-small" class="_plane_CGLimits"></span></td>
           <td width="15%">
             <!--[CG]-->
@@ -1039,149 +1097,145 @@
 </div>
 <!-- /A4 div -->
 
+<p>
+  <!------------------- Flight Following ------------------->
+</p>
 
-  <p>
-    <!------------------- Flight Following ------------------->
-  </p>
-
-  <div class="FlightFollowing">
-    <table width="100%" class="noBorder FF">
-      <tr>
-        <td>
-        </td>
-        <td>
-          <u><font size="+2">Flight Plan Form</font></u>
-        </td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td class="reg">
-          <b>Aircraft ID:</b>
-          <span class="_plane_reg"></span>
-        </td>
-        <td>
-          <b>Pilot:</b> <span class="_plane_pilot"></span>
-          <span class="_plane_copilot"></span>
-        </td>
-        <td><b>Date:</b> <span class="_tripDate"></span></td>
-      </tr>
-      <tr>
-        <td colspan="3"><b>Route Details:</b> <span class="_trip_route"></span></td>
-      </tr>
-      <tr>
-        <td>&nbsp;</td>
-        <td><b>Fuel:</b> <span class="_plane_fuel NoWrap"></span></td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td><b>POB:</b> <span class="_plane_POB"></span></td>
-        <td>Loadsheet: Attached or _______________</td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td><b>Pilot Cellphone:</b> <span class="PIC_Phone"></span></td>
-        <td><b>Pax</b> Cell #1 ___________ #2 __________</td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td colspan="3">
-          <b><u>COMMUNICATION WITH PILOT and Amended Sartime</u></b>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3">
-          <div align="center">
-            ETD:
-            <!--[Trip Time]--><span class="_trip_time"></span> ETA ________ Time Pilot will call: ________ INITIAL
-            SARTIME ________
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3">
-          <table width="100%" border="1" class="noBorder FF">
-            <tr>
-              <td width="2%">&nbsp;</td>
-              <td width="10%">Time</td>
-              <td width="62%">Pilot called from:</td>
-              <td width="8%">ETD:</td>
-              <td width="7%">ETA:</td>
-              <td width="11%">SARTIME:</td>
-            </tr>
-            <tr>
-              <td width="2%">1</td>
-              <td width="10%">&nbsp;</td>
-              <td width="62%">&nbsp;</td>
-              <td width="8%">&nbsp;</td>
-              <td width="7%">&nbsp;</td>
-              <td width="11%">&nbsp;</td>
-            </tr>
-            <tr>
-              <td width="2%">2</td>
-              <td width="10%"></td>
-              <td width="62%"></td>
-              <td width="8%"></td>
-              <td width="7%"></td>
-              <td width="11%"></td>
-            </tr>
-            <tr>
-              <td width="2%">3</td>
-              <td width="10%">&nbsp;</td>
-              <td width="62%">&nbsp;</td>
-              <td width="8%">&nbsp;</td>
-              <td width="7%">&nbsp;</td>
-              <td width="11%">&nbsp;</td>
-            </tr>
-            <tr>
-              <td width="2%">4</td>
-              <td width="10%"></td>
-              <td width="62%"></td>
-              <td width="8%"></td>
-              <td width="7%"></td>
-              <td width="11%"></td>
-            </tr>
-            <tr>
-              <td width="2%">5</td>
-              <td width="10%">&nbsp;</td>
-              <td width="62%">&nbsp;</td>
-              <td width="8%">&nbsp;</td>
-              <td width="7%">&nbsp;</td>
-              <td width="11%">&nbsp;</td>
-            </tr>
-            <tr>
-              <td width="2%">6</td>
-              <td width="10%">&nbsp;</td>
-              <td width="62%">&nbsp;</td>
-              <td width="8%">&nbsp;</td>
-              <td width="7%">&nbsp;</td>
-              <td width="11%">&nbsp;</td>
-            </tr>
-            <tr>
-              <td width="2%">7</td>
-              <td width="10%">&nbsp;</td>
-              <td width="62%">&nbsp;</td>
-              <td width="8%">&nbsp;</td>
-              <td width="7%">&nbsp;</td>
-              <td width="11%">&nbsp;</td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-    <table width="100%" class="noBorder FF">
-      <tr>
-        <td>Flight Following Person: ____________________</td>
-        <td>Pilot's Signature: ____________________</td>
-      </tr>
-      <tr>
-        <td>Follower's Signature ________________</td>
-        <td>Actual Time Cancelled: ________ By: _________</td>
-      </tr>
-    </table>
-    <div class="WAM"></div>
-    <p>&nbsp;</p>
-    <hr />
-    <p>&nbsp;</p>
-  </div>
-  <!------------------- End Flight Following ------------------->
-</center>
+<div class="FlightFollowing">
+  <table width="100%" class="noBorder FF">
+    <tr>
+      <td></td>
+      <td>
+        <u><font size="+2">Flight Plan Form</font></u>
+      </td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="reg">
+        <b>Aircraft ID:</b>
+        <span class="_plane_reg"></span>
+      </td>
+      <td>
+        <b>Pilot:</b> <span class="_plane_pilot"></span>
+        <span class="_plane_copilot"></span>
+      </td>
+      <td><b>Date:</b> <span class="_tripDate"></span></td>
+    </tr>
+    <tr>
+      <td colspan="3"><b>Route Details:</b> <span class="_trip_route"></span></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td><b>Fuel:</b> <span class="_plane_fuel NoWrap"></span></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>POB:</b> <span class="_plane_POB"></span></td>
+      <td>Loadsheet: Attached or _______________</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>Pilot Cellphone:</b> <span class="PIC_Phone"></span></td>
+      <td><b>Pax</b> Cell #1 ___________ #2 __________</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <b><u>COMMUNICATION WITH PILOT and Amended Sartime</u></b>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <div align="center">
+          ETD:
+          <!--[Trip Time]--><span class="_trip_time"></span> ETA ________ Time Pilot will call: ________ INITIAL SARTIME ________
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <table width="100%" border="1" class="noBorder FF">
+          <tr>
+            <td width="2%">&nbsp;</td>
+            <td width="10%">Time</td>
+            <td width="62%">Pilot called from:</td>
+            <td width="8%">ETD:</td>
+            <td width="7%">ETA:</td>
+            <td width="11%">SARTIME:</td>
+          </tr>
+          <tr>
+            <td width="2%">1</td>
+            <td width="10%">&nbsp;</td>
+            <td width="62%">&nbsp;</td>
+            <td width="8%">&nbsp;</td>
+            <td width="7%">&nbsp;</td>
+            <td width="11%">&nbsp;</td>
+          </tr>
+          <tr>
+            <td width="2%">2</td>
+            <td width="10%"></td>
+            <td width="62%"></td>
+            <td width="8%"></td>
+            <td width="7%"></td>
+            <td width="11%"></td>
+          </tr>
+          <tr>
+            <td width="2%">3</td>
+            <td width="10%">&nbsp;</td>
+            <td width="62%">&nbsp;</td>
+            <td width="8%">&nbsp;</td>
+            <td width="7%">&nbsp;</td>
+            <td width="11%">&nbsp;</td>
+          </tr>
+          <tr>
+            <td width="2%">4</td>
+            <td width="10%"></td>
+            <td width="62%"></td>
+            <td width="8%"></td>
+            <td width="7%"></td>
+            <td width="11%"></td>
+          </tr>
+          <tr>
+            <td width="2%">5</td>
+            <td width="10%">&nbsp;</td>
+            <td width="62%">&nbsp;</td>
+            <td width="8%">&nbsp;</td>
+            <td width="7%">&nbsp;</td>
+            <td width="11%">&nbsp;</td>
+          </tr>
+          <tr>
+            <td width="2%">6</td>
+            <td width="10%">&nbsp;</td>
+            <td width="62%">&nbsp;</td>
+            <td width="8%">&nbsp;</td>
+            <td width="7%">&nbsp;</td>
+            <td width="11%">&nbsp;</td>
+          </tr>
+          <tr>
+            <td width="2%">7</td>
+            <td width="10%">&nbsp;</td>
+            <td width="62%">&nbsp;</td>
+            <td width="8%">&nbsp;</td>
+            <td width="7%">&nbsp;</td>
+            <td width="11%">&nbsp;</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <table width="100%" class="noBorder FF">
+    <tr>
+      <td>Flight Following Person: ____________________</td>
+      <td>Pilot's Signature: ____________________</td>
+    </tr>
+    <tr>
+      <td>Follower's Signature ________________</td>
+      <td>Actual Time Cancelled: ________ By: _________</td>
+    </tr>
+  </table>
+  <div class="WAM"></div>
+  <p>&nbsp;</p>
+  <hr />
+  <p>&nbsp;</p>
+</div>
+<!------------------- End Flight Following ------------------->
