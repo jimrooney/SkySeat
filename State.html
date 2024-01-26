@@ -29,15 +29,25 @@
         },
       }
     }
+    getUnplottedPax(manifest) {
+      // State checks Manifest
+      // Anything in Mainifest not plotted in State gets highlight class
+      const ret = []
+      const barcodes = this.board.manifest.getBarcodes()
+      barcodes.forEach((barcode) => {
+        if (!this.getPax(barcode)) {
+          ret.push(barcode)
+        }
+      })
+      return ret
+    }
     checkState() {
       // loop over each cell in state
       for (const [key, cell] of Object.entries(this.data)) {
         // loop over each passenger
         const newPassengerArray = cell.passengers.map((entry) => {
           // find the passenger data in the manifest
-          const barcodeField = entry.fields.find(
-            (field) => field.label === "Barcode"
-          )
+          const barcodeField = entry.fields.find((field) => field.label === "Barcode")
           const barcode = barcodeField ? barcodeField.value : null
           const manifestFields = this.board.manifest.getPax(barcode)?.fields
           // merge in the State fields
@@ -179,9 +189,7 @@
       }
       !!leg ? (this.data[cellID].leg = leg) : null
       // If Pax Exists, ignore
-      const existingPax = this.data[cellID].passengers.find(
-        (p) => p.barcode == pax.barcode
-      )
+      const existingPax = this.data[cellID].passengers.find((p) => p.barcode == pax.barcode)
       if (!existingPax) {
         this.data[cellID].passengers.push(pax)
       }
@@ -192,9 +200,7 @@
       if (!!pax.length) {
         pax = new Pax(pax)
       }
-      const key = this.data[cellID].passengers.findIndex((p) =>
-        p.fields.some((f) => f.label == "Barcode" && f.value == pax.barcode)
-      )
+      const key = this.data[cellID].passengers.findIndex((p) => p.fields.some((f) => f.label == "Barcode" && f.value == pax.barcode))
       if (key > -1) {
         this.data[cellID].passengers[key] = pax
       } else {
@@ -300,9 +306,7 @@
     getPax(barcode) {
       let ret
       for (const key in this.data) {
-        ret = this.data[key].passengers.find((pax) =>
-          pax.fields.find((f) => f.label == "Barcode" && f.value == barcode)
-        )
+        ret = this.data[key].passengers.find((pax) => pax.fields.find((f) => f.label == "Barcode" && f.value == barcode))
         if (!!ret) {
           break
         }
@@ -313,9 +317,7 @@
       let _pax = []
       let ret
       for (const key in this.data) {
-        ret = this.data[key].passengers.find((pax) =>
-          pax.fields.find((f) => f.label == "Barcode" && f.value == barcode)
-        )
+        ret = this.data[key].passengers.find((pax) => pax.fields.find((f) => f.label == "Barcode" && f.value == barcode))
         if (!!ret) {
           ret.key = key
           _pax.push(ret)
@@ -329,9 +331,7 @@
     getPaxByKey(paxKey) {
       let ret
       for (const key in this.data) {
-        ret = this.data[key].passengers.find((pax) =>
-          pax.fields.find((f) => f.label == "key" && f.value == paxKey)
-        )
+        ret = this.data[key].passengers.find((pax) => pax.fields.find((f) => f.label == "key" && f.value == paxKey))
         if (!!ret) {
           break
         }
@@ -340,12 +340,8 @@
     }
     updatePax(paxKey, data) {
       for (const key in this.data) {
-        const pax = this.data[key].passengers.find((pax) =>
-          pax.fields.find((f) => f.label == "key" && f.value == paxKey)
-        )
-        const pax2 = this.data[key].passengers.findIndex((pax) =>
-          pax.fields.find((f) => f.label == "key" && f.value == paxKey)
-        )
+        const pax = this.data[key].passengers.find((pax) => pax.fields.find((f) => f.label == "key" && f.value == paxKey))
+        const pax2 = this.data[key].passengers.findIndex((pax) => pax.fields.find((f) => f.label == "key" && f.value == paxKey))
         if (!!pax) {
           this.data[key].passengers[pax2].fields.push({
             label: "test",
@@ -372,14 +368,11 @@
       })
 
       console.log("Date: %o", _date)
-      google.script.run
-        .withSuccessHandler(this.onLoad)
-        .withUserObject(this)
-        .loadState(_date)
+      google.script.run.withSuccessHandler(this.onLoad).withUserObject(this).loadState(_date)
     }
     // OnLoad, parse into JSON and update the board
     onLoad(args, _this) {
-      utility.setStatus({message:"(Day) Loaded", caller: _this})
+      utility.setStatus({ message: "(Day) Loaded", caller: _this })
       const _args = JSON.parse(args)
       if (!!_args) {
         const date = _args.shift()
@@ -409,7 +402,7 @@
           })
         })
         _this.board.update()
-        document.body.style.backgroundColor = "white";
+        document.body.style.backgroundColor = "white"
         _this.board.removeOldBookings() // *** uncomment to auto-crosscheck
       }
     }
@@ -463,10 +456,7 @@
       })
       utility.alert("Sending Data...")
 
-      google.script.run
-        .withSuccessHandler(this.com.success)
-        .withFailureHandler(this.com.failure)
-        .saveState(_date, sendData)
+      google.script.run.withSuccessHandler(this.com.success).withFailureHandler(this.com.failure).saveState(_date, sendData)
     }
 
     test(args) {
@@ -542,11 +532,7 @@
           // check new B cell matches
           //
           let conflict = false
-          if (
-            !!newBCell.leg &&
-            !!oldBCell?.leg &&
-            oldBCell?.leg != newBCell.leg
-          ) {
+          if (!!newBCell.leg && !!oldBCell?.leg && oldBCell?.leg != newBCell.leg) {
             conflict = true
           }
           if (!conflict) {
@@ -555,12 +541,7 @@
               this.removePax(oldPax, oldBCell.id)
             }
           } else {
-            utility.error(
-              "In/Out Leg Conflict \nNew: " +
-                newBCell.leg +
-                " \nOld: " +
-                oldBCell?.leg
-            )
+            utility.error("In/Out Leg Conflict \nNew: " + newBCell.leg + " \nOld: " + oldBCell?.leg)
           }
         }
       }

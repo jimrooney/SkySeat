@@ -125,9 +125,7 @@
       })
     }
     showTitle() {
-      this.$this
-        .find("#Title")
-        .html(this.getDate().toLocaleString("en-us", { weekday: "long" }))
+      this.$this.find("#Title").html(this.getDate().toLocaleString("en-us", { weekday: "long" }))
     }
     loadRoster() {
       const $roster = this.$roster
@@ -135,10 +133,7 @@
       $roster.append("<div>Loading</div>")
       const d = this.getDate("getDate")
       const date = d.toString()
-      google.script.run
-        .withSuccessHandler(this.handleRosterLoad)
-        .withUserObject(this)
-        .loadRoster(date)
+      google.script.run.withSuccessHandler(this.handleRosterLoad).withUserObject(this).loadRoster(date)
     }
     handleRosterLoad(args, manifest) {
       const $roster = manifest.$this.find(".Roster")
@@ -152,10 +147,7 @@
           const color = args.colors[ri][args.ci]
           return [key, val, color]
         })
-        const rosterRows = keyVal.map(
-          (row) =>
-            `<div><span style="background-color:${row[2]}">${row[0]} ${row[1]}</span></div>`
-        )
+        const rosterRows = keyVal.map((row) => `<div><span style="background-color:${row[2]}">${row[0]} ${row[1]}</span></div>`)
         const $rosterContent = $("<div />")
         $rosterContent.append(rosterRows.join(""))
         $roster.append($rosterContent)
@@ -166,11 +158,11 @@
     // ===================================================================
     // Call the Google Rezdy loading script, passing this object so the results can be returned into it
     load() {
-      document.body.style.backgroundColor = "darkgrey";
+      document.body.style.backgroundColor = "darkgrey"
       Rezdy.load(this)
     }
     onLoad(json) {
-      document.body.style.backgroundColor = "grey";
+      document.body.style.backgroundColor = "grey"
       this.data = JSON.parse(json) // parse json String data into a json object
       // to Rezdy, a "booking" is a "booking order" (cuz they couldn't decide which name they preferred)
       this.orders = this.processOrders(this.data.bookings) // [{Booking},{Booking},{Booking}] An array of booking objects
@@ -219,12 +211,22 @@
       // Filter by Status
       orders = orders?.filter(
         (order) =>
-          order.status == "CONFIRMED" ||
-          order.status == "PENDING_SUPPLIER" ||
-          order.status == "ON_HOLD" ||
-          order.status == "PENDING_CUSTOMER"
+          order.status == "CONFIRMED" || order.status == "PENDING_SUPPLIER" || order.status == "ON_HOLD" || order.status == "PENDING_CUSTOMER"
       )
       return this.filterByDate(orders, date) // Filter by Date
+    }
+    getBarcodes() {
+      const barcodes = []
+      const bookings = this.getManifest()
+      bookings.forEach((booking) => {
+        booking.items.forEach((item) => {
+          item.participants.forEach((pax) => {
+            let barcode = pax.fields.find((x) => x.label === "Barcode")
+            barcodes.push(barcode.value)
+          })
+        })
+      })
+      return barcodes
     }
     // ---------------------------------------------------------
     // Show Manifest
@@ -240,18 +242,11 @@
           bookings.push(new Booking(this, order, item, i))
         })
       })
-      bookings = bookings.filter(
-        (booking) => booking.order.supplierId == "13330"
-      )
+      bookings = bookings.filter((booking) => booking.order.supplierId == "13330")
       //
       // Sort Bookings by Start Time
       //
-      bookings.sort((a, b) =>
-        time.getHour(a.item.startTimeLocal) >
-        time.getHour(b.item.startTimeLocal)
-          ? 1
-          : -1
-      )
+      bookings.sort((a, b) => (time.getHour(a.item.startTimeLocal) > time.getHour(b.item.startTimeLocal) ? 1 : -1))
       //
       // Totals
       //
@@ -273,11 +268,7 @@
         const cHue = "hsl(" + hue + ", 50%, 75%)"
         if (lastHour == null) {
           // first row
-          rowHeader = this.$bookings.append(
-            $(`<div class="row${hour}" />`)
-              .html(`Hour: ${hour}`)
-              .css({ width: "fit-content" })
-          ) // print header
+          rowHeader = this.$bookings.append($(`<div class="row${hour}" />`).html(`Hour: ${hour}`).css({ width: "fit-content" })) // print header
           lastHour = hour
         }
         if (lastHour == hour) {
@@ -286,18 +277,10 @@
         } else {
           // new row
           rowTotal = num
-          rowHeader = this.$bookings.append(
-            $(`<div class="row${hour}" />`)
-              .html(`Hour: ${hour}`)
-              .css({ width: "fit-content" })
-          ) // print header
+          rowHeader = this.$bookings.append($(`<div class="row${hour}" />`).html(`Hour: ${hour}`).css({ width: "fit-content" })) // print header
         }
 
-        this.$this
-          .find(`.row${hour}`)
-          .html(
-            `<div><span style='background-color:${cHue}'><b>(${rowTotal})</b>Pax (${hour}hour) </span></div>`
-          ) // update total
+        this.$this.find(`.row${hour}`).html(`<div><span style='background-color:${cHue}'><b>(${rowTotal})</b>Pax (${hour}hour) </span></div>`) // update total
 
         this.$bookings.append(booking.getSprite()) // print row
         lastHour = hour
@@ -353,21 +336,15 @@
             pickupList.passengers.push(pax)
           }
           //
-          const Pickup = pax.fields.find(
-            (field) => field.label === "pickupLocation"
-          )
+          const Pickup = pax.fields.find((field) => field.label === "pickupLocation")
           // will return null for Pilots ---
-          const orderNumber = pax.fields.find(
-            (field) => field.label === "orderNumber"
-          )?.value
+          const orderNumber = pax.fields.find((field) => field.label === "orderNumber")?.value
           if (!!Pickup) {
             // pilots don't have pickup locations
             // Outs don't always have pickup locationNames
 
             // Can split this out to include "RemotePickups".... aka Glenorchy Airstrip ***
-            const selfDrive =
-              Pickup.value?.locationName?.match(/Self Drive/) ||
-              Pickup.value?.locationName?.match(/Glenorchy/)
+            const selfDrive = Pickup.value?.locationName?.match(/Self Drive/) || Pickup.value?.locationName?.match(/Glenorchy/)
             if (!!selfDrive) {
               pickupList.selfDrives.push(orderNumber)
             } else {
@@ -413,23 +390,18 @@
     // ------------
     filterByDate(orders, date) {
       let _date = date
-      return orders?.filter((element) => {
+      return orders
+        ?.filter((element) => {
           if (element.items) {
             return element.items.some((subElement) => {
-              return (
-                new Date(subElement.startTimeLocal).toDateString() ==
-                _date.toDateString()
-              )
+              return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
             })
           }
         })
         .map((element) => {
           let newElt = Object.assign({}, element) // copies element
           newElt.items = newElt.items.filter((subElement) => {
-            return (
-              new Date(subElement.startTimeLocal).toDateString() ==
-              _date.toDateString()
-            )
+            return new Date(subElement.startTimeLocal).toDateString() == _date.toDateString()
           })
           return newElt
         })
@@ -437,18 +409,10 @@
     filterByMonth(orders, date) {
       let month = date.getMonth()
       return orders
-        .filter((element) =>
-          element.items.some(
-            (subElement) =>
-              new Date(subElement.startTimeLocal).getMonth() == month
-          )
-        )
+        .filter((element) => element.items.some((subElement) => new Date(subElement.startTimeLocal).getMonth() == month))
         .map((element) => {
           let newElt = Object.assign({}, element) // copies element
-          newElt.items = newElt.items.filter(
-            (subElement) =>
-              new Date(subElement.startTimeLocal).getMonth() == month
-          )
+          newElt.items = newElt.items.filter((subElement) => new Date(subElement.startTimeLocal).getMonth() == month)
           return newElt
         })
     }
@@ -539,11 +503,7 @@
       if (!!this.orders) {
         this.orders.forEach((order) => {
           let found = order.items.find((item) =>
-            item.participants.find((part) =>
-              part.fields.find(
-                (field) => field.label == "Barcode" && field.value == barcode
-              )
-            )
+            item.participants.find((part) => part.fields.find((field) => field.label == "Barcode" && field.value == barcode))
           )
           if (!!found) {
             ret = found

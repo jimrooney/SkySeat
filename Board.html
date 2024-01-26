@@ -42,6 +42,29 @@
       this.state.clearoutPax(paxList)
     }
     //
+    // Highlight bookings that have changed in Rezdy (like outs adding pax)
+    //
+    highlightChanges() {
+      const unplottedBarcodes = this.state.getUnplottedPax() // returns array
+
+      unplottedBarcodes.forEach((barcode) => {
+        const pax = this.manifest.getPax(barcode) // turn into a pax so we can get the orderNumber
+        const orderNumber = pax.fields.find((field) => {
+          return field.label === "orderNumber"
+        })?.value
+
+        const divs = document.querySelectorAll(`.${orderNumber}.Manifest`)
+
+        // Loop through the collected divs and add border to each one
+        for (var i = 0; i < divs.length; i++) {
+            divs[i].style.border = "3px solid red"; // Add border style
+            divs[i].style.padding = "5px"; // Optional: Add padding
+            divs[i].style.margin = "5px"; // Optional: Add margin
+        }
+      })
+    }
+
+    //
     // Remove Previous plots that have rebooked/cancelled
     //
     removeOldBookings() {
@@ -107,9 +130,7 @@
       // here is where we need to now make 2 divs, one for pickup, one for dropoff
       this.$board.find(".PickupCell").each(function (i) {
         const row = $(this).data("row")
-        const pickUpList = $(this)
-          .data("this")
-          .manifest.getPickupList({ row: row })
+        const pickUpList = $(this).data("this").manifest.getPickupList({ row: row })
 
         let paxNum = pickUpList?.totalPax
         if (paxNum == 0) {
@@ -121,12 +142,15 @@
         let bookingList = []
         $(this).removeClass("arrow-up")
         $(this).removeClass("arrow-down")
-        let filteredClasses = $(this).attr("class").split(" ").filter((str)=>{
-           return str.match(/Pickup/gi) || str.match(/Row/gi) 
-        })
+        let filteredClasses = $(this)
+          .attr("class")
+          .split(" ")
+          .filter((str) => {
+            return str.match(/Pickup/gi) || str.match(/Row/gi)
+          })
         $(this).removeClass()
         $(this).addClass(filteredClasses) // clear all previous classes
-        
+
         if (pickUpList.pickups.length > 0) {
           $(this).addClass("arrow-up") // tag as a pickup
           $(this).addClass(pickUpList.pickups.join(" ")) // tag with all the booking references.
@@ -262,9 +286,7 @@
       // -----------------------
       this.$board.prepend(`<table class="BoardTable" />`)
       const _this = this
-      const $closer = $(
-        '<span style="display: inline-block" class="popupCloseButton MobileButton">X</span>'
-      ).click(() => {
+      const $closer = $('<span style="display: inline-block" class="popupCloseButton MobileButton">X</span>').click(() => {
         _this.close()
       })
       this.$board.find(".Top .Header").prepend($closer)
@@ -275,9 +297,7 @@
       // ----------------------
       // Header Row
       // ----------------------
-      let $row = $("<TR />")
-        .append($('<td class="PickupAllCell" id="PH">&#9951;</td>'))
-        .append($('<td class="Label Row_0 Col_0" id="0_0">Time</td>'))
+      let $row = $("<TR />").append($('<td class="PickupAllCell" id="PH">&#9951;</td>')).append($('<td class="Label Row_0 Col_0" id="0_0">Time</td>'))
 
       for (let i = 1; i <= this.numCols; i++) {
         let planeCell = new PlaneCell(this, 0, i)
@@ -365,9 +385,7 @@
       // ----------
       this.$board
         .find(".DatePicker")
-        .prepend(
-          `<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8"/></div>`
-        )
+        .prepend(`<div style="float:none; display: inline-block;"><input class="Nav datepicker" type="text" size="8"/></div>`)
       this.$datepicker = this.$board.find(".datepicker") // $("#" + this.$board.prop("id") + " .datepicker")
       Dates.initPicker(this.$datepicker, this)
       // ******************************************************************************
