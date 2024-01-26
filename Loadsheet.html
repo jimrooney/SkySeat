@@ -1,6 +1,6 @@
-<div id="printLoadsheetClose" class="popupCloseButton MobileButton NoPrint">X</div>
-<div class="MenuButton FlightFollowing MobileButton NoPrint">CloseFlightFollowing</div>
-<div id="FlightFollowing" class="MenuButton FlightFollowingOpen MobileButton NoPrint">ShowFlightFollowing</div>
+<div id="printLoadsheetClose" class="FFMenuButton popupCloseButtonSmall MobileButton NoPrint">X</div>
+<div class="FFMenuButton FlightFollowing NoPrint">CloseFlightFollowing</div>
+<div id="FlightFollowing" class="FFMenuButton FlightFollowingOpen NoPrint">ShowFlightFollowing</div>
 <style>
   .NoWrap{
     max-width: 590px;
@@ -9,6 +9,45 @@
       white-space: nowrap; /* Ensures the text doesn't wrap */
       text-overflow: ellipsis; /* Adds ellipsis (...) if text overflows */
     }
+    .popupCloseButtonSmall {
+    margin-left: 10px;
+    color: #ccc;
+    background-color: #fff;
+    border: 1px solid #999;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 12px;
+    width: 13px;
+    height: 13px;
+    text-align: center;
+    z-index: 1;
+  }
+  .FFMenuButton {
+    color: #ccc;
+    background-color: rgb(150, 148, 163);
+    border: 1px solid rgb(116, 109, 134);
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 1px 1px 1px 1px;
+    text-align: center;
+  }
+  .FlightFollowing,
+  .FlightFollowingOpen {
+    margin-left: 30px;
+    display: inline-block;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 12px;
+    height: 12px;
+    text-align: center;
+    z-index: 1;
+    padding: 1px 12px 1px 12px;
+  }
 </style>
 <script>
   // ===============================
