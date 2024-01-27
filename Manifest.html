@@ -222,7 +222,7 @@
         booking.items.forEach((item) => {
           item.participants.forEach((pax) => {
             let barcode = pax.fields.find((x) => x.label === "Barcode")
-            barcodes.push(barcode.value)
+            barcodes.push(barcode?.value)
           })
         })
       })
@@ -430,7 +430,7 @@
       //
       // returns an array of (rezdy) order objects
       //
-      debug.log("Manifest.getOrders() data: %o", data) // array of order numbers
+      console.log("Manifest.getOrders() data: %o", data) // array of order numbers
       // [ Recursive ]
       // If it's a CellData object, re-run with just the CellData.orders[] array
       if (!!data && typeof data == "object" && !!data.orders) {

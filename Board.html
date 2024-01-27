@@ -1,3 +1,10 @@
+<style>
+  .outOfSyncHighlight {
+    border: 3px solid rgb(178, 172, 172);
+    padding: 5px;
+    margin: 5px;
+  }
+</style>
 <script>
   class Board {
     constructor($board) {
@@ -45,11 +52,13 @@
     // Highlight bookings that have changed in Rezdy (like outs adding pax)
     //
     highlightChanges() {
+
+      this.clearHighlights()
       const unplottedBarcodes = this.state.getUnplottedPax() // returns array
 
       unplottedBarcodes.forEach((barcode) => {
         const pax = this.manifest.getPax(barcode) // turn into a pax so we can get the orderNumber
-        const orderNumber = pax.fields.find((field) => {
+        const orderNumber = pax?.fields.find((field) => {
           return field.label === "orderNumber"
         })?.value
 
@@ -57,10 +66,15 @@
 
         // Loop through the collected divs and add border to each one
         for (var i = 0; i < divs.length; i++) {
-            divs[i].style.border = "3px solid red"; // Add border style
-            divs[i].style.padding = "5px"; // Optional: Add padding
-            divs[i].style.margin = "5px"; // Optional: Add margin
+          divs[i].classList.add("outOfSyncHighlight"); // Add the new class to the current div
         }
+      })
+    }
+    clearHighlights() {
+      const orders = this.manifest.getManifest()
+      orders.forEach((order) => {
+        const divs = document.querySelectorAll(`.${order.orderNumber}`)
+        divs.forEach((d) => d.classList.remove("outOfSyncHighlight"))
       })
     }
 
@@ -257,6 +271,8 @@
       //
 
       $(".MobileButton").mouseenter(_mouseOverEvent).mouseleave(_mouseOutEvent)
+
+      this.highlightChanges()
     }
     /*
 
